@@ -9,8 +9,36 @@
   plugins { id 'checkstyle' }
   checkstyle { toolVersion '8.28' }
 
-4. Gehe zu: Settings -> Code Style -> Java -> Auf "Zahnrädchen" klicken und die im Repository befindliche checkstyle-xml auswählen
+4. Gehe zu: Settings -> Code Style -> Java -> Auf "Zahnrädchen" klicken und die im Repository befindliche checkstyle.xml auswählen
 
 ### PMD:
 
-### SpotBugs: 
+1. PMD in Gradle einbinden
+
+  plugins { id 'pmd' }
+
+  pmd {
+    ruleSets = [
+    "category/java/errorprone.xml",
+    "category/java/bestpractices.xml",
+    "category/java/codestyle.xml",
+    "category/java/design.xml",
+    "category/java/documentation.xml",
+    "category/java/multithreading.xml",
+    "category/java/performance.xml",
+    "category/java/security.xml"
+    ]
+  }
+
+### SpotBugs:
+
+1. SpotBugs inn Gradle einbinden
+
+  plugins {
+    id "com.github.spotbugs" version "3.0.0"
+  }
+
+  tasks.withType(com.github.spotbugs.SpotBugsTask) {
+    reports.xml.enabled = false
+    reports.html.enabled = true
+    }   

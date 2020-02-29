@@ -1,0 +1,12 @@
+### Tool Setup
+
+# Checkstyle:
+
+1. Herunterladen des Checkstyle Plugins in IntellJ
+2. Gehe zu: Settings -> Other Settings -> Checkstyle -> Auf "+" klicken und die im Repository befindliche checkstyle-xml auswählen
+3. Checkstyle in Gradle einbinden
+
+  plugins { id 'checkstyle' }
+  checkstyle { toolVersion '8.28' }
+
+4. Gehe zu: Settings -> Code Style -> Java -> Auf "Zahnrädchen" klicken und die im Repository befindliche checkstyle-xml auswählen

@@ -1,8 +1,6 @@
 [[section-glossary]]
 == Glossar
 
-
-
 [cols="1,2" options="header"]
 |===
 |Begriff

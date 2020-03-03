@@ -1,8 +1,6 @@
 [[section-concepts]]
 == Querschnittliche Konzepte
 
-
-
 === _<Konzept 1>_
 
 _<Erklärung>_

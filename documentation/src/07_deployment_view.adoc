@@ -1,11 +1,7 @@
 [[section-deployment-view]]
 == Verteilungssicht
 
-
-
 === Infrastruktur Ebene 1
-
-
 
 _**<Übersichtsdiagramm>**_
 
@@ -16,8 +12,6 @@ Qualitäts- und/oder Leistungsmerkmale:: _<Erläuternder Text>_
 Zuordnung von Bausteinen zu Infrastruktur:: _<Beschreibung der Zuordnung>_
 
 === Infrastruktur Ebene 2
-
-
 
 ==== _<Infrastrukturelement 1>_
 

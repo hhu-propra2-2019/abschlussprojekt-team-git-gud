@@ -1,11 +1,7 @@
 [[section-building-block-view]]
 == Bausteinsicht
 
-
-
 === Whitebox Gesamtsystem
-
-
 
 _**<Übersichtsdiagramm>**_
 
@@ -15,11 +11,7 @@ Enthaltene Bausteine:: _<Beschreibung der enthaltenen Bausteine (Blackboxen)>_
 
 Wichtige Schnittstellen:: _<Beschreibung wichtiger Schnittstellen>_
 
-
-
 ==== <Name Blackbox 1>
-
-
 
 _<Zweck/Verantwortung>_
 
@@ -41,7 +33,6 @@ _<Blackbox-Template>_
 
 _<Blackbox-Template>_
 
-
 ==== <Name Schnittstelle 1>
 
 ...
@@ -50,11 +41,7 @@ _<Blackbox-Template>_
 
 === Ebene 2
 
-
-
 ==== Whitebox _<Baustein 1>_
-
-
 
 _<Whitebox-Template>_
 
@@ -70,11 +57,7 @@ _<Whitebox-Template>_
 
 === Ebene 3
 
-
-
 ==== Whitebox <_Baustein x.1_>
-
-
 
 _<Whitebox-Template>_
 

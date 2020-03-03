@@ -45,7 +45,7 @@ dependencies {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     testImplementation 'org.springframework.security:spring-security-test'
-    implementation 'mops:styleguide:1.0.7'
+    implementation 'mops:styleguide:2.0.0'
 }
 
 test {

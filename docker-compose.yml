@@ -6,12 +6,12 @@ services:
       - "23306:3306"
     environment:
       - "MYSQL_ROOT_PASSWORD=secret"
-      - "MYSQL_DATABASE=material2"
-
+      - "MYSQL_DATABASE=materialsammlung"
   minio:
     image: minio/minio
     ports:
       - "23307:9000"
     environment:
-      - "MINIO_ACCESS_KEY=secret"
-      - "MINIO_SECRET_KEY=evenmoresecret"
+      - "MINIO_ACCESS_KEY=minio"
+      - "MINIO_SECRET_KEY=minio123"
+    command: "server /data/"

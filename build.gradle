@@ -1,7 +1,12 @@
+import com.github.spotbugs.SpotBugsTask
+
 plugins {
     id 'org.springframework.boot' version '2.2.5.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'java'
+    id 'checkstyle'
+    id 'pmd'
+    id "com.github.spotbugs" version "3.0.0"
 }
 
 group = 'de.hhu.propra2'
@@ -37,4 +42,26 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+checkstyle {
+    toolVersion '8.29'
+}
+
+pmd {
+    ruleSets = [
+            "category/java/errorprone.xml",
+            "category/java/bestpractices.xml",
+            "category/java/codestyle.xml",
+            "category/java/design.xml",
+            "category/java/documentation.xml",
+            "category/java/multithreading.xml",
+            "category/java/performance.xml",
+            "category/java/security.xml"
+    ]
+}
+
+tasks.withType(SpotBugsTask) {
+    reports.xml.enabled = false
+    reports.html.enabled = true
 }

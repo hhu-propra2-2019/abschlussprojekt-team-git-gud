@@ -23,7 +23,7 @@ ifdef::basebackend-html[]
 endif::basebackend-html[]
 
 // configure DE settings for asciidoc
-include::src/config.adoc[]
+include::./src/config.adoc[]
 
 
 include::src/about-arc42.adoc[]

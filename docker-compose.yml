@@ -1,9 +1,17 @@
 version: "3.1"
 services:
-  database:
+  mysql:
     image: mysql:5.7
     ports:
       - "23306:3306"
     environment:
       - "MYSQL_ROOT_PASSWORD=secret"
-      - "MYSQL_DATABASE=materialsammlung"
+      - "MYSQL_DATABASE=material2"
+
+  minio:
+    image: minio/minio
+    ports:
+      - "23307:9000"
+    environment:
+      - "MINIO_ACCESS_KEY=secret"
+      - "MINIO_SECRET_KEY=evenmoresecret"

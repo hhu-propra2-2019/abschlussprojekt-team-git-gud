@@ -81,30 +81,37 @@ Ziele hierbei sind:
 
 Folgende Aufgaben gilt es zu meistern:
 
-- 1. Es muss mit dem Team, das für die Gruppeneinteilung zuständig ist, sowohl eine Schnittstelle für den Zugriff auf die
+- Aufgaben der Persisitenzschicht:
+
+1. Es muss mit dem Team, das für die Gruppeneinteilung zuständig ist, sowohl eine Schnittstelle für den Zugriff auf die
   von uns gebrauchten Daten wie z.B die Gruppenzugehörigket von Benutzern definiert als auch ein Protokoll zum übermitteln
   und aktuallisieren eben dieser vereinbart werden. Für letzteres steht die Frage im Hintergrund ob die aktuallisierung
   in zeitlichen Intervallen oder nach bestimmten Triggern erfolgen soll.
 
-- 2. Die Beziehung zwischen Benutzern, Gruppen und Dateien muss in einem ER-Diagramm festgehalten und in einem Datenbankschema
+2. Die Beziehung zwischen Benutzern, Gruppen und Dateien muss in einem ER-Diagramm festgehalten und in einem Datenbankschema
   realisiert werden. Die Tabellen sollen die entstehenden Abhängigkeiten vollständig darstellen und aus den in
   Punkt 1 übermittleten Daten gebildet werden können.
 
-- 3. Das in Punkt 3 genannte Datenbankschema muss durch passende DTOs in der Anwendung abgebildet werden. Die Beziehungen der
+3. Das in Punkt 3 genannte Datenbankschema muss durch passende DTOs in der Anwendung abgebildet werden. Die Beziehungen der
   einzelnen Entitäten im Datenbankschema muss passend in den DTOs abgebildet werden.
 
-- 4. Es sollen den Entitäten des Datenbankschemas entsprechende Repositorys implementiert werden.
+4. Es sollen den Entitäten des Datenbankschemas entsprechende Repositorys implementiert werden.
 
 
 === Qualitätsziele
 
+- Wartbarkeit
+
+- Modifizierbarkeit
+
 === Stakeholder
 
-[cols="1,1,2" options="header"]
+[cols="1,1" options="header"]
 |===
-|Rolle |Kontakt |Erwartungshaltung
-| _<Rolle-1>_ | _<Kontakt-1>_ | _<Erwartung-1>_
-| _<Rolle-2>_ | _<Kontakt-2>_ | _<Erwartung-2>_
+|Rolle |Erwartungshaltung
+| Professoren | Einfache und übersichtliche Verwendung, zuverlässig, schnell
+| Studierende | Übersichtlich, felxibel, erreichbar
+| Fachbereich Informatik | wartbar, stabil, modifizierbar, sicher
 |===
 
 

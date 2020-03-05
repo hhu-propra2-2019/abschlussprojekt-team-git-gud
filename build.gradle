@@ -26,7 +26,7 @@ configurations {
 repositories {
     mavenCentral()
     maven {
-        url="https://s3.cs.hhu.de/public/mops/"
+        url = "https://s3.cs.hhu.de/public/mops/"
         metadataSources {
             artifact()
         }
@@ -48,6 +48,7 @@ dependencies {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     testImplementation 'org.springframework.security:spring-security-test'
+    testCompile 'com.tngtech.archunit:archunit-junit5:0.13.0'
     implementation 'com.jlefebure:spring-boot-starter-minio:1.1'
     implementation 'mops:styleguide:2.0.0'
 }

@@ -11,9 +11,9 @@ public class UserDTO {
     final String vorname;
     final String nachname;
     final String keycloakname;
-    final HashMap<Gruppe,Boolean> belegungUndRechte; //participating group + boolean if admin
+    final HashMap<GruppeDTO,Boolean> belegungUndRechte; //participating group + boolean if admin
 
-    public UserDTO(int id, String vorname, String nachname, String keycloakname, HashMap<Gruppe, Boolean> belegungUndRechte) {
+    public UserDTO(int id, String vorname, String nachname, String keycloakname, HashMap<GruppeDTO, Boolean> belegungUndRechte) {
         this.id = id;
         this.vorname = vorname;
         this.nachname = nachname;

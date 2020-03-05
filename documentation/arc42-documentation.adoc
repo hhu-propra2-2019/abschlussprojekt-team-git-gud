@@ -53,29 +53,27 @@ Created by Dr. Peter Hruschka & Dr. Gernot Starke.
 [[section-introduction-and-goals]]
 ==	Einführung und Ziele
 
-Unser Ziel ist es eine schnelle, effiziente und benutzerfreundliche Materialsammlung zu entwicklen,
-die dazu dient Vorlesungsinhalte und Lerngruppeninhalte den jeweiligen Benutzern zur Verfügung zu stellen.
 
-Ziele hierbei sind:
+Unser Ziel ist es eine schnelle, effeziente und benutzerfreundliche Materialsammlung zu entwicklen,
+die dazu dient Vorlesungsinhalte und Lerngruppeninhalte zur Verfügung zu stellen.
 
-- Der Weg von einer Materialsammlungsansicht bis zur gewollten Datei soll hierbei nicht mehr als 5 Klicks
-  benötigen.
+Der Weg von einer Materialsammlungsansicht bis zur gewollten Datei soll hierbei nicht mehr als 5 Klicks
+benötigen.
 
-- Uploadberechtigungen sollen gesetzt werden.
+Uploadberechtigungen sollen gesetzt werden.
 
-- Die Benutzerschnittstelle soll dem gegebenen Styleguide entsprechen und übersichtlich sein.
+Die Benutzerschnittstelle soll dem gegebenen Styleguide entsprechen und übersichtlich sein.
 
-- Dateinen sollen mit Tag versehen werden können. Diese sollen einerseits aus voreingesellten Tags wählbar sein
-  andererseits sollen auch eigene Tags ersetllt werden sollen.
+Dateinen sollen mit tag versehen sein. Diese sollen einerseits aus voreingesellten Tags wählbar sein
+andererseits sollen auch eigene Tags ersetllt werden sollen.
 
-- Es soll möglich gemacht werden Dateien zeitgesteuert für Benutzer zugreifbar zu machen.
+Es soll möglich gemacht werden Dateien zeitgesteuert für Studenten zugreifbar zu machen.
 
-- Das Suchen in den benötigten Datenbanken soll schnell realisiert werden.
+Das Suchen in den benötigten Datenbanken soll schnell realisiert werden.
 
-- Das Suchen innerhalb der GUI soll nach Tags, Daten, Dateinamen, Gruppenname, Dateiart, Dateigröße und Uploader
-  möglich sein.
+Das Suchen innerhalb der GUI soll nach Tags, Daten, Dateinamen, Gruppenname, Dateiart, Dateigröße, Uploader.
 
-- Es sollen Schnittstellen zum Zugriff auf Materialsammlungen für andere Module zur Verfügung gestellt werden.
+Schnittstellen zum Zugriff auf Materialsammlungen für andere Module.
 
 === Aufgabenstellung
 

@@ -13,4 +13,12 @@ public class MaterialController {
     public String index() {
         return "base";
     }
+
+    /**starting page.
+     * @return String
+     */
+    @GetMapping("/suche")
+    public String start() {
+        return "suche";
+    }
 }

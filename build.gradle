@@ -49,7 +49,7 @@ dependencies {
     }
     testImplementation 'org.springframework.security:spring-security-test'
     implementation 'com.jlefebure:spring-boot-starter-minio:1.1'
-    implementation 'mops:styleguide:2.0.0'
+    implementation 'mops:styleguide:2.1.0'
 }
 
 test {

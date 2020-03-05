@@ -7,10 +7,10 @@ import java.util.List;
 
 @Data
 public class DateiDTO {
-    final int id;
+    final long id;
     final String name;
     final String pfad;
-    final String uploader;
+    final UserDTO uploader;
     final List<TagDTO> tagDTOS;
     final GruppeDTO gruppe;
     final Date uploaddatum;

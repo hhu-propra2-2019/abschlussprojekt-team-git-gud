@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 public class GruppeDTO {
-    final int id;
+    final long id;
     final String name;
     final List<UserDTO> users;
     final List<DateiDTO> dateien;

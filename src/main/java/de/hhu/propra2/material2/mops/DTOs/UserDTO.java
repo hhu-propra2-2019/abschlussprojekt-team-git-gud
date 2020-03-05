@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 @Data
 public class UserDTO {
-    final int id;
+    final long id;
     final String vorname;
     final String nachname;
     final String keycloakname;

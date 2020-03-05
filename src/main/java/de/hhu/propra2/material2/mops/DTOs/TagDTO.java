@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 public class TagDTO {
-        final int id;
+        final long id;
         final String text;
         final List<DateiDTO> dateien;
 

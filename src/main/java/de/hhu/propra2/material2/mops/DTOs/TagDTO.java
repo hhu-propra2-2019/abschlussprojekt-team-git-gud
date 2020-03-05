@@ -6,13 +6,32 @@ import java.util.List;
 
 @Data
 public class TagDTO {
-        final int id;
-        final String text;
-        final List<DateiDTO> dateien;
+    /**
+     * Unique ID from database.
+     */
+    private final int id;
+    /**
+     * The tags text that will be shown
+     * and can be searched for.
+     */
+    private final String text;
+    /**
+     * Related files to this tag.
+     */
+    private final List<DateiDTO> dateien;
 
-    public TagDTO(int id, String text, List<DateiDTO> dateien) {
-        this.id = id;
-        this.text = text;
-        this.dateien = dateien;
+    /**
+     * Standard AllArgsConstructor for import from database.
+     *
+     * @param idArg
+     * @param textArg
+     * @param dateienArg
+     */
+    public TagDTO(final int idArg,
+                  final String textArg,
+                  final List<DateiDTO> dateienArg) {
+        this.id = idArg;
+        this.text = textArg;
+        this.dateien = dateienArg;
     }
 }

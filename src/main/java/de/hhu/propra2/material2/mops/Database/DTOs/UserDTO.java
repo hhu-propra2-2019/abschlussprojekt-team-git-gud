@@ -10,7 +10,7 @@ public class UserDTO {
     /**
      * Unique ID from database.
      */
-    private final int id;
+    private final long id;
 
     /**
      * Users first name.
@@ -43,7 +43,7 @@ public class UserDTO {
      * @param keycloaknameArg
      * @param belegungUndRechteArg
      */
-    public UserDTO(final int idArg,
+    public UserDTO(final long idArg,
                    final  String vornameArg,
                    final String nachnameArg,
                    final String keycloaknameArg,

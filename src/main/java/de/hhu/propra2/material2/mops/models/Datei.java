@@ -5,6 +5,7 @@ import lombok.Value;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Value
 public class Datei {
@@ -48,4 +49,23 @@ public class Datei {
      */
     private final String dateityp;
 
+    private List<String> getTagNames(){
+        return tags.stream().map(Tag::getText).collect(Collectors.toList());
+    }
+    private boolean hatTag(String tag){
+        for(String tempTag:this.getTagNames()) {
+            if (tempTag.equals(tag)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean hatTags(String[] tags){
+        for(String tag:tags){
+            if(!this.hatTag(tag)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

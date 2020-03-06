@@ -9,10 +9,12 @@ import de.hhu.propra2.material2.mops.DTOs.UserDTO;
 import de.hhu.propra2.material2.mops.DTOs.UserRepository;
 import de.hhu.propra2.material2.mops.models.Datei;
 import de.hhu.propra2.material2.mops.models.Gruppe;
+import de.hhu.propra2.material2.mops.models.Sucher;
 import de.hhu.propra2.material2.mops.models.Tag;
 import de.hhu.propra2.material2.mops.models.User;
 import org.springframework.stereotype.Service;
 
+import javax.xml.crypto.Data;
 import java.io.LineNumberInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,8 +58,13 @@ public class ModelService {
         return new Gruppe(dto.getId(),dto.getName(),zugehoerigeDateien);
     }
 
-    public List<Gruppe> getAlleGruppenByUser(Long id){
-        User user = load(users.findById(id).get());
-        return user.getAllGruppen();
+    public List<String> getAlleGruppenByUser(long id){
+        User user = load(users.findById((id)).get());
+        return user.getAllGruppen().stream().map(Gruppe::getName).collect(Collectors.toList());
+    }
+
+    public List<Datei> getAlleDateienByGruppe(long id){
+        Gruppe gruppe = load(gruppen.findById(id).get());
+        return gruppe.getDateien();
     }
 }

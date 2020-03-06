@@ -39,7 +39,7 @@ public class User {
     /**
      * returns the groups the student participates in as a List
      */
-    public List<Gruppe> getAllGruppen(){
+    public List<Gruppe> getAllGruppen() {
         return new ArrayList<>(belegungUndRechte.keySet());
     }
 }

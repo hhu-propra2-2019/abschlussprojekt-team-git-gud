@@ -19,13 +19,14 @@
             <div class="form-group">
                 <label for="SelectGroup">Gruppenauswahl </label>
                 <select class="form-control" id="SelectGroup" name="gruppe">
-                    <option> <span> ProPra </span>  </option>
-                    <option> <span> RDB </span>  </option>
+                    <option>  ProPra  </option>
+                    <option>  RDB  </option>
                 </select>
             </div>
+
             <div class="form-group">
                 <label for="dataname">Dateiname </label>
-                <input type="text" class="form-control" id="dataname" placeholder="0">
+                <input type="text" class="form-control" id="dataname" placeholder="Eingabe">
             </div>
 
             <div class="form-group list-inline">
@@ -81,13 +82,31 @@
 
             <div class="form-group">
                 <label>Datum </label>
-
-                <div class="form-check">
-                    <input type="date" value="" >
-                </div>
+                    <div class="form-inline">
+                        <label> Von</label>
+                        <div class="form-check">
+                            <input type="date" value="" id="FromDate" >
+                        </div>
+                        <label> Bis</label>
+                        <div class="form-check">
+                            <input type="date" value="" id="UntilDate">
+                        </div>
+                    </div>
             </div>
 
-
+            <div class="form-group">
+                <label for="SelectSearchBy">Sortierung </label>
+                <div class="form-inline">
+                    <select class="form-control" id="SelectSearchBy" name="Sortierung">
+                        <option> Name </option>
+                        <option> Datum </option>
+                    </select>
+                    <select class="form-control" id="SelectOrder" name="Reihenfolge">
+                        <option> aufsteigend </option>
+                        <option> absteigend </option>
+                    </select>
+                </div>
+            </div>
 
             <div>
                 <input class="btn btn-primary" type="submit" name="search" value="Suchen">

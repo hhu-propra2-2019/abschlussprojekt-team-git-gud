@@ -7,6 +7,13 @@ import java.util.List;
 
 @Value
 public class Tag {
-    private long id;
-    private String text;
+    /**
+     * Unique ID from database.
+     */
+    private final int id;
+    /**
+     * The tags text that will be shown
+     * and can be searched for.
+     */
+    private final String text;
 }

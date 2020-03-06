@@ -10,7 +10,7 @@ import java.util.List;
 public class Datei {
     private long id;
     private String name;
-    final String pfad;
+    private String pfad;
     final User uploader;
     final List<Tag> tags;
     //final Gruppe gruppe;

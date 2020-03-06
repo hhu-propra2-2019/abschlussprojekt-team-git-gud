@@ -1,35 +1,40 @@
 package de.hhu.propra2.material2.mops.Database.DTOs;
 
-import lombok.Data;
-
+import lombok.Getter;
 import java.util.Date;
 import java.util.List;
 
-@Data
-public class DateiDTO {
+
+public final class DateiDTO {
     /**
      * Unique ID from database.
      */
+    @Getter
     private final long id;
     /**
      * Name of file.
      */
+    @Getter
     private final String name;
     /**
      * Path of file.
      */
+    @Getter
     private final String pfad;
     /**
      *  User that uploaded the file.
      */
+    @Getter
     private final UserDTO uploader;
     /**
      * All assigned tags.
      */
+    @Getter
     private final List<TagDTO> tagDTOs;
     /**
      * Assigned group.
      */
+    @Getter
     private final GruppeDTO gruppe;
     /**
      * Upload date.
@@ -44,10 +49,12 @@ public class DateiDTO {
     /**
      * File size.
      */
-    private final double dateigroesse;
+    @Getter
+    private final long dateigroesse;
     /**
      * File type.
      */
+    @Getter
     private final String dateityp;
 
     /**
@@ -71,7 +78,7 @@ public class DateiDTO {
                     final List<TagDTO> tagDTOsArg,
                     final Date uploaddatumArg,
                     final Date veroeffentlichungsdatumArg,
-                    final double dateigroesseArg,
+                    final long dateigroesseArg,
                     final String dateitypArg,
                     final GruppeDTO gruppeArg) {
         this.id = idArg;
@@ -80,8 +87,9 @@ public class DateiDTO {
         this.uploader = uploaderArg;
         this.tagDTOs = tagDTOsArg;
         this.gruppe = gruppeArg;
-        this.uploaddatum = uploaddatumArg;
-        this.veroeffentlichungsdatum = veroeffentlichungsdatumArg;
+        this.uploaddatum = (Date) uploaddatumArg.clone();
+        this.veroeffentlichungsdatum =
+                (Date) veroeffentlichungsdatumArg.clone();
         this.dateigroesse = dateigroesseArg;
         this.dateityp = dateitypArg;
     }
@@ -105,7 +113,7 @@ public class DateiDTO {
                     final List<TagDTO> tagDTOsArg,
                     final Date uploaddatumArg,
                     final Date veroeffentlichungsdatumArg,
-                    final double dateigroesseArg,
+                    final long dateigroesseArg,
                     final String dateitypArg,
                     final GruppeDTO gruppeArg) {
         this.id = -1;
@@ -114,10 +122,27 @@ public class DateiDTO {
         this.uploader = uploaderArg;
         this.tagDTOs = tagDTOsArg;
         this.gruppe = gruppeArg;
-        this.uploaddatum = uploaddatumArg;
-        this.veroeffentlichungsdatum = veroeffentlichungsdatumArg;
+        this.uploaddatum = (Date) uploaddatumArg.clone();
+        this.veroeffentlichungsdatum =
+                (Date) veroeffentlichungsdatumArg.clone();
         this.dateigroesse = dateigroesseArg;
         this.dateityp = dateitypArg;
     }
+    /**
+     * Manual Date getter
+     * because its mutable.
+     * @return clone
+     */
+    public Date getUploaddatum() {
+        return (Date) uploaddatum.clone();
+    }
 
+    /**
+     * Manual Date getter
+     * because its mutable.
+     * @return clone
+     */
+    public Date getVeroeffentlichungsdatum() {
+        return (Date) veroeffentlichungsdatum.clone();
+    }
 }

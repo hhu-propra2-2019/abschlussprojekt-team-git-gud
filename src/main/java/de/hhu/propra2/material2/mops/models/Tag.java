@@ -1,6 +1,6 @@
 package de.hhu.propra2.material2.mops.models;
 
-import de.hhu.propra2.material2.mops.DTOs.DateiDTO;
+import de.hhu.propra2.material2.mops.Database.DTOs.DateiDTO;
 import lombok.Value;
 
 import java.util.List;
@@ -10,7 +10,7 @@ public class Tag {
     /**
      * Unique ID from database.
      */
-    private final int id;
+    private final long id;
     /**
      * The tags text that will be shown
      * and can be searched for.

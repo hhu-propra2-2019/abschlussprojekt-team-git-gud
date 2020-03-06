@@ -12,7 +12,7 @@ public class User {
     /**
      * Unique ID from database.
      */
-    private final int id;
+    private final long id;
 
     /**
      * Users first name.

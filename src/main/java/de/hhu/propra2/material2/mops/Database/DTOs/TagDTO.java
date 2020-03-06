@@ -1,4 +1,4 @@
-package de.hhu.propra2.material2.mops.DTOs;
+package de.hhu.propra2.material2.mops.Database.DTOs;
 
 import lombok.Data;
 
@@ -9,7 +9,7 @@ public class TagDTO {
     /**
      * Unique ID from database.
      */
-    private final int id;
+    private final long id;
     /**
      * The tags text that will be shown
      * and can be searched for.
@@ -27,7 +27,7 @@ public class TagDTO {
      * @param textArg
      * @param dateienArg
      */
-    public TagDTO(final int idArg,
+    public TagDTO(final long idArg,
                   final String textArg,
                   final List<DateiDTO> dateienArg) {
         this.id = idArg;

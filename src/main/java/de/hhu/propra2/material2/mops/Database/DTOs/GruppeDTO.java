@@ -1,4 +1,4 @@
-package de.hhu.propra2.material2.mops.DTOs;
+package de.hhu.propra2.material2.mops.Database.DTOs;
 
 import lombok.Data;
 
@@ -9,7 +9,7 @@ public class GruppeDTO {
     /**
      * Unique ID from database.
      */
-    private final int id;
+    private final long id;
     /**
      * Groups name from database.
      */
@@ -31,7 +31,7 @@ public class GruppeDTO {
      * @param userArgs
      * @param dateiArgs
      */
-    public GruppeDTO(final int idArg,
+    public GruppeDTO(final long idArg,
                      final String nameArg,
                      final List<UserDTO> userArgs,
                      final List<DateiDTO> dateiArgs) {

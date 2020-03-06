@@ -1,4 +1,4 @@
-package de.hhu.propra2.material2.mops.DTOs;
+package de.hhu.propra2.material2.mops.Database.DTOs;
 
 import lombok.Data;
 
@@ -10,7 +10,7 @@ public class DateiDTO {
     /**
      * Unique ID from database.
      */
-    private final int id;
+    private final long id;
     /**
      * Name of file.
      */
@@ -64,7 +64,7 @@ public class DateiDTO {
      * @param dateitypArg
      * @param gruppeArg
      */
-    public DateiDTO(final int idArg,
+    public DateiDTO(final long idArg,
                     final String nameArg,
                     final String pfadArg,
                     final UserDTO uploaderArg,

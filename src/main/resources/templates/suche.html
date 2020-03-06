@@ -4,40 +4,69 @@
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
-  <title>Index</title>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <title>Index</title>
 </head>
 
 <body>
-  <div id="content" th:fragment="mycontent">
+<div id="content" th:fragment="mycontent">
     <h1 class="text-center">
-      Suche
+        Suche
     </h1>
-    <div>
-      <form action="" method="post" >
-        <label for="SelectGroup">Gruppenauswahl </label>
-          <select class="form-control" id="SelectGroup" name="gruppe">
-            <option> <span> ProPra </span>  </option>
-            <option> <span> RDB </span>  </option>
-          </select>
-        <label for="Tags">Tags </label>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="klausurrelevant">
-          <label class="form-check-label" for="Tags">
-            Klausurrelevant
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="Tags">
-          <label class="form-check-label" for="Tags">
-            Übungsblatt
-          </label>
-        </div>
+    <div class="container">
+        <form action="" method="post" >
+            <div class="form-group">
+                <label for="SelectGroup">Gruppenauswahl </label>
+                <select class="form-control" id="SelectGroup" name="gruppe">
+                    <option> <span> ProPra </span>  </option>
+                    <option> <span> RDB </span>  </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="dataname">Dateiname </label>
+                <input type="text" class="form-control" id="dataname" placeholder="0">
+            </div>
 
-        <div><input class="btn btn-primary" type="submit" name="search" value="Suchen"></div>
-      </form>
+            <div class="form-group list-inline">
+                <label for="Tag1">Tag </label>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="Tag1">
+                    <label class="form-check-label" for="Tag1">
+                        Klausurrelevant
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="Tag2">
+
+                    <label class="form-check-label" for="Tag2">
+                        Übungsblatt
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group list-inline">
+                <label for="Dateityp1">Dateityp </label>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="Dateityp1">
+                    <label class="form-check-label" for="Dateityp1">
+                        PDF
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="Dateityp2">
+
+                    <label class="form-check-label" for="Dateityp2">
+                        XDOC
+                    </label>
+                </div>
+            </div>
+
+            <div>
+                <input class="btn btn-primary" type="submit" name="search" value="Suchen">
+            </div>
+        </form>
     </div>
-  </div>
+</div>
 </body>
 </html>

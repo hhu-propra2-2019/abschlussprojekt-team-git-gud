@@ -18,4 +18,5 @@ public class Datei {
     final Date veroeffentlichungsdatum;
     final double dateigroesse;
     final String dateityp;
+
 }

@@ -35,7 +35,7 @@ public class ModelService {
     public Datei load(DateiDTO dto){
         //List<Tag> tags = dto.getTagDTOS().stream().map(this::load).collect(Collectors.toList());
         List<Tag> tags = new ArrayList<>();
-        dto.getTagDTOS().forEach(tagDTO -> tags.add(load(tagDTO)));
+        dto.getTagDTOs().forEach(tagDTO -> tags.add(load(tagDTO)));
         return new Datei(dto.getId(),dto.getName(),dto.getPfad(),load(dto.getUploader()),tags,dto.getUploaddatum(),dto.getVeroeffentlichungsdatum(),dto.getDateigroesse(),dto.getDateityp());
     }
 

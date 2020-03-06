@@ -29,7 +29,7 @@
                 </a>
             </li>
             <li>
-                <a th:href="@{/}">
+                <a th:href="@{/suche}">
                     Suche
                 </a>
             </li>
@@ -43,6 +43,7 @@
 </header>
 <main th:fragment="bodycontent">
     <!-- Restlichen Inhalt hier einfügen! -->
+    <div th:replace="${content} ?: ~{}"></div>
 </main>
 </body>
 </html>

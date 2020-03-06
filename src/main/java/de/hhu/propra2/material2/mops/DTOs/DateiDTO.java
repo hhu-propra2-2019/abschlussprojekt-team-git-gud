@@ -7,28 +7,82 @@ import java.util.List;
 
 @Data
 public class DateiDTO {
-    final long id;
-    final String name;
-    final String pfad;
-    final UserDTO uploader;
-    final List<TagDTO> tagDTOS;
-    final GruppeDTO gruppe;
-    final Date uploaddatum;
-    final Date veroeffentlichungsdatum;
-    final double dateigroesse;
-    final String dateityp;
+    /**
+     * Unique ID from database.
+     */
+    private final int id;
+    /**
+     * Name of file.
+     */
+    private final String name;
+    /**
+     * Path of file.
+     */
+    private final String pfad;
+    /**
+     *  User that uploaded the file.
+     */
+    private final UserDTO uploader;
+    /**
+     * All assigned tags.
+     */
+    private final List<TagDTO> tagDTOs;
+    /**
+     * Assigned group.
+     */
+    private final GruppeDTO gruppe;
+    /**
+     * Upload date.
+     */
+    private final Date uploaddatum;
+    /**
+     * Date for when the file
+     * will be visible to non-uploaders
+     * of its group.
+     */
+    private final Date veroeffentlichungsdatum;
+    /**
+     * File size.
+     */
+    private final double dateigroesse;
+    /**
+     * File type.
+     */
+    private final String dateityp;
 
-
-    public DateiDTO(int id, String name, String pfad, UserDTO uploader, List<TagDTO> tagDTOS, Date uploaddatum, Date veroeffentlichungsdatum, double dateigroesse, String dateityp, GruppeDTO gruppe) {
-        this.id = id;
-        this.name = name;
-        this.pfad = pfad;
-        this.uploader = uploader;
-        this.tagDTOS = tagDTOS;
-        this.gruppe = gruppe;
-        this.uploaddatum = uploaddatum;
-        this.veroeffentlichungsdatum = veroeffentlichungsdatum;
-        this.dateigroesse = dateigroesse;
-        this.dateityp = dateityp;
+    /**
+     * Standard AllArgsConstructor for import from database.
+     *
+     * @param idArg
+     * @param nameArg
+     * @param pfadArg
+     * @param uploaderArg
+     * @param tagDTOsArg
+     * @param uploaddatumArg
+     * @param veroeffentlichungsdatumArg
+     * @param dateigroesseArg
+     * @param dateitypArg
+     * @param gruppeArg
+     */
+    public DateiDTO(final int idArg,
+                    final String nameArg,
+                    final String pfadArg,
+                    final UserDTO uploaderArg,
+                    final List<TagDTO> tagDTOsArg,
+                    final Date uploaddatumArg,
+                    final Date veroeffentlichungsdatumArg,
+                    final double dateigroesseArg,
+                    final String dateitypArg,
+                    final GruppeDTO gruppeArg) {
+        this.id = idArg;
+        this.name = nameArg;
+        this.pfad = pfadArg;
+        this.uploader = uploaderArg;
+        this.tagDTOs = tagDTOsArg;
+        this.gruppe = gruppeArg;
+        this.uploaddatum = uploaddatumArg;
+        this.veroeffentlichungsdatum = veroeffentlichungsdatumArg;
+        this.dateigroesse = dateigroesseArg;
+        this.dateityp = dateitypArg;
     }
 }

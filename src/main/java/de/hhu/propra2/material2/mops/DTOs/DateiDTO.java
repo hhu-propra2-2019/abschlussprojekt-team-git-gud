@@ -19,7 +19,7 @@ public class DateiDTO {
     final String dateityp;
 
 
-    public DateiDTO(int id, String name, String pfad, String uploader, List<TagDTO> tagDTOS, Date uploaddatum, Date veroeffentlichungsdatum, double dateigroesse, String dateityp, GruppeDTO gruppe) {
+    public DateiDTO(int id, String name, String pfad, UserDTO uploader, List<TagDTO> tagDTOS, Date uploaddatum, Date veroeffentlichungsdatum, double dateigroesse, String dateityp, GruppeDTO gruppe) {
         this.id = id;
         this.name = name;
         this.pfad = pfad;

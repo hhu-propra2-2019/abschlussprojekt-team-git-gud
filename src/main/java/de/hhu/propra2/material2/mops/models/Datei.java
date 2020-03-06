@@ -8,11 +8,11 @@ import java.util.List;
 
 @Value
 public class Datei {
-    final long id;
-    final String name;
+    private long id;
+    private String name;
     final String pfad;
     final User uploader;
-    final List<Tag> tag;
+    final List<Tag> tags;
     //final Gruppe gruppe;
     final Date uploaddatum;
     final Date veroeffentlichungsdatum;

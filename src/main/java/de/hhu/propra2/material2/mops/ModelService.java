@@ -56,8 +56,8 @@ public class ModelService {
         return new Gruppe(dto.getId(),dto.getName(),zugehoerigeDateien);
     }
 
-    public List<Gruppe> getAlleGruppenByUser(String keyCloackName){
-        User user = load(users.findFirstByKeycloakname(keyCloackName));
+    public List<Gruppe> getAlleGruppenByUser(Long id){
+        User user = load(users.findById(id).get());
         return user.getAllGruppen();
     }
 }

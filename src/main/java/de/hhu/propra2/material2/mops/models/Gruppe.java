@@ -6,8 +6,8 @@ import java.util.List;
 
 @Value
 public class Gruppe {
-    final long id;
-    final String name;
+    private long id;
+    private String name;
     //final List<User> users; shouldn't be necessary because from a group we never have to go back to the user
-    final List<Datei> dateien;
+    private List<Datei> dateien;
 }

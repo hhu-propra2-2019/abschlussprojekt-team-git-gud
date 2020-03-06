@@ -85,4 +85,39 @@ public class DateiDTO {
         this.dateigroesse = dateigroesseArg;
         this.dateityp = dateitypArg;
     }
+
+    /**
+     * Constructor for saving to database.
+     *
+     * @param nameArg
+     * @param pfadArg
+     * @param uploaderArg
+     * @param tagDTOsArg
+     * @param uploaddatumArg
+     * @param veroeffentlichungsdatumArg
+     * @param dateigroesseArg
+     * @param dateitypArg
+     * @param gruppeArg
+     */
+    public DateiDTO(final String nameArg,
+                    final String pfadArg,
+                    final UserDTO uploaderArg,
+                    final List<TagDTO> tagDTOsArg,
+                    final Date uploaddatumArg,
+                    final Date veroeffentlichungsdatumArg,
+                    final double dateigroesseArg,
+                    final String dateitypArg,
+                    final GruppeDTO gruppeArg) {
+        this.id = -1;
+        this.name = nameArg;
+        this.pfad = pfadArg;
+        this.uploader = uploaderArg;
+        this.tagDTOs = tagDTOsArg;
+        this.gruppe = gruppeArg;
+        this.uploaddatum = uploaddatumArg;
+        this.veroeffentlichungsdatum = veroeffentlichungsdatumArg;
+        this.dateigroesse = dateigroesseArg;
+        this.dateityp = dateitypArg;
+    }
+
 }

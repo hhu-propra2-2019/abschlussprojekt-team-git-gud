@@ -1,4 +1,4 @@
-package de.hhu.propra2.material2.mops.DTOs;
+package de.hhu.propra2.material2.mops.Database.DTOs;
 
 import lombok.Data;
 
@@ -10,7 +10,7 @@ public class UserDTO {
     /**
      * Unique ID from database.
      */
-    private final int id;
+    private final long id;
 
     /**
      * Users first name.
@@ -43,7 +43,7 @@ public class UserDTO {
      * @param keycloaknameArg
      * @param belegungUndRechteArg
      */
-    public UserDTO(final int idArg,
+    public UserDTO(final long idArg,
                    final  String vornameArg,
                    final String nachnameArg,
                    final String keycloaknameArg,

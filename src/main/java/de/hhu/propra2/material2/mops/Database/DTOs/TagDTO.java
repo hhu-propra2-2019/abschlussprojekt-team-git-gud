@@ -34,4 +34,19 @@ public class TagDTO {
         this.text = textArg;
         this.dateien = dateienArg;
     }
+
+    /**
+     * Constructor without id for
+     * saving to database.
+     *
+     * @param textArg
+     * @param dateienArg
+     */
+    public TagDTO(final String textArg,
+                  final List<DateiDTO> dateienArg) {
+        this.id = 0;
+        this.text = textArg;
+        this.dateien = dateienArg;
+    }
+
 }

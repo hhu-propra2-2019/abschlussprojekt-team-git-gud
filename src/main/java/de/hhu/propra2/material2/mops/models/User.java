@@ -1,13 +1,11 @@
 package de.hhu.propra2.material2.mops.models;
 
 
-import de.hhu.propra2.material2.mops.DTOs.GruppeDTO;
 import lombok.Value;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Value
 public class User {
@@ -42,6 +40,6 @@ public class User {
      * returns the groups the student participates in as a List
      */
     public List<Gruppe> getAllGruppen(){
-        return new ArrayList<Gruppe>(belegungUndRechte.keySet());
+        return new ArrayList<>(belegungUndRechte.keySet());
     }
 }

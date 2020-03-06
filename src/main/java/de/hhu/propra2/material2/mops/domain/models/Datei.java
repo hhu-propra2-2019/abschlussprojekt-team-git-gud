@@ -1,4 +1,4 @@
-package de.hhu.propra2.material2.mops.models;
+package de.hhu.propra2.material2.mops.domain.models;
 
 
 import lombok.Value;
@@ -21,7 +21,7 @@ public class Datei {
      */
     private final String pfad;
     /**
-     *  User that uploaded the file.
+     * User that uploaded the file.
      */
     private final User uploader;
     /**

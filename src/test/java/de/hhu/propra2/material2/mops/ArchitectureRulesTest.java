@@ -11,10 +11,10 @@ public class ArchitectureRulesTest {
 
     @ArchTest
     static ArchRule layer_dependencies_are_respected = layeredArchitecture()
-            .layer("persistence").definedBy("..persistence..")
-            .layer("domain").definedBy("..domain..")
-            .layer("gui").definedBy("..Controller..")
+            .layer("Database").definedBy("..Database..")
+            .layer("businessLogic").definedBy("..domain..")
+            .layer("gui").definedBy("..controller..")
             .whereLayer("gui").mayNotBeAccessedByAnyLayer()
-            .whereLayer("domain").mayOnlyBeAccessedByLayers("gui")
-            .whereLayer("persistence").mayOnlyBeAccessedByLayers("domain");
+            .whereLayer("businessLogic").mayOnlyBeAccessedByLayers("gui")
+            .whereLayer("Database").mayOnlyBeAccessedByLayers("businessLogic");
 }

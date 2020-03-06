@@ -1,4 +1,4 @@
-package de.hhu.propra2.material2.mops.models;
+package de.hhu.propra2.material2.mops.domain.models;
 
 
 import lombok.Value;
@@ -12,7 +12,7 @@ public class User {
     /**
      * Unique ID from database.
      */
-    private final int id;
+    private final long id;
 
     /**
      * Users first name.
@@ -39,7 +39,7 @@ public class User {
     /**
      * returns the groups the student participates in as a List
      */
-    public List<Gruppe> getAllGruppen(){
+    public List<Gruppe> getAllGruppen() {
         return new ArrayList<>(belegungUndRechte.keySet());
     }
 }

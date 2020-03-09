@@ -4,8 +4,12 @@ on: [push]
 
 jobs:
   docker:
-    - name: start docker container
-      run: docker-compose up --build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: start docker container
+        run: docker-compose up --build
+
   build:
     needs: docker
     runs-on: ubuntu-latest

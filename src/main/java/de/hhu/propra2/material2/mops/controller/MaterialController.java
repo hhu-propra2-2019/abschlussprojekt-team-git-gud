@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class MaterialController {
 
-    /**base routing.
+    /**start routing.
      * @return String
      */
     @GetMapping("/")
-    public String index() {
-        return "base";
+    public String startseite() {
+        return "start";
     }
 
     /**Shows the documents of a Group.

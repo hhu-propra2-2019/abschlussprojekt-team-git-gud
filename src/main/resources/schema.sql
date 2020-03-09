@@ -1,6 +1,5 @@
-set FOREIGN_KEY_CHECKS=0;
+Set foreign_key_checks=0;
 DROP TABLE IF EXISTS User;
-
 CREATE TABLE User
 (
     userID BIGINT PRIMARY KEY,

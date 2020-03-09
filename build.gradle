@@ -25,7 +25,7 @@ configurations {
 repositories {
     mavenCentral()
     maven {
-        url="https://s3.cs.hhu.de/public/mops/"
+        url = "https://s3.cs.hhu.de/public/mops/"
         metadataSources {
             artifact()
         }
@@ -48,6 +48,8 @@ dependencies {
     }
     compile 'io.minio:minio:6.0.13'
     testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'com.tngtech.archunit:archunit-junit5:0.13.0'
+    testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'
     implementation 'mops:styleguide:2.1.0'
 }
 

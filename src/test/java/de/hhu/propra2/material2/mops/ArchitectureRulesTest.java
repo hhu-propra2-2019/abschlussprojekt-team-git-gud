@@ -10,11 +10,18 @@ import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
 public class ArchitectureRulesTest {
 
     @ArchTest
-    static ArchRule layer_dependencies_are_respected = layeredArchitecture()
-            .layer("Database").definedBy("..Database..")
-            .layer("businessLogic").definedBy("..domain..")
-            .layer("gui").definedBy("..controller..")
-            .whereLayer("gui").mayNotBeAccessedByAnyLayer()
-            .whereLayer("businessLogic").mayOnlyBeAccessedByLayers("gui")
-            .whereLayer("Database").mayOnlyBeAccessedByLayers("businessLogic");
+    private static ArchRule layerDependenciesAreRespected =
+            layeredArchitecture()
+                    .layer("Database")
+                    .definedBy("..Database..")
+                    .layer("businessLogic")
+                    .definedBy("..domain..")
+                    .layer("gui")
+                    .definedBy("..controller..")
+                    .whereLayer("gui")
+                    .mayNotBeAccessedByAnyLayer()
+                    .whereLayer("businessLogic")
+                    .mayOnlyBeAccessedByLayers("gui")
+                    .whereLayer("Database")
+                    .mayOnlyBeAccessedByLayers("businessLogic");
 }

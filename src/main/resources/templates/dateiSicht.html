@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en"
+      th:replace="~{base :: html(content=~{:: mycontent})}"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <title>Index</title>
+</head>
+
+<body>
+    <div id="content" th:fragment="mycontent">
+        <h1 class="text-center">
+            ProPra
+        </h1>
+        <p class="text-lg-left">
+            Hier könnte ihre Gruppenbeschreibung stehen.
+        </p>
+        <div class="accordion" id="dataCategorys">
+            <div class="card">
+                <div class="card-header" id="headingOne">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Vorlesung
+                        </button>
+                    </h2>
+                </div>
+                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#dataCategorys">
+                    <li class="list-group-item">Vorlesung1</li>
+                    <li class="list-group-item">Vorlesung2</li>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header" id="headingTwo">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Übung
+                        </button>
+                    </h2>
+                </div>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#dataCategorys">
+                    <li class="list-group-item">Übung2</li>
+                    <li class="list-group-item">Übung2</li>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

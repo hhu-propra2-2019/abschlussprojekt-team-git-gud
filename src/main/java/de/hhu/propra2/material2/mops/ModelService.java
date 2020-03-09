@@ -26,9 +26,10 @@ public final class ModelService {
 
     /**
      * Constructor of ModelService.
-     * @param dateiRepo DateiRepository
+     *
+     * @param dateiRepo   DateiRepository
      * @param gruppenRepo GruppenRepository
-     * @param userRepo UserRepository
+     * @param userRepo    UserRepository
      */
     public ModelService(final DateiRepository dateiRepo,
                         final GruppeRepository gruppenRepo,
@@ -85,17 +86,12 @@ public final class ModelService {
         return new Gruppe(dto.getId(), dto.getName(), zugehoerigeDateien);
     }
 
-    public List<String> getAlleGruppenByUserId(final long id) {
-        User user = load(users.findById((id)).get());
-        return user.getAllGruppen()
-                .stream()
-                .map(Gruppe::getName)
-                .collect(Collectors.toList());
+    public List<Gruppe> getAlleGruppenByUserId(final String keycloackName) {
+        User user = load(users.findByKeyCloackName((keycloackName)).get());
+        return user.getAllGruppen();
     }
 
-    public List<Datei> getAlleDateienByGruppenId(final long id) {
-        Gruppe gruppe = load(gruppen.findById(id).get());
+    public List<Datei> getAlleDateienByGruppe(Gruppe gruppe) {
         return gruppe.getDateien();
-
     }
 }

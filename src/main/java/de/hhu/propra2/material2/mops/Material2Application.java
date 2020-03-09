@@ -2,6 +2,7 @@ package de.hhu.propra2.material2.mops;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 @SuppressWarnings("all")
 @SpringBootApplication

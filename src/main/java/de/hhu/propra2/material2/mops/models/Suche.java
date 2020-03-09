@@ -3,6 +3,8 @@ package de.hhu.propra2.material2.mops.models;
 
 import lombok.Value;
 
+import java.util.List;
+
 @Value
 public class Suche {
     private final String vonDatum;
@@ -10,5 +12,6 @@ public class Suche {
     private final String[] tags;
     private final String[] dateiTyp;
     private final String[] uploader;
-    private final String Sortierung;
+    private final String sortierung;
+    private final Gruppe gruppe;
 }

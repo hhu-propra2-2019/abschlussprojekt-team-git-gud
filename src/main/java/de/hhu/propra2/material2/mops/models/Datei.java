@@ -54,11 +54,13 @@ public class Datei {
     @Getter
     private final String dateityp;
     private List<String> getTagNames(){
-        return tags.stream().map(Tag::getText).collect(Collectors.toList());
+        return tags.stream()
+                .map(Tag::getText)
+                .collect(Collectors.toList());
     }
     private boolean hatTag(String tag){
         for(String tempTag:this.getTagNames()) {
-            if (tempTag.equals(tag)) {
+            if (tempTag.toLowerCase().equals(tag.toLowerCase())) {
                 return true;
             }
         }

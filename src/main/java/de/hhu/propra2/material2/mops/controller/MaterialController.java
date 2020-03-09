@@ -15,6 +15,14 @@ public class MaterialController {
         return "start";
     }
 
+    /**Shows the documents of a Group.
+     * @return String
+     */
+    @GetMapping("/dateiSicht")
+    public String sicht() {
+        return "dateiSicht";
+    }
+
     /**starting page.
      * @return String
      */

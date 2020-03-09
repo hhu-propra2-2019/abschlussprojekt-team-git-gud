@@ -46,8 +46,8 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
+    compile 'io.minio:minio:6.0.13'
     testImplementation 'org.springframework.security:spring-security-test'
-    implementation 'com.jlefebure:spring-boot-starter-minio:1.1'
     implementation 'mops:styleguide:2.1.0'
 }
 

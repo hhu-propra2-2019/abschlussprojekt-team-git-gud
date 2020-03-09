@@ -1,6 +1,7 @@
 package de.hhu.propra2.material2.mops.Database.DTOs;
 
 import lombok.Data;
+import org.springframework.data.annotation.Id;
 
 import java.util.HashMap;
 
@@ -10,6 +11,7 @@ public class UserDTO {
     /**
      * Unique ID from database.
      */
+    @Id
     private final long id;
 
     /**

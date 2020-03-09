@@ -1,8 +1,12 @@
 package de.hhu.propra2.material2.mops.Database.DTOs;
 
 import lombok.Getter;
+import org.springframework.data.annotation.Id;
+
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 public final class DateiDTO {
@@ -10,6 +14,7 @@ public final class DateiDTO {
      * Unique ID from database.
      */
     @Getter
+    @Id
     private final long id;
     /**
      * Name of file.
@@ -56,6 +61,11 @@ public final class DateiDTO {
      */
     @Getter
     private final String dateityp;
+    /**
+     * File type.
+     */
+    @Getter
+    private final Set<TagnutzungDTO> benutzterTag = new HashSet<>();
 
     /**
      * Standard AllArgsConstructor for import from database.
@@ -144,5 +154,9 @@ public final class DateiDTO {
      */
     public Date getVeroeffentlichungsdatum() {
         return (Date) veroeffentlichungsdatum.clone();
+    }
+
+    public void addTag(final TagDTO tagDto) {
+        this.benutzterTag.add(new TagnutzungDTO(tagDto.getId()));
     }
 }

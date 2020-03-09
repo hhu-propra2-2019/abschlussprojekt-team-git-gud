@@ -1,6 +1,7 @@
 package de.hhu.propra2.material2.mops.Database.DTOs;
 
 import lombok.Data;
+import org.springframework.data.annotation.Id;
 
 import java.util.List;
 
@@ -9,6 +10,7 @@ public class TagDTO {
     /**
      * Unique ID from database.
      */
+    @Id
     private final long id;
     /**
      * The tags text that will be shown
@@ -18,7 +20,7 @@ public class TagDTO {
     /**
      * Related files to this tag.
      */
-    private final List<DateiDTO> dateien;
+    //private final List<DateiDTO> dateien;
 
     /**
      * Standard AllArgsConstructor for import from database.
@@ -27,13 +29,13 @@ public class TagDTO {
      * @param textArg
      * @param dateienArg
      */
-    public TagDTO(final long idArg,
+    /*public TagDTO(final long idArg,
                   final String textArg,
                   final List<DateiDTO> dateienArg) {
         this.id = idArg;
         this.text = textArg;
         this.dateien = dateienArg;
-    }
+    }*/
 
     /**
      * Constructor without id for
@@ -42,11 +44,12 @@ public class TagDTO {
      * @param textArg
      * @param dateienArg
      */
+    /*
     public TagDTO(final String textArg,
                   final List<DateiDTO> dateienArg) {
         this.id = 0;
         this.text = textArg;
         this.dateien = dateienArg;
-    }
+    }*/
 
 }

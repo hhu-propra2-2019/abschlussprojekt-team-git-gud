@@ -6,7 +6,6 @@
 :toc:
 :toc-title: Inhaltsverzeichnis
 
-
 // enable table-of-contents
 :toc:
 

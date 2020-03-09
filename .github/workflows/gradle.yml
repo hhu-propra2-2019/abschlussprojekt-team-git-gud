@@ -3,17 +3,7 @@ name: Java CI
 on: [push]
 
 jobs:
-  docker:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: ls
-        run: ls
-      - name: start docker container
-        run: docker-compose up --build
-
   build:
-    needs: docker
     runs-on: ubuntu-latest
 
     steps:
@@ -22,6 +12,9 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+
+      - name: start docker container
+        run: docker-compose up --build
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle

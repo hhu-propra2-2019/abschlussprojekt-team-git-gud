@@ -4,7 +4,7 @@
 // toc-title definition MUST follow document title without blank line!
 = Dokumentation zur Materialsammlung (Gruppe: Material2)
 :toc:
-:toc-title: Inhaltsverzeichnis
+:toc-title:  Inhaltsverzeichnis
 
 // enable table-of-contents
 :toc:
@@ -114,7 +114,7 @@ gegeben wird.
 
 4. *Hochladen* : Eine Seite fürs hochladen der Dateien. Hochladen dürfen Professoren und User, die in ihrer Lerngruppe die Berechtigung haben.
 
-5. Eine Schnittstelle, für das Lernportfolio, wahrscheinlich mit Hilfe von Transklusion teile unserer Dateiübersicht.
+5. *Schnitstelle* : Eine Schnittstelle, für das Lernportfolio, wahrscheinlich mit Hilfe von Transklusion teile unserer Dateiübersicht.
 
 
 

@@ -59,10 +59,10 @@ public final class FileUploader {
                 "minio123");
 
         if (minioClient.bucketExists("materialsammlung")) {
-            log.info("Bucket already exists.");
+            log.info("MinIO: Bucket 'materialsammlung' already exists.");
         } else {
             minioClient.makeBucket("materialsammlung");
-            log.info("materialsammlung created");
+            log.info("MinIO: materialsammlung created");
         }
     }
 

@@ -95,6 +95,20 @@ Folgende Aufgaben gilt es zu meistern:
 
 4. Es sollen den Entitäten des Datenbankschemas entsprechende Repositorys implementiert werden.
 
+- Aufgaben der GUI:
+
+1. *Startseite* : Gibt eine Einleitung in unsere System und erklärt den Umgang damit.
+
+2. *Dateiübersicht* : Zeigt die zum Download verfügbaren Dateien einer Gruppe an.
+
+3. *Suche* : Eine Seite fürs Suchen und Filtern der Dateien, wo die Such parameter mit einem PostMapping an die Businesslogic weiter-
+  gegeben wird.
+
+4. *Hochladen* : Eine Seite fürs hochladen der Dateien. Hochladen dürfen Professoren und User, die in ihrer Lerngruppe die Berechtigung haben.
+
+5. Eine Schnittstelle, für die Lernportfolio, wahrscheinlich mit hilfe von transklusion teile unserer Dateiübersicht.
+
+
 
 === Qualitätsziele
 

@@ -12,6 +12,7 @@ import de.hhu.propra2.material2.mops.models.Gruppe;
 import de.hhu.propra2.material2.mops.models.Tag;
 import de.hhu.propra2.material2.mops.models.User;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -78,18 +79,21 @@ public final class ModelService {
     public Gruppe load(final GruppeDTO dto) {
         List<Datei> zugehoerigeDateien =
                 dto.getDateien()
-                .stream()
-                .map(this::load)
-                .collect(Collectors.toList());
+                        .stream()
+                        .map(this::load)
+                        .collect(Collectors.toList());
         return new Gruppe(dto.getId(), dto.getName(), zugehoerigeDateien);
     }
 
-    public List<String> getAlleGruppenByUser(long id){
+    public List<String> getAlleGruppenByUserId(final long id) {
         User user = load(users.findById((id)).get());
-        return user.getAllGruppen().stream().map(Gruppe::getName).collect(Collectors.toList());
+        return user.getAllGruppen()
+                .stream()
+                .map(Gruppe::getName)
+                .collect(Collectors.toList());
     }
 
-    public List<Datei> getAlleDateienByGruppe(long id){
+    public List<Datei> getAlleDateienByGruppenId(final long id) {
         Gruppe gruppe = load(gruppen.findById(id).get());
         return gruppe.getDateien();
 

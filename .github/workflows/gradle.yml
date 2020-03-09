@@ -3,8 +3,11 @@ name: Java CI
 on: [push]
 
 jobs:
+  docker:
+    - name: start docker container
+      run: docker-compose up --build
   build:
-
+    needs: docker
     runs-on: ubuntu-latest
 
     steps:

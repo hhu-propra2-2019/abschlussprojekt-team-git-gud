@@ -1,11 +1,14 @@
 package de.hhu.propra2.material2.mops.Database.DTOs;
 
 import lombok.Data;
+import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Data
+@Table("User")
 public class UserDTO {
     /**
      * Unique ID from database.
@@ -32,7 +35,7 @@ public class UserDTO {
      * All participating groups and a mapped Boolean
      * if the user is a group admin.
      */
-    private final HashMap<GruppeDTO, Boolean> belegungUndRechte;
+    private Set<GruppenbelegungDTO> gruppen = new HashSet<>();
 
     /**
      * Standard AllArgsConstructor for import from the Database.
@@ -41,18 +44,23 @@ public class UserDTO {
      * @param vornameArg
      * @param nachnameArg
      * @param keycloaknameArg
-     * @param belegungUndRechteArg
      */
     public UserDTO(final long idArg,
                    final  String vornameArg,
                    final String nachnameArg,
-                   final String keycloaknameArg,
-                   final HashMap<GruppeDTO, Boolean> belegungUndRechteArg) {
+                   final String keycloaknameArg) {
         this.id = idArg;
         this.vorname = vornameArg;
         this.nachname = nachnameArg;
         this.keycloakname = keycloaknameArg;
-        this.belegungUndRechte = belegungUndRechteArg;
+    }
+
+    /**
+     * test.
+     * @param gruppe
+     */
+    public void addGruppe(final GruppeDTO gruppe) {
+        this.gruppen.add(new GruppenbelegungDTO(gruppe.getGruppeID()));
     }
 
 }

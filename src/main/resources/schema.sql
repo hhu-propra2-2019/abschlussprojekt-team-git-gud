@@ -1,5 +1,5 @@
-Set foreign_key_checks=0;
-DROP TABLE IF EXISTS User;
+
+DROP TABLE IF EXISTS User cascade;
 CREATE TABLE User
 (
     userID BIGINT PRIMARY KEY,
@@ -8,7 +8,7 @@ CREATE TABLE User
     key_cloack_name text
 );
 
-DROP TABLE IF EXISTS Gruppe;
+DROP TABLE IF EXISTS Gruppe cascade;
 CREATE TABLE Gruppe
 (
     gruppeID BIGINT PRIMARY KEY,
@@ -16,14 +16,14 @@ CREATE TABLE Gruppe
     beschreibung text
 );
 
-DROP TABLE IF EXISTS Tags;
+DROP TABLE IF EXISTS Tags cascade;
 CREATE TABLE Tags
 (
     tagID BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     tag_name text
 );
 
-DROP TABLE IF EXISTS Gruppenbelegung;
+DROP TABLE IF EXISTS Gruppenbelegung cascade;
 CREATE TABLE Gruppenbelegung
 (
     upload_berechtigung boolean,
@@ -33,7 +33,7 @@ CREATE TABLE Gruppenbelegung
     foreign key (userID)  REFERENCES User (userID)
 );
 
-DROP TABLE IF EXISTS Datei;
+DROP TABLE IF EXISTS Datei cascade;
 CREATE TABLE Datei
 (
     dateiID      BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -49,7 +49,7 @@ CREATE TABLE Datei
     foreign key (gruppeID) REFERENCES Gruppe (gruppeID)
 ) ;
 
-DROP TABLE IF EXISTS Tagnutzung;
+DROP TABLE IF EXISTS Tagnutzung cascade;
 CREATE TABLE Tagnutzung
 (
     dateiID BIGINT,

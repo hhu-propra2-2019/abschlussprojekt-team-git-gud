@@ -1,40 +1,37 @@
 package de.hhu.propra2.material2.mops.Database.DTOs;
 
-import lombok.Getter;
+import lombok.Data;
+import org.springframework.data.relational.core.mapping.Table;
+
 import java.util.Date;
 import java.util.List;
 
-
+@Data
+@Table("Datei")
 public final class DateiDTO {
     /**
      * Unique ID from database.
      */
-    @Getter
     private final long id;
     /**
      * Name of file.
      */
-    @Getter
     private final String name;
     /**
      * Path of file.
      */
-    @Getter
     private final String pfad;
     /**
      *  User that uploaded the file.
      */
-    @Getter
     private final UserDTO uploader;
     /**
      * All assigned tags.
      */
-    @Getter
     private final List<TagDTO> tagDTOs;
     /**
      * Assigned group.
      */
-    @Getter
     private final GruppeDTO gruppe;
     /**
      * Upload date.
@@ -49,12 +46,10 @@ public final class DateiDTO {
     /**
      * File size.
      */
-    @Getter
     private final long dateigroesse;
     /**
      * File type.
      */
-    @Getter
     private final String dateityp;
 
     /**

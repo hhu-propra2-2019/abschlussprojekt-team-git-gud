@@ -40,7 +40,7 @@ public final class ModelService {
         this.users = userRepo;
     }
 
-    public Datei load(final DateiDTO dto) {
+   /* public Datei load(final DateiDTO dto) {
         List<Tag> tags = dto.getTagDTOs().stream()
                 .map(this::load)
                 .collect(Collectors.toList());
@@ -54,13 +54,13 @@ public final class ModelService {
                 dto.getVeroeffentlichungsdatum(),
                 dto.getDateigroesse(),
                 dto.getDateityp());
-    }
+    }*/
 
     public Tag load(final TagDTO dto) {
         return new Tag(dto.getId(), dto.getText());
     }
 
-    public User load(final UserDTO dto) {
+   /* public User load(final UserDTO dto) {
         HashMap<Gruppe, Boolean> belegungUndRechte = new HashMap<>();
         for (GruppeDTO gruppeDTO : dto.getBelegungUndRechte().keySet()) {
             belegungUndRechte.put(
@@ -92,5 +92,5 @@ public final class ModelService {
         }
         User user = load(optionalUserDTO.get());
         return user.getAllGruppen();
-    }
+    }*/
 }

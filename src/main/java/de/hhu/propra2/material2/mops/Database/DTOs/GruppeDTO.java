@@ -1,43 +1,24 @@
 package de.hhu.propra2.material2.mops.Database.DTOs;
 
 import lombok.Data;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.List;
 
 @Data
+@Table("Gruppe")
 public class GruppeDTO {
     /**
      * Unique ID from database.
      */
-    private final long id;
+    private final long gruppeID;
     /**
      * Groups name from database.
      */
-    private final String name;
+    private final String titel;
     /**
-     * List of participating users from database.
+     * Groups name from database.
      */
-    private final List<UserDTO> users;
-    /**
-     * List of related files from database.
-     */
-    private final List<DateiDTO> dateien;
+    private final String beschreibung;
 
-    /**
-     * Standard AllArgsConstructor for import from database.
-     *
-     * @param idArg
-     * @param nameArg
-     * @param userArgs
-     * @param dateiArgs
-     */
-    public GruppeDTO(final long idArg,
-                     final String nameArg,
-                     final List<UserDTO> userArgs,
-                     final List<DateiDTO> dateiArgs) {
-        this.id = idArg;
-        this.name = nameArg;
-        this.users = userArgs;
-        this.dateien = dateiArgs;
-    }
 }

@@ -1,10 +1,12 @@
 package de.hhu.propra2.material2.mops.Database.DTOs;
 
 import lombok.Data;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.List;
 
 @Data
+@Table("Tags")
 public class TagDTO {
     /**
      * Unique ID from database.

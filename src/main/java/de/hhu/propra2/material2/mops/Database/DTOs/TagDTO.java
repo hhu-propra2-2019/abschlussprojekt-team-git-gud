@@ -21,11 +21,9 @@ public class TagDTO {
      *
      * @param idArg
      * @param textArg
-     * @param dateienArg
      */
     public TagDTO(final long idArg,
-                  final String textArg,
-                  final List<DateiDTO> dateienArg) {
+                  final String textArg) {
         this.id = idArg;
         this.text = textArg;
     }
@@ -35,10 +33,8 @@ public class TagDTO {
      * saving to database.
      *
      * @param textArg
-     * @param dateienArg
      */
-    public TagDTO(final String textArg,
-                  final List<DateiDTO> dateienArg) {
+    public TagDTO(final String textArg) {
         this.id = 0;
         this.text = textArg;
     }

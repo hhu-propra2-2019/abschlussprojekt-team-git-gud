@@ -24,14 +24,14 @@ DROP TABLE IF EXISTS `Datei`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Datei` (
   `dateiID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` text,
-  `pfad` text,
-  `uploaderID` bigint(20) DEFAULT NULL,
-  `upload_datum` date DEFAULT NULL,
-  `veroeffentlichungs_datum` date DEFAULT NULL,
-  `datei_groesse` bigint(20) DEFAULT NULL,
-  `datei_typ` text,
-  `gruppeID` bigint(20) DEFAULT NULL,
+  `name` text NOT NULL,
+  `pfad` text NOT NULL,
+  `uploaderID` bigint(20) NOT NULL,
+  `upload_datum` date NOT NULL,
+  `veroeffentlichungs_datum` date NOT NULL,
+  `datei_groesse` bigint(20) NOT NULL,
+  `datei_typ` text NOT NULL,
+  `gruppeID` bigint(20) NOT NULL,
   `kategorie` varchar(100) NOT NULL,
   PRIMARY KEY (`dateiID`),
   KEY `uploaderID` (`uploaderID`),
@@ -60,8 +60,8 @@ DROP TABLE IF EXISTS `Gruppe`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Gruppe` (
   `gruppeID` bigint(20) NOT NULL,
-  `titel` text,
-  `beschreibung` text,
+  `titel` text NOT NULL,
+  `beschreibung` text ,
   PRIMARY KEY (`gruppeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -84,9 +84,9 @@ DROP TABLE IF EXISTS `Gruppenbelegung`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Gruppenbelegung` (
-  `upload_berechtigung` tinyint(1) DEFAULT NULL,
-  `gruppeID` bigint(20) DEFAULT NULL,
-  `userID` bigint(20) DEFAULT NULL,
+  `upload_berechtigung` tinyint(1) NOT NULL,
+  `gruppeID` bigint(20) NOT NULL,
+  `userID` bigint(20) NOT NULL,
   KEY `gruppeID` (`gruppeID`),
   KEY `userID` (`userID`),
   CONSTRAINT `Gruppenbelegung_ibfk_1` FOREIGN KEY (`gruppeID`) REFERENCES `Gruppe` (`gruppeID`),
@@ -112,8 +112,8 @@ DROP TABLE IF EXISTS `Tagnutzung`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Tagnutzung` (
-  `dateiID` bigint(20) DEFAULT NULL,
-  `tagID` bigint(20) DEFAULT NULL,
+  `dateiID` bigint(20) NOT NULL,
+  `tagID` bigint(20) NOT NULL,
   KEY `dateiID` (`dateiID`),
   KEY `tagID` (`tagID`),
   CONSTRAINT `Tagnutzung_ibfk_1` FOREIGN KEY (`dateiID`) REFERENCES `Datei` (`dateiID`),
@@ -140,7 +140,7 @@ DROP TABLE IF EXISTS `Tags`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Tags` (
   `tagID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `tag_name` text,
+  `tag_name` text NOT NULL,
   PRIMARY KEY (`tagID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -164,9 +164,9 @@ DROP TABLE IF EXISTS `User`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `User` (
   `userID` bigint(20) NOT NULL,
-  `vorname` text,
-  `nachname` text,
-  `key_cloak_name` text,
+  `vorname` text NOT NULL,
+  `nachname` text NOT NULL,
+  `key_cloak_name` VARCHAR(255) UNIQUE NOT NULL,
   PRIMARY KEY (`userID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;

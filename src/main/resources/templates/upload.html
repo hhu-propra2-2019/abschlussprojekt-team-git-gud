@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en"
+      th:replace="~{base :: html(content=~{:: mycontent})}"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <title>Index</title>
+</head>
+
+<body>
+<div id="content" th:fragment="mycontent">
+    <h1 class="text-center">
+        Suche
+    </h1>
+    <div class="container">
+        <form action="" method="post" >
+            <div class="form-group">
+                <label for="SelectGroup">Gruppenauswahl </label>
+                <select class="form-control" id="SelectGroup" name="gruppe">
+                    <option>  ProPra  </option>
+                    <option>  RDB  </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="dataname">Dateiname </label>
+                <input type="text" class="form-control" id="dataname" placeholder="Eingabe">
+            </div>
+
+            <div class="form-group">
+                <form autocomplete="off" action="/action_page.php">
+                    <div class="autocomplete" style="width:300px;">
+                        <input id="TagInput" type="text" name="Tags" placeholder="Tags">
+                    </div>
+                </form>
+            </div>
+
+            <div class="form-group list-inline">
+                <label for="Dateityp1">Dateityp </label>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="Dateityp1">
+                    <label class="form-check-label" for="Dateityp1">
+                        PDF
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="Dateityp2">
+
+                    <label class="form-check-label" for="Dateityp2">
+                        XDOC
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="Uploader1">Uploader </label>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="Uploader1">
+                    <label class="form-check-label" for="Uploader1">
+                        Chris
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="Uploader2">
+
+                    <label class="form-check-label" for="Uploader2">
+                        Dr. Prof. Herr. Jens
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Datum </label>
+                    <div class="form-inline">
+                        <label> Von</label>
+                        <div class="form-check">
+                            <input type="date" value="" id="FromDate" >
+                        </div>
+                        <label> Bis</label>
+                        <div class="form-check">
+                            <input type="date" value="" id="UntilDate">
+                        </div>
+                    </div>
+            </div>
+
+            <div class="form-group">
+                <label for="SelectSearchBy">Sortierung </label>
+                <div class="form-inline">
+                    <select class="form-control" id="SelectSearchBy" name="Sortierung">
+                        <option> Name </option>
+                        <option> Datum </option>
+                    </select>
+                    <select class="form-control" id="SelectOrder" name="Reihenfolge">
+                        <option> aufsteigend </option>
+                        <option> absteigend </option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <input class="btn btn-primary" type="submit" name="search" value="Suchen">
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

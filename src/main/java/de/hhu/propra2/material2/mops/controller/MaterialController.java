@@ -74,7 +74,7 @@ public class MaterialController {
         return "dateiSicht";
     }
 
-    /**starting page.
+    /**search page.
      * @return String
      */
     @GetMapping("/suche")
@@ -89,7 +89,7 @@ public class MaterialController {
         return "suche";
     }
 
-    /**rout to base.
+    /**page for search results.
      * @return String
      */
     @PostMapping("/suche")
@@ -102,6 +102,21 @@ public class MaterialController {
         gruppen.add(new Gruppe(2L, "Hard Prog", null));
         model.addAttribute("gruppen", gruppen);
         return "/";
+    }
+
+    /**updload page.
+     * @return String
+     */
+    @GetMapping("/upload")
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
+    public String upload(final KeycloakAuthenticationToken token, final Model model) {
+        model.addAttribute("account", createAccountFromPrincipal(token));
+        authenticatedAccess.increment();
+        List<Gruppe> gruppen =  new ArrayList<>();
+        gruppen.add(new Gruppe(1L, "ProPra", null));
+        gruppen.add(new Gruppe(2L, "Hard Prog", null));
+        model.addAttribute("gruppen", gruppen);
+        return "upload";
     }
 
     /**route to logout.

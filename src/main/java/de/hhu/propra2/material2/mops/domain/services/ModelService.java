@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -85,12 +84,15 @@ public final class ModelService {
         return new Gruppe(dto.getId(), dto.getName(), zugehoerigeDateien);
     }
 
-    public List<Gruppe> getAlleGruppenByUser(final Long id) {
-        Optional<UserDTO> optionalUserDTO = users.findById(id);
-        if (optionalUserDTO.isEmpty()) {
+    public List<Gruppe> getAlleGruppenByUser(final String name) {
+        if (users.findByKeycloakname(name) == null) {
             return new ArrayList<>();
         }
-        User user = load(optionalUserDTO.get());
+        User user = load(users.findByKeycloakname(name));
         return user.getAllGruppen();
+    }
+
+    public List<Datei> getAlleDateienByGruppe(final Gruppe gruppe) {
+        return gruppe.getDateien();
     }
 }

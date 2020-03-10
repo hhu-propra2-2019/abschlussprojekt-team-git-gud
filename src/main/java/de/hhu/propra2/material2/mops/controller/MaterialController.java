@@ -1,22 +1,57 @@
 package de.hhu.propra2.material2.mops.controller;
 
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
+import de.hhu.propra2.material2.mops.security.Account;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import org.keycloak.KeycloakPrincipal;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class MaterialController {
 
+    private final Counter authenticatedAccess;
+    private final Counter publicAccess;
+
+    public MaterialController(final MeterRegistry registry) {
+        authenticatedAccess = registry.counter("access.authenticated");
+        publicAccess = registry.counter("access.public");
+    }
+
+    /**
+     * Nimmt das Authentifizierungstoken von Keycloak und erzeugt ein AccountDTO
+     * für die Views.
+     *
+     * @param token keycloak token injection
+     * @return neuen Account der im Template verwendet wird
+     */
+    private Account createAccountFromPrincipal(final KeycloakAuthenticationToken token) {
+        KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+        return new Account(
+                principal.getName(),
+                principal.getKeycloakSecurityContext().getIdToken().getEmail(),
+                null,
+                token.getAccount().getRoles());
+    }
+
     /**start routing.
      * @return String
      */
     @GetMapping("/")
-    public String startseite(final Model model) {
+    public String startseite(final KeycloakAuthenticationToken token, final Model model) {
+        if (token != null) {
+            model.addAttribute("account", createAccountFromPrincipal(token));
+        }
+        publicAccess.increment();
         List<Gruppe> gruppen =  new ArrayList<>();
         gruppen.add(new Gruppe(1L, "ProPra", null));
         gruppen.add(new Gruppe(2L, "Hard Prog", null));
@@ -28,7 +63,10 @@ public class MaterialController {
      * @return String
      */
     @GetMapping("/dateiSicht")
-    public String sicht(final Model model) {
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
+    public String sicht(final KeycloakAuthenticationToken token, final Model model) {
+        model.addAttribute("account", createAccountFromPrincipal(token));
+        authenticatedAccess.increment();
         List<Gruppe> gruppen =  new ArrayList<>();
         gruppen.add(new Gruppe(1L, "ProPra", null));
         gruppen.add(new Gruppe(2L, "Hard Prog", null));
@@ -40,7 +78,10 @@ public class MaterialController {
      * @return String
      */
     @GetMapping("/suche")
-    public String vorSuche(final Model model) {
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
+    public String vorSuche(final KeycloakAuthenticationToken token, final Model model) {
+        model.addAttribute("account", createAccountFromPrincipal(token));
+        authenticatedAccess.increment();
         List<Gruppe> gruppen =  new ArrayList<>();
         gruppen.add(new Gruppe(1L, "ProPra", null));
         gruppen.add(new Gruppe(2L, "Hard Prog", null));
@@ -52,11 +93,25 @@ public class MaterialController {
      * @return String
      */
     @PostMapping("/suche")
-    public String vorSuchePost(final Model model) {
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
+    public String vorSuchePost(final KeycloakAuthenticationToken token, final Model model) {
+        model.addAttribute("account", createAccountFromPrincipal(token));
+        authenticatedAccess.increment();
         List<Gruppe> gruppen =  new ArrayList<>();
         gruppen.add(new Gruppe(1L, "ProPra", null));
         gruppen.add(new Gruppe(2L, "Hard Prog", null));
         model.addAttribute("gruppen", gruppen);
-        return "base";
+        return "/";
+    }
+
+    /**route to logout.
+     * @param request logout request
+     * @return  homepage routing
+     * @throws Exception no handling
+     */
+    @GetMapping("/logout")
+    public String logout(final HttpServletRequest request) throws Exception {
+        request.logout();
+        return "redirect:/";
     }
 }

@@ -6,7 +6,6 @@ import lombok.Setter;
 import java.util.Date;
 import java.util.List;
 
-
 public final class DateiDTO {
     /**
      * Unique ID from database.
@@ -157,4 +156,5 @@ public final class DateiDTO {
     public Date getVeroeffentlichungsdatum() {
         return (Date) veroeffentlichungsdatum.clone();
     }
+
 }

@@ -1,4 +1,4 @@
-package de.hhu.propra2.material2.mops.Database;
+package de.hhu.propra2.material2.mops.domain.services;
 
 
 import io.minio.MinioClient;
@@ -13,6 +13,7 @@ import io.minio.errors.MinioException;
 import io.minio.errors.NoResponseException;
 import io.minio.errors.RegionConflictException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
@@ -20,7 +21,8 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 @Slf4j
-public final class FileUploader {
+@Service
+public final class FileUploadService {
 
     /**
      * Static MinIO client to upload
@@ -46,7 +48,8 @@ public final class FileUploader {
      * @throws ErrorResponseException
      * @throws RegionConflictException
      */
-    public FileUploader() throws InvalidPortException, InvalidEndpointException,
+    public FileUploadService() throws InvalidPortException,
+            InvalidEndpointException,
             IOException, InvalidKeyException,
             NoSuchAlgorithmException, InsufficientDataException,
             InvalidResponseException, InternalException,

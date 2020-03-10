@@ -8,11 +8,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest(classes = Material2Application.class)
 class Material2ApplicationTests {
     /**
-     * Default true-throwing test.  
+     * Default true-throwing test.
      */
     @Test
     void contextLoads() {
-        assertEquals(1, 1); 
+        assertEquals(1, 1);
     }
 
 }

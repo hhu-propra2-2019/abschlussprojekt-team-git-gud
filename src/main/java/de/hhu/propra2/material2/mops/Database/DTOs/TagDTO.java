@@ -15,10 +15,6 @@ public class TagDTO {
      * and can be searched for.
      */
     private final String text;
-    /**
-     * Related files to this tag.
-     */
-    private final List<DateiDTO> dateien;
 
     /**
      * Standard AllArgsConstructor for import from database.
@@ -32,7 +28,6 @@ public class TagDTO {
                   final List<DateiDTO> dateienArg) {
         this.id = idArg;
         this.text = textArg;
-        this.dateien = dateienArg;
     }
 
     /**
@@ -46,7 +41,6 @@ public class TagDTO {
                   final List<DateiDTO> dateienArg) {
         this.id = 0;
         this.text = textArg;
-        this.dateien = dateienArg;
     }
 
 }

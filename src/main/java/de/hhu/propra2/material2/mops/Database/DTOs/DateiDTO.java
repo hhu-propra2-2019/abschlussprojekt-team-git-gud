@@ -1,6 +1,8 @@
 package de.hhu.propra2.material2.mops.Database.DTOs;
 
 import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +37,8 @@ public final class DateiDTO {
      * Assigned group.
      */
     @Getter
-    private final GruppeDTO gruppe;
+    @Setter
+    private GruppeDTO gruppe;
     /**
      * Upload date.
      */
@@ -56,11 +59,15 @@ public final class DateiDTO {
      */
     @Getter
     private final String dateityp;
+    /**
+     * Category for gui.
+     */
+    @Getter
+    private final String kategorie;
 
     /**
      * Standard AllArgsConstructor for import from database.
-     *
-     * @param idArg
+     *  @param idArg
      * @param nameArg
      * @param pfadArg
      * @param uploaderArg
@@ -70,6 +77,7 @@ public final class DateiDTO {
      * @param dateigroesseArg
      * @param dateitypArg
      * @param gruppeArg
+     * @param kategorie
      */
     public DateiDTO(final long idArg,
                     final String nameArg,
@@ -80,7 +88,8 @@ public final class DateiDTO {
                     final Date veroeffentlichungsdatumArg,
                     final long dateigroesseArg,
                     final String dateitypArg,
-                    final GruppeDTO gruppeArg) {
+                    final GruppeDTO gruppeArg,
+                    final String kategorie) {
         this.id = idArg;
         this.name = nameArg;
         this.pfad = pfadArg;
@@ -92,11 +101,11 @@ public final class DateiDTO {
                 (Date) veroeffentlichungsdatumArg.clone();
         this.dateigroesse = dateigroesseArg;
         this.dateityp = dateitypArg;
+        this.kategorie = kategorie;
     }
 
     /**
      * Constructor for saving to database.
-     *
      * @param nameArg
      * @param pfadArg
      * @param uploaderArg
@@ -106,6 +115,7 @@ public final class DateiDTO {
      * @param dateigroesseArg
      * @param dateitypArg
      * @param gruppeArg
+     * @param kategorie
      */
     public DateiDTO(final String nameArg,
                     final String pfadArg,
@@ -115,7 +125,8 @@ public final class DateiDTO {
                     final Date veroeffentlichungsdatumArg,
                     final long dateigroesseArg,
                     final String dateitypArg,
-                    final GruppeDTO gruppeArg) {
+                    final GruppeDTO gruppeArg,
+                    final String kategorie) {
         this.id = -1;
         this.name = nameArg;
         this.pfad = pfadArg;
@@ -127,6 +138,7 @@ public final class DateiDTO {
                 (Date) veroeffentlichungsdatumArg.clone();
         this.dateigroesse = dateigroesseArg;
         this.dateityp = dateitypArg;
+        this.kategorie = kategorie;
     }
     /**
      * Manual Date getter

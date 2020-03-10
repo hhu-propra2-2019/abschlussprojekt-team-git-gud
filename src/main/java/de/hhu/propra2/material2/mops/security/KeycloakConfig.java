@@ -14,9 +14,8 @@ public class KeycloakConfig {
     /**KeycloakConfigResolver.
      * @return KeycloakSpringBootConfigResolver
      */
-    @SuppressWarnings("checkstyle:MethodName")
     @Bean
-    public KeycloakSpringBootConfigResolver KeycloakConfigResolver() {
+    public KeycloakSpringBootConfigResolver keycloakConfigResolver() {
         return new KeycloakSpringBootConfigResolver();
     }
 }

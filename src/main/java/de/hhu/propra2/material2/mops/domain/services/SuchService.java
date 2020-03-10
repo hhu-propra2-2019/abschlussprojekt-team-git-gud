@@ -1,12 +1,11 @@
-package de.hhu.propra2.material2.mops;
+package de.hhu.propra2.material2.mops.domain.services;
 
 import de.hhu.propra2.material2.mops.Database.DateiRepository;
 import de.hhu.propra2.material2.mops.Database.GruppeRepository;
 import de.hhu.propra2.material2.mops.Database.UserRepository;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.User;
-import de.hhu.propra2.material2.mops.domain.services.ModelService;
-import de.hhu.propra2.material2.mops.models.Suche;
+import de.hhu.propra2.material2.mops.domain.models.Suche;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

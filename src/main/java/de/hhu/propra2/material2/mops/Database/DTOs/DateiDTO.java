@@ -1,9 +1,9 @@
 package de.hhu.propra2.material2.mops.Database.DTOs;
 
 import lombok.Getter;
+
 import java.util.Date;
 import java.util.List;
-
 
 public final class DateiDTO {
     /**
@@ -145,4 +145,5 @@ public final class DateiDTO {
     public Date getVeroeffentlichungsdatum() {
         return (Date) veroeffentlichungsdatum.clone();
     }
+
 }

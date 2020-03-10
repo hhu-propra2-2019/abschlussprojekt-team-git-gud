@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: html(content=~{:: mycontent})}">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <title>Orga</title>
+</head>
+
+<body>
+<div id="content" th:fragment="mycontent">
+    <div class="">
+        <h1 class="text-center">
+            Wilkommen bei der Materialsammlung
+        </h1>
+        <p class="lead text-center">
+            Hier könnt ihr alle Dateien eurer Vorlesungen oder eurer Gruppen finden und herunterladen.
+        </p>
+
+        <br>
+
+        <img style="float: left; margin-right: 30px" alt="Elvis, der Anführer" class="img-fluid" src="../static/img/mampfi.jpg"
+             th:src="@{img/mampfi.jpg}">
+
+    </div>
+
+    <br>
+
+    <ul>
+        <li>
+            <h3>
+                Wie <a th:href="@{/suche}">suche</a> ich Dateien
+            </h3>
+
+            <p>
+                Es gibt zwei Wege nach Dateien zu suchen:
+            </p>
+            <p>
+                Man wählt den Such Tab aus und grenz die Suche mit den Filtern so weit ein wie man will/kann.
+            </p>
+            <p>
+                Oder man wählt über die Tabs eine Gruppe aus und benutzt die Filter in der Dateiübersicht um die Dateien
+                einzugrenzen.
+            </p>
+        </li>
+        <li>
+            <h3>
+                Wie funktioniert das <a th:href="@{/}">Uploaden</a>.
+            </h3>
+
+            <p>
+                Damit man etwas Hochladen kann, braucht man die Upload Rechte.
+            </p>
+            <p>
+                Für Vorlesungen sind das der Professor und die Organisatoren.
+            </p>
+            <p>
+                Bei Übungsgruppen, haben standart massig die Übungsgruppenleiter die rechte.
+            </p>
+            <p>
+                Diese Rechte können im (Link einfügen)Gruppenbildungs Modul verwaltet werden.
+            </p>
+        </li>
+        <li>
+            <h3>
+                Wie erstelle ich eine Gruppe.
+            </h3>
+            <p>
+                Um eine Gruppe zu erstellen muss man in das Gruppenbildungs Modul und dort eine neue Gruppe anlegen.
+            </p>
+            <p>
+                <a th:href="@{/}">Hier</a> kommt ihr dahin.
+            </p>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

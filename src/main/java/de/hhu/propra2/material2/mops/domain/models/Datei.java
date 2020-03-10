@@ -1,4 +1,4 @@
-package de.hhu.propra2.material2.mops.models;
+package de.hhu.propra2.material2.mops.domain.models;
 
 import lombok.Getter;
 

@@ -1,15 +1,12 @@
 package de.hhu.propra2.material2.mops;
 
-import de.hhu.propra2.material2.mops.DTOs.DateiRepository;
-import de.hhu.propra2.material2.mops.DTOs.GruppeRepository;
-import de.hhu.propra2.material2.mops.DTOs.UserRepository;
-import de.hhu.propra2.material2.mops.Database.DTOs.GruppeDTO;
-import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
-import de.hhu.propra2.material2.mops.models.Datei;
-import de.hhu.propra2.material2.mops.models.Gruppe;
+import de.hhu.propra2.material2.mops.Database.DateiRepository;
+import de.hhu.propra2.material2.mops.Database.GruppeRepository;
+import de.hhu.propra2.material2.mops.Database.UserRepository;
+import de.hhu.propra2.material2.mops.domain.models.Datei;
+import de.hhu.propra2.material2.mops.domain.models.User;
+import de.hhu.propra2.material2.mops.domain.services.ModelService;
 import de.hhu.propra2.material2.mops.models.Suche;
-import de.hhu.propra2.material2.mops.models.User;
-import org.springframework.data.repository.query.parser.Part;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,7 +14,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 

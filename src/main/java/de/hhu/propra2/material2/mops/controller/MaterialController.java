@@ -1,8 +1,13 @@
 package de.hhu.propra2.material2.mops.controller;
 
+import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class MaterialController {
@@ -11,7 +16,11 @@ public class MaterialController {
      * @return String
      */
     @GetMapping("/")
-    public String startseite() {
+    public String startseite(final Model model) {
+        List<Gruppe> gruppen =  new ArrayList<>();
+        gruppen.add(new Gruppe(1L, "ProPra", null));
+        gruppen.add(new Gruppe(2L, "Hard Prog", null));
+        model.addAttribute("gruppen", gruppen);
         return "start";
     }
 
@@ -19,7 +28,11 @@ public class MaterialController {
      * @return String
      */
     @GetMapping("/dateiSicht")
-    public String sicht() {
+    public String sicht(final Model model) {
+        List<Gruppe> gruppen =  new ArrayList<>();
+        gruppen.add(new Gruppe(1L, "ProPra", null));
+        gruppen.add(new Gruppe(2L, "Hard Prog", null));
+        model.addAttribute("gruppen", gruppen);
         return "dateiSicht";
     }
 
@@ -27,7 +40,11 @@ public class MaterialController {
      * @return String
      */
     @GetMapping("/suche")
-    public String vorSuche() {
+    public String vorSuche(final Model model) {
+        List<Gruppe> gruppen =  new ArrayList<>();
+        gruppen.add(new Gruppe(1L, "ProPra", null));
+        gruppen.add(new Gruppe(2L, "Hard Prog", null));
+        model.addAttribute("gruppen", gruppen);
         return "suche";
     }
 
@@ -35,7 +52,11 @@ public class MaterialController {
      * @return String
      */
     @PostMapping("/suche")
-    public String vorSuchePost() {
+    public String vorSuchePost(final Model model) {
+        List<Gruppe> gruppen =  new ArrayList<>();
+        gruppen.add(new Gruppe(1L, "ProPra", null));
+        gruppen.add(new Gruppe(2L, "Hard Prog", null));
+        model.addAttribute("gruppen", gruppen);
         return "base";
     }
 }

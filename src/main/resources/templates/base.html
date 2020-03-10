@@ -23,16 +23,6 @@
                 </a>
             </li>
             <li>
-                <a th:href="@{/dateiSicht}">
-                    ProPra
-                </a>
-            </li>
-            <li>
-                <a th:href="@{/}">
-                    Gruppen
-                </a>
-            </li>
-            <li>
                 <a th:href="@{/suche}">
                     Suche
                 </a>
@@ -42,6 +32,11 @@
                     Upload
                 </a>
             </li>
+            <th:block th:object="${gruppen}">
+                <li th:each="gruppe : ${gruppen}"  >
+                    <a th:href="@{/dateiSicht}" th:text="${gruppe.getName()}"></a>
+                </li>
+            </th:block>
         </ul>
     </nav>
 </header>

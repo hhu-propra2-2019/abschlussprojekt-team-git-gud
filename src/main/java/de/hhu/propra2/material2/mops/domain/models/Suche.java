@@ -32,11 +32,11 @@ public class Suche {
                  final String[] uploaderArg,
                  final String sortierungArg,
                  final Gruppe gruppeArg) {
-        this.dateiTyp = dateiTypArg.clone();
+        this.dateiTyp = dateiTypArg == null ? null : dateiTypArg.clone();
         this.vonDatum = vonDatumArg;
         this.bisDatum = bisDatumArg;
-        this.tags = tagsArg.clone();
-        this.uploader = uploaderArg.clone();
+        this.tags = tagsArg == null ? null : tagsArg.clone();
+        this.uploader = uploaderArg == null ? null : uploaderArg.clone();
         this.sortierung = sortierungArg;
         this.gruppe = gruppeArg;
     }

@@ -25,14 +25,23 @@ public class SuchService {
     private final UserRepository users;
     private final ModelService modelService;
 
-    public SuchService(DateiRepository dateien, GruppeRepository gruppen, UserRepository users, ModelService modelService) {
-        this.dateien = dateien;
-        this.gruppen = gruppen;
-        this.users = users;
-        this.modelService = modelService;
+    public SuchService(final DateiRepository dateienArg,
+                       final GruppeRepository gruppenArg,
+                       final UserRepository usersArg,
+                       final ModelService modelServiceArg) {
+        this.dateien = dateienArg;
+        this.gruppen = gruppenArg;
+        this.users = usersArg;
+        this.modelService = modelServiceArg;
     }
 
-    public List<Datei> starteSuche(Suche suche, String keyCloackName) {
+    /**
+     * @param suche
+     * @param keyCloackName
+     * @return
+     */
+    public List<Datei> starteSuche(final Suche suche,
+                                   final String keyCloackName) {
         User user = modelService.load(users.findByKeycloakname(keyCloackName));
 
         final List<Datei> zuFiltern = new ArrayList<>();
@@ -41,7 +50,8 @@ public class SuchService {
         if (suche.getGruppe() != null) {
             zuFiltern.addAll(suche.getGruppe().getDateien());
         } else {
-            user.getAllGruppen().forEach(gruppe -> zuFiltern.addAll(gruppe.getDateien()));
+            user.getAllGruppen()
+                    .forEach(gruppe -> zuFiltern.addAll(gruppe.getDateien()));
         }
         result = zuFiltern;
         if (suche.getTags() != null) {
@@ -54,7 +64,9 @@ public class SuchService {
             result = uploaderSuche(suche.getUploader(), result);
         }
         if (suche.getBisDatum() != null) {
-            result = datumsSuche(suche.getVonDatum(), suche.getBisDatum(), zuFiltern);
+            result = datumsSuche(suche.getVonDatum(),
+                    suche.getBisDatum(),
+                    zuFiltern);
         }
         return result;
     }
@@ -62,28 +74,41 @@ public class SuchService {
     /**
      * Suchmethoden noch zu implementieren
      */
-    public List<Datei> tagSuche(String[] tags, List<Datei> zuFiltern) {
+    private List<Datei> tagSuche(final String[] tags,
+                                 final List<Datei> zuFiltern) {
         return zuFiltern.stream()
                 .filter(datei -> datei.hatTags(tags))
                 .collect(Collectors.toList());
     }
 
 
-    public List<Datei> datumsSuche(String vonDatum, String bisDatum, List<Datei> zuFiltern) {
+    private List<Datei> datumsSuche(final String vonDatum,
+                                    final String bisDatum,
+                                    final List<Datei> zuFiltern) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         LocalDate von = LocalDate.parse(vonDatum, dtf);
         LocalDate bis = LocalDate.parse(bisDatum, dtf);
 
-        return zuFiltern.stream().filter(datei -> datumInZeitraum(von, bis, datei.getUploaddatum())).collect(Collectors.toList());
+        return zuFiltern.stream()
+                .filter(datei -> datumInZeitraum(von,
+                        bis,
+                        datei.getUploaddatum()))
+                .collect(Collectors.toList());
 
     }
 
-    private boolean datumInZeitraum(LocalDate von, LocalDate bis, Date zuPruefen) {
-        LocalDate pruefen = zuPruefen.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    private boolean datumInZeitraum(final LocalDate von,
+                                    final LocalDate bis,
+                                    final Date zuPruefen) {
+        LocalDate pruefen = zuPruefen
+                .toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
         return von.compareTo(pruefen) <= 0 && bis.compareTo(pruefen) >= 0;
     }
 
-    public List<Datei> typSuche(String[] typen, List<Datei> zuFiltern) {
+    private List<Datei> typSuche(final String[] typen,
+                                final List<Datei> zuFiltern) {
         List<Datei> result = new ArrayList<>();
         for (String typ : typen) {
             result.addAll(zuFiltern.stream()
@@ -93,11 +118,14 @@ public class SuchService {
         return result;
     }
 
-    public List<Datei> uploaderSuche(String[] uploader, List<Datei> zuFiltern) {
+    private List<Datei> uploaderSuche(final String[] uploader,
+                                      final List<Datei> zuFiltern) {
         List<Datei> result = new ArrayList<>();
         for (String upload : uploader) {
             result.addAll(zuFiltern.stream()
-                    .filter(datei -> datei.getUploader().getNachname().equalsIgnoreCase(upload))
+                    .filter(datei -> datei.getUploader()
+                            .getNachname()
+                            .equalsIgnoreCase(upload))
                     .collect(Collectors.toList()));
         }
         return result;

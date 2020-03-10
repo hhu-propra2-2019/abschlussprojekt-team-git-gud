@@ -94,7 +94,7 @@ public final class ModelService {
         return user.getAllGruppen();
     }
 
-    public List<Datei> getAlleDateienByGruppe(Gruppe gruppe) {
+    public List<Datei> getAlleDateienByGruppe(final Gruppe gruppe) {
         return gruppe.getDateien();
     }
 }

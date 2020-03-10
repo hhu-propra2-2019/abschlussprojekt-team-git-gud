@@ -53,22 +53,30 @@ public class Datei {
      */
     @Getter
     private final String dateityp;
-    private List<String> getTagNames(){
+
+    private List<String> getTagNames() {
         return tags.stream()
                 .map(Tag::getText)
                 .collect(Collectors.toList());
     }
-    private boolean hatTag(String tag){
-        for(String tempTag:this.getTagNames()) {
+
+    private boolean hatTag(final String tag) {
+        for (String tempTag : this.getTagNames()) {
             if (tempTag.equalsIgnoreCase(tag)) {
                 return true;
             }
         }
         return false;
     }
-    public boolean hatTags(String[] tags){
-        for(String tag:tags){
-            if(!this.hatTag(tag)) {
+
+    /**
+     *
+     * @param tags
+     * @return true if the file contains all the given tags
+     */
+    public boolean hatTags(final String[] tagsToCheckFor) {
+        for (String tag : tagsToCheckFor) {
+            if (!this.hatTag(tag)) {
                 return false;
             }
         }

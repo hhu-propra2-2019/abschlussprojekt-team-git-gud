@@ -45,6 +45,7 @@ CREATE TABLE Datei
     datei_groesse      BIGINT,
     datei_typ      text,
     gruppeID      BIGINT,
+    kategorie   text,
     foreign key (uploaderID) REFERENCES User (userID),
     foreign key (gruppeID) REFERENCES Gruppe (gruppeID)
 ) ;

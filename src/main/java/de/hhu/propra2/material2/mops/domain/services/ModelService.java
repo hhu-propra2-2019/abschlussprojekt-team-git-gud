@@ -93,4 +93,8 @@ public final class ModelService {
         User user = load(optionalUserDTO.get());
         return user.getAllGruppen();
     }
+
+    public List<Datei> getAlleDateienByGruppe(final Gruppe gruppe) {
+        return gruppe.getDateien();
+    }
 }

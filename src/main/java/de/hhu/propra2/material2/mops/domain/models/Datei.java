@@ -4,6 +4,7 @@ import lombok.Getter;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Datei {
     /**
@@ -52,6 +53,35 @@ public class Datei {
      */
     @Getter
     private final String dateityp;
+
+    private List<String> getTagNames() {
+        return tags.stream()
+                .map(Tag::getText)
+                .collect(Collectors.toList());
+    }
+
+    private boolean hatTag(final String tag) {
+        for (String tempTag : this.getTagNames()) {
+            if (tempTag.equalsIgnoreCase(tag)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param tags
+     * @return true if the file contains all the given tags
+     */
+    public boolean hatTags(final String[] tagsToCheckFor) {
+        for (String tag : tagsToCheckFor) {
+            if (!this.hatTag(tag)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public Datei(
             final long idArgs,

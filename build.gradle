@@ -50,6 +50,7 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'com.tngtech.archunit:archunit-junit5:0.13.0'
     testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'
+    testImplementation 'org.mockito:mockito-inline:2.13.0'
     implementation 'mops:styleguide:2.1.0'
 }
 

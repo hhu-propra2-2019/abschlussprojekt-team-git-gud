@@ -13,6 +13,7 @@ import de.hhu.propra2.material2.mops.domain.models.Tag;
 import de.hhu.propra2.material2.mops.domain.models.User;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -84,6 +85,9 @@ public final class ModelService {
     }
 
     public List<Gruppe> getAlleGruppenByUser(final String name) {
+        if (users.findByKeycloakname(name) == null) {
+            return new ArrayList<>();
+        }
         User user = load(users.findByKeycloakname(name));
         return user.getAllGruppen();
     }

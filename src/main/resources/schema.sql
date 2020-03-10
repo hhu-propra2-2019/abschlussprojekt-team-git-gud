@@ -5,7 +5,7 @@ CREATE TABLE User
     userID BIGINT PRIMARY KEY,
     vorname     text,
     nachname    text,
-    key_cloack_name text
+    key_cloak_name text
 );
 
 DROP TABLE IF EXISTS Gruppe;

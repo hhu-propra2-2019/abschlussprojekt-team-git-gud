@@ -3,22 +3,22 @@ package de.hhu.propra2.material2.mops;
 import de.hhu.propra2.material2.mops.DTOs.DateiRepository;
 import de.hhu.propra2.material2.mops.DTOs.GruppeRepository;
 import de.hhu.propra2.material2.mops.DTOs.UserRepository;
+import de.hhu.propra2.material2.mops.Database.DTOs.GruppeDTO;
+import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
 import de.hhu.propra2.material2.mops.models.Datei;
 import de.hhu.propra2.material2.mops.models.Gruppe;
 import de.hhu.propra2.material2.mops.models.Suche;
 import de.hhu.propra2.material2.mops.models.User;
+import org.springframework.data.repository.query.parser.Part;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,24 +27,27 @@ public class SuchService {
     private final DateiRepository dateien;
     private final GruppeRepository gruppen;
     private final UserRepository users;
+    private final ModelService modelService;
 
-    public SuchService(DateiRepository dateien, GruppeRepository gruppen, UserRepository users) {
+    public SuchService(DateiRepository dateien, GruppeRepository gruppen, UserRepository users, ModelService modelService) {
         this.dateien = dateien;
         this.gruppen = gruppen;
         this.users = users;
+        this.modelService = modelService;
     }
 
     public List<Datei> starteSuche(Suche suche, String keyCloackName) {
-        User user = users.findByKeyCloackname(keyCloackName);
-        final List<Datei> zuFiltern = new ArrayList<Datei>();
-        List<Datei> result = new ArrayList<Datei>();
+        User user = modelService.load(users.findByKeycloakname(keyCloackName));
+
+        final List<Datei> zuFiltern = new ArrayList<>();
+        List<Datei> result = new ArrayList<>();
 
         if (suche.getGruppe() != null) {
             zuFiltern.addAll(suche.getGruppe().getDateien());
         } else {
             user.getAllGruppen().forEach(gruppe -> zuFiltern.addAll(gruppe.getDateien()));
         }
-        result.addAll(zuFiltern);
+        result = zuFiltern;
         if (suche.getTags() != null) {
             result = tagSuche(suche.getTags(), zuFiltern);
         }
@@ -98,16 +101,9 @@ public class SuchService {
         List<Datei> result = new ArrayList<>();
         for (String upload : uploader) {
             result.addAll(zuFiltern.stream()
-                    .filter(datei -> datei.getUploader().equals(upload))
+                    .filter(datei -> datei.getUploader().getNachname().equalsIgnoreCase(upload))
                     .collect(Collectors.toList()));
         }
         return result;
     }
-
-    /**
-
-     public List<Datei> sortieren(String sortierart, List<Datei> zuFiltern){
-
-     }
-     **/
 }

@@ -60,7 +60,7 @@ public class Datei {
     }
     private boolean hatTag(String tag){
         for(String tempTag:this.getTagNames()) {
-            if (tempTag.toLowerCase().equals(tag.toLowerCase())) {
+            if (tempTag.equalsIgnoreCase(tag)) {
                 return true;
             }
         }

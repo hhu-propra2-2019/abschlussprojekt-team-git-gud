@@ -86,8 +86,8 @@ public final class ModelService {
         return new Gruppe(dto.getId(), dto.getName(), zugehoerigeDateien);
     }
 
-    public List<Gruppe> getAlleGruppenByUserId(final String keycloackName) {
-        User user = load(users.findByKeyCloackName((keycloackName)).get());
+    public List<Gruppe> getAlleGruppenByUserId(final String keyCloackName) {
+        User user = load(users.findByKeycloakname(keyCloackName));
         return user.getAllGruppen();
     }
 

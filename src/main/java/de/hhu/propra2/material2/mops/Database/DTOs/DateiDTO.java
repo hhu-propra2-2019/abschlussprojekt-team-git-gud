@@ -1,6 +1,7 @@
 package de.hhu.propra2.material2.mops.Database.DTOs;
 
 import lombok.Data;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.Date;
@@ -12,6 +13,7 @@ public final class DateiDTO {
     /**
      * Unique ID from database.
      */
+    @Id
     private final long id;
     /**
      * Name of file.

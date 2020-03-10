@@ -1,6 +1,7 @@
 package de.hhu.propra2.material2.mops.Database.DTOs;
 
 import lombok.Data;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.List;
@@ -11,6 +12,7 @@ public class TagDTO {
     /**
      * Unique ID from database.
      */
+    @Id
     private final long id;
     /**
      * The tags text that will be shown

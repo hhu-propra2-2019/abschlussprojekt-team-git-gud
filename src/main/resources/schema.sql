@@ -2,7 +2,7 @@
 DROP TABLE IF EXISTS User cascade;
 CREATE TABLE User
 (
-    userID BIGINT PRIMARY KEY,
+    userID BIGINT NOT NULL PRIMARY KEY,
     vorname     text,
     nachname    text,
     key_cloack_name text

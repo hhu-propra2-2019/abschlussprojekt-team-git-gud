@@ -40,6 +40,12 @@ public final class Repository {
         return user;
     }
 
+    public static void save(DateiDTO dateiDTO) {
+
+        //TODO SAVE FILES AND THEIR TAGS IF THEY ARE NEW
+
+    }
+
     private static HashMap<GruppeDTO, Boolean> findAllGruppeByUserID (long userId) throws SQLException {
         HashMap<GruppeDTO,Boolean> gruppen = new HashMap<GruppeDTO, Boolean>();
 

@@ -40,9 +40,23 @@ public final class Repository {
         return user;
     }
 
-    public static void save(DateiDTO dateiDTO) {
+    public static void save(DateiDTO dateiDTO) throws SQLException {
 
         //TODO SAVE FILES AND THEIR TAGS IF THEY ARE NEW
+        PreparedStatement preparedStatement =
+                connection.prepareStatement(" insert into users (name, pfad, uploaderID, upload_datum, veroeffentlichungs_datum, datei_groesse, datei_typ, gruppeID, kategorie) "
+                                                    + " values (?, ?, ?, ?, ?, ?, ? ,?, ?)");
+        preparedStatement.setString(1, dateiDTO.getName());
+        preparedStatement.setString(2, dateiDTO.getPfad());
+        preparedStatement.setLong(3, dateiDTO.getUploader().getId());
+        preparedStatement.setDate(4, dateiDTO.getUploaddatum()); //required sql.date
+        preparedStatement.setDate(5, dateiDTO.getVeroeffentlichungsdatum());
+        preparedStatement.setLong(6, dateiDTO.getDateigroesse());
+        preparedStatement.setString(7, dateiDTO.getDateityp());
+        preparedStatement.setLong(8, dateiDTO.getGruppe().getId());
+        preparedStatement.setString(9, dateiDTO.getKategorie());
+
+        preparedStatement.execute();
 
     }
 

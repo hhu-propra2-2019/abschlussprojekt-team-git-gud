@@ -241,24 +241,6 @@ _<Whitebox-Template>_
 _<Whitebox-Template>_
 
 <<<<
-// 6. Laufzeitsicht
-[[section-runtime-view]]
-== Laufzeitsicht
-
-=== _<Bezeichnung Laufzeitszenario 1>_
-
-* <hier Laufzeitdiagramm oder Ablaufbeschreibung einfügen>
-* <hier Besonderheiten bei dem Zusammenspiel der Bausteine in diesem Szenario erläutern>
-
-=== _<Bezeichnung Laufzeitszenario 2>_
-
-...
-
-=== _<Bezeichnung Laufzeitszenario n>_
-
-...
-
-<<<<
 // 7. Verteilungssicht
 [[section-deployment-view]]
 == Verteilungssicht
@@ -312,6 +294,10 @@ _<Erklärung>_
 // 9. Entscheidungen
 [[section-design-decisions]]
 == Entwurfsentscheidungen
+
+Wir haben uns dazu entschieden eine klassische Schichtarchitektur zu implementiern.
+Diese besteht aus einer GUI-Schicht, einer Geschäftslogikschicht und einer Persistenzschicht.
+Die Architektur wird konkreter in der Klasse "ArchitectureRulesTest" beschreiben.
 
 <<<<
 // 11. Risiken

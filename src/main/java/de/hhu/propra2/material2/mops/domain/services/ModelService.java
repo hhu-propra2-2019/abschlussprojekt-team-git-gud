@@ -15,7 +15,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -94,5 +96,30 @@ public final class ModelService {
 
     public List<Datei> getAlleDateienByGruppe(final Gruppe gruppe) {
         return gruppe.getDateien();
+    }
+
+    public Set<String> getAlleTagsVonDateien(final String name) {
+        User user = load(users.findByKeycloakname(name));
+        List<Gruppe> groups = user.getAllGruppen();
+        Set<String> tags = new HashSet<>();
+        for (Gruppe gruppe : groups) {
+            tags.addAll(gruppe.getDateien()
+                    .stream().map(Datei::getName)
+                    .collect(Collectors.toSet()));
+        }
+        return tags;
+    }
+
+    public Set<String> getAlleUploaderVonDateien(final String name) {
+        User user = load(users.findByKeycloakname(name));
+        List<Gruppe> groups = user.getAllGruppen();
+        Set<String> uploader = new HashSet<String>();
+        for (Gruppe gruppe : groups) {
+            uploader.addAll(gruppe.getDateien()
+                    .stream()
+                    .map(datei -> datei.getUploader().getNachname())
+                    .collect(Collectors.toSet()));
+        }
+        return uploader;
     }
 }

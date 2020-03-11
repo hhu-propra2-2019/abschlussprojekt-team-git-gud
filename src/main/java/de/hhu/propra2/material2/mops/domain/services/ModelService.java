@@ -99,7 +99,7 @@ public final class ModelService implements IModelService {
     }
 
     public Set<String> getAlleTagsByUser(final String name) {
-        User user = load(users.findByKeycloakname(name));
+        User user = loadUser(users.findByKeycloakname(name));
         List<Gruppe> groups = user.getAllGruppen();
         Set<String> tags = new HashSet<>();
         for (Gruppe gruppe : groups) {
@@ -118,7 +118,7 @@ public final class ModelService implements IModelService {
     }
 
     public Set<String> getAlleUploaderByUser(final String name) {
-        User user = load(users.findByKeycloakname(name));
+        User user = loadUser(users.findByKeycloakname(name));
         List<Gruppe> groups = user.getAllGruppen();
         Set<String> uploader = new HashSet<String>();
         for (Gruppe gruppe : groups) {
@@ -138,7 +138,7 @@ public final class ModelService implements IModelService {
     }
 
     public Set<String> getAlleDateiTypenByUser(final String name) {
-        User user = load(users.findByKeycloakname(name));
+        User user = loadUser(users.findByKeycloakname(name));
         List<Gruppe> groups = user.getAllGruppen();
         Set<String> dateiTypen = new HashSet<String>();
         for (Gruppe gruppe : groups) {

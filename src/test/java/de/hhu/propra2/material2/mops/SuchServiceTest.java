@@ -20,7 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -62,8 +61,8 @@ public class SuchServiceTest {
                 userRepoMock,
                 modelServiceMock);
 
-        //TODO Mockito.lenient() = eig stub?
-        Mockito.lenient().when(modelServiceMock.load(any(UserDTO.class))).thenReturn(userMock);
+        Mockito.lenient().when(modelServiceMock.loadUser(any(UserDTO.class))).thenReturn(userMock);
+        Mockito.lenient().when(modelServiceMock.loadUser(null)).thenReturn(userMock);
 
         //Date for Datei
         Calendar calender = Calendar.getInstance();
@@ -111,10 +110,9 @@ public class SuchServiceTest {
                 null,
                 null);
 
-        List<Datei> result = suchService.starteSuche(suche, "Peter", userMock);
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
 
         assertThat(result.size(), is(4));
-//        assertThat(result, contains(Arrays.asList(datei1, datei2, datei3, datei4)));
         assertTrue(result.contains(datei1));
         assertTrue(result.contains(datei2));
         assertTrue(result.contains(datei3));

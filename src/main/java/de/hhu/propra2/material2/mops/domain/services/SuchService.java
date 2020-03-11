@@ -1,5 +1,6 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
+import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
 import de.hhu.propra2.material2.mops.Database.DateiRepository;
 import de.hhu.propra2.material2.mops.Database.GruppeRepository;
 import de.hhu.propra2.material2.mops.Database.UserRepository;
@@ -41,7 +42,7 @@ public class SuchService {
      */
     public List<Datei> starteSuche(final Suche suche,
                                    final String keyCloackName) {
-        User user = modelService.load(users.findByKeycloakname(keyCloackName));
+        User user = modelService.loadUser(users.findByKeycloakname(keyCloackName));
 
         final List<Datei> zuFiltern = new ArrayList<>();
         List<Datei> result = new ArrayList<>();

@@ -39,7 +39,7 @@ public final class ModelService {
         this.users = userRepo;
     }
 
-    public Datei load(final DateiDTO dto) {
+    public Datei loadDatei(final DateiDTO dto) {
         List<Tag> tags = dto.getTagDTOs().stream()
                 .map(this::load)
                 .collect(Collectors.toList());
@@ -47,7 +47,7 @@ public final class ModelService {
                 dto.getId(),
                 dto.getName(),
                 dto.getPfad(),
-                load(dto.getUploader()),
+                loadUser(dto.getUploader()),
                 tags,
                 dto.getUploaddatum(),
                 dto.getVeroeffentlichungsdatum(),
@@ -59,7 +59,7 @@ public final class ModelService {
         return new Tag(dto.getId(), dto.getText());
     }
 
-    public User load(final UserDTO dto) {
+    public User loadUser(final UserDTO dto) {
         HashMap<Gruppe, Boolean> belegungUndRechte = new HashMap<>();
         for (GruppeDTO gruppeDTO : dto.getBelegungUndRechte().keySet()) {
             belegungUndRechte.put(
@@ -79,7 +79,7 @@ public final class ModelService {
         List<Datei> zugehoerigeDateien =
                 dto.getDateien()
                         .stream()
-                        .map(this::load)
+                        .map(this::loadDatei)
                         .collect(Collectors.toList());
         return new Gruppe(dto.getId(), dto.getName(), zugehoerigeDateien);
     }
@@ -88,7 +88,7 @@ public final class ModelService {
         if (users.findByKeycloakname(name) == null) {
             return new ArrayList<>();
         }
-        User user = load(users.findByKeycloakname(name));
+        User user = loadUser(users.findByKeycloakname(name));
         return user.getAllGruppen();
     }
 

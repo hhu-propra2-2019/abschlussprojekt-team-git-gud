@@ -30,7 +30,7 @@ public final class Repository {
         UserDTO user = null;
 
         PreparedStatement preparedStatement =
-                connection.prepareStatement("select * from User where key_cloack_name=?");
+                connection.prepareStatement("select * from User where key_cloak_name=?");
         preparedStatement.setString(1, keyCloakNameArg);
 
         ResultSet users = preparedStatement.executeQuery();
@@ -72,10 +72,10 @@ public final class Repository {
         preparedStatement.execute();
     }
 
-    public static void saveTag(final TagDTO tagDTO) throws SQLException {
+    private static void saveTag(final TagDTO tagDTO) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
-                        "insert into Tags (tag_name)" + " values (?)");
+                        "insert ignore into Tags (tag_name)" + " values (?)");
 
         preparedStatement.setString(1, tagDTO.getText());
         preparedStatement.execute();

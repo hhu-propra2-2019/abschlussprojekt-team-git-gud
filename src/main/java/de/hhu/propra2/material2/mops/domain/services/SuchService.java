@@ -91,19 +91,15 @@ public class SuchService {
         return zuFiltern.stream()
                 .filter(datei -> datumInZeitraum(von,
                         bis,
-                        datei.getUploaddatum()))
+                        datei.getVeroeffentlichungsdatum()))
                 .collect(Collectors.toList());
 
     }
 
     private boolean datumInZeitraum(final LocalDate von,
                                     final LocalDate bis,
-                                    final Date zuPruefen) {
-        LocalDate pruefen = zuPruefen
-                .toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
-        return von.compareTo(pruefen) <= 0 && bis.compareTo(pruefen) >= 0;
+                                    final LocalDate zuPruefen) {
+        return von.compareTo(zuPruefen) <= 0 && bis.compareTo(zuPruefen) >= 0;
     }
 
     private List<Datei> typSuche(final String[] typen,

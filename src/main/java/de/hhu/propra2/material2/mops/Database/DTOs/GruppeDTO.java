@@ -34,18 +34,18 @@ public class GruppeDTO {
      * Standard AllArgsConstructor for import from database.
      *  @param idArg
      * @param nameArg
-     * @param description
+     * @param descriptionArg
      * @param userArgs
      * @param dateiArgs
      */
     public GruppeDTO(final long idArg,
                      final String nameArg,
-                     String description,
+                     final String descriptionArg,
                      final List<UserDTO> userArgs,
                      final List<DateiDTO> dateiArgs) {
         this.id = idArg;
         this.name = nameArg;
-        this.description = description;
+        this.description = descriptionArg;
         this.users = userArgs;
         this.dateien = dateiArgs;
     }

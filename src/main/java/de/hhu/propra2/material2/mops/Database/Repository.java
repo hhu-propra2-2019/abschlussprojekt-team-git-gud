@@ -5,7 +5,11 @@ import de.hhu.propra2.material2.mops.Database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.Database.DTOs.TagDTO;
 import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -20,6 +24,7 @@ public final class Repository {
         }
     }
 
+    private Repository() { }
 
     public static UserDTO findUserByKeycloakname(final String keyCloakNameArg) throws SQLException {
         UserDTO user = null;
@@ -40,17 +45,21 @@ public final class Repository {
         return user;
     }
 
-    public static void save(DateiDTO dateiDTO) throws SQLException {
+    public static void save(final DateiDTO dateiDTO) throws SQLException {
 
         //TODO SAVE FILES AND THEIR TAGS IF THEY ARE NEW
         PreparedStatement preparedStatement =
-                connection.prepareStatement(" insert into users (name, pfad, uploaderID, upload_datum, veroeffentlichungs_datum, datei_groesse, datei_typ, gruppeID, kategorie) "
-                                                    + " values (?, ?, ?, ?, ?, ?, ? ,?, ?)");
+                connection.prepareStatement(
+                        "insert into users (name, pfad, uploaderID, upload_datum,"
+                                + "veroeffentlichungs_datum, datei_groesse,"
+                                + "datei_typ, gruppeID, kategorie) "
+                                + " values (?, ?, ?, ?, ?, ?, ? ,?, ?)");
+
         preparedStatement.setString(1, dateiDTO.getName());
         preparedStatement.setString(2, dateiDTO.getPfad());
         preparedStatement.setLong(3, dateiDTO.getUploader().getId());
-        preparedStatement.setDate(4, dateiDTO.getUploaddatum()); //required sql.date
-        preparedStatement.setDate(5, dateiDTO.getVeroeffentlichungsdatum());
+        preparedStatement.setDate(4, java.sql.Date.valueOf(dateiDTO.getUploaddatum())); //required sql.date
+        preparedStatement.setDate(5, java.sql.Date.valueOf(dateiDTO.getVeroeffentlichungsdatum()));
         preparedStatement.setLong(6, dateiDTO.getDateigroesse());
         preparedStatement.setString(7, dateiDTO.getDateityp());
         preparedStatement.setLong(8, dateiDTO.getGruppe().getId());
@@ -60,15 +69,15 @@ public final class Repository {
 
     }
 
-    private static HashMap<GruppeDTO, Boolean> findAllGruppeByUserID (long userId) throws SQLException {
-        HashMap<GruppeDTO,Boolean> gruppen = new HashMap<GruppeDTO, Boolean>();
+    private static HashMap<GruppeDTO, Boolean> findAllGruppeByUserID(final long userId) throws SQLException {
+        HashMap<GruppeDTO, Boolean> gruppen = new HashMap<GruppeDTO, Boolean>();
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select * from Gruppenbelegung where userID=?");
         preparedStatement.setString(1, "" + userId);
         ResultSet gruppenResult = preparedStatement.executeQuery();
 
-        while(gruppenResult.next()) {
+        while (gruppenResult.next()) {
             gruppen.put(findGruppeById(gruppenResult.getLong("gruppenID")),
                     gruppenResult.getBoolean("upload_berechtigung"));
         }
@@ -76,7 +85,7 @@ public final class Repository {
         return gruppen;
     }
 
-    private static GruppeDTO findGruppeById (long id) throws SQLException {
+    private static GruppeDTO findGruppeById(final long id) throws SQLException {
         GruppeDTO gruppe = null;
 
         PreparedStatement preparedStatement =
@@ -97,7 +106,7 @@ public final class Repository {
         return gruppe;
     }
 
-    private static ArrayList<DateiDTO> findAllDateiByGruppeId(long gruppeId) throws SQLException {
+    private static ArrayList<DateiDTO> findAllDateiByGruppeId(final long gruppeId) throws SQLException {
         ArrayList<DateiDTO> dateien = new ArrayList<DateiDTO>();
 
         PreparedStatement preparedStatement =
@@ -105,14 +114,14 @@ public final class Repository {
         preparedStatement.setString(1, "" + gruppeId);
 
         ResultSet dateiResult = preparedStatement.executeQuery();
-        while(dateiResult.next()) {
+        while (dateiResult.next()) {
             dateien.add(findDateiById(dateiResult.getLong("dateiID")));
         }
 
         return dateien;
     }
 
-    private static DateiDTO findDateiById(long id) throws SQLException {
+    private static DateiDTO findDateiById(final long id) throws SQLException {
         DateiDTO datei = null;
 
             PreparedStatement preparedStatement =
@@ -138,7 +147,7 @@ public final class Repository {
         return datei;
     }
 
-    private static ArrayList<TagDTO> findAllTagsbyDateiId(long dateiId) throws SQLException {
+    private static ArrayList<TagDTO> findAllTagsbyDateiId(final long dateiId) throws SQLException {
         ArrayList<TagDTO> tags = new ArrayList<TagDTO>();
 
         PreparedStatement preparedStatement =
@@ -147,14 +156,14 @@ public final class Repository {
 
         ResultSet tagResult = preparedStatement.executeQuery();
 
-        while(tagResult.next()) {
+        while (tagResult.next()) {
             tags.add(findTagById(tagResult.getLong("tagID")));
         }
 
         return tags;
     }
 
-    private static TagDTO findTagById(long id) throws SQLException {
+    private static TagDTO findTagById(final long id) throws SQLException {
         TagDTO tag = null;
 
         PreparedStatement preparedStatement =
@@ -170,7 +179,7 @@ public final class Repository {
         return tag;
     }
 
-    private static ArrayList<UserDTO> findAllUserByGruppeId(long gruppeId) throws SQLException {
+    private static ArrayList<UserDTO> findAllUserByGruppeId(final long gruppeId) throws SQLException {
         ArrayList<UserDTO> users = new ArrayList<UserDTO>();
 
         PreparedStatement preparedStatement =
@@ -178,13 +187,13 @@ public final class Repository {
         preparedStatement.setString(1, "" + gruppeId);
 
         ResultSet userResult = preparedStatement.executeQuery();
-        while(userResult.next()) {
+        while (userResult.next()) {
             users.add(findUserByIdLAZY(userResult.getLong("userID")));
         }
         return users;
     }
 
-    private static UserDTO findUserByIdLAZY(long id) throws SQLException {
+    private static UserDTO findUserByIdLAZY(final long id) throws SQLException {
         UserDTO user = null;
 
         PreparedStatement preparedStatement =

@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public final class ModelService {
+public final class ModelService implements IModelService {
     private final DateiRepository dateien;
     private final GruppeRepository gruppen;
     private final UserRepository users;
@@ -98,19 +98,26 @@ public final class ModelService {
         return gruppe.getDateien();
     }
 
-    public Set<String> getAlleTagsVonDateien(final String name) {
+    public Set<String> getAlleTagsByUser(final String name) {
         User user = load(users.findByKeycloakname(name));
         List<Gruppe> groups = user.getAllGruppen();
         Set<String> tags = new HashSet<>();
         for (Gruppe gruppe : groups) {
             tags.addAll(gruppe.getDateien()
-                    .stream().map(Datei::getName)
+                    .stream()
+                    .map(Datei::getName)
                     .collect(Collectors.toSet()));
         }
         return tags;
     }
 
-    public Set<String> getAlleUploaderVonDateien(final String name) {
+    public Set<String> getAlleTagsByGruppe(final Gruppe gruppe) {
+        return gruppe.getDateien()
+                .stream().map(Datei::getName)
+                .collect(Collectors.toSet());
+    }
+
+    public Set<String> getAlleUploaderByUser(final String name) {
         User user = load(users.findByKeycloakname(name));
         List<Gruppe> groups = user.getAllGruppen();
         Set<String> uploader = new HashSet<String>();
@@ -121,5 +128,32 @@ public final class ModelService {
                     .collect(Collectors.toSet()));
         }
         return uploader;
+    }
+
+    public Set<String> getAlleUploaderByGruppe(final Gruppe gruppe) {
+        return gruppe.getDateien()
+                .stream()
+                .map(datei -> datei.getUploader().getNachname())
+                .collect(Collectors.toSet());
+    }
+
+    public Set<String> getAlleDateiTypenByUser(final String name) {
+        User user = load(users.findByKeycloakname(name));
+        List<Gruppe> groups = user.getAllGruppen();
+        Set<String> dateiTypen = new HashSet<String>();
+        for (Gruppe gruppe : groups) {
+            dateiTypen.addAll(gruppe.getDateien()
+                    .stream()
+                    .map(Datei::getDateityp)
+                    .collect(Collectors.toSet()));
+        }
+        return dateiTypen;
+    }
+
+    public Set<String> getAlleDateiTypenByGruppe(final Gruppe gruppe) {
+        return gruppe.getDateien()
+                .stream()
+                .map(Datei::getDateityp)
+                .collect(Collectors.toSet());
     }
 }

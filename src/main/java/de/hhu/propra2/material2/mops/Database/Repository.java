@@ -10,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,51 +54,61 @@ public final class Repository {
      */
     @SuppressWarnings("checkstyle:magicnumber")
     public static void saveDatei(final DateiDTO dateiDTO) throws SQLException {
-        List<TagDTO> tags = dateiDTO.getTagDTOs();
-        for (TagDTO tag: tags) {
-            saveTagnutzung(dateiDTO, tag);
-        }
+
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
                         "insert into Datei (name, pfad, uploaderID, upload_datum,"
                                 + "veroeffentlichungs_datum, datei_groesse,"
                                 + "datei_typ, gruppeID, kategorie) "
-                                + " values (?, ?, ?, ?, ?, ?, ? ,?, ?)");
+                                + " values (?, ?, ?, ?, ?, ?, ? ,?, ?)", Statement.RETURN_GENERATED_KEYS);
 
         preparedStatement.setString(1, dateiDTO.getName());
         preparedStatement.setString(2, dateiDTO.getPfad());
         preparedStatement.setLong(3, dateiDTO.getUploader().getId());
-        preparedStatement.setDate(4, java.sql.Date.valueOf(dateiDTO.getUploaddatum())); //required sql.date
+        preparedStatement.setDate(4, java.sql.Date.valueOf(dateiDTO.getUploaddatum()));
         preparedStatement.setDate(5, java.sql.Date.valueOf(dateiDTO.getVeroeffentlichungsdatum()));
         preparedStatement.setLong(6, dateiDTO.getDateigroesse());
         preparedStatement.setString(7, dateiDTO.getDateityp());
         preparedStatement.setLong(8, dateiDTO.getGruppe().getId());
         preparedStatement.setString(9, dateiDTO.getKategorie());
 
+        List<TagDTO> tags = dateiDTO.getTagDTOs();
+        ResultSet id = preparedStatement.getGeneratedKeys();
+        id.next();
+
+        for (TagDTO tag: tags) {
+            saveTag(tag, id.getLong(1));
+        }
 
         preparedStatement.execute();
     }
 
-    private static void saveTagnutzung(DateiDTO dateiDTO, TagDTO tagDTO) throws SQLException {
+    private static void saveTagnutzung(final long dateiId, final long tagId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
                         "insert into Tagnutzung (dateiID, tagID)" + " values (?, ?)");
 
-        preparedStatement.setLong(1, dateiDTO.getId());
-        preparedStatement.setLong(2, tagDTO.getId());
+        preparedStatement.setLong(1, dateiId);
+        preparedStatement.setLong(2, tagId);
         preparedStatement.execute();
     }
 
-    private static void saveTag(final TagDTO tagDTO) throws SQLException {
+    private static void saveTag(final TagDTO tagDTO, long dateiId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
-                        "insert ignore into Tags (tag_name)" + " values (?)");
+                        "insert ignore into Tags (tag_name)" + " values (?)", Statement.RETURN_GENERATED_KEYS);
 
         preparedStatement.setString(1, tagDTO.getText());
         preparedStatement.execute();
+
+        ResultSet id = preparedStatement.getGeneratedKeys();
+        id.next();
+
+        saveTagnutzung(dateiId, id.getLong(1));
     }
 
+    @SuppressWarnings("checkstyle:magicnumber")
     public static void saveUser(final UserDTO userDTO) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
@@ -110,6 +121,7 @@ public final class Repository {
         preparedStatement.execute();
     }
 
+    @SuppressWarnings("checkstyle:magicnumber")
     public static void saveGruppe(final GruppeDTO gruppeDTO) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(

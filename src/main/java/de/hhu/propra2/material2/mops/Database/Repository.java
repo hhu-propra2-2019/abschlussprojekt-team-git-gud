@@ -93,7 +93,7 @@ public final class Repository {
         preparedStatement.execute();
     }
 
-    private static void saveTag(final TagDTO tagDTO, long dateiId) throws SQLException {
+    private static void saveTag(final TagDTO tagDTO, final long dateiId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
                         "insert ignore into Tags (tag_name)" + " values (?)", Statement.RETURN_GENERATED_KEYS);
@@ -127,10 +127,13 @@ public final class Repository {
         }
     }
 
-    private static void saveGruppenbelegung(final long userId, final long gruppeId, final boolean berechtigung) throws SQLException {
+    @SuppressWarnings("checkstyle:magicnumber")
+    private static void saveGruppenbelegung(final long userId,
+                                            final long gruppeId, final boolean berechtigung) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
-                        "insert ignore into Gruppenbelegung (upload_berechtigung, gruppeID, userID)" + " values (?, ?, ?)");
+                        "insert ignore into Gruppenbelegung (upload_berechtigung,"
+                                + "gruppeID, userID)" + " values (?, ?, ?)");
 
         preparedStatement.setBoolean(1, berechtigung);
         preparedStatement.setLong(2, gruppeId);

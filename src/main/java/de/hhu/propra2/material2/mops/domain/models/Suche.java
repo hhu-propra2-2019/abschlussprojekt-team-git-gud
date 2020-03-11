@@ -14,15 +14,15 @@ public class Suche {
     private final Gruppe gruppe;
 
     public final String[] getDateiTyp() {
-        return dateiTyp.clone();
+        return dateiTyp == null ? null : dateiTyp.clone();
     }
 
     public final String[] getTags() {
-        return tags.clone();
+        return tags == null ? null : tags.clone();
     }
 
     public final String[] getUploader() {
-        return uploader.clone();
+        return uploader == null ? null : uploader.clone();
     }
 
     public Suche(final String vonDatumArg,

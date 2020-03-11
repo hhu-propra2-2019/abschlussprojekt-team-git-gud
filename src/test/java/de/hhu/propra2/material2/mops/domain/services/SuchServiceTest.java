@@ -163,4 +163,24 @@ public class SuchServiceTest {
         assertTrue(result.contains(datei4));
     }
 
+    @Test
+    public void bisDatumFilter() {
+        Suche suche = new Suche(
+                "01.01.2000",
+                "20.02.2020",
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
+
+        final int expectedSizeOfList = 3;
+        assertThat(result.size(), is(expectedSizeOfList));
+        assertTrue(result.contains(datei1));
+        assertTrue(result.contains(datei2));
+        assertTrue(result.contains(datei3));
+    }
+
 }

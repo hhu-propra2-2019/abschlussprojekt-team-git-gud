@@ -45,6 +45,12 @@ public final class Repository {
         return user;
     }
 
+    /**
+     * Supress magic numbers error because those numbers are parameters
+     * @param dateiDTO
+     * @throws SQLException
+     */
+    @SuppressWarnings("checkstyle:magicnumber")
     public static void saveDatei(final DateiDTO dateiDTO) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(

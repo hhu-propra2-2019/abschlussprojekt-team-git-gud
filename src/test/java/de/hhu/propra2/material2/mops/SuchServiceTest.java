@@ -4,7 +4,11 @@ import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
 import de.hhu.propra2.material2.mops.Database.DateiRepository;
 import de.hhu.propra2.material2.mops.Database.GruppeRepository;
 import de.hhu.propra2.material2.mops.Database.UserRepository;
-import de.hhu.propra2.material2.mops.domain.models.*;
+import de.hhu.propra2.material2.mops.domain.models.Datei;
+import de.hhu.propra2.material2.mops.domain.models.Gruppe;
+import de.hhu.propra2.material2.mops.domain.models.Suche;
+import de.hhu.propra2.material2.mops.domain.models.Tag;
+import de.hhu.propra2.material2.mops.domain.models.User;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
 import de.hhu.propra2.material2.mops.domain.services.SuchService;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +18,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -50,6 +58,9 @@ public class SuchServiceTest {
     private Datei datei3;
     private Datei datei4;
 
+    /**
+     * setUP: SetUp needed for each test.
+     */
     @BeforeEach
     @SuppressWarnings("checkstyle:magicnumber")
     public void setUp() {
@@ -97,7 +108,7 @@ public class SuchServiceTest {
     }
 
     @Test
-    public void keine_Filter() {
+    public void keineFilter() {
         Suche suche = new Suche(
                 "01.01.2000",
                 "31.12.2100",
@@ -109,7 +120,8 @@ public class SuchServiceTest {
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
 
-        assertThat(result.size(), is(4));
+        final int expectedSizeOfList = 4;
+        assertThat(result.size(), is(expectedSizeOfList));
         assertTrue(result.contains(datei1));
         assertTrue(result.contains(datei2));
         assertTrue(result.contains(datei3));

@@ -103,18 +103,18 @@ public final class ModelService implements IModelService {
         List<Gruppe> groups = user.getAllGruppen();
         Set<String> tags = new HashSet<>();
         for (Gruppe gruppe : groups) {
-            tags.addAll(gruppe.getDateien()
-                    .stream()
-                    .map(Datei::getName)
-                    .collect(Collectors.toSet()));
+            gruppe.getDateien().forEach(datei -> datei.getTags()
+                    .forEach(tag -> tags.add(tag.getText())));
         }
         return tags;
     }
 
     public Set<String> getAlleTagsByGruppe(final Gruppe gruppe) {
-        return gruppe.getDateien()
-                .stream().map(Datei::getName)
-                .collect(Collectors.toSet());
+        List<Datei> dateienListe = gruppe.getDateien();
+        Set<String> tags = new HashSet<>();
+        dateienListe.forEach(datei -> datei.getTags()
+                .forEach(tag -> tags.add(tag.getText())));
+        return tags;
     }
 
     public Set<String> getAlleUploaderByUser(final String name) {

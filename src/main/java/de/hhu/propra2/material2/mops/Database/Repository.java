@@ -1,5 +1,4 @@
 package de.hhu.propra2.material2.mops.Database;
-
 import de.hhu.propra2.material2.mops.Database.DTOs.DateiDTO;
 import de.hhu.propra2.material2.mops.Database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.Database.DTOs.TagDTO;
@@ -87,7 +86,7 @@ public final class Repository {
     private static void saveTagnutzung(final long dateiId, final long tagId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
-                        "insert into Tagnutzung (dateiID, tagID)" + " values (?, ?)");
+                        "insert ignore into Tagnutzung (dateiID, tagID)" + " values (?, ?)");
 
         preparedStatement.setLong(1, dateiId);
         preparedStatement.setLong(2, tagId);
@@ -112,20 +111,39 @@ public final class Repository {
     public static void saveUser(final UserDTO userDTO) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
-                        "insert into User (userID, vorname, nachname, key_cloak_name)" + " values (?, ?, ?, ?)");
+                        "insert ignore into User (userID, vorname, nachname, key_cloak_name)" + " values (?, ?, ?, ?)");
 
         preparedStatement.setLong(1, userDTO.getId());
         preparedStatement.setString(2, userDTO.getVorname());
         preparedStatement.setString(3, userDTO.getNachname());
         preparedStatement.setString(4, userDTO.getKeycloakname());
         preparedStatement.execute();
+
+        HashMap<GruppeDTO, Boolean> gruppenBelegung = userDTO.getBelegungUndRechte();
+
+        for (GruppeDTO gruppe : gruppenBelegung.keySet()) {
+            saveGruppe(gruppe);
+            saveGruppenbelegung(userDTO.getId(), gruppe.getId(), gruppenBelegung.get(gruppe));
+        }
     }
 
-    @SuppressWarnings("checkstyle:magicnumber")
-    public static void saveGruppe(final GruppeDTO gruppeDTO) throws SQLException {
+    private static void saveGruppenbelegung(final long userId, final long gruppeId, final boolean berechtigung) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
-                        "insert into Gruppe (gruppeID, titel, beschreibung)" + " values (?, ?, ?)");
+                        "insert ignore into Gruppenbelegung (upload_berechtigung, gruppeID, userID)" + " values (?, ?, ?)");
+
+        preparedStatement.setBoolean(1, berechtigung);
+        preparedStatement.setLong(2, gruppeId);
+        preparedStatement.setLong(3, userId);
+        preparedStatement.execute();
+    }
+
+
+    @SuppressWarnings("checkstyle:magicnumber")
+    private static void saveGruppe(final GruppeDTO gruppeDTO) throws SQLException {
+        PreparedStatement preparedStatement =
+                connection.prepareStatement(
+                        "insert ignore into Gruppe (gruppeID, titel, beschreibung)" + " values (?, ?, ?)");
 
         preparedStatement.setLong(1, gruppeDTO.getId());
         preparedStatement.setString(2, gruppeDTO.getName());

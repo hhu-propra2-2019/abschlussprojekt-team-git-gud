@@ -4,12 +4,8 @@ import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
 import de.hhu.propra2.material2.mops.Database.DateiRepository;
 import de.hhu.propra2.material2.mops.Database.GruppeRepository;
 import de.hhu.propra2.material2.mops.Database.UserRepository;
-import de.hhu.propra2.material2.mops.domain.models.Datei;
-import de.hhu.propra2.material2.mops.domain.models.Gruppe;
-import de.hhu.propra2.material2.mops.domain.models.Tag;
-import de.hhu.propra2.material2.mops.domain.models.User;
+import de.hhu.propra2.material2.mops.domain.models.*;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
-import de.hhu.propra2.material2.mops.domain.models.Suche;
 import de.hhu.propra2.material2.mops.domain.services.SuchService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,11 +16,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 
 @ExtendWith(MockitoExtension.class)
 public class SuchServiceTest {
@@ -55,6 +51,7 @@ public class SuchServiceTest {
     private Datei datei4;
 
     @BeforeEach
+    @SuppressWarnings("checkstyle:magicnumber")
     public void setUp() {
         this.suchService = new SuchService(dateiRepoMock,
                 gruppenRepoMock,

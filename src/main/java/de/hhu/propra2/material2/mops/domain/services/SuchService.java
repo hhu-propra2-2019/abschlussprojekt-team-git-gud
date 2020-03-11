@@ -41,7 +41,7 @@ public class SuchService {
      */
     public List<Datei> starteSuche(final Suche suche,
                                    final String keyCloackName) {
-        User user = modelService.load(users.findByKeycloakname(keyCloackName));
+        User user = modelService.loadUser(users.findByKeycloakname(keyCloackName));
 
         final List<Datei> zuFiltern = new ArrayList<>();
         List<Datei> result = new ArrayList<>();

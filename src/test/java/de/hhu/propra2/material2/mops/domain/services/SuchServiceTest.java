@@ -145,4 +145,22 @@ public class SuchServiceTest {
         assertTrue(result.contains(datei4));
     }
 
+    @Test
+    public void vonDatumFilter() {
+        Suche suche = new Suche(
+                "20.02.2020",
+                "31.12.2100",
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
+
+        final int expectedSizeOfList = 1;
+        assertThat(result.size(), is(expectedSizeOfList));
+        assertTrue(result.contains(datei4));
+    }
+
 }

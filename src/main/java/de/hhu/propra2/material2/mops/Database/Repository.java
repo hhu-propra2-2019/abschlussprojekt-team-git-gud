@@ -45,12 +45,10 @@ public final class Repository {
         return user;
     }
 
-    public static void save(final DateiDTO dateiDTO) throws SQLException {
-
-        //TODO SAVE FILES AND THEIR TAGS IF THEY ARE NEW
+    public static void saveDatei(final DateiDTO dateiDTO) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
-                        "insert into users (name, pfad, uploaderID, upload_datum,"
+                        "insert into Datei (name, pfad, uploaderID, upload_datum,"
                                 + "veroeffentlichungs_datum, datei_groesse,"
                                 + "datei_typ, gruppeID, kategorie) "
                                 + " values (?, ?, ?, ?, ?, ?, ? ,?, ?)");
@@ -66,8 +64,40 @@ public final class Repository {
         preparedStatement.setString(9, dateiDTO.getKategorie());
 
         preparedStatement.execute();
-
     }
+
+    public static void saveTag(final TagDTO tagDTO) throws SQLException {
+        PreparedStatement preparedStatement =
+                connection.prepareStatement(
+                        "insert into Tags (tag_name)" + " values (?)");
+
+        preparedStatement.setString(1, tagDTO.getText());
+        preparedStatement.execute();
+    }
+
+    public static void saveUser(final UserDTO userDTO) throws SQLException {
+        PreparedStatement preparedStatement =
+                connection.prepareStatement(
+                        "insert into User (userID, vorname, nachname, key_cloak_name)" + " values (?, ?, ?, ?)");
+
+        preparedStatement.setLong(1, userDTO.getId());
+        preparedStatement.setString(2, userDTO.getVorname());
+        preparedStatement.setString(3, userDTO.getNachname());
+        preparedStatement.setString(4, userDTO.getKeycloakname());
+        preparedStatement.execute();
+    }
+
+    public static void saveGruppe(final GruppeDTO gruppeDTO) throws SQLException {
+        PreparedStatement preparedStatement =
+                connection.prepareStatement(
+                        "insert into Gruppe (gruppeID, titel, beschreibung)" + " values (?, ?, ?)");
+
+        preparedStatement.setLong(1, gruppeDTO.getId());
+        preparedStatement.setString(2, gruppeDTO.getName());
+        preparedStatement.setString(3, gruppeDTO.getDescription());
+        preparedStatement.execute();
+    }
+
 
     private static HashMap<GruppeDTO, Boolean> findAllGruppeByUserID(final long userId) throws SQLException {
         HashMap<GruppeDTO, Boolean> gruppen = new HashMap<GruppeDTO, Boolean>();

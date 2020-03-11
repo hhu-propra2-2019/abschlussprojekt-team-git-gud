@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public final class Repository {
     private static Connection connection;
@@ -52,6 +53,11 @@ public final class Repository {
      */
     @SuppressWarnings("checkstyle:magicnumber")
     public static void saveDatei(final DateiDTO dateiDTO) throws SQLException {
+        List<TagDTO> tags = dateiDTO.getTagDTOs();
+        for (TagDTO tag: tags) {
+            saveTagnutzung(dateiDTO, tag);
+        }
+
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
                         "insert into Datei (name, pfad, uploaderID, upload_datum,"
@@ -69,6 +75,16 @@ public final class Repository {
         preparedStatement.setLong(8, dateiDTO.getGruppe().getId());
         preparedStatement.setString(9, dateiDTO.getKategorie());
 
+        preparedStatement.execute();
+    }
+
+    private static void saveTagnutzung(DateiDTO dateiDTO, TagDTO tagDTO) throws SQLException {
+        PreparedStatement preparedStatement =
+                connection.prepareStatement(
+                        "insert into Tagnutzung (dateiID, tagID)" + " values (?, ?)");
+
+        preparedStatement.setLong(1, dateiDTO.getId());
+        preparedStatement.setLong(2, tagDTO.getId());
         preparedStatement.execute();
     }
 

@@ -7,16 +7,6 @@ import java.util.List;
 
 public class Datei {
     /**
-     * Unique ID from database.
-     */
-    @Getter
-    private long id;
-    /**
-     * Name of file.
-     */
-    @Getter
-    private String name;
-    /**
      * Path of file.
      */
     @Getter
@@ -31,7 +21,6 @@ public class Datei {
      */
     @Getter
     private final List<Tag> tags;
-    //final Gruppe gruppe;
     /**
      * Upload date.
      */
@@ -42,16 +31,27 @@ public class Datei {
      * of its group.
      */
     private final Date veroeffentlichungsdatum;
+    //final Gruppe gruppe;
     /**
      * File size.
      */
     @Getter
-    private final double dateigroesse;
+    private final long dateigroesse;
     /**
      * File type.
      */
     @Getter
     private final String dateityp;
+    /**
+     * Unique ID from database.
+     */
+    @Getter
+    private long id;
+    /**
+     * Name of file.
+     */
+    @Getter
+    private String name;
 
     public Datei(
             final long idArgs,
@@ -61,7 +61,7 @@ public class Datei {
             final List<Tag> tagsArgs,
             final Date uploaddatumArgs,
             final Date veroeffentlichungsdatumArgs,
-            final double dateigroesseArgs,
+            final long dateigroesseArgs,
             final String dateitypArgs) {
         this.id = idArgs;
         this.name = nameArgs;

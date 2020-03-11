@@ -51,6 +51,7 @@ dependencies {
     testImplementation 'com.tngtech.archunit:archunit-junit5:0.13.0'
     testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'
     implementation 'mops:styleguide:2.1.0'
+    implementation 'commons-io:commons-io:2.6'
 }
 
 test {

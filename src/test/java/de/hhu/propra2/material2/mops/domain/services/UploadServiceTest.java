@@ -29,15 +29,11 @@ public class UploadServiceTest {
         User userMock = mock(User.class);
         Date uploadDatum = new Date();
         Date veroeffentlichungsdatum = new Date();
-        final double dateiegroesse = 22.5;
+        final long dateiegroesse = 2250;
 
         Datei datei = new Datei(1, "test.pdf", null, userMock, tags,
                 uploadDatum, veroeffentlichungsdatum, dateiegroesse, "pdf");
 
-        uploadService.dateiHochladen(datei);
-
-        //DateiDTO dateiDTO
-
-
+        //uploadService.dateiHochladen(datei);
     }
 }

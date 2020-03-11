@@ -35,7 +35,7 @@ public final class Repository {
                 users.getString("vorname"),
                 users.getString("nachname"),
                 users.getString("key_cloak_name"),
-                new HashMap<GruppeDTO, Boolean>());
+                findAllGruppeByUserID(users.getLong("userID")));
 
         return user;
     }

@@ -99,8 +99,8 @@ public class SuchServiceTest {
                 date1, veroeffentlichung, 1, "jpg");
         datei4 = new Datei(4, "4", "a/b/4", uploaderMock, tags3,
                 date2, veroeffentlichung, 1, "jpg");
-        dateienGruppe1 = new ArrayList<>(Arrays.asList(datei1, datei2, datei3, datei4));
-        dateienGruppe2 = new ArrayList<>(Arrays.asList(datei1, datei2, datei3));
+        dateienGruppe1 = new ArrayList<>(Arrays.asList(datei1, datei2, datei3));
+        dateienGruppe2 = new ArrayList<>(Arrays.asList(datei4));
 
         when(gruppeMock1.getDateien()).thenReturn(dateienGruppe1);
         when(gruppeMock2.getDateien()).thenReturn(dateienGruppe2);

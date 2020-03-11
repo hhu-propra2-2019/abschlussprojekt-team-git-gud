@@ -1,4 +1,4 @@
-package de.hhu.propra2.material2.mops;
+package de.hhu.propra2.material2.mops.domain.services;
 
 import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
 import de.hhu.propra2.material2.mops.Database.DateiRepository;
@@ -9,8 +9,6 @@ import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
 import de.hhu.propra2.material2.mops.domain.models.Tag;
 import de.hhu.propra2.material2.mops.domain.models.User;
-import de.hhu.propra2.material2.mops.domain.services.ModelService;
-import de.hhu.propra2.material2.mops.domain.services.SuchService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -105,6 +103,25 @@ public class SuchServiceTest {
         when(gruppeMock1.getDateien()).thenReturn(dateienGruppe1);
         when(gruppeMock2.getDateien()).thenReturn(dateienGruppe2);
         when(userMock.getAllGruppen()).thenReturn(Arrays.asList(gruppeMock1, gruppeMock2));
+    }
+
+    @Test
+    public void keineDateienInGruppen() {
+        when(gruppeMock1.getDateien()).thenReturn(new ArrayList<>());
+        when(gruppeMock2.getDateien()).thenReturn(new ArrayList<>());
+        Suche suche = new Suche(
+                "01.01.2000",
+                "31.12.2100",
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
+
+        final int expectedSizeOfList = 0;
+        assertThat(result.size(), is(expectedSizeOfList));
     }
 
     @Test

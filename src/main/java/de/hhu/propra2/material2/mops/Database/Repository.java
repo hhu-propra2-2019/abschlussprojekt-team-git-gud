@@ -79,7 +79,6 @@ public final class Repository {
         preparedStatement.execute();
     }
 
-<<<<<<< HEAD
     private static void saveTagnutzung(DateiDTO dateiDTO, TagDTO tagDTO) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
@@ -90,10 +89,7 @@ public final class Repository {
         preparedStatement.execute();
     }
 
-    public static void saveTag(final TagDTO tagDTO) throws SQLException {
-=======
     private static void saveTag(final TagDTO tagDTO) throws SQLException {
->>>>>>> b4cb3984cd5358e047e3072453f677ed1aed5272
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
                         "insert ignore into Tags (tag_name)" + " values (?)");

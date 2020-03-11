@@ -9,7 +9,8 @@ import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Tag;
 import de.hhu.propra2.material2.mops.domain.models.User;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
-import de.hhu.propra2.material2.mops.models.Suche;
+import de.hhu.propra2.material2.mops.domain.models.Suche;
+import de.hhu.propra2.material2.mops.domain.services.SuchService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,10 +20,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 @ExtendWith(MockitoExtension.class)
 public class SuchServiceTest {
@@ -108,8 +111,10 @@ public class SuchServiceTest {
                 null,
                 null);
 
-        List<Datei> result = suchService.starteSuche(suche, "Peter");
+        List<Datei> result = suchService.starteSuche(suche, "Peter", userMock);
 
+        assertThat(result.size(), is(4));
+//        assertThat(result, contains(Arrays.asList(datei1, datei2, datei3, datei4)));
         assertTrue(result.contains(datei1));
         assertTrue(result.contains(datei2));
         assertTrue(result.contains(datei3));

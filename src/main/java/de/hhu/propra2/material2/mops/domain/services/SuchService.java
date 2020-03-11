@@ -1,6 +1,5 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
-import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
 import de.hhu.propra2.material2.mops.Database.DateiRepository;
 import de.hhu.propra2.material2.mops.Database.GruppeRepository;
 import de.hhu.propra2.material2.mops.Database.UserRepository;

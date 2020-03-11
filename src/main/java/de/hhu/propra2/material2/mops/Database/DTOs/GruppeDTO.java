@@ -21,10 +21,6 @@ public class GruppeDTO {
      */
     private final String description;
     /**
-     * List of participating users from database.
-     */
-    private final List<UserDTO> users;
-    /**
      * List of related files from database.
      */
     @Getter(AccessLevel.PUBLIC)
@@ -35,18 +31,15 @@ public class GruppeDTO {
      *  @param idArg
      * @param nameArg
      * @param descriptionArg
-     * @param userArgs
      * @param dateiArgs
      */
     public GruppeDTO(final long idArg,
                      final String nameArg,
                      final String descriptionArg,
-                     final List<UserDTO> userArgs,
                      final List<DateiDTO> dateiArgs) {
         this.id = idArg;
         this.name = nameArg;
         this.description = descriptionArg;
-        this.users = userArgs;
         this.dateien = dateiArgs;
     }
 }

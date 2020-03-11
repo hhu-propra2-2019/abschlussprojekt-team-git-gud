@@ -14,8 +14,6 @@ public class Gruppe {
      * Groups name.
      */
     private String name;
-    //final List<User> users; shouldn't be necessary
-    // because from a group we never have to go back to the user
     /**
      * List of related files.
      */

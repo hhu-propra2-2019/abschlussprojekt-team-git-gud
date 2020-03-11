@@ -180,7 +180,6 @@ public final class Repository {
         gruppe = new GruppeDTO(id,
                 gruppeResult.getString("titel"),
                 gruppeResult.getString("beschreibung"),
-                findAllUserByGruppeId(id),
                 findAllDateiByGruppeId(id));
         for (DateiDTO datei: gruppe.getDateien()) {
             datei.setGruppe(gruppe);

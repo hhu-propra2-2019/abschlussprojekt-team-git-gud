@@ -20,7 +20,7 @@ DROP TABLE IF EXISTS Tags;
 CREATE TABLE Tags
 (
     tagID BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    tag_name text NOT NULL
+    tag_name text UNIQUE NOT NULL
 );
 
 DROP TABLE IF EXISTS Gruppenbelegung;

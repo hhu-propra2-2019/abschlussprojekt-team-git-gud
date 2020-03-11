@@ -50,7 +50,7 @@ public final class Repository {
         //TODO SAVE FILES AND THEIR TAGS IF THEY ARE NEW
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
-                        "insert into users (name, pfad, uploaderID, upload_datum,"
+                        "insert into Datei (name, pfad, uploaderID, upload_datum,"
                                 + "veroeffentlichungs_datum, datei_groesse,"
                                 + "datei_typ, gruppeID, kategorie) "
                                 + " values (?, ?, ?, ?, ?, ?, ? ,?, ?)");

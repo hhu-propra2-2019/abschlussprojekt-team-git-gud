@@ -19,7 +19,7 @@ public final class Repository {
 
     static {
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3308/Ziegel24", "root", "geheim");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:23006/materialsammlung", "root", "secret");
         } catch (SQLException e) {
             e.printStackTrace();
         }

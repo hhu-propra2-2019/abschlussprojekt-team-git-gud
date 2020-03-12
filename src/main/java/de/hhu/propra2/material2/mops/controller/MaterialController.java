@@ -137,8 +137,8 @@ public class MaterialController {
     }
 
     /** upload routing
-     * @param token injectet keycloak token
-     * @param model
+     * @param token injected keycloak token
+     * @param model injected thymeleaf model
      * @return upload routing
      */
     @PostMapping("/upload")
@@ -147,7 +147,7 @@ public class MaterialController {
         model.addAttribute("account", createAccountFromPrincipal(token));
         authenticatedAccess.increment();
         System.out.println(upForm);
-        return "/upload";
+        return "redirect:/upload";
     }
     /**route to logout.
      * @param request logout request

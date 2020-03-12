@@ -16,7 +16,8 @@
         Upload
     </h1>
     <div class="container">
-        <form method="post" enctype="multipart/form-data" th:object="${upForm}">
+        <form method="post" enctype="multipart/form-data">
+            <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
             <div>
                 <label for="SelectGroup">Gruppenauswahl </label>
                 <select class="form-control" id="SelectGroup" name="gruppenwahl">
@@ -51,7 +52,7 @@
             </div>
 
             <div>
-                <input type="file" name="datei" size="50" accept="text/*">
+                <input type="file" name="datei" >
             </div>
 
             <div>

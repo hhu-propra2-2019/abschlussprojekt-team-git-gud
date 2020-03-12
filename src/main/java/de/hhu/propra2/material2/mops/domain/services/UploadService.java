@@ -8,8 +8,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.Date;
 import java.util.List;
 
@@ -26,7 +26,7 @@ public class UploadService {
     }
 
     @Transactional
-    public void dateiHochladen(final File file, final String dateiname,
+    public void dateiHochladen(final MultipartFile file, final String dateiname,
                                final User user,
                                final Gruppe gruppe,
                                final Date veroeffentlichungsdatum,
@@ -36,13 +36,12 @@ public class UploadService {
             throw new UnsupportedOperationException("not jet implemented");
         }
         final String fileName = file.getName();
-        final long dateigroesse = file.length() / 1000;
+        final long dateigroesse = file.getSize();
         final String dateityp = FilenameUtils.getExtension(fileName);
 
         Datei datei = new Datei(1, "test.pdf", null, user, tags,
                 new Date(), veroeffentlichungsdatum, dateigroesse, dateityp);
         modelService.saveDatei(datei, gruppe);
-
-        //TODO: fileUploadService.uploadFile();.
+        fileUploadService.upload(file, String.valueOf(gruppe.getId()));
     }
 }

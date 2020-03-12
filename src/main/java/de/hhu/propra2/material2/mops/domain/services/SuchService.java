@@ -44,7 +44,7 @@ public class SuchService {
         User user = modelService.loadUser(users.findByKeycloakname(keyCloackName));
 
         final List<Datei> zuFiltern = new ArrayList<>();
-        List<Datei> result = new ArrayList<>();
+        List<Datei> result;
 
         if (suche.getGruppe() != null) {
             zuFiltern.addAll(suche.getGruppe().getDateien());
@@ -54,7 +54,7 @@ public class SuchService {
         }
         result = zuFiltern;
         if (suche.getTags() != null) {
-            result = tagSuche(suche.getTags(), zuFiltern);
+            result = tagSuche(suche.getTags(), result);
         }
         if (suche.getDateiTyp() != null) {
             result = typSuche(suche.getDateiTyp(), result);
@@ -65,7 +65,7 @@ public class SuchService {
         if (suche.getBisDatum() != null) {
             result = datumsSuche(suche.getVonDatum(),
                     suche.getBisDatum(),
-                    zuFiltern);
+                    result);
         }
         return result;
     }

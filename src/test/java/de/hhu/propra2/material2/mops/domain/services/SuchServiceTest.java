@@ -185,11 +185,11 @@ public class SuchServiceTest {
 
     @Test
     public void einNichtVergebenerTagFilter() {
-        String[] tagArray = {"NichtVergebenerTag"};
+        String[] tags = {"NichtVergebenerTag"};
         Suche suche = new Suche(
                 "01.01.2000",
                 "31.12.2100",
-                tagArray,
+                tags,
                 null,
                 null,
                 null,
@@ -203,11 +203,11 @@ public class SuchServiceTest {
 
     @Test
     public void einVergebenerTagFilter() {
-        String[] tagArray = {"Vorlesung"};
+        String[] tags = {"Vorlesung"};
         Suche suche = new Suche(
                 "01.01.2000",
                 "31.12.2100",
-                tagArray,
+                tags,
                 null,
                 null,
                 null,
@@ -223,11 +223,11 @@ public class SuchServiceTest {
 
     @Test
     public void mehrereVergebeneTagsFilter() {
-        String[] tagArray = {"Relevant", "Irgendwas"};
+        String[] tags = {"Relevant", "Irgendwas"};
         Suche suche = new Suche(
                 "01.01.2000",
                 "31.12.2100",
-                tagArray,
+                tags,
                 null,
                 null,
                 null,
@@ -244,11 +244,11 @@ public class SuchServiceTest {
 
     @Test
     public void mehrereVergebeneTagsVerschiedeneDateienFilter() {
-        String[] tagArray = {"Relevant", "Irgendwas", "Vorlesung"};
+        String[] tags = {"Relevant", "Irgendwas", "Vorlesung"};
         Suche suche = new Suche(
                 "01.01.2000",
                 "31.12.2100",
-                tagArray,
+                tags,
                 null,
                 null,
                 null,
@@ -263,11 +263,11 @@ public class SuchServiceTest {
 
     @Test
     public void vergebeneUndNichtVergebeneTagsFilter() {
-        String[] tagArray = {"Relevant", "Haus"};
+        String[] tags = {"Relevant", "Haus"};
         Suche suche = new Suche(
                 "01.01.2000",
                 "31.12.2100",
-                tagArray,
+                tags,
                 null,
                 null,
                 null,
@@ -277,5 +277,65 @@ public class SuchServiceTest {
 
         final int expectedSizeOfList = 0;
         assertThat(result.size(), is(expectedSizeOfList));
+    }
+
+    @Test
+    public void nichtVergebenerDateiTypFilter() {
+        String[] dateiTyp = {"docx"};
+        Suche suche = new Suche(
+                "01.01.2000",
+                "31.12.2100",
+                null,
+                dateiTyp,
+                null,
+                null,
+                null);
+
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
+
+        final int expectedSizeOfList = 0;
+        assertThat(result.size(), is(expectedSizeOfList));
+    }
+
+    @Test
+    public void einDateiTypFilter() {
+        String[] dateiTyp = {"pdf"};
+        Suche suche = new Suche(
+                "01.01.2000",
+                "31.12.2100",
+                null,
+                dateiTyp,
+                null,
+                null,
+                null);
+
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
+
+        final int expectedSizeOfList = 2;
+        assertThat(result.size(), is(expectedSizeOfList));
+        assertTrue(result.contains(datei1));
+        assertTrue(result.contains(datei2));
+    }
+
+    @Test
+    public void mehrereDateiTypenFilter() {
+        String[] dateiTyp = {"pdf", "jpg"};
+        Suche suche = new Suche(
+                "01.01.2000",
+                "31.12.2100",
+                null,
+                dateiTyp,
+                null,
+                null,
+                null);
+
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
+
+        final int expectedSizeOfList = 4;
+        assertThat(result.size(), is(expectedSizeOfList));
+        assertTrue(result.contains(datei1));
+        assertTrue(result.contains(datei2));
+        assertTrue(result.contains(datei3));
+        assertTrue(result.contains(datei4));
     }
 }

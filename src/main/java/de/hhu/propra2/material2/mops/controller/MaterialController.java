@@ -94,9 +94,10 @@ public class MaterialController {
         gruppen.add(new Gruppe(1L, "ProPra", null));
         gruppen.add(new Gruppe(2L, "Hard Prog", null));
 
-        Set<Tag> tags = new HashSet<>();
-        tags.add(new Tag(1L, "Klausurrelevant"));
-        tags.add(new Tag(2L, "Git"));
+        Set<String> tags = new HashSet<>();
+        tags.add("Klausurrelevant");
+        tags.add("Spring Boot");
+        tags.add("Git");
 
         Set<String> dateiTypen = new HashSet<>();
         dateiTypen.add("Java");

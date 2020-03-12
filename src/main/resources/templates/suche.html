@@ -38,8 +38,8 @@
                 <label for="Tag">Tag </label>
                 <div class="form-check" th:each="tag : ${tags}">
                     <input class="form-check-input" type="checkbox" value="" id="Tag"
-                           th:value="${tag.getId()}" name="tags">
-                    <label class="form-check-label" for="Tag" th:text="${tag.getText()}"></label>
+                           th:value="${tag}" name="tags">
+                    <label class="form-check-label" for="Tag" th:text="${tag}"></label>
                 </div>
             </div>
 
@@ -52,18 +52,11 @@
             </div>
 
             <div class="form-group">
-                <label for="Uploader1">Uploader </label>
+                <label for="Uploader">Uploader </label>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="Uploader1">
-                    <label class="form-check-label" for="Uploader1">
+                    <input class="form-check-input" type="checkbox" value="" id="Uploader">
+                    <label class="form-check-label" for="Uploader">
                         Chris
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="Uploader2">
-
-                    <label class="form-check-label" for="Uploader2">
-                        Dr. Prof. Herr. Jens
                     </label>
                 </div>
             </div>

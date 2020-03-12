@@ -46,7 +46,9 @@ public class SuchServiceTest {
     @Mock
     private Gruppe gruppeMock2;
     @Mock
-    private User uploaderMock;
+    private User uploaderMock1;
+    @Mock
+    private User uploaderMock2;
 
     private SuchService suchService;
     private List<Datei> dateienGruppe1;
@@ -88,14 +90,18 @@ public class SuchServiceTest {
         List<Tag> tags2 = new ArrayList<>(Arrays.asList(tag1));
         List<Tag> tags3 = new ArrayList<>(Arrays.asList(tag2, tag4));
 
+        //Uploader for Datei
+        Mockito.lenient().when(uploaderMock1.getNachname()).thenReturn("Baum");
+        Mockito.lenient().when(uploaderMock2.getNachname()).thenReturn("Stein");
+
         //Dateien for List<Datei>
-        datei1 = new Datei(1, "1", "a/b/2", uploaderMock, tags1,
+        datei1 = new Datei(1, "1", "a/b/2", uploaderMock1, tags1,
                 date1, veroeffentlichung, 1, "pdf");
-        datei2 = new Datei(2, "2", "a/b/2", uploaderMock, tags2,
+        datei2 = new Datei(2, "2", "a/b/2", uploaderMock2, tags2,
                 date1, veroeffentlichung, 1, "pdf");
-        datei3 = new Datei(3, "3", "a/b/3", uploaderMock, tags3,
+        datei3 = new Datei(3, "3", "a/b/3", uploaderMock1, tags3,
                 date1, veroeffentlichung, 1, "jpg");
-        datei4 = new Datei(4, "4", "a/b/4", uploaderMock, tags3,
+        datei4 = new Datei(4, "4", "a/b/4", uploaderMock2, tags3,
                 date2, veroeffentlichung, 1, "jpg");
         dateienGruppe1 = new ArrayList<>(Arrays.asList(datei1, datei2, datei3));
         dateienGruppe2 = new ArrayList<>(Arrays.asList(datei4));
@@ -281,12 +287,12 @@ public class SuchServiceTest {
 
     @Test
     public void nichtVergebenerDateiTypFilter() {
-        String[] dateiTyp = {"docx"};
+        String[] dateiTypen = {"docx"};
         Suche suche = new Suche(
                 "01.01.2000",
                 "31.12.2100",
                 null,
-                dateiTyp,
+                dateiTypen,
                 null,
                 null,
                 null);
@@ -299,12 +305,12 @@ public class SuchServiceTest {
 
     @Test
     public void einDateiTypFilter() {
-        String[] dateiTyp = {"pdf"};
+        String[] dateiTypen = {"pdf"};
         Suche suche = new Suche(
                 "01.01.2000",
                 "31.12.2100",
                 null,
-                dateiTyp,
+                dateiTypen,
                 null,
                 null,
                 null);
@@ -319,13 +325,73 @@ public class SuchServiceTest {
 
     @Test
     public void mehrereDateiTypenFilter() {
-        String[] dateiTyp = {"pdf", "jpg"};
+        String[] dateiTypen = {"pdf", "jpg"};
         Suche suche = new Suche(
                 "01.01.2000",
                 "31.12.2100",
                 null,
-                dateiTyp,
+                dateiTypen,
                 null,
+                null,
+                null);
+
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
+
+        final int expectedSizeOfList = 4;
+        assertThat(result.size(), is(expectedSizeOfList));
+        assertTrue(result.contains(datei1));
+        assertTrue(result.contains(datei2));
+        assertTrue(result.contains(datei3));
+        assertTrue(result.contains(datei4));
+    }
+
+    @Test
+    public void nichtVorhandenerUploaderFilter() {
+        String[] uploader = {"See"};
+        Suche suche = new Suche(
+                "01.01.2000",
+                "31.12.2100",
+                null,
+                null,
+                uploader,
+                null,
+                null);
+
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
+
+        final int expectedSizeOfList = 0;
+        assertThat(result.size(), is(expectedSizeOfList));
+    }
+
+    @Test
+    public void einVorhandenerUploaderFilter() {
+        String[] uploader = {"Baum"};
+        Suche suche = new Suche(
+                "01.01.2000",
+                "31.12.2100",
+                null,
+                null,
+                uploader,
+                null,
+                null);
+
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
+
+        final int expectedSizeOfList = 2;
+        assertThat(result.size(), is(expectedSizeOfList));
+        assertTrue(result.contains(datei1));
+        assertTrue(result.contains(datei3));
+    }
+
+    @Test
+    public void mehrereUploaderFilter() {
+        String[] uploader = {"Baum", "Stein"};
+        Suche suche = new Suche(
+                "01.01.2000",
+                "31.12.2100",
+                null,
+                null,
+                uploader,
                 null,
                 null);
 

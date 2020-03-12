@@ -13,95 +13,49 @@
 <body>
 <div id="content" th:fragment="mycontent">
     <h1 class="text-center">
-        Suche
+        Upload
     </h1>
     <div class="container">
-        <form action="" method="post" >
-            <div class="form-group">
+        <form method="post" enctype="multipart/form-data" th:object="${upForm}">
+            <div>
                 <label for="SelectGroup">Gruppenauswahl </label>
-                <select class="form-control" id="SelectGroup" name="gruppe">
+                <select class="form-control" id="SelectGroup" name="gruppenwahl">
                     <option>  ProPra  </option>
                     <option>  RDB  </option>
                 </select>
             </div>
 
-            <div class="form-group">
+            <div>
                 <label for="dataname">Dateiname </label>
-                <input type="text" class="form-control" id="dataname" placeholder="Eingabe">
+                <input type="text" class="form-control" id="dataname" name="dateiname" placeholder="Eingabe">
+            </div>
+
+            <div>
+                <label for="tagsIn">Tags </label>
+                <input type="text" class="form-control" id="tagsIn" name="selectedTags"  placeholder="Vorlesung, ">
             </div>
 
             <div class="form-group">
-                <form autocomplete="off" action="/action_page.php">
-                    <div class="autocomplete" style="width:300px;">
-                        <input id="TagInput" type="text" name="Tags" placeholder="Tags">
-                    </div>
-                </form>
-            </div>
-
-            <div class="form-group list-inline">
-                <label for="Dateityp1">Dateityp </label>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="Dateityp1">
-                    <label class="form-check-label" for="Dateityp1">
-                        PDF
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="Dateityp2">
-
-                    <label class="form-check-label" for="Dateityp2">
-                        XDOC
-                    </label>
-                </div>
+                <ul>
+                    <li th:each="tag : ${tags}">
+                        <span  th:text="${tag.text}">Vorlesung</span>
+                    </li>
+                </ul>
             </div>
 
             <div class="form-group">
-                <label for="Uploader1">Uploader </label>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="Uploader1">
-                    <label class="form-check-label" for="Uploader1">
-                        Chris
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="Uploader2">
-
-                    <label class="form-check-label" for="Uploader2">
-                        Dr. Prof. Herr. Jens
-                    </label>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Datum </label>
-                    <div class="form-inline">
-                        <label> Von</label>
-                        <div class="form-check">
-                            <input type="date" value="" id="FromDate" >
-                        </div>
-                        <label> Bis</label>
-                        <div class="form-check">
-                            <input type="date" value="" id="UntilDate">
-                        </div>
-                    </div>
-            </div>
-
-            <div class="form-group">
-                <label for="SelectSearchBy">Sortierung </label>
-                <div class="form-inline">
-                    <select class="form-control" id="SelectSearchBy" name="Sortierung">
-                        <option> Name </option>
-                        <option> Datum </option>
-                    </select>
-                    <select class="form-control" id="SelectOrder" name="Reihenfolge">
-                        <option> aufsteigend </option>
-                        <option> absteigend </option>
-                    </select>
+                <label for="timedDate">Getimete Veröffentlichung (optional)</label>
+                <div>
+                    <input type="date" value="" name="timedUpload"  id="timedDate">
                 </div>
             </div>
 
             <div>
-                <input class="btn btn-primary" type="submit" name="search" value="Suchen">
+                <input type="file" name="datei" size="50" accept="text/*">
+            </div>
+
+            <div>
+                <input class="btn btn-primary" type="submit" name="hochladen" value="Hochladen">
             </div>
         </form>
     </div>

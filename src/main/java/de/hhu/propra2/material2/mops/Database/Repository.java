@@ -93,22 +93,17 @@ public final class Repository {
                 connection.prepareStatement(
                         "update Datei set veroeffentlichungs_datum=?, datei_groesse=?, kategorie=?");
 
-        preparedStatement.setString(1, dateiDTO.getName());
-        preparedStatement.setString(2, dateiDTO.getPfad());
-        preparedStatement.setLong(3, dateiDTO.getUploader().getId());
-        preparedStatement.setDate(4, java.sql.Date.valueOf(dateiDTO.getUploaddatum()));
-        preparedStatement.setDate(5, java.sql.Date.valueOf(dateiDTO.getVeroeffentlichungsdatum()));
-        preparedStatement.setLong(6, dateiDTO.getDateigroesse());
-        preparedStatement.setString(7, dateiDTO.getDateityp());
-        preparedStatement.setLong(8, dateiDTO.getGruppe().getId());
-        preparedStatement.setString(9, dateiDTO.getKategorie());
+        preparedStatement.setDate(1, java.sql.Date.valueOf(dateiDTO.getVeroeffentlichungsdatum()));
+        preparedStatement.setLong(2, dateiDTO.getDateigroesse());
+        preparedStatement.setString(3, dateiDTO.getKategorie());
 
         List<TagDTO> tags = dateiDTO.getTagDTOs();
         preparedStatement.execute();
 
+        deleteTagRelationsByDateiId(dateiDTO.getId());
 
         for (TagDTO tag: tags) {
-
+            saveTag(tag, dateiDTO.getId());
         }
     }
 
@@ -341,7 +336,7 @@ public final class Repository {
     }
 
 
-    private void deleteTagRelationsByDateiId(final long dateiId) throws SQLException {
+    private static void deleteTagRelationsByDateiId(final long dateiId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement("delete from Tagnutzung where dateiID=?");
         preparedStatement.setLong(1, dateiId);

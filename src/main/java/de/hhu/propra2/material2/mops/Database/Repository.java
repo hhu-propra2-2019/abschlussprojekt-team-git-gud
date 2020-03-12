@@ -87,7 +87,7 @@ public final class Repository {
         }
 
     }
-
+    @SuppressWarnings("checkstyle:magicnumber")
     private static void updateDatei(final DateiDTO dateiDTO) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
@@ -106,13 +106,12 @@ public final class Repository {
         List<TagDTO> tags = dateiDTO.getTagDTOs();
         preparedStatement.execute();
 
-        ResultSet id = preparedStatement.getGeneratedKeys();
-        id.next();
 
         for (TagDTO tag: tags) {
-            saveTag(tag, id.getLong(1));
+
         }
     }
+
 
     @SuppressWarnings("checkstyle:magicnumber")
     private static boolean dateiExists(final DateiDTO dateiDTO) throws SQLException {

@@ -67,7 +67,8 @@ public final class DateiDTO {
     private final String kategorie;
 
     /**
-     * Standard AllArgsConstructor for import from database.
+     * Standard Constructor for import from database
+     * and for saving changes to existing Datei.
      *  @param idArg
      * @param nameArg
      * @param pfadArg

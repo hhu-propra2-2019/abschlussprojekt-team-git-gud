@@ -54,13 +54,44 @@ public final class Repository {
     @SuppressWarnings("checkstyle:magicnumber")
     public static void saveDatei(final DateiDTO dateiDTO) throws SQLException {
 
+        if(!dateiExists(dateiDTO)) {
+            PreparedStatement preparedStatement =
+                    connection.prepareStatement(
+                            "insert into Datei (name, pfad, uploaderID, upload_datum,"
+                                    + "veroeffentlichungs_datum, datei_groesse,"
+                                    + "datei_typ, gruppeID, kategorie) "
+                                    + " values (?, ?, ?, ?, ?, ?, ? ,?, ?)", Statement.RETURN_GENERATED_KEYS);
 
+            preparedStatement.setString(1, dateiDTO.getName());
+            preparedStatement.setString(2, dateiDTO.getPfad());
+            preparedStatement.setLong(3, dateiDTO.getUploader().getId());
+            preparedStatement.setDate(4, java.sql.Date.valueOf(dateiDTO.getUploaddatum()));
+            preparedStatement.setDate(5, java.sql.Date.valueOf(dateiDTO.getVeroeffentlichungsdatum()));
+            preparedStatement.setLong(6, dateiDTO.getDateigroesse());
+            preparedStatement.setString(7, dateiDTO.getDateityp());
+            preparedStatement.setLong(8, dateiDTO.getGruppe().getId());
+            preparedStatement.setString(9, dateiDTO.getKategorie());
+
+            List<TagDTO> tags = dateiDTO.getTagDTOs();
+            preparedStatement.execute();
+
+            ResultSet id = preparedStatement.getGeneratedKeys();
+            id.next();
+
+            for (TagDTO tag: tags) {
+                saveTag(tag, id.getLong(1));
+            }
+
+        }else {
+            updateDatei(dateiDTO);
+        }
+
+    }
+
+    private static void updateDatei(final DateiDTO dateiDTO) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
-                        "insert into Datei (name, pfad, uploaderID, upload_datum,"
-                                + "veroeffentlichungs_datum, datei_groesse,"
-                                + "datei_typ, gruppeID, kategorie) "
-                                + " values (?, ?, ?, ?, ?, ?, ? ,?, ?)", Statement.RETURN_GENERATED_KEYS);
+                        "update Datei set veroeffentlichungs_datum=?, datei_groesse=?, kategorie=?");
 
         preparedStatement.setString(1, dateiDTO.getName());
         preparedStatement.setString(2, dateiDTO.getPfad());
@@ -73,14 +104,29 @@ public final class Repository {
         preparedStatement.setString(9, dateiDTO.getKategorie());
 
         List<TagDTO> tags = dateiDTO.getTagDTOs();
+        preparedStatement.execute();
+
         ResultSet id = preparedStatement.getGeneratedKeys();
         id.next();
 
         for (TagDTO tag: tags) {
             saveTag(tag, id.getLong(1));
         }
+    }
 
-        preparedStatement.execute();
+    @SuppressWarnings("checkstyle:magicnumber")
+    private static boolean dateiExists(final DateiDTO dateiDTO) throws SQLException {
+        PreparedStatement preparedStatement =
+                connection.prepareStatement(
+                        "select * from Datei where name=? AND datei_typ=? AND gruppeID=?");
+
+        preparedStatement.setString(1, dateiDTO.getName());
+        preparedStatement.setString(2, dateiDTO.getDateityp());
+        preparedStatement.setLong(3, dateiDTO.getGruppe().getId());
+
+        ResultSet result = preparedStatement.executeQuery();
+
+        return result.next();
     }
 
     private static void saveTagnutzung(final long dateiId, final long tagId) throws SQLException {
@@ -164,7 +210,7 @@ public final class Repository {
         ResultSet gruppenResult = preparedStatement.executeQuery();
 
         while (gruppenResult.next()) {
-            gruppen.put(findGruppeById(gruppenResult.getLong("gruppenID")),
+            gruppen.put(findGruppeById(gruppenResult.getLong("gruppeID")),
                     gruppenResult.getBoolean("upload_berechtigung"));
         }
 

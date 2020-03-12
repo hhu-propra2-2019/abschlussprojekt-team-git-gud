@@ -19,7 +19,7 @@ public final class Repository {
 
     static {
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:23306/materialsammlung", "root", "secret");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:23006/materialsammlung", "root", "secret");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -340,4 +340,12 @@ public final class Repository {
         return user;
     }
 
+
+    private void deleteTagRelationsByDateiId(final long dateiId) throws SQLException {
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("delete from Tagnutzung where dateiID=?");
+        preparedStatement.setLong(1, dateiId);
+
+        preparedStatement.execute();
+    }
 }

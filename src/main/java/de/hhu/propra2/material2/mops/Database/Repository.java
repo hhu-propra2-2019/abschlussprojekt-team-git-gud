@@ -119,7 +119,6 @@ public final class Repository {
         preparedStatement.setLong(3, dateiDTO.getGruppe().getId());
 
         ResultSet result = preparedStatement.executeQuery();
-
         return result.next();
     }
 
@@ -142,7 +141,9 @@ public final class Repository {
         preparedStatement.execute();
 
         ResultSet id = preparedStatement.getGeneratedKeys();
-        id.next();
+        if(!(id.next())) {
+            return;
+        }
 
         saveTagnutzung(dateiId, id.getLong(1));
     }

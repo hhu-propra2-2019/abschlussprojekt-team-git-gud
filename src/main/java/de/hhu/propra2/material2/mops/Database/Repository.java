@@ -82,7 +82,7 @@ public final class Repository {
                 saveTag(tag, id.getLong(1));
             }
 
-        }else {
+        } else {
             updateDatei(dateiDTO);
         }
 

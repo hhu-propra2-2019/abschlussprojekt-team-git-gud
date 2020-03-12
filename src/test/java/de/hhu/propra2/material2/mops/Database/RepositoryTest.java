@@ -7,6 +7,7 @@ import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -50,6 +51,11 @@ public class RepositoryTest {
         for (GruppeDTO gruppeDTO:userDTO.getBelegungUndRechte().keySet()) {
             assertTrue(userDTO.getBelegungUndRechte().get(gruppeDTO));
         }
+    }
+
+    @Test
+    public void deleteTagnutzungByDatei() throws SQLException {
+
     }
 
 }

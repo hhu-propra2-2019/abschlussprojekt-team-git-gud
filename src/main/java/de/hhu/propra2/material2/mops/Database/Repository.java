@@ -19,7 +19,7 @@ public final class Repository {
 
     static {
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:23006/materialsammlung", "root", "secret");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:23306/materialsammlung", "root", "secret");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -294,7 +294,7 @@ public final class Repository {
         return tags;
     }
 
-    private static TagDTO findTagById(final long id) throws SQLException {
+    public static TagDTO findTagById(final long id) throws SQLException {
         TagDTO tag = null;
 
         PreparedStatement preparedStatement =
@@ -341,8 +341,15 @@ public final class Repository {
         return user;
     }
 
+    public static void deleteUserGroupRelationByUserId(final long userId) throws SQLException {
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("delete from Gruppenbelegung where userID=?");
+        preparedStatement.setLong(1, userId);
 
-    private void deleteTagRelationsByDateiId(final long dateiId) throws SQLException {
+        preparedStatement.execute();
+    }
+
+    public static void deleteTagRelationsByDateiId(final long dateiId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement("delete from Tagnutzung where dateiID=?");
         preparedStatement.setLong(1, dateiId);

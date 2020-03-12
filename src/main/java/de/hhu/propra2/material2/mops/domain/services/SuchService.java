@@ -47,7 +47,7 @@ public class SuchService {
         List<Datei> result = new ArrayList<>();
 
         if (suche.getGruppe() != null) {
-            zuFiltern.addAll(suche.getGruppe().getDateien());
+            //zuFiltern.addAll(suche.getGruppe().getDateien());
         } else {
             user.getAllGruppen()
                     .forEach(gruppe -> zuFiltern.addAll(gruppe.getDateien()));

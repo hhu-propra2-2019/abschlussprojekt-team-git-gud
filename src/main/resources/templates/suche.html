@@ -21,46 +21,33 @@
             <div class="form-group">
                 <label for="SelectGroup">Gruppenauswahl </label>
                 <select class="form-control" onchange="auswahl.submit()" id="SelectGroup" name="gruppe">
-                    <option>  ProPra  </option>
-                    <option>  RDB  </option>
+                    <option value="0">Alle</option>
+                    <option th:each="gruppe : ${gruppen}"
+                            th:value="${gruppe.getId()}"
+                            th:text="${gruppe.getName()}" >
+                    </option>
                 </select>
             </div>
+
             <div class="form-group">
                 <label for="dataname">Dateiname </label>
-                <input type="text" class="form-control" id="dataname" placeholder="Eingabe">
+                <input type="text" class="form-control" id="dataname" placeholder="Eingabe" name="dateiName">
             </div>
 
             <div class="form-group list-inline">
-                <label for="Tag1">Tag </label>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="Tag1">
-                    <label class="form-check-label" for="Tag1">
-                        Klausurrelevant
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="Tag2">
-
-                    <label class="form-check-label" for="Tag2">
-                        Übungsblatt
-                    </label>
+                <label for="Tag">Tag </label>
+                <div class="form-check" th:each="tag : ${tags}">
+                    <input class="form-check-input" type="checkbox" value="" id="Tag"
+                           th:value="${tag.getId()}" name="tags">
+                    <label class="form-check-label" for="Tag" th:text="${tag.getText()}"></label>
                 </div>
             </div>
 
             <div class="form-group list-inline">
-                <label for="Dateityp1">Dateityp </label>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="Dateityp1">
-                    <label class="form-check-label" for="Dateityp1">
-                        PDF
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="Dateityp2">
-
-                    <label class="form-check-label" for="Dateityp2">
-                        XDOC
-                    </label>
+                <label for="Dateityp">Dateityp </label>
+                <div class="form-check" th:each="dateiTyp : ${dateiTypen}">
+                    <input class="form-check-input" type="checkbox" value="" id="Dateityp" th:value="${dateiTyp}" name="tags">
+                    <label class="form-check-label" for="Dateityp" th:text="${dateiTyp}"></label>
                 </div>
             </div>
 
@@ -110,7 +97,7 @@
             </div>
 
             <div>
-                <input class="btn btn-primary" onclick="abschicken.submit()" name="search" value="Suchen">
+                <input class="btn btn-primary" type="submit" onclick="abschicken.submit()" name="search" value="Suchen">
             </div>
         </form>
     </div>

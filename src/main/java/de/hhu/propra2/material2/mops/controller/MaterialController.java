@@ -1,6 +1,8 @@
 package de.hhu.propra2.material2.mops.controller;
 
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
+import de.hhu.propra2.material2.mops.domain.models.Tag;
+import de.hhu.propra2.material2.mops.domain.models.UploadForm;
 import de.hhu.propra2.material2.mops.security.Account;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -68,13 +70,13 @@ public class MaterialController {
         model.addAttribute("account", createAccountFromPrincipal(token));
         authenticatedAccess.increment();
         List<Gruppe> gruppen =  new ArrayList<>();
-        gruppen.add(new Gruppe(1L, "ProPra", null));
-        gruppen.add(new Gruppe(2L, "Hard Prog", null));
+        gruppen.add(new Gruppe(1L, "ProPra", null));    //Dummy object
+        gruppen.add(new Gruppe(2L, "Hard Prog", null)); //Dummy object
         model.addAttribute("gruppen", gruppen);
         return "dateiSicht";
     }
 
-    /**starting page.
+    /**search page.
      * @return String
      */
     @GetMapping("/suche")
@@ -83,13 +85,13 @@ public class MaterialController {
         model.addAttribute("account", createAccountFromPrincipal(token));
         authenticatedAccess.increment();
         List<Gruppe> gruppen =  new ArrayList<>();
-        gruppen.add(new Gruppe(1L, "ProPra", null));
-        gruppen.add(new Gruppe(2L, "Hard Prog", null));
+        gruppen.add(new Gruppe(1L, "ProPra", null));    //Dummy object
+        gruppen.add(new Gruppe(2L, "Hard Prog", null)); //Dummy object
         model.addAttribute("gruppen", gruppen);
         return "suche";
     }
 
-    /**rout to base.
+    /**page for search results.
      * @return String
      */
     @PostMapping("/suche")
@@ -104,6 +106,49 @@ public class MaterialController {
         return "/";
     }
 
+    /**updload page.
+     * @return String
+     */
+    @GetMapping("/upload")
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
+    public String upload(final KeycloakAuthenticationToken token, final Model model) {
+        model.addAttribute("account", createAccountFromPrincipal(token));
+        authenticatedAccess.increment();
+        List<Gruppe> gruppen =  new ArrayList<>();
+        gruppen.add(new Gruppe(1L, "ProPra", null));
+        gruppen.add(new Gruppe(2L, "Hard Prog", null));
+        model.addAttribute("gruppen", gruppen);
+        //
+        List<Tag> tags = new ArrayList<>();
+        tags.add(new Tag(1, "Vorlesung"));
+        tags.add(new Tag(2, "Übung"));
+        model.addAttribute("tags", tags);
+        //
+        List<String> uploader = new ArrayList<>();
+        uploader.add("Jenz");
+        uploader.add("Doomguy");
+        model.addAttribute("uploader", uploader);
+        //
+        List<String> dateitypen = new ArrayList<>();
+        dateitypen.add("Txt");
+        dateitypen.add("Pdf");
+        model.addAttribute("dateitypen", dateitypen);
+        return "upload";
+    }
+
+    /** upload routing
+     * @param token injected keycloak token
+     * @param model injected thymeleaf model
+     * @return upload routing
+     */
+    @PostMapping("/upload")
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
+    public String upload(final KeycloakAuthenticationToken token, final Model model, final UploadForm upForm) {
+        model.addAttribute("account", createAccountFromPrincipal(token));
+        authenticatedAccess.increment();
+        System.out.println(upForm);
+        return "redirect:/upload";
+    }
     /**route to logout.
      * @param request logout request
      * @return  homepage routing

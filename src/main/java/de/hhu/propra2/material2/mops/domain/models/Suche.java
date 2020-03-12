@@ -11,7 +11,7 @@ public class Suche {
     private final String[] dateiTyp;
     private final String[] uploader;
     private final String sortierung;
-    private final Gruppe gruppe;
+    private final Long gruppenId;
 
     public final String[] getDateiTyp() {
         return dateiTyp == null ? null : dateiTyp.clone();
@@ -31,13 +31,13 @@ public class Suche {
                  final String[] dateiTypArg,
                  final String[] uploaderArg,
                  final String sortierungArg,
-                 final Gruppe gruppeArg) {
+                 final Long gruppenIdArg) {
         this.dateiTyp = dateiTypArg == null ? null : dateiTypArg.clone();
         this.vonDatum = vonDatumArg;
         this.bisDatum = bisDatumArg;
         this.tags = tagsArg == null ? null : tagsArg.clone();
         this.uploader = uploaderArg == null ? null : uploaderArg.clone();
         this.sortierung = sortierungArg;
-        this.gruppe = gruppeArg;
+        this.gruppenId = gruppenIdArg;
     }
 }

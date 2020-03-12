@@ -70,8 +70,8 @@ public class MaterialController {
         model.addAttribute("account", createAccountFromPrincipal(token));
         authenticatedAccess.increment();
         List<Gruppe> gruppen =  new ArrayList<>();
-        gruppen.add(new Gruppe(1L, "ProPra", null));
-        gruppen.add(new Gruppe(2L, "Hard Prog", null));
+        gruppen.add(new Gruppe(1L, "ProPra", null));    //Dummy object
+        gruppen.add(new Gruppe(2L, "Hard Prog", null)); //Dummy object
         model.addAttribute("gruppen", gruppen);
         return "dateiSicht";
     }
@@ -85,8 +85,8 @@ public class MaterialController {
         model.addAttribute("account", createAccountFromPrincipal(token));
         authenticatedAccess.increment();
         List<Gruppe> gruppen =  new ArrayList<>();
-        gruppen.add(new Gruppe(1L, "ProPra", null));
-        gruppen.add(new Gruppe(2L, "Hard Prog", null));
+        gruppen.add(new Gruppe(1L, "ProPra", null));    //Dummy object
+        gruppen.add(new Gruppe(2L, "Hard Prog", null)); //Dummy object
         model.addAttribute("gruppen", gruppen);
         return "suche";
     }

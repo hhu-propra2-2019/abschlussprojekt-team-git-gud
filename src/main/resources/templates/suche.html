@@ -19,8 +19,8 @@
         <form action="" method="post" id="abschicken" name="auswahl" >
             <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
             <div class="form-group">
-                <label for="SelectGroup">Gruppenauswahl </label>
-                <select class="form-control" onchange="auswahl.submit()" id="SelectGroup" name="gruppe">
+                <label for="SelectGroup">Gruppenauswahl</label>
+                <select class="form-control" onchange="auswahl.submit()" id="SelectGroup" name="gruppenId">
                     <option value="0">Alle</option>
                     <option th:each="gruppe : ${gruppen}"
                             th:value="${gruppe.getId()}"
@@ -30,7 +30,7 @@
             </div>
 
             <div class="form-group">
-                <label for="dataname">Dateiname </label>
+                <label for="dataname">Dateiname</label>
                 <input type="text" class="form-control" id="dataname" placeholder="Eingabe" name="dateiName">
             </div>
 
@@ -44,20 +44,18 @@
             </div>
 
             <div class="form-group list-inline">
-                <label for="Dateityp">Dateityp </label>
+                <label for="Dateityp">Dateityp</label>
                 <div class="form-check" th:each="dateiTyp : ${dateiTypen}">
-                    <input class="form-check-input" type="checkbox" value="" id="Dateityp" th:value="${dateiTyp}" name="tags">
+                    <input class="form-check-input" type="checkbox" value="" id="Dateityp" th:value="${dateiTyp}" name="dateiTyp">
                     <label class="form-check-label" for="Dateityp" th:text="${dateiTyp}"></label>
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="Uploader">Uploader </label>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="Uploader">
-                    <label class="form-check-label" for="Uploader">
-                        Chris
-                    </label>
+                <label for="Uploader">Uploader</label>
+                <div class="form-check" th:each="uploading : ${uploader}">
+                    <input class="form-check-input" type="checkbox" value="" id="Uploader" th:value="${uploading}" name="uploader">
+                    <label class="form-check-label" for="Dateityp" th:text="${uploading}"></label>
                 </div>
             </div>
 
@@ -66,11 +64,11 @@
                     <div class="form-inline">
                         <label> Von</label>
                         <div class="form-check">
-                            <input type="date" value="" id="FromDate" >
+                            <input type="date" value="" id="FromDate" name="vonDatum">
                         </div>
                         <label> Bis</label>
                         <div class="form-check">
-                            <input type="date" value="" id="UntilDate">
+                            <input type="date" value="" id="UntilDate" name ="bisDatum">
                         </div>
                     </div>
             </div>
@@ -78,11 +76,11 @@
             <div class="form-group">
                 <label for="SelectSearchBy">Sortierung </label>
                 <div class="form-inline">
-                    <select class="form-control" id="SelectSearchBy" name="Sortierung">
+                    <select class="form-control" id="SelectSearchBy" name="sortierung">
                         <option> Name </option>
                         <option> Datum </option>
                     </select>
-                    <select class="form-control" id="SelectOrder" name="Reihenfolge">
+                    <select class="form-control" id="SelectOrder" name="reihenfolge">
                         <option> aufsteigend </option>
                         <option> absteigend </option>
                     </select>

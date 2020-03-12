@@ -67,6 +67,10 @@ public class SuchService {
                     suche.getBisDatum(),
                     result);
         }
+        if (suche.getDateiName() != null) {
+            result = dateiNamenSuche(suche.getDateiName(), result);
+        }
+
         return result;
     }
 
@@ -96,6 +100,14 @@ public class SuchService {
 
     }
 
+    private List<Datei> dateiNamenSuche(final String dateiName,
+                                        final List<Datei> zuFiltern) {
+        return zuFiltern.stream().filter(datei -> datei.getName()
+                .toLowerCase()
+                .contains(dateiName.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
     private boolean datumInZeitraum(final LocalDate von,
                                     final LocalDate bis,
                                     final Date zuPruefen) {
@@ -107,7 +119,7 @@ public class SuchService {
     }
 
     private List<Datei> typSuche(final String[] typen,
-                                final List<Datei> zuFiltern) {
+                                 final List<Datei> zuFiltern) {
         List<Datei> result = new ArrayList<>();
         for (String typ : typen) {
             result.addAll(zuFiltern.stream()

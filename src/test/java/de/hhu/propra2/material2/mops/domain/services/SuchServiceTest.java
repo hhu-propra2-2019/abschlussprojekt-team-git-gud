@@ -122,6 +122,8 @@ public class SuchServiceTest {
                 null,
                 null,
                 null,
+                null,
+                null,
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
@@ -135,6 +137,8 @@ public class SuchServiceTest {
         Suche suche = new Suche(
                 "01.01.2000",
                 "31.12.2100",
+                null,
+                null,
                 null,
                 null,
                 null,
@@ -160,6 +164,8 @@ public class SuchServiceTest {
                 null,
                 null,
                 null,
+                null,
+                null,
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
@@ -174,6 +180,8 @@ public class SuchServiceTest {
         Suche suche = new Suche(
                 "01.01.2000",
                 "20.02.2020",
+                null,
+                null,
                 null,
                 null,
                 null,
@@ -199,6 +207,8 @@ public class SuchServiceTest {
                 null,
                 null,
                 null,
+                null,
+                null,
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
@@ -214,6 +224,8 @@ public class SuchServiceTest {
                 "01.01.2000",
                 "31.12.2100",
                 tags,
+                null,
+                null,
                 null,
                 null,
                 null,
@@ -234,6 +246,8 @@ public class SuchServiceTest {
                 "01.01.2000",
                 "31.12.2100",
                 tags,
+                null,
+                null,
                 null,
                 null,
                 null,
@@ -258,6 +272,8 @@ public class SuchServiceTest {
                 null,
                 null,
                 null,
+                null,
+                null,
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
@@ -274,6 +290,8 @@ public class SuchServiceTest {
                 "01.01.2000",
                 "31.12.2100",
                 tags,
+                null,
+                null,
                 null,
                 null,
                 null,
@@ -295,6 +313,8 @@ public class SuchServiceTest {
                 dateiTypen,
                 null,
                 null,
+                null,
+                null,
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
@@ -311,6 +331,8 @@ public class SuchServiceTest {
                 "31.12.2100",
                 null,
                 dateiTypen,
+                null,
+                null,
                 null,
                 null,
                 null);
@@ -331,6 +353,8 @@ public class SuchServiceTest {
                 "31.12.2100",
                 null,
                 dateiTypen,
+                null,
+                null,
                 null,
                 null,
                 null);
@@ -355,6 +379,8 @@ public class SuchServiceTest {
                 null,
                 uploader,
                 null,
+                null,
+                null,
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
@@ -372,6 +398,8 @@ public class SuchServiceTest {
                 null,
                 null,
                 uploader,
+                null,
+                null,
                 null,
                 null);
 
@@ -393,6 +421,7 @@ public class SuchServiceTest {
                 null,
                 uploader,
                 null,
+                null, null,
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
@@ -414,7 +443,9 @@ public class SuchServiceTest {
                 null,
                 null,
                 null,
-                1L);
+                1L,
+                null,
+                null);
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
 

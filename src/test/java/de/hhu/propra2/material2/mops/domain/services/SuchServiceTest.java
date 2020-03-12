@@ -99,10 +99,14 @@ public class SuchServiceTest {
                 date1, veroeffentlichung, 1, "jpg");
         datei4 = new Datei(4, "4", "a/b/4", uploaderMock2, tags3,
                 date2, veroeffentlichung, 1, "jpg");
+        List<Datei> dateienGruppe1 = new ArrayList<>(Arrays.asList(datei1, datei2, datei3));
+        List<Datei> dateienGruppe2 = new ArrayList<>(Arrays.asList(datei4));
 
-        gruppe1 = new Gruppe(1, "1", Arrays.asList(datei1, datei2, datei3));
-        gruppe2 = new Gruppe(2, "2", Arrays.asList(datei4));
+        gruppe1 = new Gruppe(1, "1", dateienGruppe1);
+        gruppe2 = new Gruppe(2, "2", dateienGruppe2);
         Mockito.lenient().when(userMock.getAllGruppen()).thenReturn(Arrays.asList(gruppe1, gruppe2));
+        Mockito.lenient().when(modelServiceMock.getAlleDateienByGruppeId(1L)).thenReturn(dateienGruppe1);
+        Mockito.lenient().when(modelServiceMock.getAlleDateienByGruppeId(2L)).thenReturn(dateienGruppe2);
     }
 
     @Test
@@ -410,7 +414,7 @@ public class SuchServiceTest {
                 null,
                 null,
                 null,
-                gruppe1);
+                1L);
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
 

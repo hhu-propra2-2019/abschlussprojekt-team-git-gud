@@ -39,6 +39,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.keycloak:keycloak-spring-boot-starter:9.0.0'
+    implementation 'org.keycloak.bom:keycloak-adapter-bom:9.0.0'
+    implementation group: 'com.github.javafaker', name: 'javafaker', version: '1.0.1'
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:2.4.1'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
@@ -50,6 +54,7 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'com.tngtech.archunit:archunit-junit5:0.13.0'
     testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'
+    testImplementation 'org.mockito:mockito-inline:2.13.0'
     implementation 'mops:styleguide:2.1.0'
     implementation 'commons-io:commons-io:2.6'
 }

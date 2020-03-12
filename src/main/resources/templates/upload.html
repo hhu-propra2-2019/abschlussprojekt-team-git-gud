@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en"
+      th:replace="~{base :: html(content=~{:: mycontent})}"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <title>Index</title>
+</head>
+
+<body>
+<div id="content" th:fragment="mycontent">
+    <h1 class="text-center">
+        Upload
+    </h1>
+    <div class="container">
+        <form method="post" enctype="multipart/form-data">
+            <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
+            <div>
+                <label for="SelectGroup">Gruppenauswahl </label>
+                <select class="form-control" id="SelectGroup" name="gruppenwahl">
+                    <option>  ProPra  </option>
+                    <option>  RDB  </option>
+                </select>
+            </div>
+
+            <div>
+                <label for="dataname">Dateiname </label>
+                <input type="text" class="form-control" id="dataname" name="dateiname" placeholder="Eingabe">
+            </div>
+
+            <div>
+                <label for="tagsIn">Tags </label>
+                <input type="text" class="form-control" id="tagsIn" name="selectedTags"  placeholder="Vorlesung, ">
+            </div>
+
+            <div class="form-group">
+                <ul>
+                    <li th:each="tag : ${tags}">
+                        <span  th:text="${tag.text}">Vorlesung</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="form-group">
+                <label for="timedDate">Getimete Veröffentlichung (optional)</label>
+                <div>
+                    <input type="date" value="" name="timedUpload"  id="timedDate">
+                </div>
+            </div>
+
+            <div>
+                <input type="file" name="datei" >
+            </div>
+
+            <div>
+                <input class="btn btn-primary" type="submit" name="hochladen" value="Hochladen">
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

@@ -336,10 +336,48 @@ public final class Repository {
         return user;
     }
 
-    public static void deleteUserGroupRelationByUserId(final long userId) throws SQLException {
+    public static void deleteGroupByGroupId(final long gruppeId) throws SQLException {
+        deleteUserGroupRelationByGroupId(gruppeId);
+
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("delete from Gruppe where gruppeID=?");
+        preparedStatement.setLong(1, gruppeId);
+
+        preparedStatement.execute();
+    }
+
+    public static void deleteUserByUserId(final long userId) throws SQLException {
+        deleteUserGroupRelationByUserId(userId);
+
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("delete from User where userID=?");
+        preparedStatement.setLong(1, userId);
+
+        preparedStatement.execute();
+    }
+
+    public static void deleteDateiByDateiId(final long dateiId) throws SQLException {
+        deleteTagRelationsByDateiId(dateiId);
+
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("delete from Datei where dateiID=?");
+        preparedStatement.setLong(1, dateiId);
+
+        preparedStatement.execute();
+    }
+
+    private static void deleteUserGroupRelationByUserId(final long userId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement("delete from Gruppenbelegung where userID=?");
         preparedStatement.setLong(1, userId);
+
+        preparedStatement.execute();
+    }
+
+    private static void deleteUserGroupRelationByGroupId(final long gruppeId) throws SQLException {
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("delete from Gruppenbelegung where gruppeID=?");
+        preparedStatement.setLong(1, gruppeId);
 
         preparedStatement.execute();
     }

@@ -65,7 +65,6 @@ public class RepositoryTest {
         datei = new DateiDTO("gaedata", "/materialsammlung/gaedata/",
                 user, newTags, LocalDate.now(), LocalDate.now(), 300, "gae", gruppe, "gae");
 
-
         UserDTO userDTO = Repository.findUserByKeycloakname("gae");
 
         assertTrue(userDTO.getVorname().equals("Why are you gae?"));
@@ -74,6 +73,7 @@ public class RepositoryTest {
         for (GruppeDTO gruppeDTO:userDTO.getBelegungUndRechte().keySet()) {
             assertTrue(userDTO.getBelegungUndRechte().get(gruppeDTO));
         }
+
     }
 
 

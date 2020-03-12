@@ -41,7 +41,7 @@ public final class ModelService implements IModelService {
         this.users = userRepo;
     }
 
-    public Datei loadDatei(final DateiDTO dto) {
+    private Datei loadDatei(final DateiDTO dto) {
         List<Tag> tags = dto.getTagDTOs().stream()
                 .map(this::load)
                 .collect(Collectors.toList());
@@ -57,7 +57,7 @@ public final class ModelService implements IModelService {
                 dto.getDateityp());
     }
 
-    public Tag load(final TagDTO dto) {
+    private Tag load(final TagDTO dto) {
         return new Tag(dto.getId(), dto.getText());
     }
 
@@ -77,7 +77,7 @@ public final class ModelService implements IModelService {
                 belegungUndRechte);
     }
 
-    public Gruppe load(final GruppeDTO dto) {
+    private Gruppe load(final GruppeDTO dto) {
         List<Datei> zugehoerigeDateien =
                 dto.getDateien()
                         .stream()

@@ -41,13 +41,13 @@ public class SuchService {
      */
     public List<Datei> starteSuche(final Suche suche,
                                    final String keyCloackName) {
-        User user = modelService.load(users.findByKeycloakname(keyCloackName));
+        User user = modelService.loadUser(users.findByKeycloakname(keyCloackName));
 
         final List<Datei> zuFiltern = new ArrayList<>();
         List<Datei> result = new ArrayList<>();
 
-        if (suche.getGruppe() != null) {
-            //zuFiltern.addAll(suche.getGruppe().getDateien());
+        if (suche.getGruppenId() != null) {
+            zuFiltern.addAll(modelService.getAlleDateiTypenByGruppeId(suche.getGruppenId()));
         } else {
             user.getAllGruppen()
                     .forEach(gruppe -> zuFiltern.addAll(gruppe.getDateien()));
@@ -107,7 +107,7 @@ public class SuchService {
     }
 
     private List<Datei> typSuche(final String[] typen,
-                                final List<Datei> zuFiltern) {
+                                 final List<Datei> zuFiltern) {
         List<Datei> result = new ArrayList<>();
         for (String typ : typen) {
             result.addAll(zuFiltern.stream()

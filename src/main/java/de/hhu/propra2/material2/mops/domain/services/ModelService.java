@@ -15,11 +15,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public final class ModelService {
+public final class ModelService implements IModelService {
     private final DateiRepository dateien;
     private final GruppeRepository gruppen;
     private final UserRepository users;
@@ -39,7 +41,7 @@ public final class ModelService {
         this.users = userRepo;
     }
 
-    public Datei load(final DateiDTO dto) {
+    public Datei loadDatei(final DateiDTO dto) {
         List<Tag> tags = dto.getTagDTOs().stream()
                 .map(this::load)
                 .collect(Collectors.toList());
@@ -47,7 +49,7 @@ public final class ModelService {
                 dto.getId(),
                 dto.getName(),
                 dto.getPfad(),
-                load(dto.getUploader()),
+                loadUser(dto.getUploader()),
                 tags,
                 dto.getUploaddatum(),
                 dto.getVeroeffentlichungsdatum(),
@@ -59,7 +61,7 @@ public final class ModelService {
         return new Tag(dto.getId(), dto.getText());
     }
 
-    public User load(final UserDTO dto) {
+    public User loadUser(final UserDTO dto) {
         HashMap<Gruppe, Boolean> belegungUndRechte = new HashMap<>();
         for (GruppeDTO gruppeDTO : dto.getBelegungUndRechte().keySet()) {
             belegungUndRechte.put(
@@ -79,7 +81,7 @@ public final class ModelService {
         List<Datei> zugehoerigeDateien =
                 dto.getDateien()
                         .stream()
-                        .map(this::load)
+                        .map(this::loadDatei)
                         .collect(Collectors.toList());
         return new Gruppe(dto.getId(), dto.getName(), zugehoerigeDateien);
     }
@@ -88,11 +90,75 @@ public final class ModelService {
         if (users.findByKeycloakname(name) == null) {
             return new ArrayList<>();
         }
-        User user = load(users.findByKeycloakname(name));
+        User user = loadUser(users.findByKeycloakname(name));
         return user.getAllGruppen();
     }
 
     public List<Datei> getAlleDateienByGruppe(final Gruppe gruppe) {
+        return gruppe.getDateien();
+    }
+
+    public Set<String> getAlleTagsByUser(final String name) {
+        User user = loadUser(users.findByKeycloakname(name));
+        List<Gruppe> groups = user.getAllGruppen();
+        Set<String> tags = new HashSet<>();
+        for (Gruppe gruppe : groups) {
+            gruppe.getDateien().forEach(datei -> datei.getTags()
+                    .forEach(tag -> tags.add(tag.getText())));
+        }
+        return tags;
+    }
+
+    public Set<String> getAlleTagsByGruppe(final Gruppe gruppe) {
+        List<Datei> dateienListe = gruppe.getDateien();
+        Set<String> tags = new HashSet<>();
+        dateienListe.forEach(datei -> datei.getTags()
+                .forEach(tag -> tags.add(tag.getText())));
+        return tags;
+    }
+
+    public Set<String> getAlleUploaderByUser(final String name) {
+        User user = loadUser(users.findByKeycloakname(name));
+        List<Gruppe> groups = user.getAllGruppen();
+        Set<String> uploader = new HashSet<String>();
+        for (Gruppe gruppe : groups) {
+            uploader.addAll(gruppe.getDateien()
+                    .stream()
+                    .map(datei -> datei.getUploader().getNachname())
+                    .collect(Collectors.toSet()));
+        }
+        return uploader;
+    }
+
+    public Set<String> getAlleUploaderByGruppe(final Gruppe gruppe) {
+        return gruppe.getDateien()
+                .stream()
+                .map(datei -> datei.getUploader().getNachname())
+                .collect(Collectors.toSet());
+    }
+
+    public Set<String> getAlleDateiTypenByUser(final String name) {
+        User user = loadUser(users.findByKeycloakname(name));
+        List<Gruppe> groups = user.getAllGruppen();
+        Set<String> dateiTypen = new HashSet<String>();
+        for (Gruppe gruppe : groups) {
+            dateiTypen.addAll(gruppe.getDateien()
+                    .stream()
+                    .map(Datei::getDateityp)
+                    .collect(Collectors.toSet()));
+        }
+        return dateiTypen;
+    }
+
+    public Set<String> getAlleDateiTypenByGruppe(final Gruppe gruppe) {
+        return gruppe.getDateien()
+                .stream()
+                .map(Datei::getDateityp)
+                .collect(Collectors.toSet());
+    }
+
+    public List<Datei> getAlleDateiTypenByGruppeId(final Long id) {
+        Gruppe gruppe = load(gruppen.findById(id).get());
         return gruppe.getDateien();
     }
 }

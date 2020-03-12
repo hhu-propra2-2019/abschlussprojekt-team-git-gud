@@ -183,4 +183,22 @@ public class SuchServiceTest {
         assertTrue(result.contains(datei3));
     }
 
+    @Test
+    public void einNichtVergebenerTagFilter() {
+        String[] tagArray = {"NichtVergebenerTag"};
+        Suche suche = new Suche(
+                "01.01.2000",
+                "31.12.2100",
+                tagArray,
+                null,
+                null,
+                null,
+                null);
+
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
+
+        final int expectedSizeOfList = 0;
+        assertThat(result.size(), is(expectedSizeOfList));
+    }
+
 }

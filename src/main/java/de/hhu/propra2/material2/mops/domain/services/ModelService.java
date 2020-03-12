@@ -178,9 +178,9 @@ public final class ModelService implements IModelService {
 
     private DateiDTO saveDatei(final Datei datei, final GruppeDTO gruppeDTO,
                                final UserDTO userDTO,
-                               final Iterable<TagDTO> tagDTOs) {
+                               final List<TagDTO> tagDTOs) {
         DateiDTO dateiDTO = new DateiDTO(datei.getName(),
-                datei.getPfad(), userDTO, null, datei.getUploaddatum(),
+                datei.getPfad(), userDTO, tagDTOs, datei.getUploaddatum(),
                 datei.getVeroeffentlichungsdatum(), datei.getDateigroesse(),
                 datei.getDateityp(), gruppeDTO);
         return dateien.save(dateiDTO);
@@ -208,7 +208,9 @@ public final class ModelService implements IModelService {
 
         DateiDTO dateiDTO = saveDateiWithoutTags(datei, gruppeDTO, userDTO);
 
-        Iterable<TagDTO> tagDTOs = this.saveNewTags(datei.getTags(), dateiDTO);
+        Iterable<TagDTO> savedTags = this.saveNewTags(datei.getTags(), dateiDTO);
+        List<TagDTO> tagDTOs = new ArrayList<>();
+        savedTags.forEach(tagDTOs::add);
 
         dateiDTO = saveDatei(datei, gruppeDTO, userDTO, tagDTOs);
     }

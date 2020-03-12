@@ -26,11 +26,11 @@ public class UploadService {
     }
 
     @Transactional
-    public void dateiHochladen(final MultipartFile file, final String dateiname,
-                               final User user,
-                               final Gruppe gruppe,
-                               final Date veroeffentlichungsdatum,
-                               final List<Tag> tags) throws Exception {
+    public void oldDateiHochladen(final MultipartFile file, final String dateiname,
+                                  final User user,
+                                  final Gruppe gruppe,
+                                  final Date veroeffentlichungsdatum,
+                                  final List<Tag> tags) throws Exception {
 
         if (dateiname != null) {
             throw new UnsupportedOperationException("not jet implemented");
@@ -39,7 +39,7 @@ public class UploadService {
         final long dateigroesse = file.getSize();
         final String dateityp = FilenameUtils.getExtension(fileName);
 
-        Datei datei = new Datei(1, "test.pdf", null, user, tags,
+        Datei datei = new Datei(1, fileName, null, user, tags,
                 new Date(), veroeffentlichungsdatum, dateigroesse, dateityp);
         modelService.saveDatei(datei, gruppe);
         fileUploadService.upload(file, String.valueOf(gruppe.getId()));

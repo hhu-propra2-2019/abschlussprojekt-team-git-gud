@@ -1,6 +1,5 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
-
 import com.google.common.base.Strings;
 import io.minio.MinioClient;
 import io.minio.errors.ErrorResponseException;

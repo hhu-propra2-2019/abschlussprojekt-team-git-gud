@@ -47,7 +47,7 @@ public class SuchService {
         List<Datei> result;
 
         if (suche.getGruppenId() != null) {
-            zuFiltern.addAll(modelService.getAlleDateiTypenByGruppeId(suche.getGruppenId()));
+            zuFiltern.addAll(modelService.getAlleDateienByGruppeId(suche.getGruppenId()));
         } else {
             user.getAllGruppen()
                     .forEach(gruppe -> zuFiltern.addAll(gruppe.getDateien()));

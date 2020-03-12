@@ -42,17 +42,13 @@ public class SuchServiceTest {
     @Mock
     private User userMock;
     @Mock
-    private Gruppe gruppeMock1;
-    @Mock
-    private Gruppe gruppeMock2;
-    @Mock
     private User uploaderMock1;
     @Mock
     private User uploaderMock2;
 
     private SuchService suchService;
-    private List<Datei> dateienGruppe1;
-    private List<Datei> dateienGruppe2;
+    private Gruppe gruppe1;
+    private Gruppe gruppe2;
     private Datei datei1;
     private Datei datei2;
     private Datei datei3;
@@ -103,18 +99,18 @@ public class SuchServiceTest {
                 date1, veroeffentlichung, 1, "jpg");
         datei4 = new Datei(4, "4", "a/b/4", uploaderMock2, tags3,
                 date2, veroeffentlichung, 1, "jpg");
-        dateienGruppe1 = new ArrayList<>(Arrays.asList(datei1, datei2, datei3));
-        dateienGruppe2 = new ArrayList<>(Arrays.asList(datei4));
 
-        when(gruppeMock1.getDateien()).thenReturn(dateienGruppe1);
-        when(gruppeMock2.getDateien()).thenReturn(dateienGruppe2);
-        when(userMock.getAllGruppen()).thenReturn(Arrays.asList(gruppeMock1, gruppeMock2));
+        gruppe1 = new Gruppe(1, "1", Arrays.asList(datei1, datei2, datei3));
+        gruppe2 = new Gruppe(2, "2", Arrays.asList(datei4));
+        Mockito.lenient().when(userMock.getAllGruppen()).thenReturn(Arrays.asList(gruppe1, gruppe2));
     }
 
     @Test
+    @SuppressWarnings("checkstyle:magicnumber")
     public void keineDateienInGruppen() {
-        when(gruppeMock1.getDateien()).thenReturn(new ArrayList<>());
-        when(gruppeMock2.getDateien()).thenReturn(new ArrayList<>());
+        Gruppe gruppe3 = new Gruppe(3, "3", new ArrayList<>());
+        Gruppe gruppe4 = new Gruppe(4, "4", new ArrayList<>());
+        when(userMock.getAllGruppen()).thenReturn(Arrays.asList(gruppe3, gruppe4));
         Suche suche = new Suche(
                 "01.01.2000",
                 "31.12.2100",
@@ -403,5 +399,25 @@ public class SuchServiceTest {
         assertTrue(result.contains(datei2));
         assertTrue(result.contains(datei3));
         assertTrue(result.contains(datei4));
+    }
+
+    @Test
+    public void gruppeFilter() {
+        Suche suche = new Suche(
+                "01.01.2000",
+                "31.12.2100",
+                null,
+                null,
+                null,
+                null,
+                gruppe1);
+
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
+
+        final int expectedSizeOfList = 3;
+        assertThat(result.size(), is(expectedSizeOfList));
+        assertTrue(result.contains(datei1));
+        assertTrue(result.contains(datei2));
+        assertTrue(result.contains(datei3));
     }
 }

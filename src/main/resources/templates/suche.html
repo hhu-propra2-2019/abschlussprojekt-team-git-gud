@@ -16,15 +16,15 @@
         Suche
     </h1>
     <div class="container">
-        <form action="" method="post" >
+        <form action="" method="post" id="abschicken" name="auswahl" >
+            <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
             <div class="form-group">
                 <label for="SelectGroup">Gruppenauswahl </label>
-                <select class="form-control" id="SelectGroup" name="gruppe">
+                <select class="form-control" onchange="auswahl.submit()" id="SelectGroup" name="gruppe">
                     <option>  ProPra  </option>
                     <option>  RDB  </option>
                 </select>
             </div>
-
             <div class="form-group">
                 <label for="dataname">Dateiname </label>
                 <input type="text" class="form-control" id="dataname" placeholder="Eingabe">
@@ -110,7 +110,7 @@
             </div>
 
             <div>
-                <input class="btn btn-primary" type="submit" name="search" value="Suchen">
+                <input class="btn btn-primary" onclick="abschicken.submit()" name="search" value="Suchen">
             </div>
         </form>
     </div>

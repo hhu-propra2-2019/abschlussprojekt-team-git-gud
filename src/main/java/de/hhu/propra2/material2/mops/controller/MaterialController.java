@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Controller
 public class MaterialController {
 
@@ -91,7 +92,7 @@ public class MaterialController {
 
     /**rout to base.
      * @return String
-     */
+
     @PostMapping("/suche")
     @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
     public String vorSuchePost(final KeycloakAuthenticationToken token, final Model model) {
@@ -102,6 +103,10 @@ public class MaterialController {
         gruppen.add(new Gruppe(2L, "Hard Prog", null));
         model.addAttribute("gruppen", gruppen);
         return "/";
+    }*/
+    @PostMapping("/suche")
+    public String suchen() {
+        return "redirect:/suche";
     }
 
     /**route to logout.

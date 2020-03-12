@@ -201,4 +201,81 @@ public class SuchServiceTest {
         assertThat(result.size(), is(expectedSizeOfList));
     }
 
+    @Test
+    public void einVergebenerTagFilter() {
+        String[] tagArray = {"Vorlesung"};
+        Suche suche = new Suche(
+                "01.01.2000",
+                "31.12.2100",
+                tagArray,
+                null,
+                null,
+                null,
+                null);
+
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
+
+        final int expectedSizeOfList = 2;
+        assertThat(result.size(), is(expectedSizeOfList));
+        assertTrue(result.contains(datei1));
+        assertTrue(result.contains(datei2));
+    }
+
+    @Test
+    public void mehrereVergebeneTagsFilter() {
+        String[] tagArray = {"Relevant", "Irgendwas"};
+        Suche suche = new Suche(
+                "01.01.2000",
+                "31.12.2100",
+                tagArray,
+                null,
+                null,
+                null,
+                null);
+
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
+
+        final int expectedSizeOfList = 3;
+        assertThat(result.size(), is(expectedSizeOfList));
+        assertTrue(result.contains(datei1));
+        assertTrue(result.contains(datei3));
+        assertTrue(result.contains(datei4));
+    }
+
+    @Test
+    public void mehrereVergebeneTagsVerschiedeneDateienFilter() {
+        String[] tagArray = {"Relevant", "Irgendwas", "Vorlesung"};
+        Suche suche = new Suche(
+                "01.01.2000",
+                "31.12.2100",
+                tagArray,
+                null,
+                null,
+                null,
+                null);
+
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
+
+        final int expectedSizeOfList = 1;
+        assertThat(result.size(), is(expectedSizeOfList));
+        assertTrue(result.contains(datei1));
+    }
+
+    @Test
+    public void vergebeneUndNichtVergebeneTagsFilter() {
+        String[] tagArray = {"Relevant", "Haus"};
+        Suche suche = new Suche(
+                "01.01.2000",
+                "31.12.2100",
+                tagArray,
+                null,
+                null,
+                null,
+                null);
+
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
+
+        final int expectedSizeOfList = 0;
+        assertThat(result.size(), is(expectedSizeOfList));
+    }
 }

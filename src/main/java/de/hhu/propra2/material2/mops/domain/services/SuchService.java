@@ -6,12 +6,17 @@ import de.hhu.propra2.material2.mops.Database.UserRepository;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.User;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
+import de.hhu.propra2.material2.mops.domain.services.suchComparators.DateiDateiTypComparator;
+import de.hhu.propra2.material2.mops.domain.services.suchComparators.DateiNamenComparator;
+import de.hhu.propra2.material2.mops.domain.services.suchComparators.DateiUploaderComparator;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -140,5 +145,27 @@ public class SuchService {
                     .collect(Collectors.toList()));
         }
         return result;
+    }
+
+    private List<Datei> sortieren(final String sortierStyle, final List<Datei> zuSortieren) {
+        /**
+         * Name
+         * Datum
+         * Dateityp
+         * Uploader
+         * Kategorie
+         */
+        if (sortierStyle.equals("Name")) {
+            Collections.sort(zuSortieren, new DateiNamenComparator());
+        }
+        if (sortierStyle.equals("Dateityp")) {
+            Collections.sort(zuSortieren, new DateiDateiTypComparator());
+        }
+        if (sortierStyle.equals("Uploader")) {
+            Collections.sort(zuSortieren, new DateiUploaderComparator());
+        }
+        if (sortierStyle.equals("Datum")){
+
+        }
     }
 }

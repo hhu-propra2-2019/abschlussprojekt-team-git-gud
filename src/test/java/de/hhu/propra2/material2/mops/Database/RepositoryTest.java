@@ -8,9 +8,7 @@ import de.hhu.propra2.material2.mops.Material2Application;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -21,15 +19,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @SpringBootTest(classes = Material2Application.class)
-public class RepositoryTest {
+public final class RepositoryTest {
 
-    GruppeDTO gruppe;
-    UserDTO user;
-    TagDTO tag;
-    ArrayList<TagDTO> tags;
-    DateiDTO datei;
+    private GruppeDTO gruppe;
+    private UserDTO user;
+    private TagDTO tag;
+    private ArrayList<TagDTO> tags;
+    private DateiDTO datei;
 
     @BeforeEach
+    @SuppressWarnings("checkstyle:magicnumber")
     public void preparation() throws SQLException {
         gruppe = new GruppeDTO(99999999, "gruppe", "this is a description", null);
         HashMap<GruppeDTO, Boolean> berechtigung = new HashMap<GruppeDTO, Boolean>();
@@ -48,7 +47,8 @@ public class RepositoryTest {
 
 
     @Test
-    public void LoadUserTest() throws SQLException {
+    @SuppressWarnings("checkstyle:magicnumber")
+    public void loadUserTest() throws SQLException {
         UserDTO userDTO = Repository.findUserByKeycloakname("gae");
 
         assertTrue(userDTO.getVorname().equals("Why are you gae?"));
@@ -60,10 +60,11 @@ public class RepositoryTest {
     }
 
     @Test
+    @SuppressWarnings("checkstyle:magicnumber")
     public void updateDateiTest() throws SQLException {
         ArrayList<TagDTO> newTags = new ArrayList<TagDTO>();
         TagDTO tag1 = new TagDTO("gae1");
-        TagDTO tag2= new TagDTO("gae2");
+        TagDTO tag2 = new TagDTO("gae2");
         DateiDTO newDatei;
 
         newTags.add(tag1);
@@ -86,10 +87,11 @@ public class RepositoryTest {
     }
 
     @Test
+    @SuppressWarnings("checkstyle:magicnumber")
     public void updateTwiceDateiTest() throws SQLException {
         ArrayList<TagDTO> newTags = new ArrayList<TagDTO>();
         TagDTO tag1 = new TagDTO("gae1");
-        TagDTO tag2= new TagDTO("gae2");
+        TagDTO tag2 = new TagDTO("gae2");
         DateiDTO newDatei;
 
         newTags.add(tag1);
@@ -112,6 +114,7 @@ public class RepositoryTest {
     }
 
     @Test
+    @SuppressWarnings("checkstyle:magicnumber")
     public void deleteTagnutzungByDatei() throws SQLException {
 
     }

@@ -164,8 +164,19 @@ public final class Repository {
 
         for (GruppeDTO gruppe : gruppenBelegung.keySet()) {
             saveGruppe(gruppe);
+            resetGruppenbelegung(gruppe.getId());
             saveGruppenbelegung(userDTO.getId(), gruppe.getId(), gruppenBelegung.get(gruppe));
         }
+    }
+
+    private static void resetGruppenbelegung(long gruppeId) throws SQLException {
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("delete from Gruppenbelegung where gruppeID=?");
+
+        preparedStatement.setString(1, "" + gruppeId);
+
+        preparedStatement.execute();
+
     }
 
     @SuppressWarnings("checkstyle:magicnumber")

@@ -84,6 +84,31 @@ public class RepositoryTest {
         assertTrue(tagDTOS.get(1).getText().equals("gae2"));
     }
 
+    @Test
+    public void updateTwiceDateiTest() throws SQLException {
+        ArrayList<TagDTO> newTags = new ArrayList<TagDTO>();
+        TagDTO tag1 = new TagDTO("gae1");
+        TagDTO tag2= new TagDTO("gae2");
+        DateiDTO newDatei;
+
+        newTags.add(tag1);
+        newTags.add(tag2);
+
+        newDatei = new DateiDTO(101, "gaedata", "/materialsammlung/gaedata/",
+                user, newTags, LocalDate.now(), LocalDate.now(), 300, "gae", gruppe, "gae");
+
+        Repository.saveDatei(newDatei);
+        Repository.saveDatei(newDatei);
+
+        UserDTO userDTO = Repository.findUserByKeycloakname("gae");
+        List<TagDTO> tagDTOS = new ArrayList<>();
+        for (GruppeDTO gruppeDTO : userDTO.getBelegungUndRechte().keySet()) {
+            tagDTOS = gruppeDTO.getDateien().get(0).getTagDTOs();
+        }
+
+        assertTrue(tagDTOS.get(0).getText().equals("gae1"));
+        assertTrue(tagDTOS.get(1).getText().equals("gae2"));
+    }
 
     @Test
     public void deleteTagnutzungByDatei() throws SQLException {

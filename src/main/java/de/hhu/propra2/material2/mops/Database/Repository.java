@@ -54,7 +54,7 @@ public final class Repository {
     @SuppressWarnings("checkstyle:magicnumber")
     public static void saveDatei(final DateiDTO dateiDTO) throws SQLException {
 
-        if(!dateiExists(dateiDTO)) {
+        if (!dateiExists(dateiDTO)) {
             PreparedStatement preparedStatement =
                     connection.prepareStatement(
                             "insert into Datei (name, pfad, uploaderID, upload_datum,"
@@ -141,11 +141,22 @@ public final class Repository {
         preparedStatement.execute();
 
         ResultSet id = preparedStatement.getGeneratedKeys();
-        if(!(id.next())) {
-            return;
+        if ((id.next())) { //true = not empty false = empty
+            saveTagnutzung(dateiId, id.getLong(1));
+        } else {
+            saveTagnutzung(dateiId, getTagIdByTagname(tagDTO.getText()));
         }
+    }
 
-        saveTagnutzung(dateiId, id.getLong(1));
+    private static long getTagIdByTagname(final String tagName) throws SQLException {
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("select tagID from Tags where tag_name=?");
+        preparedStatement.setString(1, tagName);
+
+        ResultSet idResult = preparedStatement.executeQuery();
+        idResult.next();
+
+        return idResult.getLong("tagID");
     }
 
     @SuppressWarnings("checkstyle:magicnumber")
@@ -169,7 +180,7 @@ public final class Repository {
         }
     }
 
-    private static void resetGruppenbelegung(long gruppeId) throws SQLException {
+    private static void resetGruppenbelegung(final long gruppeId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement("delete from Gruppenbelegung where gruppeID=?");
 

@@ -80,13 +80,15 @@ public final class ModelService implements IModelService {
         return belegungUndRechte;
     }
 
-    private Gruppe loadGruppe(final GruppeDTO dto) {
-        List<Datei> zugehoerigeDateien =
-                dto.getDateien()
-                        .stream()
-                        .map(this::loadDatei)
-                        .collect(Collectors.toList());
-        return new Gruppe(dto.getId(), dto.getName(), zugehoerigeDateien);
+    private Gruppe loadGruppe(final GruppeDTO gruppeDTO) {
+        return new Gruppe(gruppeDTO.getId(), gruppeDTO.getName(), dateienDerGruppe(gruppeDTO));
+    }
+
+    private List<Datei> dateienDerGruppe(final GruppeDTO gruppeDTO) {
+        return gruppeDTO.getDateien()
+                .stream()
+                .map(this::loadDatei)
+                .collect(Collectors.toList());
     }
 
     public List<Gruppe> getAlleGruppenByUser(final String name) {

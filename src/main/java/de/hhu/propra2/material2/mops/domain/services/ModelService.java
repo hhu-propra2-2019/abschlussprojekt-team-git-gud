@@ -43,7 +43,7 @@ public final class ModelService implements IModelService {
 
     private Datei loadDatei(final DateiDTO dto) {
         List<Tag> tags = dto.getTagDTOs().stream()
-                .map(this::load)
+                .map(this::loadTag)
                 .collect(Collectors.toList());
         return new Datei(
                 dto.getId(),
@@ -57,27 +57,30 @@ public final class ModelService implements IModelService {
                 dto.getDateityp());
     }
 
-    private Tag load(final TagDTO dto) {
-        return new Tag(dto.getId(), dto.getText());
+    private Tag loadTag(final TagDTO tagDTO) {
+        return new Tag(tagDTO.getId(), tagDTO.getText());
     }
 
-    public User loadUser(final UserDTO dto) {
-        HashMap<Gruppe, Boolean> belegungUndRechte = new HashMap<>();
-        for (GruppeDTO gruppeDTO : dto.getBelegungUndRechte().keySet()) {
-            belegungUndRechte.put(
-                    load(gruppeDTO),
-                    dto.getBelegungUndRechte().get(gruppeDTO));
-        }
-
+    public User loadUser(final UserDTO userDTO) {
         return new User(
-                dto.getId(),
-                dto.getVorname(),
-                dto.getNachname(),
-                dto.getKeycloakname(),
-                belegungUndRechte);
+                userDTO.getId(),
+                userDTO.getVorname(),
+                userDTO.getNachname(),
+                userDTO.getKeycloakname(),
+                convertHashMapGruppeDTOtoGruppe(userDTO));
     }
 
-    private Gruppe load(final GruppeDTO dto) {
+    public HashMap<Gruppe, Boolean> convertHashMapGruppeDTOtoGruppe(final UserDTO userDTO) {
+        HashMap<Gruppe, Boolean> belegungUndRechte = new HashMap<>();
+        for (GruppeDTO gruppeDTO : userDTO.getBelegungUndRechte().keySet()) {
+            belegungUndRechte.put(
+                    loadGruppe(gruppeDTO),
+                    userDTO.getBelegungUndRechte().get(gruppeDTO));
+        }
+        return belegungUndRechte;
+    }
+
+    private Gruppe loadGruppe(final GruppeDTO dto) {
         List<Datei> zugehoerigeDateien =
                 dto.getDateien()
                         .stream()

@@ -15,6 +15,7 @@ import io.minio.errors.NoResponseException;
 import io.minio.errors.RegionConflictException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.xmlpull.v1.XmlPullParserException;
@@ -25,18 +26,15 @@ import java.security.NoSuchAlgorithmException;
 
 @Slf4j
 @Service
+@EnableConfigurationProperties(MinIOProperties.class)
 public final class FileUploadService {
-
-    private static final String ENDPOINT = "http://localhost:23307/";
-    private static final String ACCESS_KEY = "minio";
-    private static final String SECRET_KEY = "minio123";
-    private static final String BUCKETNAME = "materialsammlung";
-
     /**
      * Static MinIO client to upload
      * and download files.
      */
     private MinioClient minioClient;
+
+    private MinIOProperties minIOProperties;
 
     /**
      * Used to upload Files to
@@ -56,7 +54,7 @@ public final class FileUploadService {
      * @throws ErrorResponseException
      * @throws RegionConflictException
      */
-    public FileUploadService() throws InvalidPortException,
+    public FileUploadService(final MinIOProperties minIOPropertiesArg) throws InvalidPortException,
             InvalidEndpointException,
             IOException, InvalidKeyException,
             NoSuchAlgorithmException, InsufficientDataException,
@@ -64,12 +62,13 @@ public final class FileUploadService {
             NoResponseException, InvalidBucketNameException,
             XmlPullParserException, ErrorResponseException,
             RegionConflictException {
+        this.minIOProperties = minIOPropertiesArg;
+        System.out.println(minIOProperties.getBucketname());
+        minioClient = new MinioClient(minIOProperties.getEndpoint(),
+                minIOProperties.getAccesskey(),
+                minIOProperties.getSecretkey());
 
-        minioClient = new MinioClient(ENDPOINT,
-                ACCESS_KEY,
-                SECRET_KEY);
-
-        createBucketIfNotExists(BUCKETNAME);
+        createBucketIfNotExists(minIOProperties.getBucketname());
     }
 
     /**
@@ -88,7 +87,7 @@ public final class FileUploadService {
             throws MinioException, XmlPullParserException,
             NoSuchAlgorithmException,
             InvalidKeyException, IOException {
-        minioClient.putObject(BUCKETNAME, name, localFilePath, null,
+        minioClient.putObject(minIOProperties.getBucketname(), name, localFilePath, null,
                 null, null, null);
     }
 
@@ -106,31 +105,31 @@ public final class FileUploadService {
      * @throws XmlPullParserException
      * @throws ErrorResponseException
      */
-    public String upload(final MultipartFile file,
+    public String upload(final MultipartFile file, final String newFileName,
                          final String prefix)
             throws IOException, InvalidKeyException, NoSuchAlgorithmException, InsufficientDataException,
             InternalException, NoResponseException, InvalidBucketNameException, XmlPullParserException,
             ErrorResponseException, InvalidResponseException, RegionConflictException, InvalidArgumentException {
-        createBucketIfNotExists(BUCKETNAME);
-        String fullObjectName =
-                Strings.isNullOrEmpty(prefix) ? file.getName() : FilenameUtils
-                        .concat(prefix, file.getName());
+        createBucketIfNotExists(minIOProperties.getBucketname());
+        String fullObjectName = Strings.isNullOrEmpty(newFileName) ? file.getName() : newFileName;
+        fullObjectName =
+                Strings.isNullOrEmpty(prefix) ? fullObjectName : FilenameUtils.concat(prefix, fullObjectName);
 
-        minioClient.putObject(BUCKETNAME, fullObjectName, file.getInputStream(),
+        minioClient.putObject(minIOProperties.getBucketname(), fullObjectName, file.getInputStream(),
                 null, null, null, file.getContentType());
         return fullObjectName;
     }
 
-    private void createBucketIfNotExists(final String bucketName) throws IOException,
+    private void createBucketIfNotExists(final String bucket) throws IOException,
             InvalidKeyException, NoSuchAlgorithmException, InsufficientDataException,
             InvalidResponseException, InternalException, NoResponseException,
             InvalidBucketNameException, XmlPullParserException, ErrorResponseException,
             RegionConflictException {
-        if (minioClient.bucketExists(bucketName)) {
-            log.info("MinIO: Bucket '" + bucketName + "' already exists.");
+        if (minioClient.bucketExists(bucket)) {
+            log.info("MinIO: Bucket '" + bucket + "' already exists.");
         } else {
-            minioClient.makeBucket(bucketName);
-            log.info("MinIO: Bucket '" + bucketName + "' created");
+            minioClient.makeBucket(bucket);
+            log.info("MinIO: Bucket '" + bucket + "' created");
         }
     }
 }

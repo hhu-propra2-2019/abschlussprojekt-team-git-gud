@@ -1,11 +1,13 @@
 package de.hhu.propra2.material2.mops.domain.models;
 
 import lombok.Getter;
+import lombok.Value;
 
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Value
 public class Datei {
     /**
      * Unique ID from database.
@@ -82,7 +84,7 @@ public class Datei {
         }
         return true;
     }
-
+/**
     public Datei(
             final long idArgs,
             final String nameArgs,
@@ -112,5 +114,5 @@ public class Datei {
     public final Date getVeroeffentlichungsdatum() {
         return (Date) veroeffentlichungsdatum.clone();
     }
-
+**/
 }

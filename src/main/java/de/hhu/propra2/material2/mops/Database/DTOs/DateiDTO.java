@@ -146,4 +146,5 @@ public final class DateiDTO {
         return (Date) veroeffentlichungsdatum.clone();
     }
 
+
 }

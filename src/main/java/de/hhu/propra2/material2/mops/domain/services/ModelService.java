@@ -156,4 +156,9 @@ public final class ModelService implements IModelService {
                 .map(Datei::getDateityp)
                 .collect(Collectors.toSet());
     }
+
+    public List<Datei> getAlleDateienByGruppeId(final Long id) {
+        Gruppe gruppe = load(gruppen.findById(id).get());
+        return gruppe.getDateien();
+    }
 }

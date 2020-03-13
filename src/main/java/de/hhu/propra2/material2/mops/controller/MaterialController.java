@@ -124,6 +124,11 @@ public class MaterialController {
         tags.add(new Tag(2, "Übung"));
         model.addAttribute("tags", tags);
         //
+        List<String> tagText = new ArrayList<>();
+        tagText.add("Vorlesung");
+        tagText.add("Übung");
+        model.addAttribute("tagText", tagText);
+        //
         List<String> uploader = new ArrayList<>();
         uploader.add("Jenz");
         uploader.add("Doomguy");

@@ -3,7 +3,7 @@ package de.hhu.propra2.material2.mops.domain.models;
 import lombok.Getter;
 import lombok.Value;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,13 +38,13 @@ public class Datei {
     /**
      * Upload date.
      */
-    private final Date uploaddatum;
+    private final LocalDate uploaddatum;
     /**
      * Date for when the file
      * will be visible to non-uploaders
      * of its group.
      */
-    private final Date veroeffentlichungsdatum;
+    private final LocalDate veroeffentlichungsdatum;
     /**
      * File size.
      */
@@ -72,7 +72,6 @@ public class Datei {
     }
 
     /**
-     *
      * @param tagsToCheckFor
      * @return true if the file contains all the given tags
      */
@@ -84,15 +83,15 @@ public class Datei {
         }
         return true;
     }
-/**
+
     public Datei(
             final long idArgs,
             final String nameArgs,
             final String pfadArgs,
             final User uploaderArgs,
             final List<Tag> tagsArgs,
-            final Date uploaddatumArgs,
-            final Date veroeffentlichungsdatumArgs,
+            final LocalDate uploaddatumArgs,
+            final LocalDate veroeffentlichungsdatumArgs,
             final double dateigroesseArgs,
             final String dateitypArgs) {
         this.id = idArgs;
@@ -100,19 +99,10 @@ public class Datei {
         this.pfad = pfadArgs;
         this.uploader = uploaderArgs;
         this.tags = tagsArgs;
-        this.uploaddatum = (Date) uploaddatumArgs.clone();
+        this.uploaddatum = uploaddatumArgs;
         this.veroeffentlichungsdatum =
-                (Date) veroeffentlichungsdatumArgs.clone();
+                veroeffentlichungsdatumArgs;
         this.dateigroesse = dateigroesseArgs;
         this.dateityp = dateitypArgs;
     }
-
-    public final Date getUploaddatum() {
-        return (Date) uploaddatum.clone();
-    }
-
-    public final Date getVeroeffentlichungsdatum() {
-        return (Date) veroeffentlichungsdatum.clone();
-    }
-**/
 }

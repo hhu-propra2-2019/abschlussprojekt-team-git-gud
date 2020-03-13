@@ -13,10 +13,8 @@ import de.hhu.propra2.material2.mops.domain.services.suchComparators.DateiUpload
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -123,12 +121,8 @@ public class SuchService {
 
     private boolean datumInZeitraum(final LocalDate von,
                                     final LocalDate bis,
-                                    final Date zuPruefen) {
-        LocalDate pruefen = zuPruefen
-                .toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
-        return von.compareTo(pruefen) <= 0 && bis.compareTo(pruefen) >= 0;
+                                    final LocalDate zuPruefen) {
+        return von.compareTo(zuPruefen) <= 0 && bis.compareTo(zuPruefen) >= 0;
     }
 
     private List<Datei> typSuche(final String[] typen,
@@ -164,23 +158,24 @@ public class SuchService {
          * Kategorie
          * aufsteigend / absteigend
          */
+        List<Datei> sort = zuSortieren;
         if ("name".equals(sortierStyle)) {
-            zuSortieren.sort(new DateiNamenComparator());
+            sort.sort(new DateiNamenComparator());
         }
         if ("Dateityp".equals(sortierStyle)) {
-            zuSortieren.sort(new DateiDateiTypComparator());
+            sort.sort(new DateiDateiTypComparator());
         }
         if ("Uploader".equals(sortierStyle)) {
-            zuSortieren.sort(new DateiUploaderComparator());
+            sort.sort(new DateiUploaderComparator());
         }
         if ("Datum".equals(sortierStyle)) {
-            zuSortieren.sort(new DateiDatumComparator());
+            sort.sort(new DateiDatumComparator());
         }
         if (reihenfolge != null) {
             if ("absteigend".equals(reihenfolge)) {
-                Collections.reverse(zuSortieren);
+                Collections.reverse(sort);
             }
         }
-        return zuSortieren;
+        return sort;
     }
 }

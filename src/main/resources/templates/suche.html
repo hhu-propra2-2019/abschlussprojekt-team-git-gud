@@ -16,81 +16,59 @@
         Suche
     </h1>
     <div class="container">
-        <form action="" method="post" >
+        <form action="" method="post" id="abschicken" name="auswahl" >
+            <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
             <div class="form-group">
-                <label for="SelectGroup">Gruppenauswahl </label>
-                <select class="form-control" id="SelectGroup" name="gruppe">
-                    <option>  ProPra  </option>
-                    <option>  RDB  </option>
+                <label for="SelectGroup">Gruppenauswahl</label>
+                <select class="form-control" onchange="auswahl.submit()" id="SelectGroup" name="gruppenId">
+                    <option value="0">Alle</option>
+                    <option th:each="gruppe : ${gruppen}"
+                            th:value="${gruppe.getId()}"
+                            th:text="${gruppe.getName()}" >
+                    </option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="dataname">Dateiname </label>
-                <input type="text" class="form-control" id="dataname" placeholder="Eingabe">
+                <label for="dataname">Dateiname</label>
+                <input type="text" class="form-control" id="dataname" placeholder="Eingabe" name="dateiName">
             </div>
 
             <div class="form-group list-inline">
-                <label for="Tag1">Tag </label>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="Tag1">
-                    <label class="form-check-label" for="Tag1">
-                        Klausurrelevant
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="Tag2">
-
-                    <label class="form-check-label" for="Tag2">
-                        Übungsblatt
-                    </label>
+                <label for="Tag">Tag </label>
+                <div class="form-check" th:each="tag : ${tags}">
+                    <input class="form-check-input" type="checkbox" value="" id="Tag"
+                           th:value="${tag}" name="tags">
+                    <label class="form-check-label" for="Tag" th:text="${tag}"></label>
                 </div>
             </div>
 
             <div class="form-group list-inline">
-                <label for="Dateityp1">Dateityp </label>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="Dateityp1">
-                    <label class="form-check-label" for="Dateityp1">
-                        PDF
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="Dateityp2">
-
-                    <label class="form-check-label" for="Dateityp2">
-                        XDOC
-                    </label>
+                <label for="Dateityp">Dateityp</label>
+                <div class="form-check" th:each="dateiTyp : ${dateiTypen}">
+                    <input class="form-check-input" type="checkbox" value="" id="Dateityp" th:value="${dateiTyp}" name="dateiTyp">
+                    <label class="form-check-label" for="Dateityp" th:text="${dateiTyp}"></label>
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="Uploader1">Uploader </label>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="Uploader1">
-                    <label class="form-check-label" for="Uploader1">
-                        Chris
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="Uploader2">
-
-                    <label class="form-check-label" for="Uploader2">
-                        Dr. Prof. Herr. Jens
-                    </label>
+                <label for="Uploader">Uploader</label>
+                <div class="form-check" th:each="uploading : ${uploader}">
+                    <input class="form-check-input" type="checkbox" value="" id="Uploader" th:value="${uploading}" name="uploader">
+                    <label class="form-check-label" for="Dateityp" th:text="${uploading}"></label>
                 </div>
             </div>
 
             <div class="form-group">
                 <label>Datum </label>
                     <div class="form-inline">
-                        <label> Von</label>
+                        <label for="FromDate"> Von</label>
                         <div class="form-check">
-                            <input type="date" value="" id="FromDate" >
+                            <input type="date" value="" id="FromDate" name="vonDatum">
                         </div>
-                        <label> Bis</label>
+                        <label for="UntilDate"> Bis</label>
                         <div class="form-check">
-                            <input type="date" value="" id="UntilDate">
+                            <input type="date" value="" id="UntilDate" name ="bisDatum">
                         </div>
                     </div>
             </div>
@@ -98,11 +76,12 @@
             <div class="form-group">
                 <label for="SelectSearchBy">Sortierung </label>
                 <div class="form-inline">
-                    <select class="form-control" id="SelectSearchBy" name="Sortierung">
+                    <select class="form-control" id="SelectSearchBy" name="sortierung">
                         <option> Name </option>
                         <option> Datum </option>
                     </select>
-                    <select class="form-control" id="SelectOrder" name="Reihenfolge">
+                    <label for="SelectOrder"></label>
+                    <select class="form-control" id="SelectOrder" name="reihenfolge">
                         <option> aufsteigend </option>
                         <option> absteigend </option>
                     </select>
@@ -110,7 +89,7 @@
             </div>
 
             <div>
-                <input class="btn btn-primary" type="submit" name="search" value="Suchen">
+                <input class="btn btn-primary" type="submit" onclick="abschicken.submit()" name="search" value="Suchen">
             </div>
         </form>
     </div>

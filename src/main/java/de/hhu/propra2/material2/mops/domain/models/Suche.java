@@ -1,9 +1,8 @@
 package de.hhu.propra2.material2.mops.domain.models;
 
+import lombok.Data;
 
-import lombok.Value;
-
-@Value
+@Data
 public class Suche {
     private final String vonDatum;
     private final String bisDatum;
@@ -11,33 +10,40 @@ public class Suche {
     private final String[] dateiTyp;
     private final String[] uploader;
     private final String sortierung;
-    private final Gruppe gruppe;
+    private final Long gruppenId;
+    private final String dateiName;
+    private final String reihenfolge;
+
 
     public final String[] getDateiTyp() {
-        return dateiTyp.clone();
+        return dateiTyp == null ? null : dateiTyp.clone();
     }
 
     public final String[] getTags() {
-        return tags.clone();
+        return tags == null ? null : tags.clone();
     }
 
     public final String[] getUploader() {
-        return uploader.clone();
+        return uploader == null ? null : uploader.clone();
     }
-
-    public Suche(final String vonDatumArg,
-                 final String bisDatumArg,
-                 final String[] tagsArg,
-                 final String[] dateiTypArg,
-                 final String[] uploaderArg,
-                 final String sortierungArg,
-                 final Gruppe gruppeArg) {
-        this.dateiTyp = dateiTypArg.clone();
-        this.vonDatum = vonDatumArg;
-        this.bisDatum = bisDatumArg;
-        this.tags = tagsArg.clone();
-        this.uploader = uploaderArg.clone();
-        this.sortierung = sortierungArg;
-        this.gruppe = gruppeArg;
+    @SuppressWarnings("checkstyle:HiddenField")
+    public Suche(final String vonDatum,
+                 final String bisDatum,
+                 final String[] tags,
+                 final String[] dateiTyp,
+                 final String[] uploader,
+                 final String sortierung,
+                 final Long gruppenId,
+                 final String dateiName,
+                 final String reihenfolge) {
+        this.dateiTyp = dateiTyp == null ? null : dateiTyp.clone();
+        this.vonDatum = vonDatum;
+        this.bisDatum = bisDatum;
+        this.tags = tags == null ? null : tags.clone();
+        this.uploader = uploader == null ? null : uploader.clone();
+        this.sortierung = sortierung;
+        this.gruppenId = gruppenId;
+        this.dateiName = dateiName;
+        this.reihenfolge = reihenfolge;
     }
 }

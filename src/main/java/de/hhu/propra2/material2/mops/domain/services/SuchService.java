@@ -40,17 +40,17 @@ public class SuchService {
         }
 
         final List<Datei> zuFiltern = new ArrayList<>();
-        List<Datei> result = new ArrayList<>();
+        List<Datei> result;
 
-        if (suche.getGruppe() != null) {
-            zuFiltern.addAll(suche.getGruppe().getDateien());
+        if (suche.getGruppenId() != null) {
+            zuFiltern.addAll(modelService.getAlleDateienByGruppeId(suche.getGruppenId()));
         } else {
             user.getAllGruppen()
                     .forEach(gruppe -> zuFiltern.addAll(gruppe.getDateien()));
         }
         result = zuFiltern;
         if (suche.getTags() != null) {
-            result = tagSuche(suche.getTags(), zuFiltern);
+            result = tagSuche(suche.getTags(), result);
         }
         if (suche.getDateiTyp() != null) {
             result = typSuche(suche.getDateiTyp(), result);
@@ -61,8 +61,12 @@ public class SuchService {
         if (suche.getBisDatum() != null) {
             result = datumsSuche(suche.getVonDatum(),
                     suche.getBisDatum(),
-                    zuFiltern);
+                    result);
         }
+        if (suche.getDateiName() != null) {
+            result = dateiNamenSuche(suche.getDateiName(), result);
+        }
+
         return result;
     }
 
@@ -92,6 +96,14 @@ public class SuchService {
 
     }
 
+    private List<Datei> dateiNamenSuche(final String dateiName,
+                                        final List<Datei> zuFiltern) {
+        return zuFiltern.stream().filter(datei -> datei.getName()
+                .toLowerCase()
+                .contains(dateiName.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
     private boolean datumInZeitraum(final LocalDate von,
                                     final LocalDate bis,
                                     final LocalDate zuPruefen) {
@@ -99,7 +111,7 @@ public class SuchService {
     }
 
     private List<Datei> typSuche(final String[] typen,
-                                final List<Datei> zuFiltern) {
+                                 final List<Datei> zuFiltern) {
         List<Datei> result = new ArrayList<>();
         for (String typ : typen) {
             result.addAll(zuFiltern.stream()

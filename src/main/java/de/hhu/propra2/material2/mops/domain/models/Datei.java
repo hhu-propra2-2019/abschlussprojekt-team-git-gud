@@ -73,7 +73,7 @@ public class Datei {
 
     /**
      *
-     * @param tags
+     * @param tagsToCheckFor
      * @return true if the file contains all the given tags
      */
     public boolean hatTags(final String[] tagsToCheckFor) {

@@ -2,7 +2,7 @@ package de.hhu.propra2.material2.mops.Database.DTOs;
 
 import lombok.Getter;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 public final class DateiDTO {
@@ -22,7 +22,7 @@ public final class DateiDTO {
     @Getter
     private final String pfad;
     /**
-     *  User that uploaded the file.
+     * User that uploaded the file.
      */
     @Getter
     private final UserDTO uploader;
@@ -39,13 +39,15 @@ public final class DateiDTO {
     /**
      * Upload date.
      */
-    private final Date uploaddatum;
+    @Getter
+    private final LocalDate uploaddatum;
     /**
      * Date for when the file
      * will be visible to non-uploaders
      * of its group.
      */
-    private final Date veroeffentlichungsdatum;
+    @Getter
+    private final LocalDate veroeffentlichungsdatum;
     /**
      * File size.
      */
@@ -76,8 +78,8 @@ public final class DateiDTO {
                     final String pfadArg,
                     final UserDTO uploaderArg,
                     final List<TagDTO> tagDTOsArg,
-                    final Date uploaddatumArg,
-                    final Date veroeffentlichungsdatumArg,
+                    final LocalDate uploaddatumArg,
+                    final LocalDate veroeffentlichungsdatumArg,
                     final long dateigroesseArg,
                     final String dateitypArg,
                     final GruppeDTO gruppeArg) {
@@ -87,9 +89,9 @@ public final class DateiDTO {
         this.uploader = uploaderArg;
         this.tagDTOs = tagDTOsArg;
         this.gruppe = gruppeArg;
-        this.uploaddatum = (Date) uploaddatumArg.clone();
+        this.uploaddatum = uploaddatumArg;
         this.veroeffentlichungsdatum =
-                (Date) veroeffentlichungsdatumArg.clone();
+                veroeffentlichungsdatumArg;
         this.dateigroesse = dateigroesseArg;
         this.dateityp = dateitypArg;
     }
@@ -111,8 +113,8 @@ public final class DateiDTO {
                     final String pfadArg,
                     final UserDTO uploaderArg,
                     final List<TagDTO> tagDTOsArg,
-                    final Date uploaddatumArg,
-                    final Date veroeffentlichungsdatumArg,
+                    final LocalDate uploaddatumArg,
+                    final LocalDate veroeffentlichungsdatumArg,
                     final long dateigroesseArg,
                     final String dateitypArg,
                     final GruppeDTO gruppeArg) {
@@ -122,28 +124,11 @@ public final class DateiDTO {
         this.uploader = uploaderArg;
         this.tagDTOs = tagDTOsArg;
         this.gruppe = gruppeArg;
-        this.uploaddatum = (Date) uploaddatumArg.clone();
+        this.uploaddatum = uploaddatumArg;
         this.veroeffentlichungsdatum =
-                (Date) veroeffentlichungsdatumArg.clone();
+                veroeffentlichungsdatumArg;
         this.dateigroesse = dateigroesseArg;
         this.dateityp = dateitypArg;
-    }
-    /**
-     * Manual Date getter
-     * because its mutable.
-     * @return clone
-     */
-    public Date getUploaddatum() {
-        return (Date) uploaddatum.clone();
-    }
-
-    /**
-     * Manual Date getter
-     * because its mutable.
-     * @return clone
-     */
-    public Date getVeroeffentlichungsdatum() {
-        return (Date) veroeffentlichungsdatum.clone();
     }
 
 

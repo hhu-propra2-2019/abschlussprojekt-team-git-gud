@@ -13,7 +13,6 @@ import de.hhu.propra2.material2.mops.domain.models.Tag;
 import de.hhu.propra2.material2.mops.domain.models.User;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +24,7 @@ public final class ModelService implements IModelService {
     private final DateiRepository dateien;
     private final GruppeRepository gruppen;
     private final UserRepository users;
+
 
     /**
      * Constructor of ModelService.
@@ -86,11 +86,7 @@ public final class ModelService implements IModelService {
         return new Gruppe(dto.getId(), dto.getName(), zugehoerigeDateien);
     }
 
-    public List<Gruppe> getAlleGruppenByUser(final String name) {
-        if (users.findByKeycloakname(name) == null) {
-            return new ArrayList<>();
-        }
-        User user = loadUser(users.findByKeycloakname(name));
+    public List<Gruppe> getAlleGruppenByUser(final User user) {
         return user.getAllGruppen();
     }
 
@@ -98,8 +94,7 @@ public final class ModelService implements IModelService {
         return gruppe.getDateien();
     }
 
-    public Set<String> getAlleTagsByUser(final String name) {
-        User user = loadUser(users.findByKeycloakname(name));
+    public Set<String> getAlleTagsByUser(final User user) {
         List<Gruppe> groups = user.getAllGruppen();
         Set<String> tags = new HashSet<>();
         for (Gruppe gruppe : groups) {
@@ -117,8 +112,7 @@ public final class ModelService implements IModelService {
         return tags;
     }
 
-    public Set<String> getAlleUploaderByUser(final String name) {
-        User user = loadUser(users.findByKeycloakname(name));
+    public Set<String> getAlleUploaderByUser(final User user) {
         List<Gruppe> groups = user.getAllGruppen();
         Set<String> uploader = new HashSet<String>();
         for (Gruppe gruppe : groups) {
@@ -137,8 +131,7 @@ public final class ModelService implements IModelService {
                 .collect(Collectors.toSet());
     }
 
-    public Set<String> getAlleDateiTypenByUser(final String name) {
-        User user = loadUser(users.findByKeycloakname(name));
+    public Set<String> getAlleDateiTypenByUser(final User user) {
         List<Gruppe> groups = user.getAllGruppen();
         Set<String> dateiTypen = new HashSet<String>();
         for (Gruppe gruppe : groups) {
@@ -160,5 +153,9 @@ public final class ModelService implements IModelService {
     public List<Datei> getAlleDateienByGruppeId(final Long id) {
         Gruppe gruppe = load(gruppen.findById(id).get());
         return gruppe.getDateien();
+    }
+
+    public User getUserByKeyCloackName(final String name) {
+        return loadUser(users.findByKeycloakname(name));
     }
 }

@@ -24,7 +24,7 @@ public class User {
      */
     private final String nachname;
 
-    /**
+    /**.
      * Unique name provided by
      * keycloak.
      */

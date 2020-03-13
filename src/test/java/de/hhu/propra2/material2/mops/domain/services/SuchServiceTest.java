@@ -1,9 +1,6 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
 import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
-import de.hhu.propra2.material2.mops.Database.DateiRepository;
-import de.hhu.propra2.material2.mops.Database.GruppeRepository;
-import de.hhu.propra2.material2.mops.Database.UserRepository;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
@@ -16,6 +13,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -31,12 +30,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class SuchServiceTest {
 
-    @Mock
-    private DateiRepository dateiRepoMock;
-    @Mock
-    private GruppeRepository gruppenRepoMock;
-    @Mock
-    private UserRepository userRepoMock;
     @Mock
     private ModelService modelServiceMock;
     @Mock
@@ -60,10 +53,7 @@ public class SuchServiceTest {
     @BeforeEach
     @SuppressWarnings("checkstyle:magicnumber")
     public void setUp() {
-        this.suchService = new SuchService(dateiRepoMock,
-                gruppenRepoMock,
-                userRepoMock,
-                modelServiceMock);
+        this.suchService = new SuchService(modelServiceMock);
 
         Mockito.lenient().when(modelServiceMock.loadUser(any(UserDTO.class))).thenReturn(userMock);
         Mockito.lenient().when(modelServiceMock.loadUser(null)).thenReturn(userMock);
@@ -71,11 +61,11 @@ public class SuchServiceTest {
         //Date for Datei
         Calendar calender = Calendar.getInstance();
         calender.set(2020, 1, 3);
-        Date date1 = calender.getTime();
+        LocalDate date1 = calender.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         calender.set(2020, 3, 5);
-        Date date2 = calender.getTime();
+        LocalDate date2 = calender.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         calender.set(2020, 1, 1);
-        Date veroeffentlichung = calender.getTime();
+        LocalDate veroeffentlichung = calender.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
         //Tags for Datei
         Tag tag1 = new Tag(1, "Vorlesung");

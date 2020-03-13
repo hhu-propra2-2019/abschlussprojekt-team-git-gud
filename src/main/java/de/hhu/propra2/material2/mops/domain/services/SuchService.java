@@ -33,7 +33,7 @@ public class SuchService {
                                    final String keyCloackName) {
         User user;
         try {
-            user = modelService.load(Repository.findUserByKeycloakname(keyCloackName));
+            user = modelService.loadUser(Repository.findUserByKeycloakname(keyCloackName));
         } catch (SQLException e) {
             log.error("Unknown SQLException occured.");
             return new ArrayList<>();

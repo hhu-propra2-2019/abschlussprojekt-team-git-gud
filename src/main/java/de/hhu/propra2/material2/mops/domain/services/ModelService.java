@@ -82,7 +82,7 @@ public final class ModelService {
             if (Repository.findUserByKeycloakname(name) == null) {
                 return new ArrayList<>();
             }
-            User user = load(Repository.findUserByKeycloakname(name));
+            User user = loadUser(Repository.findUserByKeycloakname(name));
             return user.getAllGruppen();
         } catch (SQLException e) {
             log.error("Unknown SQLException occurred.");
@@ -95,7 +95,12 @@ public final class ModelService {
     }
 
     public Set<String> getAlleTagsByUser(final String name) {
-        User user = loadUser(users.findByKeycloakname(name));
+        User user = null;
+        try {
+            user = loadUser(Repository.findUserByKeycloakname(name));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         List<Gruppe> groups = user.getAllGruppen();
         Set<String> tags = new HashSet<>();
         for (Gruppe gruppe : groups) {
@@ -114,7 +119,12 @@ public final class ModelService {
     }
 
     public Set<String> getAlleUploaderByUser(final String name) {
-        User user = loadUser(users.findByKeycloakname(name));
+        User user = null;
+        try {
+            user = loadUser(Repository.findUserByKeycloakname(name));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         List<Gruppe> groups = user.getAllGruppen();
         Set<String> uploader = new HashSet<String>();
         for (Gruppe gruppe : groups) {
@@ -134,7 +144,12 @@ public final class ModelService {
     }
 
     public Set<String> getAlleDateiTypenByUser(final String name) {
-        User user = loadUser(users.findByKeycloakname(name));
+        User user = null;
+        try {
+            user = loadUser(Repository.findUserByKeycloakname(name));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         List<Gruppe> groups = user.getAllGruppen();
         Set<String> dateiTypen = new HashSet<String>();
         for (Gruppe gruppe : groups) {
@@ -154,7 +169,7 @@ public final class ModelService {
     }
 
     public List<Datei> getAlleDateienByGruppeId(final Long id) {
-        Gruppe gruppe = load(gruppen.findById(id).get());
-        return gruppe.getDateien();
+
+        return null;
     }
 }

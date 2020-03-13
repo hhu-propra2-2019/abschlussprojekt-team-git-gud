@@ -12,6 +12,7 @@ import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.annotation.security.RolesAllowed;
@@ -115,7 +116,8 @@ public class MaterialController {
     */
     @PostMapping("/suche")
     @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
-    public String vorSuchePost(final KeycloakAuthenticationToken token, final Model model, final Suche suche) {
+    public String suchen(
+            final KeycloakAuthenticationToken token, final Model model, final @ModelAttribute Suche suchen) {
         model.addAttribute("account", createAccountFromPrincipal(token));
         authenticatedAccess.increment();
         model.addAttribute("gruppen", gruppen);
@@ -134,18 +136,8 @@ public class MaterialController {
         model.addAttribute("account", createAccountFromPrincipal(token));
         authenticatedAccess.increment();
         model.addAttribute("gruppen", gruppen);
-        //
-        List<Tag> tags = new ArrayList<>();
-        tags.add(new Tag(1, "Vorlesung"));
-        tags.add(new Tag(2, "Übung"));
-        model.addAttribute("tags", tags);
-        //
         model.addAttribute("uploader", uploader);
-        //
-        List<String> dateitypen = new ArrayList<>();
-        dateitypen.add("Txt");
-        dateitypen.add("Pdf");
-        model.addAttribute("dateitypen", dateitypen);
+        model.addAttribute("dateitypen", dateiTypen);
         return "upload";
     }
 

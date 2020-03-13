@@ -1,5 +1,6 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
+import de.hhu.propra2.material2.mops.Exceptions.MinioDownloadException;
 import io.minio.MinioClient;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
@@ -16,11 +17,11 @@ import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-public class FileDownloadService {
+public final class MinioDownloadService {
 
     private MinioClient minioClient;
 
-    public FileDownloadService(final MinioClient client) {
+    public MinioDownloadService(final MinioClient client) {
         this.minioClient = client;
     }
 
@@ -30,29 +31,30 @@ public class FileDownloadService {
      * @param bucket
      * @param objectName
      * @return
-     * @throws IOException
-     * @throws InvalidKeyException
-     * @throws NoSuchAlgorithmException
-     * @throws InsufficientDataException
-     * @throws InvalidExpiresRangeException
-     * @throws InvalidResponseException
-     * @throws InternalException
-     * @throws NoResponseException
-     * @throws InvalidBucketNameException
-     * @throws XmlPullParserException
-     * @throws ErrorResponseException
      */
-    public String getUrl(final String bucket, final String objectName)
-            throws IOException, InvalidKeyException, NoSuchAlgorithmException, InsufficientDataException,
-            InvalidExpiresRangeException, InvalidResponseException, InternalException, NoResponseException,
-            InvalidBucketNameException, XmlPullParserException, ErrorResponseException {
+    public String getUrl(final String bucket, final String objectName) throws MinioDownloadException {
         final int expiration = 3600;
-        String url = minioClient.presignedGetObject(bucket, objectName, expiration);
-        return url;
+        try {
+            String url = minioClient.presignedGetObject(bucket, objectName, expiration);
+            return url;
+        } catch (IOException
+                | InvalidKeyException
+                | NoSuchAlgorithmException
+                | InsufficientDataException
+                | InvalidExpiresRangeException
+                | InvalidResponseException
+                | InternalException
+                | NoResponseException
+                | InvalidBucketNameException
+                | XmlPullParserException
+                | ErrorResponseException e) {
+                throw new MinioDownloadException();
+        }
     }
 
     /**
      * return InputStream from object.
+     *
      * @param bucket
      * @param objectName
      * @return

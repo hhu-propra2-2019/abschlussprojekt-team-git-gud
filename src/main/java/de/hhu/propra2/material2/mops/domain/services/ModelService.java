@@ -149,6 +149,7 @@ public final class ModelService {
             user = loadUser(Repository.findUserByKeycloakname(name));
         } catch (SQLException e) {
             e.printStackTrace();
+            return new HashSet<String>();
         }
         List<Gruppe> groups = user.getAllGruppen();
         Set<String> dateiTypen = new HashSet<String>();

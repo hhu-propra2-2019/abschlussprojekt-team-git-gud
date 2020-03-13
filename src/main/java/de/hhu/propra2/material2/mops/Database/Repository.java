@@ -4,6 +4,7 @@ import de.hhu.propra2.material2.mops.Database.DTOs.DateiDTO;
 import de.hhu.propra2.material2.mops.Database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.Database.DTOs.TagDTO;
 import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,6 +16,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+//https://spotbugs.readthedocs.io/en/stable/bugDescriptions.html
+@SuppressFBWarnings("OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE")
 public final class Repository {
     private static Connection connection;
 
@@ -48,6 +51,9 @@ public final class Repository {
                 users.getString("key_cloak_name"),
                 findAllGruppeByUserID(users.getLong("userID")));
 
+        preparedStatement.close();
+        users.close();
+
         return user;
     }
 
@@ -70,6 +76,7 @@ public final class Repository {
             resetGruppenbelegung(gruppe.getId());
             saveGruppenbelegung(userDTO.getId(), gruppe.getId(), gruppenBelegung.get(gruppe));
         }
+        preparedStatement.close();
     }
 
     public static void deleteUserByUserId(final long userId) throws SQLException {
@@ -80,6 +87,7 @@ public final class Repository {
         preparedStatement.setLong(1, userId);
 
         preparedStatement.execute();
+        preparedStatement.close();
     }
 
     public static void deleteGroupByGroupId(final long gruppeId) throws SQLException {
@@ -90,6 +98,7 @@ public final class Repository {
         preparedStatement.setLong(1, gruppeId);
 
         preparedStatement.execute();
+        preparedStatement.close();
     }
 
     @SuppressWarnings("checkstyle:magicnumber")
@@ -122,11 +131,12 @@ public final class Repository {
             for (TagDTO tag : tags) {
                 saveTag(tag, id.getLong(1));
             }
+            preparedStatement.close();
+            id.close();
 
         } else {
             updateDatei(dateiDTO);
         }
-
     }
 
     public static TagDTO findTagById(final long id) throws SQLException {
@@ -141,6 +151,9 @@ public final class Repository {
         tagResult.next();
 
         tag = new TagDTO(tagResult.getLong("tagID"), tagResult.getString("tag_name"));
+
+        preparedStatement.close();
+        tagResult.close();
 
         return tag;
     }
@@ -169,6 +182,7 @@ public final class Repository {
         for (TagDTO tag : tags) {
             saveTag(tag, dateiDTO.getId());
         }
+        preparedStatement.close();
     }
 
     @SuppressWarnings("checkstyle:magicnumber")
@@ -182,6 +196,10 @@ public final class Repository {
         preparedStatement.setLong(3, dateiDTO.getGruppe().getId());
 
         ResultSet result = preparedStatement.executeQuery();
+
+        preparedStatement.close();
+        result.close();
+
         return result.next();
     }
 
@@ -196,6 +214,9 @@ public final class Repository {
         while (dateiResult.next()) {
             dateien.add(findDateiById(dateiResult.getLong("dateiID")));
         }
+
+        preparedStatement.close();
+        dateiResult.close();
 
         return dateien;
     }
@@ -223,6 +244,9 @@ public final class Repository {
                 dateiResult.getString("kategorie"));
 
 
+        preparedStatement.close();
+        dateiResult.close();
+
         return datei;
     }
 
@@ -234,6 +258,8 @@ public final class Repository {
         preparedStatement.setLong(1, dateiId);
 
         preparedStatement.execute();
+
+        preparedStatement.close();
     }
 
     /*
@@ -248,6 +274,8 @@ public final class Repository {
         preparedStatement.setLong(1, dateiId);
         preparedStatement.setLong(2, tagId);
         preparedStatement.execute();
+
+        preparedStatement.close();
     }
 
     private static void saveTag(final TagDTO tagDTO, final long dateiId) throws SQLException {
@@ -264,6 +292,9 @@ public final class Repository {
         } else {
             saveTagnutzung(dateiId, getTagIdByTagname(tagDTO.getText()));
         }
+
+        preparedStatement.close();
+        id.close();
     }
 
     private static long getTagIdByTagname(final String tagName) throws SQLException {
@@ -273,6 +304,9 @@ public final class Repository {
 
         ResultSet idResult = preparedStatement.executeQuery();
         idResult.next();
+
+        preparedStatement.close();
+        idResult.close();
 
         return idResult.getLong("tagID");
     }
@@ -290,6 +324,9 @@ public final class Repository {
             tags.add(findTagById(tagResult.getLong("tagID")));
         }
 
+        preparedStatement.close();
+        tagResult.close();
+
         return tags;
     }
 
@@ -299,6 +336,8 @@ public final class Repository {
         preparedStatement.setLong(1, dateiId);
 
         preparedStatement.execute();
+
+        preparedStatement.close();
     }
 
     /*
@@ -315,6 +354,8 @@ public final class Repository {
         preparedStatement.setString(2, gruppeDTO.getName());
         preparedStatement.setString(3, gruppeDTO.getDescription());
         preparedStatement.execute();
+
+        preparedStatement.close();
     }
 
     private static void resetGruppenbelegung(final long gruppeId) throws SQLException {
@@ -325,6 +366,7 @@ public final class Repository {
 
         preparedStatement.execute();
 
+        preparedStatement.close();
     }
 
     @SuppressWarnings("checkstyle:magicnumber")
@@ -339,6 +381,8 @@ public final class Repository {
         preparedStatement.setLong(2, gruppeId);
         preparedStatement.setLong(3, userId);
         preparedStatement.execute();
+
+        preparedStatement.close();
     }
 
     private static HashMap<GruppeDTO, Boolean> findAllGruppeByUserID(final long userId) throws SQLException {
@@ -353,6 +397,9 @@ public final class Repository {
             gruppen.put(findGruppeById(gruppenResult.getLong("gruppeID")),
                     gruppenResult.getBoolean("upload_berechtigung"));
         }
+
+        preparedStatement.close();
+        gruppenResult.close();
 
         return gruppen;
     }
@@ -374,6 +421,9 @@ public final class Repository {
             datei.setGruppe(gruppe);
         }
 
+        preparedStatement.close();
+        gruppeResult.close();
+
         return gruppe;
     }
 
@@ -383,6 +433,8 @@ public final class Repository {
         preparedStatement.setLong(1, gruppeId);
 
         preparedStatement.execute();
+
+        preparedStatement.close();
     }
 
     private static void deleteUserGroupRelationByUserId(final long userId) throws SQLException {
@@ -391,6 +443,8 @@ public final class Repository {
         preparedStatement.setLong(1, userId);
 
         preparedStatement.execute();
+
+        preparedStatement.close();
     }
 
     /*
@@ -408,6 +462,10 @@ public final class Repository {
         while (userResult.next()) {
             users.add(findUserByIdLAZY(userResult.getLong("userID")));
         }
+
+        preparedStatement.close();
+        userResult.close();
+
         return users;
     }
 
@@ -424,6 +482,9 @@ public final class Repository {
                 userResult.getString("nachname"),
                 userResult.getString("key_cloak_name"),
                 null);
+
+        preparedStatement.close();
+        userResult.close();
 
         return user;
     }

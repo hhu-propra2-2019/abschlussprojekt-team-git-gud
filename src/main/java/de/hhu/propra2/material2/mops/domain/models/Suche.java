@@ -1,9 +1,8 @@
 package de.hhu.propra2.material2.mops.domain.models;
 
+import lombok.Data;
 
-import lombok.Value;
-
-@Value
+@Data
 public class Suche {
     private final String vonDatum;
     private final String bisDatum;
@@ -14,6 +13,7 @@ public class Suche {
     private final Long gruppenId;
     private final String dateiName;
     private final String reihenfolge;
+
 
     public final String[] getDateiTyp() {
         return dateiTyp == null ? null : dateiTyp.clone();
@@ -26,7 +26,7 @@ public class Suche {
     public final String[] getUploader() {
         return uploader == null ? null : uploader.clone();
     }
-
+    /*
     public Suche(final String vonDatumArg,
                  final String bisDatumArg,
                  final String[] tagsArg,
@@ -45,5 +45,5 @@ public class Suche {
         this.gruppenId = gruppenIdArg;
         this.dateiName = dateiNameArg;
         this.reihenfolge = reihenfolgeArg;
-    }
+    }*/
 }

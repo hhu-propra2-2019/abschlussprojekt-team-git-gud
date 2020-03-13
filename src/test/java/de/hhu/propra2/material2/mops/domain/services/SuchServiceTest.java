@@ -1,14 +1,13 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
-import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
-import de.hhu.propra2.material2.mops.Database.DateiRepository;
-import de.hhu.propra2.material2.mops.Database.GruppeRepository;
-import de.hhu.propra2.material2.mops.Database.UserRepository;
+import de.hhu.propra2.material2.mops.database.entities.User;
+import de.hhu.propra2.material2.mops.database.DateiRepository;
+import de.hhu.propra2.material2.mops.database.GruppeRepository;
+import de.hhu.propra2.material2.mops.database.UserRepository;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
 import de.hhu.propra2.material2.mops.domain.models.Tag;
-import de.hhu.propra2.material2.mops.domain.models.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,11 +38,11 @@ public class SuchServiceTest {
     @Mock
     private ModelService modelServiceMock;
     @Mock
-    private User userMock;
+    private de.hhu.propra2.material2.mops.domain.models.User userMock;
     @Mock
-    private User uploaderMock1;
+    private de.hhu.propra2.material2.mops.domain.models.User uploaderMock1;
     @Mock
-    private User uploaderMock2;
+    private de.hhu.propra2.material2.mops.domain.models.User uploaderMock2;
 
     private SuchService suchService;
     private Gruppe gruppe1;
@@ -64,7 +63,7 @@ public class SuchServiceTest {
                 userRepoMock,
                 modelServiceMock);
 
-        Mockito.lenient().when(modelServiceMock.loadUser(any(UserDTO.class))).thenReturn(userMock);
+        Mockito.lenient().when(modelServiceMock.loadUser(any(User.class))).thenReturn(userMock);
         Mockito.lenient().when(modelServiceMock.loadUser(null)).thenReturn(userMock);
 
         //Date for Datei

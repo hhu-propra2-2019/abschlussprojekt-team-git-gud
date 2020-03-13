@@ -1,8 +1,10 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
-import de.hhu.propra2.material2.mops.Database.DateiRepository;
-import de.hhu.propra2.material2.mops.Database.GruppeRepository;
-import de.hhu.propra2.material2.mops.Database.UserRepository;
+import de.hhu.propra2.material2.mops.database.DateiRepository;
+import de.hhu.propra2.material2.mops.database.GruppeRepository;
+import de.hhu.propra2.material2.mops.database.UserRepository;
+import de.hhu.propra2.material2.mops.database.entities.Datei;
+import de.hhu.propra2.material2.mops.database.entities.User;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.User;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
@@ -51,7 +53,7 @@ public class SuchService {
         if (suche.getGruppenId() != null) {
             zuFiltern.addAll(modelService.getAlleDateienByGruppeId(suche.getGruppenId()));
         } else {
-            user.getAllGruppen()
+            user.getGruppen()
                     .forEach(gruppe -> zuFiltern.addAll(gruppe.getDateien()));
         }
         result = zuFiltern;
@@ -142,7 +144,6 @@ public class SuchService {
         for (String upload : uploader) {
             result.addAll(zuFiltern.stream()
                     .filter(datei -> datei.getUploader()
-                            .getNachname()
                             .equalsIgnoreCase(upload))
                     .collect(Collectors.toList()));
         }

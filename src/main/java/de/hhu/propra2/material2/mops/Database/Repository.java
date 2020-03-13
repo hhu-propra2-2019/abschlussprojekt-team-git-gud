@@ -1,4 +1,5 @@
 package de.hhu.propra2.material2.mops.Database;
+
 import de.hhu.propra2.material2.mops.Database.DTOs.DateiDTO;
 import de.hhu.propra2.material2.mops.Database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.Database.DTOs.TagDTO;
@@ -17,7 +18,7 @@ import java.util.List;
 public final class Repository {
     private static Connection connection;
 
-    static {
+    static {    //load up connection
         try {
             connection = DriverManager.getConnection("jdbc:mysql://localhost:23306/materialsammlung", "root", "secret");
         } catch (SQLException e) {
@@ -25,7 +26,11 @@ public final class Repository {
         }
     }
 
-    private Repository() { }
+    private Repository() {
+    }
+    /*
+        PUBLIC METHODS
+     */
 
     public static UserDTO findUserByKeycloakname(final String keyCloakNameArg) throws SQLException {
         UserDTO user = null;
@@ -46,11 +51,27 @@ public final class Repository {
         return user;
     }
 
-    /**
-     * Supress magic numbers error because those numbers are parameters
-     * @param dateiDTO
-     * @throws SQLException
-     */
+    @SuppressWarnings("checkstyle:magicnumber")
+    public static void saveUser(final UserDTO userDTO) throws SQLException {
+        PreparedStatement preparedStatement =
+                connection.prepareStatement(
+                        "insert ignore into User (userID, vorname, nachname, key_cloak_name)" + " values (?, ?, ?, ?)");
+
+        preparedStatement.setLong(1, userDTO.getId());
+        preparedStatement.setString(2, userDTO.getVorname());
+        preparedStatement.setString(3, userDTO.getNachname());
+        preparedStatement.setString(4, userDTO.getKeycloakname());
+        preparedStatement.execute();
+
+        HashMap<GruppeDTO, Boolean> gruppenBelegung = userDTO.getBelegungUndRechte();
+
+        for (GruppeDTO gruppe : gruppenBelegung.keySet()) {
+            saveGruppe(gruppe);
+            resetGruppenbelegung(gruppe.getId());
+            saveGruppenbelegung(userDTO.getId(), gruppe.getId(), gruppenBelegung.get(gruppe));
+        }
+    }
+
     @SuppressWarnings("checkstyle:magicnumber")
     public static void saveDatei(final DateiDTO dateiDTO) throws SQLException {
 
@@ -78,7 +99,7 @@ public final class Repository {
             ResultSet id = preparedStatement.getGeneratedKeys();
             id.next();
 
-            for (TagDTO tag: tags) {
+            for (TagDTO tag : tags) {
                 saveTag(tag, id.getLong(1));
             }
 
@@ -87,6 +108,29 @@ public final class Repository {
         }
 
     }
+
+    public static TagDTO findTagById(final long id) throws SQLException {
+        TagDTO tag = null;
+
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("select * from Tags where tagID=?");
+        preparedStatement.setString(1, "" + id);
+
+        ResultSet tagResult = preparedStatement.executeQuery();
+
+        tagResult.next();
+
+        tag = new TagDTO(tagResult.getLong("tagID"), tagResult.getString("tag_name"));
+
+        return tag;
+    }
+
+    /*
+        PRIVATE METHODS
+
+        DATEI METHODS
+     */
+
     @SuppressWarnings("checkstyle:magicnumber")
     private static void updateDatei(final DateiDTO dateiDTO) throws SQLException {
         PreparedStatement preparedStatement =
@@ -102,11 +146,10 @@ public final class Repository {
 
         deleteTagRelationsByDateiId(dateiDTO.getId());
 
-        for (TagDTO tag: tags) {
+        for (TagDTO tag : tags) {
             saveTag(tag, dateiDTO.getId());
         }
     }
-
 
     @SuppressWarnings("checkstyle:magicnumber")
     private static boolean dateiExists(final DateiDTO dateiDTO) throws SQLException {
@@ -121,6 +164,51 @@ public final class Repository {
         ResultSet result = preparedStatement.executeQuery();
         return result.next();
     }
+
+    private static ArrayList<DateiDTO> findAllDateiByGruppeId(final long gruppeId) throws SQLException {
+        ArrayList<DateiDTO> dateien = new ArrayList<DateiDTO>();
+
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("select * from Datei where gruppeID=?");
+        preparedStatement.setString(1, "" + gruppeId);
+
+        ResultSet dateiResult = preparedStatement.executeQuery();
+        while (dateiResult.next()) {
+            dateien.add(findDateiById(dateiResult.getLong("dateiID")));
+        }
+
+        return dateien;
+    }
+
+    private static DateiDTO findDateiById(final long id) throws SQLException {
+        DateiDTO datei = null;
+
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("select * from Datei where dateiID=?");
+        preparedStatement.setString(1, "" + id);
+
+        ResultSet dateiResult = preparedStatement.executeQuery();
+        dateiResult.next();
+
+        datei = new DateiDTO(dateiResult.getLong("dateiID"),
+                dateiResult.getString("name"),
+                dateiResult.getString("pfad"),
+                findUserByIdLAZY(dateiResult.getLong("uploaderID")),
+                findAllTagsbyDateiId(id),
+                dateiResult.getDate("upload_datum").toLocalDate(),
+                dateiResult.getDate("veroeffentlichungs_datum").toLocalDate(),
+                dateiResult.getLong("datei_groesse"),
+                dateiResult.getString("datei_typ"),
+                null,
+                dateiResult.getString("kategorie"));
+
+
+        return datei;
+    }
+
+    /*
+        TAG METHODS
+     */
 
     private static void saveTagnutzung(final long dateiId, final long tagId) throws SQLException {
         PreparedStatement preparedStatement =
@@ -159,25 +247,44 @@ public final class Repository {
         return idResult.getLong("tagID");
     }
 
+    private static ArrayList<TagDTO> findAllTagsbyDateiId(final long dateiId) throws SQLException {
+        ArrayList<TagDTO> tags = new ArrayList<TagDTO>();
+
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("select * from Tagnutzung where dateiID=?");
+        preparedStatement.setString(1, "" + dateiId);
+
+        ResultSet tagResult = preparedStatement.executeQuery();
+
+        while (tagResult.next()) {
+            tags.add(findTagById(tagResult.getLong("tagID")));
+        }
+
+        return tags;
+    }
+
+    private static void deleteTagRelationsByDateiId(final long dateiId) throws SQLException {
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("delete from Tagnutzung where dateiID=?");
+        preparedStatement.setLong(1, dateiId);
+
+        preparedStatement.execute();
+    }
+
+    /*
+        GRUPPE METHODS
+     */
+
     @SuppressWarnings("checkstyle:magicnumber")
-    public static void saveUser(final UserDTO userDTO) throws SQLException {
+    private static void saveGruppe(final GruppeDTO gruppeDTO) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
-                        "insert ignore into User (userID, vorname, nachname, key_cloak_name)" + " values (?, ?, ?, ?)");
+                        "insert ignore into Gruppe (gruppeID, titel, beschreibung)" + " values (?, ?, ?)");
 
-        preparedStatement.setLong(1, userDTO.getId());
-        preparedStatement.setString(2, userDTO.getVorname());
-        preparedStatement.setString(3, userDTO.getNachname());
-        preparedStatement.setString(4, userDTO.getKeycloakname());
+        preparedStatement.setLong(1, gruppeDTO.getId());
+        preparedStatement.setString(2, gruppeDTO.getName());
+        preparedStatement.setString(3, gruppeDTO.getDescription());
         preparedStatement.execute();
-
-        HashMap<GruppeDTO, Boolean> gruppenBelegung = userDTO.getBelegungUndRechte();
-
-        for (GruppeDTO gruppe : gruppenBelegung.keySet()) {
-            saveGruppe(gruppe);
-            resetGruppenbelegung(gruppe.getId());
-            saveGruppenbelegung(userDTO.getId(), gruppe.getId(), gruppenBelegung.get(gruppe));
-        }
     }
 
     private static void resetGruppenbelegung(final long gruppeId) throws SQLException {
@@ -203,20 +310,6 @@ public final class Repository {
         preparedStatement.setLong(3, userId);
         preparedStatement.execute();
     }
-
-
-    @SuppressWarnings("checkstyle:magicnumber")
-    private static void saveGruppe(final GruppeDTO gruppeDTO) throws SQLException {
-        PreparedStatement preparedStatement =
-                connection.prepareStatement(
-                        "insert ignore into Gruppe (gruppeID, titel, beschreibung)" + " values (?, ?, ?)");
-
-        preparedStatement.setLong(1, gruppeDTO.getId());
-        preparedStatement.setString(2, gruppeDTO.getName());
-        preparedStatement.setString(3, gruppeDTO.getDescription());
-        preparedStatement.execute();
-    }
-
 
     private static HashMap<GruppeDTO, Boolean> findAllGruppeByUserID(final long userId) throws SQLException {
         HashMap<GruppeDTO, Boolean> gruppen = new HashMap<GruppeDTO, Boolean>();
@@ -247,85 +340,24 @@ public final class Repository {
                 gruppeResult.getString("titel"),
                 gruppeResult.getString("beschreibung"),
                 findAllDateiByGruppeId(id));
-        for (DateiDTO datei: gruppe.getDateien()) {
+        for (DateiDTO datei : gruppe.getDateien()) {
             datei.setGruppe(gruppe);
         }
 
         return gruppe;
     }
 
-    private static ArrayList<DateiDTO> findAllDateiByGruppeId(final long gruppeId) throws SQLException {
-        ArrayList<DateiDTO> dateien = new ArrayList<DateiDTO>();
-
+    private static void deleteUserGroupRelationByUserId(final long userId) throws SQLException {
         PreparedStatement preparedStatement =
-                connection.prepareStatement("select * from Datei where gruppeID=?");
-        preparedStatement.setString(1, "" + gruppeId);
+                connection.prepareStatement("delete from Gruppenbelegung where userID=?");
+        preparedStatement.setLong(1, userId);
 
-        ResultSet dateiResult = preparedStatement.executeQuery();
-        while (dateiResult.next()) {
-            dateien.add(findDateiById(dateiResult.getLong("dateiID")));
-        }
-
-        return dateien;
+        preparedStatement.execute();
     }
 
-    private static DateiDTO findDateiById(final long id) throws SQLException {
-        DateiDTO datei = null;
-
-            PreparedStatement preparedStatement =
-                    connection.prepareStatement("select * from Datei where dateiID=?");
-            preparedStatement.setString(1, "" + id);
-
-            ResultSet dateiResult = preparedStatement.executeQuery();
-            dateiResult.next();
-
-            datei = new DateiDTO(dateiResult.getLong("dateiID"),
-                    dateiResult.getString("name"),
-                    dateiResult.getString("pfad"),
-                    findUserByIdLAZY(dateiResult.getLong("uploaderID")),
-                    findAllTagsbyDateiId(id),
-                    dateiResult.getDate("upload_datum").toLocalDate(),
-                    dateiResult.getDate("veroeffentlichungs_datum").toLocalDate(),
-                    dateiResult.getLong("datei_groesse"),
-                    dateiResult.getString("datei_typ"),
-                    null,
-                    dateiResult.getString("kategorie"));
-
-
-        return datei;
-    }
-
-    private static ArrayList<TagDTO> findAllTagsbyDateiId(final long dateiId) throws SQLException {
-        ArrayList<TagDTO> tags = new ArrayList<TagDTO>();
-
-        PreparedStatement preparedStatement =
-                connection.prepareStatement("select * from Tagnutzung where dateiID=?");
-        preparedStatement.setString(1, "" + dateiId);
-
-        ResultSet tagResult = preparedStatement.executeQuery();
-
-        while (tagResult.next()) {
-            tags.add(findTagById(tagResult.getLong("tagID")));
-        }
-
-        return tags;
-    }
-
-    public static TagDTO findTagById(final long id) throws SQLException {
-        TagDTO tag = null;
-
-        PreparedStatement preparedStatement =
-                connection.prepareStatement("select * from Tags where tagID=?");
-        preparedStatement.setString(1, "" + id);
-
-        ResultSet tagResult = preparedStatement.executeQuery();
-
-        tagResult.next();
-
-        tag = new TagDTO(tagResult.getLong("tagID"), tagResult.getString("tag_name"));
-
-        return tag;
-    }
+    /*
+        USER METHODS
+     */
 
     private static ArrayList<UserDTO> findAllUserByGruppeId(final long gruppeId) throws SQLException {
         ArrayList<UserDTO> users = new ArrayList<UserDTO>();
@@ -356,21 +388,5 @@ public final class Repository {
                 null);
 
         return user;
-    }
-
-    public static void deleteUserGroupRelationByUserId(final long userId) throws SQLException {
-        PreparedStatement preparedStatement =
-                connection.prepareStatement("delete from Gruppenbelegung where userID=?");
-        preparedStatement.setLong(1, userId);
-
-        preparedStatement.execute();
-    }
-
-    private static void deleteTagRelationsByDateiId(final long dateiId) throws SQLException {
-        PreparedStatement preparedStatement =
-                connection.prepareStatement("delete from Tagnutzung where dateiID=?");
-        preparedStatement.setLong(1, dateiId);
-
-        preparedStatement.execute();
     }
 }

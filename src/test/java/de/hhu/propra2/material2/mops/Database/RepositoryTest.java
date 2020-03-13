@@ -48,7 +48,7 @@ public class RepositoryTest {
 
 
     @Test
-    public void saveAndLoadUserTest() throws SQLException {
+    public void LoadUserTest() throws SQLException {
         UserDTO userDTO = Repository.findUserByKeycloakname("gae");
 
         assertTrue(userDTO.getVorname().equals("Why are you gae?"));

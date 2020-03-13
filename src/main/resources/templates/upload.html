@@ -7,6 +7,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link href="../static/dist/tokenfield.css" th:href="dist/tokenfield.css" rel="stylesheet">
     <title>Index</title>
 </head>
 
@@ -15,9 +16,13 @@
     <h1 class="text-center">
         Upload
     </h1>
+
     <div class="container">
+
         <form method="post" enctype="multipart/form-data">
             <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
+
+
             <div>
                 <label for="SelectGroup">Gruppenauswahl </label>
                 <select class="form-control" id="SelectGroup" name="gruppenwahl">
@@ -32,34 +37,42 @@
             </div>
 
             <div>
-                <label for="tagsIn">Tags </label>
-                <input type="text" class="form-control" id="tagsIn" name="selectedTags"  placeholder="Vorlesung, ">
+                <label for="input-tags">Tags </label>
+                <input type="text" name="selectedTags"  id="input-tags">
             </div>
 
-            <div class="form-group">
-                <ul>
-                    <li th:each="tag : ${tags}">
-                        <span  th:text="${tag.text}">Vorlesung</span>
-                    </li>
-                </ul>
-            </div>
+            <script src="../static/dist/tokenfield.min.js" th:src="@{dist/tokenfield.min.js}"></script>
+            <script src="../static/dist/mytokenfield.js" th:src="@{dist/mytokenfield.js}"></script>
+            <!--  <div>
+                  <label for="tagsIn">Tags </label>
+                  <input type="text" class="form-control" id="tagsIn" name="selectedTags"  placeholder="Vorlesung, ">
+              </div>
 
-            <div class="form-group">
-                <label for="timedDate">Getimete Veröffentlichung (optional)</label>
-                <div>
-                    <input type="date" value="" name="timedUpload"  id="timedDate">
-                </div>
-            </div>
+              <div class="form-group">
+                  <ul>
+                      <li th:each="tag : ${tags}">
+                          <span  th:text="${tag.text}">Vorlesung</span>
+                      </li>
+                  </ul>
+              </div> -->
 
-            <div>
-                <input type="file" name="datei" >
-            </div>
+              <div class="form-group">
+                  <label for="timedDate">Getimete Veröffentlichung (optional)</label>
+                  <div>
+                      <input type="date" value="" name="timedUpload"  id="timedDate">
+                  </div>
+              </div>
 
-            <div>
-                <input class="btn btn-primary" type="submit" name="hochladen" value="Hochladen">
-            </div>
-        </form>
-    </div>
-</div>
-</body>
-</html>
+              <div>
+                  <input type="file" name="datei" >
+              </div>
+
+              <div>
+                  <input class="btn btn-primary" type="submit" name="hochladen" value="Hochladen">
+              </div>
+          </form>
+      </div>
+  </div>
+
+  </body>
+  </html>

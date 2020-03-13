@@ -1,11 +1,13 @@
 package de.hhu.propra2.material2.mops.domain.models;
 
 import lombok.Getter;
+import lombok.Value;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Value
 public class Datei {
     /**
      * Unique ID from database.
@@ -43,6 +45,7 @@ public class Datei {
      * will be visible to non-uploaders
      * of its group.
      */
+
     @Getter
     private final LocalDate veroeffentlichungsdatum;
     /**
@@ -72,7 +75,6 @@ public class Datei {
     }
 
     /**
-     *
      * @param tagsToCheckFor
      * @return true if the file contains all the given tags
      */

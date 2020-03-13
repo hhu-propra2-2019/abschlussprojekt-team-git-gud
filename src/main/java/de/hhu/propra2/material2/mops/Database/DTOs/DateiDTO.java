@@ -23,7 +23,7 @@ public final class DateiDTO {
     @Getter
     private final String pfad;
     /**
-     *  User that uploaded the file.
+     * User that uploaded the file.
      */
     @Getter
     private final UserDTO uploader;

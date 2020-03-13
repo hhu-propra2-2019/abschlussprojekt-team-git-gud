@@ -14,10 +14,15 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+<<<<<<< HEAD
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+=======
+import java.util.ArrayList;
+import java.util.Arrays;
+>>>>>>> master
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -58,6 +63,7 @@ public class SuchServiceTest {
         Mockito.lenient().when(modelServiceMock.loadUser(null)).thenReturn(userMock);
 
         //Date for Datei
+<<<<<<< HEAD
         Calendar calender = Calendar.getInstance();
         calender.set(2020, 1, 3);
         LocalDate date1 = calender.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
@@ -65,6 +71,11 @@ public class SuchServiceTest {
         LocalDate date2 = calender.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         calender.set(2020, 1, 1);
         LocalDate veroeffentlichung = calender.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+=======
+        LocalDate veroeffentlichung = LocalDate.now();
+        LocalDate date1 = LocalDate.of(2020, 1, 3);
+        LocalDate date2 = LocalDate.of(2020, 3, 5);
+>>>>>>> master
 
         //Tags for Datei
         Tag tag1 = new Tag(1, "Vorlesung");
@@ -105,14 +116,14 @@ public class SuchServiceTest {
         Gruppe gruppe4 = new Gruppe(4, "4", new ArrayList<>());
         when(userMock.getAllGruppen()).thenReturn(Arrays.asList(gruppe3, gruppe4));
         Suche suche = new Suche(
-                "01.01.2000",
-                "31.12.2100",
+                "",
+                "",
                 null,
                 null,
                 null,
                 null,
                 null,
-                null,
+                "",
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
@@ -124,14 +135,14 @@ public class SuchServiceTest {
     @Test
     public void keineFilter() {
         Suche suche = new Suche(
-                "01.01.2000",
-                "31.12.2100",
+                "",
+                "",
                 null,
                 null,
                 null,
                 null,
                 null,
-                null,
+                "",
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
@@ -147,14 +158,14 @@ public class SuchServiceTest {
     @Test
     public void vonDatumFilter() {
         Suche suche = new Suche(
-                "20.02.2020",
-                "31.12.2100",
+                "2020-02-20",
+                "",
                 null,
                 null,
                 null,
                 null,
                 null,
-                null,
+                "",
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
@@ -167,14 +178,14 @@ public class SuchServiceTest {
     @Test
     public void bisDatumFilter() {
         Suche suche = new Suche(
-                "01.01.2000",
-                "20.02.2020",
+                "",
+                "2020-02-20",
                 null,
                 null,
                 null,
                 null,
                 null,
-                null,
+                "",
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
@@ -190,14 +201,14 @@ public class SuchServiceTest {
     public void einNichtVergebenerTagFilter() {
         String[] tags = {"NichtVergebenerTag"};
         Suche suche = new Suche(
-                "01.01.2000",
-                "31.12.2100",
+                "",
+                "",
                 tags,
                 null,
                 null,
                 null,
                 null,
-                null,
+                "",
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
@@ -210,14 +221,14 @@ public class SuchServiceTest {
     public void einVergebenerTagFilter() {
         String[] tags = {"Vorlesung"};
         Suche suche = new Suche(
-                "01.01.2000",
-                "31.12.2100",
+                "",
+                "",
                 tags,
                 null,
                 null,
                 null,
                 null,
-                null,
+                "",
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
@@ -232,14 +243,14 @@ public class SuchServiceTest {
     public void mehrereVergebeneTagsFilter() {
         String[] tags = {"Relevant", "Irgendwas"};
         Suche suche = new Suche(
-                "01.01.2000",
-                "31.12.2100",
+                "",
+                "",
                 tags,
                 null,
                 null,
                 null,
                 null,
-                null,
+                "",
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
@@ -255,14 +266,14 @@ public class SuchServiceTest {
     public void mehrereVergebeneTagsVerschiedeneDateienFilter() {
         String[] tags = {"Relevant", "Irgendwas", "Vorlesung"};
         Suche suche = new Suche(
-                "01.01.2000",
-                "31.12.2100",
+                "",
+                "",
                 tags,
                 null,
                 null,
                 null,
                 null,
-                null,
+                "",
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
@@ -276,14 +287,14 @@ public class SuchServiceTest {
     public void vergebeneUndNichtVergebeneTagsFilter() {
         String[] tags = {"Relevant", "Haus"};
         Suche suche = new Suche(
-                "01.01.2000",
-                "31.12.2100",
+                "",
+                "",
                 tags,
                 null,
                 null,
                 null,
                 null,
-                null,
+                "",
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
@@ -296,14 +307,14 @@ public class SuchServiceTest {
     public void nichtVergebenerDateiTypFilter() {
         String[] dateiTypen = {"docx"};
         Suche suche = new Suche(
-                "01.01.2000",
-                "31.12.2100",
+                "",
+                "",
                 null,
                 dateiTypen,
                 null,
                 null,
                 null,
-                null,
+                "",
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
@@ -316,14 +327,14 @@ public class SuchServiceTest {
     public void einDateiTypFilter() {
         String[] dateiTypen = {"pdf"};
         Suche suche = new Suche(
-                "01.01.2000",
-                "31.12.2100",
+                "",
+                "",
                 null,
                 dateiTypen,
                 null,
                 null,
                 null,
-                null,
+                "",
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
@@ -338,14 +349,14 @@ public class SuchServiceTest {
     public void mehrereDateiTypenFilter() {
         String[] dateiTypen = {"pdf", "jpg"};
         Suche suche = new Suche(
-                "01.01.2000",
-                "31.12.2100",
+                "",
+                "",
                 null,
                 dateiTypen,
                 null,
                 null,
                 null,
-                null,
+                "",
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
@@ -362,14 +373,14 @@ public class SuchServiceTest {
     public void nichtVorhandenerUploaderFilter() {
         String[] uploader = {"See"};
         Suche suche = new Suche(
-                "01.01.2000",
-                "31.12.2100",
+                "",
+                "",
                 null,
                 null,
                 uploader,
                 null,
                 null,
-                null,
+                "",
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
@@ -382,14 +393,14 @@ public class SuchServiceTest {
     public void einVorhandenerUploaderFilter() {
         String[] uploader = {"Baum"};
         Suche suche = new Suche(
-                "01.01.2000",
-                "31.12.2100",
+                "",
+                "",
                 null,
                 null,
                 uploader,
                 null,
                 null,
-                null,
+                "",
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
@@ -404,13 +415,14 @@ public class SuchServiceTest {
     public void mehrereUploaderFilter() {
         String[] uploader = {"Baum", "Stein"};
         Suche suche = new Suche(
-                "01.01.2000",
-                "31.12.2100",
+                "",
+                "",
                 null,
                 null,
                 uploader,
                 null,
-                null, null,
+                null,
+                "",
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
@@ -426,14 +438,14 @@ public class SuchServiceTest {
     @Test
     public void gruppeFilter() {
         Suche suche = new Suche(
-                "01.01.2000",
-                "31.12.2100",
+                "",
+                "",
                 null,
                 null,
                 null,
                 null,
                 1L,
-                null,
+                "",
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");

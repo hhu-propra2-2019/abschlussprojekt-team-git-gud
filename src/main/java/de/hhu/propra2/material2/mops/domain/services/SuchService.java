@@ -5,12 +5,15 @@ import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.User;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
 import lombok.extern.slf4j.Slf4j;
+import de.hhu.propra2.material2.mops.domain.services.suchComparators.DateiDateiTypComparator;
+import de.hhu.propra2.material2.mops.domain.services.suchComparators.DateiDatumComparator;
+import de.hhu.propra2.material2.mops.domain.services.suchComparators.DateiNamenComparator;
+import de.hhu.propra2.material2.mops.domain.services.suchComparators.DateiUploaderComparator;
 import org.springframework.stereotype.Service;
-
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,13 +61,19 @@ public class SuchService {
         if (suche.getUploader() != null) {
             result = uploaderSuche(suche.getUploader(), result);
         }
-        if (suche.getBisDatum() != null) {
+        if (!suche.getBisDatum().isEmpty() || !suche.getVonDatum().isEmpty()) {
+
             result = datumsSuche(suche.getVonDatum(),
                     suche.getBisDatum(),
                     result);
         }
-        if (suche.getDateiName() != null) {
+        if (!suche.getDateiName().trim().isEmpty()) {
             result = dateiNamenSuche(suche.getDateiName(), result);
+        }
+        if (suche.getReihenfolge() != null) {
+            result = sortieren(suche.getSortierung(),
+                    suche.getReihenfolge(),
+                    result);
         }
 
         return result;
@@ -81,12 +90,15 @@ public class SuchService {
     }
 
 
-    private List<Datei> datumsSuche(final String vonDatum,
-                                    final String bisDatum,
+    private List<Datei> datumsSuche(final String vonDatumArg,
+                                    final String bisDatumArg,
                                     final List<Datei> zuFiltern) {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        LocalDate von = LocalDate.parse(vonDatum, dtf);
-        LocalDate bis = LocalDate.parse(bisDatum, dtf);
+        String vonDatum;
+        String bisDatum;
+        vonDatum = vonDatumArg.isEmpty() ? "2000-01-01" : vonDatumArg;
+        bisDatum = bisDatumArg.isEmpty() ? LocalDate.MAX.toString() : bisDatumArg;
+        LocalDate von = LocalDate.parse(vonDatum);
+        LocalDate bis = LocalDate.parse(bisDatum);
 
         return zuFiltern.stream()
                 .filter(datei -> datumInZeitraum(von,
@@ -132,5 +144,35 @@ public class SuchService {
                     .collect(Collectors.toList()));
         }
         return result;
+    }
+
+    private List<Datei> sortieren(final String sortierStyle, final String reihenfolge, final List<Datei> zuSortieren) {
+        /**
+         * Name
+         * Datum
+         * Dateityp
+         * Uploader
+         * Kategorie
+         * aufsteigend / absteigend
+         */
+        List<Datei> sort = zuSortieren;
+        if ("name".equals(sortierStyle)) {
+            sort.sort(new DateiNamenComparator());
+        }
+        if ("Dateityp".equals(sortierStyle)) {
+            sort.sort(new DateiDateiTypComparator());
+        }
+        if ("Uploader".equals(sortierStyle)) {
+            sort.sort(new DateiUploaderComparator());
+        }
+        if ("Datum".equals(sortierStyle)) {
+            sort.sort(new DateiDatumComparator());
+        }
+        if (reihenfolge != null) {
+            if ("absteigend".equals(reihenfolge)) {
+                Collections.reverse(sort);
+            }
+        }
+        return sort;
     }
 }

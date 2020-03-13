@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,6 +22,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public final class ModelService {
+
 
 
     /**
@@ -77,30 +77,15 @@ public final class ModelService {
         return new Gruppe(dto.getId(), dto.getName(), zugehoerigeDateien);
     }
 
-    public List<Gruppe> getAlleGruppenByUser(final String name) {
-        try {
-            if (Repository.findUserByKeycloakname(name) == null) {
-                return new ArrayList<>();
-            }
-            User user = loadUser(Repository.findUserByKeycloakname(name));
-            return user.getAllGruppen();
-        } catch (SQLException e) {
-            log.error("Unknown SQLException occurred.");
-            return new ArrayList<>();
-        }
+    public List<Gruppe> getAlleGruppenByUser(final User user) {
+        return user.getAllGruppen();
     }
 
     public List<Datei> getAlleDateienByGruppe(final Gruppe gruppe) {
         return gruppe.getDateien();
     }
 
-    public Set<String> getAlleTagsByUser(final String name) {
-        User user = null;
-        try {
-            user = loadUser(Repository.findUserByKeycloakname(name));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public Set<String> getAlleTagsByUser(final User user) {
         List<Gruppe> groups = user.getAllGruppen();
         Set<String> tags = new HashSet<>();
         for (Gruppe gruppe : groups) {
@@ -118,13 +103,7 @@ public final class ModelService {
         return tags;
     }
 
-    public Set<String> getAlleUploaderByUser(final String name) {
-        User user = null;
-        try {
-            user = loadUser(Repository.findUserByKeycloakname(name));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public Set<String> getAlleUploaderByUser(final User user) {
         List<Gruppe> groups = user.getAllGruppen();
         Set<String> uploader = new HashSet<String>();
         for (Gruppe gruppe : groups) {
@@ -143,14 +122,7 @@ public final class ModelService {
                 .collect(Collectors.toSet());
     }
 
-    public Set<String> getAlleDateiTypenByUser(final String name) {
-        User user = null;
-        try {
-            user = loadUser(Repository.findUserByKeycloakname(name));
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return new HashSet<String>();
-        }
+    public Set<String> getAlleDateiTypenByUser(final User user) {
         List<Gruppe> groups = user.getAllGruppen();
         Set<String> dateiTypen = new HashSet<String>();
         for (Gruppe gruppe : groups) {
@@ -172,5 +144,14 @@ public final class ModelService {
     public List<Datei> getAlleDateienByGruppeId(final Long id) {
 
         return null;
+    }
+
+    public User getUserByKeyCloakName(final String name) {
+        try {
+            return loadUser(Repository.findUserByKeycloakname(name));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

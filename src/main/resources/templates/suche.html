@@ -24,7 +24,7 @@
                     <option value="0">Alle</option>
                     <option th:each="gruppe : ${gruppen}"
                             th:value="${gruppe.getGruppeID()}"
-                            th:text="${gruppe.getTitel()}" >
+                            th:text="${gruppe.getTitel()}">
                     </option>
                 </select>
             </div>

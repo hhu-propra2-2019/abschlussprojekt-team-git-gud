@@ -2,6 +2,7 @@ package de.hhu.propra2.material2.mops.controller;
 
 
 import de.hhu.propra2.material2.mops.database.entities.Gruppe;
+import de.hhu.propra2.material2.mops.domain.services.Suche;
 import de.hhu.propra2.material2.mops.security.Account;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;

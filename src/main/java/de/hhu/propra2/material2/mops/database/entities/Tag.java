@@ -5,7 +5,7 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "Tags")
+@Table(name = "tags")
 @Data
 public class Tag {
     public Tag() { }
@@ -14,20 +14,14 @@ public class Tag {
         this.tagID = id;
         this.tagname = name;
     }
-    /**
-     * Unique ID from database.
-     */
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long tagID;
-    /**
-     * The tags text that will be shown
-     * and can be searched for.
-     */
-    @Column(name = "tag_name")
+
+    @Column(name = "tagname")
     private String tagname;
-    /**
-     * Related files to this tag.
-     */
+
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "tags")
     private Set<Datei> dateien;
 

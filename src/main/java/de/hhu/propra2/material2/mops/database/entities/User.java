@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "user")
 @Data
 public class User {
     public User() { }
@@ -15,7 +16,7 @@ public class User {
         this.userID = id;
         this.vorname = nickname;
         this.nachname = familyName;
-        this.keycloakname = dbName;
+        this.keyCloakName = dbName;
     }
     /**
      * Unique ID from database.
@@ -34,9 +35,10 @@ public class User {
      * Unique name provided by
      * keycloak.
      */
-    private String keycloakname;
+    @Column(name = "keycloakname")
+    private String keyCloakName;
 
     @ManyToMany
-    @JoinTable(name = "Gruppenbelegung", joinColumns = {@JoinColumn(name = "userID")}, inverseJoinColumns = {@JoinColumn(name = "gruppeID")})
+    @JoinTable(name = "gruppenbelegung", joinColumns = {@JoinColumn(name = "userid")}, inverseJoinColumns = {@JoinColumn(name = "gruppeid")})
     private Set<Gruppe> gruppen = new HashSet<>();
 }

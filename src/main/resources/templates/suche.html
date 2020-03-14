@@ -23,8 +23,8 @@
                 <select class="form-control" onchange="auswahl.submit()" id="SelectGroup" name="gruppenId">
                     <option value="0">Alle</option>
                     <option th:each="gruppe : ${gruppen}"
-                            th:value="${gruppe.getId()}"
-                            th:text="${gruppe.getName()}" >
+                            th:value="${gruppe.getGruppeID()}"
+                            th:text="${gruppe.getTitel()}" >
                     </option>
                 </select>
             </div>

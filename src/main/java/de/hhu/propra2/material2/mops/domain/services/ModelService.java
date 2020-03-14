@@ -65,7 +65,7 @@ public final class ModelService implements IModelService {
         //TODO load Belegungsrechte
         Iterable<User> data = userRepository.findAll();
         for (User user: data) {
-            if (user.getKeycloakname() == keyCloakName) {
+            if (user.getKeyCloakName() == keyCloakName) {
                 return user;
             }
         }
@@ -113,7 +113,7 @@ public final class ModelService implements IModelService {
         for (Gruppe gruppe : groups) {
             uploader.addAll(gruppe.getDateien()
                     .stream()
-                    .map(datei -> datei.getUploader())
+                    .map(datei -> datei.getUploader().getKeyCloakName())
                     .collect(Collectors.toSet()));
         }
         return uploader;
@@ -122,7 +122,7 @@ public final class ModelService implements IModelService {
     public Set<String> getAlleUploaderByGruppe(final Gruppe gruppe) {
         return gruppe.getDateien()
                 .stream()
-                .map(datei -> datei.getUploader())
+                .map(datei -> datei.getUploader().getKeyCloakName())
                 .collect(Collectors.toSet());
     }
 

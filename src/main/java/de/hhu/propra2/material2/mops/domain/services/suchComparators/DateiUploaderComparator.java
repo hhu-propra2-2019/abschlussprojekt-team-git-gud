@@ -10,8 +10,8 @@ public class DateiUploaderComparator implements Comparator<Datei>, Serializable 
 
     @Override
     public final int compare(final Datei d1, final Datei d2) {
-        return d1.getUploader()
+        return d1.getUploader().getKeyCloakName()
                 .compareTo(d2
-                        .getUploader());
+                        .getUploader().getKeyCloakName());
     }
 }

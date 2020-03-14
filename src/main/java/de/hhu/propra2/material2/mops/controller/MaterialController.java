@@ -1,6 +1,10 @@
 package de.hhu.propra2.material2.mops.controller;
 
 
+import de.hhu.propra2.material2.mops.database.DateiRepository;
+import de.hhu.propra2.material2.mops.database.GruppeRepository;
+import de.hhu.propra2.material2.mops.database.TagRepository;
+import de.hhu.propra2.material2.mops.database.UserRepository;
 import de.hhu.propra2.material2.mops.database.entities.Gruppe;
 import de.hhu.propra2.material2.mops.domain.services.Suche;
 import de.hhu.propra2.material2.mops.security.Account;
@@ -16,9 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 
@@ -27,31 +28,18 @@ public class MaterialController {
 
     private final Counter authenticatedAccess;
     private final Counter publicAccess;
-    private final List<Gruppe> gruppen;
-    private final Set<String> tags;
-    private final Set<String> dateiTypen;
-    private final Set<String> uploader;
+    private final GruppeRepository gruppeRepository;
+    private final DateiRepository dateiRepository;
+    private final TagRepository tagRepository;
+    private final UserRepository userRepository;
 
-    public MaterialController(final MeterRegistry registry) {
+    public MaterialController(final MeterRegistry registry, final GruppeRepository gruppeRepo, final DateiRepository dateiRepo, final TagRepository tagRepo, final UserRepository userRepo) {
         authenticatedAccess = registry.counter("access.authenticated");
         publicAccess = registry.counter("access.public");
-
-        gruppen =  new ArrayList<>(); //modelService.getAlleGruppenByUser(account.getName())
-        gruppen.add(new Gruppe(1L, "ProPra", null));
-        gruppen.add(new Gruppe(2L, "Hard Prog", null));
-
-        tags = new HashSet<>();
-        tags.add("Klausurrelevant");
-        tags.add("Spring Boot");
-        tags.add("Git");
-
-        dateiTypen = new HashSet<>();
-        dateiTypen.add("Java");
-        dateiTypen.add("SSI");
-
-        uploader = new HashSet<>();
-        uploader.add("Jens");
-        uploader.add("Frank");
+        this.gruppeRepository = gruppeRepo;
+        this.dateiRepository = dateiRepo;
+        this.tagRepository = tagRepo;
+        this.userRepository = userRepo;
     }
 
     /**
@@ -79,7 +67,7 @@ public class MaterialController {
             model.addAttribute("account", createAccountFromPrincipal(token));
         }
         publicAccess.increment();
-        model.addAttribute("gruppen", gruppen);
+        model.addAttribute("gruppen", gruppeRepository.findAll());
         return "start";
     }
 
@@ -91,7 +79,7 @@ public class MaterialController {
     public String sicht(final KeycloakAuthenticationToken token, final Model model) {
         model.addAttribute("account", createAccountFromPrincipal(token));
         authenticatedAccess.increment();
-        model.addAttribute("gruppen", gruppen);
+        model.addAttribute("gruppen", gruppeRepository.findAll());
         return "dateiSicht";
     }
 
@@ -103,10 +91,11 @@ public class MaterialController {
     public String vorSuche(final KeycloakAuthenticationToken token, final Model model) {
         model.addAttribute("account", createAccountFromPrincipal(token));
         authenticatedAccess.increment();
-        model.addAttribute("gruppen", gruppen);
-        model.addAttribute("tags", tags);
-        model.addAttribute("dateiTypen", dateiTypen);
-        model.addAttribute("uploader", uploader);
+        model.addAttribute("gruppen", gruppeRepository.findAll());
+        gruppeRepository.findAll().forEach(gruppe -> System.out.println(gruppe.getBeschreibung()));
+        model.addAttribute("tags", tagRepository.findAll());
+        model.addAttribute("dateiTypen", dateiRepository.findAll());
+        model.addAttribute("uploader", userRepository.findAll());
         return "suche";
     }
 
@@ -119,10 +108,10 @@ public class MaterialController {
             final KeycloakAuthenticationToken token, final Model model, final @ModelAttribute Suche suchen) {
         model.addAttribute("account", createAccountFromPrincipal(token));
         authenticatedAccess.increment();
-        model.addAttribute("gruppen", gruppen);
-        model.addAttribute("tags", tags);
-        model.addAttribute("dateiTypen", dateiTypen);
-        model.addAttribute("uploader", uploader);
+        model.addAttribute("gruppen", gruppeRepository.findAll());
+        model.addAttribute("tags", tagRepository.findAll());
+        model.addAttribute("dateiTypen", dateiRepository.findAll());
+        model.addAttribute("uploader", userRepository.findAll());
         return "redirect:/suche";
     }
 
@@ -134,9 +123,9 @@ public class MaterialController {
     public String upload(final KeycloakAuthenticationToken token, final Model model) {
         model.addAttribute("account", createAccountFromPrincipal(token));
         authenticatedAccess.increment();
-        model.addAttribute("gruppen", gruppen);
-        model.addAttribute("uploader", uploader);
-        model.addAttribute("dateitypen", dateiTypen);
+        model.addAttribute("gruppen", gruppeRepository.findAll());
+        model.addAttribute("uploader", userRepository.findAll());
+        model.addAttribute("dateitypen", dateiRepository.findAll());
         return "upload";
     }
 
@@ -145,6 +134,7 @@ public class MaterialController {
      * @param model injected thymeleaf model
      * @return upload routing
      */
+    /*
     @PostMapping("/upload")
     @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
     public String upload(final KeycloakAuthenticationToken token, final Model model, final UploadForm upForm) {
@@ -153,6 +143,7 @@ public class MaterialController {
         System.out.println(upForm);
         return "redirect:/upload";
     }
+*/
     /**route to logout.
      * @param request logout request
      * @return  homepage routing

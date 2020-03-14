@@ -7,5 +7,5 @@ import org.springframework.data.repository.query.Param;
 
 public interface UserRepository extends CrudRepository<User, Long> {
     @Query("Select * from User u where u.keycloackname = keyclockname")
-    User findByKeycloakname(@Param("keycloackname") String keycloackname);
+    User findByKeyCloakName(@Param("keycloackname") String keycloackname);
 }

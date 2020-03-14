@@ -8,11 +8,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "datei")
 @Data
 public final class Datei {
     public Datei() { }
 
-    public Datei(final long id, final String fileName, final String fileDir, final String fileSubmitter, final LocalDate uploadDate, final LocalDate releaseDate, final long fileSize, final String dataTyp, final Gruppe group) {
+    public Datei(final long id, final String fileName, final String fileDir, final User fileSubmitter, final LocalDate uploadDate, final LocalDate releaseDate, final long fileSize, final String dataTyp, final String category, final Gruppe group) {
         this.dateiID = id;
         this.name = fileName;
         this.pfad = fileDir;
@@ -21,53 +22,29 @@ public final class Datei {
         this.veroeffentlichungsdatum = releaseDate;
         this.dateigroesse = fileSize;
         this.dateityp = dataTyp;
+        this.kategorie = category;
         this.gruppe = group;
     }
-    /**
-     * Unique ID from database.
-     */
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long dateiID;
-    /**
-     * Name of file.
-     */
     private String name;
-    /**
-     * Path of file.
-     */
     private String pfad;
-    /**
-     * User that uploaded the file.
-     */
-    private String uploader;
-    /**
-     * Upload date.
-     */
     private LocalDate uploaddatum;
-    /**
-     * Date for when the file
-     * will be visible to non-uploaders
-     * of its group.
-     */
     private LocalDate veroeffentlichungsdatum;
-    /**
-     * File size.
-     */
     private long dateigroesse;
-    /**
-     * File type.
-     */
     private String dateityp;
-    /**
-     * All assigned tags.
-     */
+    private String kategorie;
+
     @ManyToMany
-    @JoinTable(name = "Tagnutzung", joinColumns = {@JoinColumn(name = "dateiID")}, inverseJoinColumns = {@JoinColumn(name = "tagID")})
+    @JoinTable(name = "tagnutzung", joinColumns = {@JoinColumn(name = "dateiid")}, inverseJoinColumns = {@JoinColumn(name = "tagid")})
     private Set<Tag> tags = new HashSet<>();
-    /**
-     * Assigned group.
-     */
+
     @ManyToOne
     private Gruppe gruppe;
+
+    @OneToOne
+    private User uploader;
 
 }

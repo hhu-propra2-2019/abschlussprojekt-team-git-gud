@@ -38,24 +38,24 @@
                 <label for="Tag">Tag </label>
                 <div class="form-check" th:each="tag : ${tags}">
                     <input class="form-check-input" type="checkbox" value="" id="Tag"
-                           th:value="${tag}" name="tags">
-                    <label class="form-check-label" for="Tag" th:text="${tag}"></label>
+                           th:value="${tag.getTagID()}" name="tags">
+                    <label class="form-check-label" for="Tag" th:text="${tag.getTagname()}"></label>
                 </div>
             </div>
 
             <div class="form-group list-inline">
                 <label for="Dateityp">Dateityp</label>
                 <div class="form-check" th:each="dateiTyp : ${dateiTypen}">
-                    <input class="form-check-input" type="checkbox" value="" id="Dateityp" th:value="${dateiTyp}" name="dateiTyp">
-                    <label class="form-check-label" for="Dateityp" th:text="${dateiTyp}"></label>
+                    <input class="form-check-input" type="checkbox" value="" id="Dateityp" th:value="${dateiTyp.getDateityp()}" name="dateiTyp">
+                    <label class="form-check-label" for="Dateityp" th:text="${dateiTyp.getDateityp()}"></label>
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="Uploader">Uploader</label>
                 <div class="form-check" th:each="uploading : ${uploader}">
-                    <input class="form-check-input" type="checkbox" value="" id="Uploader" th:value="${uploading}" name="uploader">
-                    <label class="form-check-label" for="Dateityp" th:text="${uploading}"></label>
+                    <input class="form-check-input" type="checkbox" value="" id="Uploader" th:value="${uploading.getKeyCloakName()}" name="uploader">
+                    <label class="form-check-label" for="Dateityp" th:text="${uploading.getVorname()}"></label>
                 </div>
             </div>
 

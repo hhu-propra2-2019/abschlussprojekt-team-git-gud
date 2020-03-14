@@ -91,7 +91,6 @@ public class MaterialController {
     public String vorSuche(final KeycloakAuthenticationToken token, final Model model) {
         model.addAttribute("account", createAccountFromPrincipal(token));
         authenticatedAccess.increment();
-        gruppeRepository.findAll().forEach(gruppe -> System.out.println(gruppe.getGruppeID() + gruppe.getBeschreibung()));
         model.addAttribute("gruppen", gruppeRepository.findAll());
         model.addAttribute("tags", tagRepository.findAll());
         model.addAttribute("dateiTypen", dateiRepository.findAll());

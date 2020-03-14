@@ -4,8 +4,8 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "datei")
@@ -39,7 +39,7 @@ public final class Datei {
 
     @ManyToMany
     @JoinTable(name = "tagnutzung", joinColumns = {@JoinColumn(name = "dateiid")}, inverseJoinColumns = {@JoinColumn(name = "tagid")})
-    private Set<Tag> tags = new HashSet<>();
+    private List<Tag> tags;
 
     @ManyToOne
     private Gruppe gruppe;

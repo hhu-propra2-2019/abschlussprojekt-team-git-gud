@@ -2,6 +2,7 @@ package de.hhu.propra2.material2.mops.database.entities;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -23,6 +24,6 @@ public class Tag {
     private String tagname;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "tags")
-    private Set<Datei> dateien;
+    private List<Datei> dateien;
 
 }

@@ -67,7 +67,6 @@ public class MaterialController {
             model.addAttribute("account", createAccountFromPrincipal(token));
         }
         publicAccess.increment();
-        model.addAttribute("gruppen", gruppeRepository.findAll());
         return "start";
     }
 
@@ -91,8 +90,10 @@ public class MaterialController {
     public String vorSuche(final KeycloakAuthenticationToken token, final Model model) {
         model.addAttribute("account", createAccountFromPrincipal(token));
         authenticatedAccess.increment();
+
         model.addAttribute("gruppen", gruppeRepository.findAll());
         gruppeRepository.findAll().forEach(gruppe -> System.out.println(gruppe.getBeschreibung()));
+        gruppeRepository.findAll().forEach(gruppe -> System.out.println(gruppe.getTitel()));
         model.addAttribute("tags", tagRepository.findAll());
         model.addAttribute("dateiTypen", dateiRepository.findAll());
         model.addAttribute("uploader", userRepository.findAll());

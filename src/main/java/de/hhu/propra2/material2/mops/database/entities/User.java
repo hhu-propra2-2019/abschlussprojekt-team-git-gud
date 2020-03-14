@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -40,5 +41,5 @@ public class User {
 
     @ManyToMany
     @JoinTable(name = "gruppenbelegung", joinColumns = {@JoinColumn(name = "userid")}, inverseJoinColumns = {@JoinColumn(name = "gruppeid")})
-    private Set<Gruppe> gruppen = new HashSet<>();
+    private List<Gruppe> gruppen;
 }

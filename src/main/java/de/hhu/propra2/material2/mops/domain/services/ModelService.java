@@ -10,6 +10,7 @@ import de.hhu.propra2.material2.mops.database.GruppeRepository;
 import de.hhu.propra2.material2.mops.database.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -81,7 +82,7 @@ public final class ModelService implements IModelService {
         return new Gruppe(dto.getGruppeID(), dto.getTitel(), dto.getBeschreibung());
     }
 
-    public Set<Gruppe> getAlleGruppenByUser(final User user) {
+    public List<Gruppe> getAlleGruppenByUser(final User user) {
         return user.getGruppen();
     }
 
@@ -89,9 +90,9 @@ public final class ModelService implements IModelService {
         return gruppe.getDateien();
     }
 
-    public Set<String> getAlleTagsByUser(final User user) {
-        Set<Gruppe> groups = user.getGruppen();
-        Set<String> tags = new HashSet<>();
+    public List getAlleTagsByUser(final User user) {
+        List<Gruppe> groups = user.getGruppen();
+        List tags = new ArrayList();
         for (Gruppe gruppe : groups) {
             gruppe.getDateien().forEach(datei -> datei.getTags()
                     .forEach(tag -> tags.add(tag.getTagname())));
@@ -107,9 +108,9 @@ public final class ModelService implements IModelService {
         return tags;
     }
 
-    public Set<String> getAlleUploaderByUser(final User user) {
-        Set<Gruppe> groups = user.getGruppen();
-        Set<String> uploader = new HashSet<String>();
+    public List<String> getAlleUploaderByUser(final User user) {
+        List<Gruppe> groups = user.getGruppen();
+        List<String> uploader = new ArrayList<>();
         for (Gruppe gruppe : groups) {
             uploader.addAll(gruppe.getDateien()
                     .stream()
@@ -126,9 +127,9 @@ public final class ModelService implements IModelService {
                 .collect(Collectors.toSet());
     }
 
-    public Set<String> getAlleDateiTypenByUser(final User user) {
-        Set<Gruppe> groups = user.getGruppen();
-        Set<String> dateiTypen = new HashSet<String>();
+    public List<String> getAlleDateiTypenByUser(final User user) {
+        List<Gruppe> groups = user.getGruppen();
+        List<String> dateiTypen = new ArrayList<>();
         for (Gruppe gruppe : groups) {
             dateiTypen.addAll(gruppe.getDateien()
                     .stream()

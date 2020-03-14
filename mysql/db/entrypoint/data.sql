@@ -23,21 +23,21 @@ DROP TABLE IF EXISTS `datei`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `datei` (
-  `dateiid` bigint(20) NOT NULL AUTO_INCREMENT,
-  `dateigroesse` bigint(20) NOT NULL,
-  `dateityp` text NOT NULL,
-  `name` text NOT NULL,
-  `pfad` text NOT NULL,
-  `uploaddatum` date NOT NULL,
-  `kategorie` varchar(100) NOT NULL,
-  `veroeffentlichungsdatum` date NOT NULL,
-  `uploaderid` bigint(20) NOT NULL,
-  `gruppeid` bigint(20) NOT NULL,
-  PRIMARY KEY (`dateiID`),
-  KEY `uploaderID` (`uploaderID`),
-  KEY `gruppeID` (`gruppeID`),
-  CONSTRAINT `datei_ibfk_1` FOREIGN KEY (`uploaderid`) REFERENCES `user` (`userid`),
-  CONSTRAINT `datei_ibfk_2` FOREIGN KEY (`gruppeid`) REFERENCES `gruppe` (`gruppeid`)
+    `dateiid` bigint(20) NOT NULL AUTO_INCREMENT,
+    `name` text NOT NULL,
+    `pfad` text NOT NULL,
+    `uploader_userid` bigint(20) NOT NULL,
+    `uploaddatum` date NOT NULL,
+    `veroeffentlichungsdatum` date NOT NULL,
+    `dateigroesse` bigint(20) NOT NULL,
+    `dateityp` text NOT NULL,
+    `gruppe_gruppeid` bigint(20) NOT NULL,
+    `kategorie` varchar(100) NOT NULL,
+  PRIMARY KEY (`dateiid`),
+  KEY `uploaderID` (`uploader_userid`),
+  KEY `gruppeID` (`gruppe_gruppeid`),
+  CONSTRAINT `datei_ibfk_1` FOREIGN KEY (`uploader_userid`) REFERENCES `user` (`userid`),
+  CONSTRAINT `datei_ibfk_2` FOREIGN KEY (`gruppe_gruppeid`) REFERENCES `gruppe` (`gruppeid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

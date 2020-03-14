@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Set;
+import java.util.List;
 
 
 @Controller
@@ -67,6 +67,7 @@ public class MaterialController {
             model.addAttribute("account", createAccountFromPrincipal(token));
         }
         publicAccess.increment();
+        //model.addAttribute("gruppen", gruppeRepository.findById(804187799L));
         return "start";
     }
 
@@ -90,8 +91,7 @@ public class MaterialController {
     public String vorSuche(final KeycloakAuthenticationToken token, final Model model) {
         model.addAttribute("account", createAccountFromPrincipal(token));
         authenticatedAccess.increment();
-
-        model.addAttribute("gruppen", gruppeRepository.findAll());
+        model.addAttribute("gruppen", (List) gruppeRepository.findAll());
         gruppeRepository.findAll().forEach(gruppe -> System.out.println(gruppe.getBeschreibung()));
         gruppeRepository.findAll().forEach(gruppe -> System.out.println(gruppe.getTitel()));
         model.addAttribute("tags", tagRepository.findAll());

@@ -4,7 +4,15 @@ package de.hhu.propra2.material2.mops.domain.services;
 import de.hhu.propra2.material2.mops.database.DateiRepository;
 import de.hhu.propra2.material2.mops.database.GruppeRepository;
 import de.hhu.propra2.material2.mops.database.UserRepository;
+import de.hhu.propra2.material2.mops.database.entities.DateiDAO;
+import de.hhu.propra2.material2.mops.database.entities.GruppeDAO;
+import de.hhu.propra2.material2.mops.database.entities.TagDAO;
+import de.hhu.propra2.material2.mops.database.entities.UserDAO;
 import de.hhu.propra2.material2.mops.domain.IModelService;
+import de.hhu.propra2.material2.mops.domain.models.Datei;
+import de.hhu.propra2.material2.mops.domain.models.Gruppe;
+import de.hhu.propra2.material2.mops.domain.models.Tag;
+import de.hhu.propra2.material2.mops.domain.models.User;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -35,49 +43,49 @@ public final class ModelService implements IModelService {
         this.users = userRepo;
     }
 
-    public Datei loadDatei(final DateiDTO dto) {
-        List<Tag> tags = dto.getTagDTOs().stream()
+    public Datei loadDatei(final DateiDAO dao) {
+        List<Tag> tags = dao.getTagDAOS().stream()
                 .map(this::load)
                 .collect(Collectors.toList());
         return new Datei(
-                dto.getId(),
-                dto.getName(),
-                dto.getPfad(),
-                loadUser(dto.getUploader()),
+                dao.getDateiID(),
+                dao.getName(),
+                dao.getPfad(),
+                loadUser(dao.getUploader()),
                 tags,
-                dto.getUploaddatum(),
-                dto.getVeroeffentlichungsdatum(),
-                dto.getDateigroesse(),
-                dto.getDateityp());
+                dao.getUploaddatum(),
+                dao.getVeroeffentlichungsdatum(),
+                dao.getDateigroesse(),
+                dao.getDateityp());
     }
 
-    public Tag load(final TagDTO dto) {
-        return new Tag(dto.getId(), dto.getText());
+    public Tag load(final TagDAO dao) {
+        return new Tag(dao.getTagID(), dao.getTagname());
     }
 
-    public User loadUser(final UserDTO dto) {
+    public User loadUser(final UserDAO dao) {
         HashMap<Gruppe, Boolean> belegungUndRechte = new HashMap<>();
-        for (GruppeDTO gruppeDTO : dto.getBelegungUndRechte().keySet()) {
+        for (GruppeDAO gruppeDAO : dao.getBelegungUndRechte().keySet()) {
             belegungUndRechte.put(
-                    load(gruppeDTO),
-                    dto.getBelegungUndRechte().get(gruppeDTO));
+                    load(gruppeDAO),
+                    dao.getBelegungUndRechte().get(gruppeDAO));
         }
 
         return new User(
-                dto.getId(),
-                dto.getVorname(),
-                dto.getNachname(),
-                dto.getKeycloakname(),
+                dao.getUserID(),
+                dao.getVorname(),
+                dao.getNachname(),
+                dao.getKeyCloakName(),
                 belegungUndRechte);
     }
 
-    public Gruppe load(final GruppeDTO dto) {
+    public Gruppe load(final GruppeDAO dao) {
         List<Datei> zugehoerigeDateien =
-                dto.getDateien()
+                dao.getDateien()
                         .stream()
                         .map(this::loadDatei)
                         .collect(Collectors.toList());
-        return new Gruppe(dto.getId(), dto.getName(), zugehoerigeDateien);
+        return new Gruppe(dao.getGruppeID(), dao.getTitel(), zugehoerigeDateien);
     }
 
     public List<Gruppe> getAlleGruppenByUser(final User user) {
@@ -150,6 +158,6 @@ public final class ModelService implements IModelService {
     }
 
     public User getUserByKeyCloackName(final String name) {
-        return loadUser(users.findByKeycloakname(name));
+        return loadUser(users.findByKeyCloakName(name));
     }
 }

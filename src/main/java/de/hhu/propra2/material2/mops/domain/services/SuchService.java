@@ -1,4 +1,4 @@
-/*package de.hhu.propra2.material2.mops.domain.services;
+package de.hhu.propra2.material2.mops.domain.services;
 
 import de.hhu.propra2.material2.mops.database.DateiRepository;
 import de.hhu.propra2.material2.mops.database.GruppeRepository;
@@ -40,7 +40,7 @@ public class SuchService {
      * @param keyCloackName
      * @return
      */
-/*
+
     public List<Datei> starteSuche(final Suche suche,
                                    final String keyCloackName) {
         User user = modelService.loadUser(userRepository.findByKeyCloakName(keyCloackName).getKeycloakname());
@@ -85,7 +85,6 @@ public class SuchService {
     /**
      * Suchmethoden noch zu implementieren
      */
-/*
     private List<Datei> tagSuche(final String[] tags,
                                  final List<Datei> zuFiltern) {
         return zuFiltern.stream()
@@ -158,7 +157,6 @@ public class SuchService {
          * Kategorie
          * aufsteigend / absteigend
          */
-/*
         List<Datei> sort = zuSortieren;
         if ("name".equals(sortierStyle)) {
             sort.sort(new DateiNamenComparator());
@@ -180,4 +178,3 @@ public class SuchService {
         return sort;
     }
 }
-*/

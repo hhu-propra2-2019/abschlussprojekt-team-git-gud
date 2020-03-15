@@ -1,11 +1,14 @@
 package de.hhu.propra2.material2.mops.database.entities;
 
-import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.CascadeType;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -45,19 +48,27 @@ public class UserDAO {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GruppenbelegungDAO> gruppen;
 
-    public void addGroup(GruppeDAO gruppe, boolean berechtigung) {
+    /**
+     *
+     * @param gruppe
+     * @param berechtigung
+     */
+    public void addGroup(final GruppeDAO gruppe, final boolean berechtigung) {
         GruppenbelegungDAO gruppenbelegung = new GruppenbelegungDAO(gruppe, this, berechtigung);
         gruppen.add(gruppenbelegung);
         gruppe.getUser().add(gruppenbelegung);
     }
 
-    public void removeGruppe(GruppeDAO gruppe) {
+    /**
+     *
+     * @param gruppe
+     */
+    public void removeGruppe(final GruppeDAO gruppe) {
         for (Iterator<GruppenbelegungDAO> iterator = gruppen.iterator();
-             iterator.hasNext(); ) {
+             iterator.hasNext();) {
             GruppenbelegungDAO gruppenbelegung = iterator.next();
 
-            if (gruppenbelegung.getUser().equals(this) &&
-                    gruppenbelegung.getGruppe().equals(gruppe)) {
+            if (gruppenbelegung.getUser().equals(this) && gruppenbelegung.getGruppe().equals(gruppe)) {
                 iterator.remove();
                 gruppenbelegung.getGruppe().getUser().remove(gruppenbelegung);
                 gruppenbelegung.setGruppe(null);

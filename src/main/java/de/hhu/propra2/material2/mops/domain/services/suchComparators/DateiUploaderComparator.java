@@ -1,7 +1,5 @@
 package de.hhu.propra2.material2.mops.domain.services.suchComparators;
 
-
-import de.hhu.propra2.material2.mops.database.entities.DateiDAO;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 
 import java.io.Serializable;

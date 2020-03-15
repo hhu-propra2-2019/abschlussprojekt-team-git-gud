@@ -57,6 +57,11 @@ public class Datei {
         return false;
     }
 
+    /**
+     * Return true if an object of Datei has a specific Tags. Returns false if thats not the case.
+     * @param tagsToCheckFor
+     * @return
+     */
     public boolean hatTags(final String[] tagsToCheckFor) {
         for (String tag : tagsToCheckFor) {
             if (!this.hatTag(tag)) {

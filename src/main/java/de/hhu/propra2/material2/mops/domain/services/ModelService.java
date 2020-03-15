@@ -8,6 +8,7 @@ import de.hhu.propra2.material2.mops.database.entities.User;
 import de.hhu.propra2.material2.mops.database.DateiRepository;
 import de.hhu.propra2.material2.mops.database.GruppeRepository;
 import de.hhu.propra2.material2.mops.database.UserRepository;
+import de.hhu.propra2.material2.mops.domain.IModelService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package de.hhu.propra2.material2.mops.domain.services;
+package de.hhu.propra2.material2.mops.domain;
 
 
 import de.hhu.propra2.material2.mops.database.entities.Datei;

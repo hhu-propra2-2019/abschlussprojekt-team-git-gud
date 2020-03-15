@@ -1,4 +1,4 @@
-package de.hhu.propra2.material2.mops.domain.services;
+package de.hhu.propra2.material2.mops.domain.models;
 
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;

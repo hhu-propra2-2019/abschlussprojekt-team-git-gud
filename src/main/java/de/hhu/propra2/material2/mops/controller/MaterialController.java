@@ -5,8 +5,8 @@ import de.hhu.propra2.material2.mops.database.DateiRepository;
 import de.hhu.propra2.material2.mops.database.GruppeRepository;
 import de.hhu.propra2.material2.mops.database.TagRepository;
 import de.hhu.propra2.material2.mops.database.UserRepository;
-import de.hhu.propra2.material2.mops.database.entities.Gruppe;
 import de.hhu.propra2.material2.mops.domain.services.Suche;
+import de.hhu.propra2.material2.mops.domain.services.UploadForm;
 import de.hhu.propra2.material2.mops.security.Account;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 
 @Controller
@@ -133,7 +132,7 @@ public class MaterialController {
      * @param model injected thymeleaf model
      * @return upload routing
      */
-    /*
+
     @PostMapping("/upload")
     @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
     public String upload(final KeycloakAuthenticationToken token, final Model model, final UploadForm upForm) {
@@ -142,7 +141,7 @@ public class MaterialController {
         System.out.println(upForm);
         return "redirect:/upload";
     }
-*/
+
     /**route to logout.
      * @param request logout request
      * @return  homepage routing

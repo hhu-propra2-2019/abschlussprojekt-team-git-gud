@@ -52,7 +52,7 @@ public final class ModelService implements IModelService {
         return null;
     }
 
-    public Tag load(final long tagId) {
+    public Tag loadTag(final long tagId) {
         Iterable<Tag> data = tagRepository.findAll();
         for (Tag tag: data) {
             if (tag.getTagID() == tagId) {
@@ -73,13 +73,14 @@ public final class ModelService implements IModelService {
         return null;
     }
 
-    public Gruppe load(final Gruppe dto) {
-       /* List<Datei> zugehoerigeDateien =
-                dto.getDateien()
-                        .stream()
-                        .map(this::loadDatei)
-                        .collect(Collectors.toList());*/
-        return new Gruppe(dto.getGruppeID(), dto.getTitel(), dto.getBeschreibung());
+    public Gruppe loadGruppe(final long gruppeId) {
+        Iterable<Gruppe> gruppen = gruppeRepository.findAll();
+        for (Gruppe gruppe: gruppen) {
+            if (gruppe.getGruppeID() == gruppeId) {
+                return gruppe;
+            }
+        }
+        return null;
     }
 
     public List<Gruppe> getAlleGruppenByUser(final User user) {
@@ -147,7 +148,7 @@ public final class ModelService implements IModelService {
     }
 
     public List<Datei> getAlleDateienByGruppeId(final Long id) {
-        Gruppe gruppe = load(gruppeRepository.findById(id).get());
+        Gruppe gruppe = loadGruppe(id);
         return gruppe.getDateien();
     }
 

@@ -2,7 +2,14 @@ package de.hhu.propra2.material2.mops.database.entities;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.FetchType;
+import javax.persistence.CascadeType;
+import javax.persistence.OneToMany;
+
 import java.util.List;
 
 @Entity

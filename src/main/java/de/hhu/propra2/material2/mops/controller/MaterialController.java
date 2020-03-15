@@ -1,6 +1,5 @@
 package de.hhu.propra2.material2.mops.controller;
 
-
 import de.hhu.propra2.material2.mops.database.DateiRepository;
 import de.hhu.propra2.material2.mops.database.GruppeRepository;
 import de.hhu.propra2.material2.mops.database.TagRepository;
@@ -32,7 +31,9 @@ public class MaterialController {
     private final TagRepository tagRepository;
     private final UserRepository userRepository;
 
-    public MaterialController(final MeterRegistry registry, final GruppeRepository gruppeRepo, final DateiRepository dateiRepo, final TagRepository tagRepo, final UserRepository userRepo) {
+    public MaterialController(final MeterRegistry registry, final GruppeRepository gruppeRepo,
+                              final DateiRepository dateiRepo, final TagRepository tagRepo,
+                              final UserRepository userRepo) {
         authenticatedAccess = registry.counter("access.authenticated");
         publicAccess = registry.counter("access.public");
         this.gruppeRepository = gruppeRepo;

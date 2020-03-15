@@ -2,10 +2,15 @@ package de.hhu.propra2.material2.mops.database.entities;
 
 import lombok.Data;
 
-import javax.persistence.*;
-import java.util.HashSet;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.Column;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
+
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "user")
@@ -40,6 +45,7 @@ public class User {
     private String keyCloakName;
 
     @ManyToMany
-    @JoinTable(name = "gruppenbelegung", joinColumns = {@JoinColumn(name = "userid")}, inverseJoinColumns = {@JoinColumn(name = "gruppeid")})
+    @JoinTable(name = "gruppenbelegung",
+               joinColumns = {@JoinColumn(name = "userid")}, inverseJoinColumns = {@JoinColumn(name = "gruppeid")})
     private List<Gruppe> gruppen;
 }

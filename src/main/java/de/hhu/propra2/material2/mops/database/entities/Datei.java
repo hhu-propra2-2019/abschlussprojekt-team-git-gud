@@ -2,9 +2,18 @@ package de.hhu.propra2.material2.mops.database.entities;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -13,7 +22,9 @@ import java.util.List;
 public final class Datei {
     public Datei() { }
 
-    public Datei(final long id, final String fileName, final String fileDir, final User fileSubmitter, final LocalDate uploadDate, final LocalDate releaseDate, final long fileSize, final String dataTyp, final String category, final Gruppe group) {
+    public Datei(final long id, final String fileName, final String fileDir,
+                 final User fileSubmitter, final LocalDate uploadDate, final LocalDate releaseDate,
+                 final long fileSize, final String dataTyp, final String category, final Gruppe group) {
         this.dateiID = id;
         this.name = fileName;
         this.pfad = fileDir;
@@ -38,7 +49,8 @@ public final class Datei {
     private String kategorie;
 
     @ManyToMany
-    @JoinTable(name = "tagnutzung", joinColumns = {@JoinColumn(name = "dateiid")}, inverseJoinColumns = {@JoinColumn(name = "tagid")})
+    @JoinTable(name = "tagnutzung",
+               joinColumns = {@JoinColumn(name = "dateiid")}, inverseJoinColumns = {@JoinColumn(name = "tagid")})
     private List<Tag> tags;
 
     @ManyToOne

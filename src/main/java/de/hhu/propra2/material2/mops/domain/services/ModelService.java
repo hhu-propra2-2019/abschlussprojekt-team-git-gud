@@ -1,6 +1,5 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
-
 import de.hhu.propra2.material2.mops.database.DateiRepository;
 import de.hhu.propra2.material2.mops.database.GruppeRepository;
 import de.hhu.propra2.material2.mops.database.UserRepository;
@@ -27,7 +26,6 @@ public final class ModelService implements IModelService {
     private final GruppeRepository gruppen;
     private final UserRepository users;
 
-
     /**
      * Constructor of ModelService.
      *
@@ -43,11 +41,11 @@ public final class ModelService implements IModelService {
         this.users = userRepo;
     }
 
-    public Datei loadDatei(final DateiDAO dao) {
+    public de.hhu.propra2.material2.mops.domain.models.Datei loadDatei(final DateiDAO dao) {
         List<Tag> tags = dao.getTagDAOS().stream()
                 .map(this::load)
                 .collect(Collectors.toList());
-        return new Datei(
+        return new de.hhu.propra2.material2.mops.domain.models.Datei(
                 dao.getDateiID(),
                 dao.getName(),
                 dao.getPfad(),
@@ -80,7 +78,7 @@ public final class ModelService implements IModelService {
     }
 
     public Gruppe load(final GruppeDAO dao) {
-        List<Datei> zugehoerigeDateien =
+        List<de.hhu.propra2.material2.mops.domain.models.Datei> zugehoerigeDateien =
                 dao.getDateien()
                         .stream()
                         .map(this::loadDatei)
@@ -107,7 +105,7 @@ public final class ModelService implements IModelService {
     }
 
     public Set<String> getAlleTagsByGruppe(final Gruppe gruppe) {
-        List<Datei> dateienListe = gruppe.getDateien();
+        List<de.hhu.propra2.material2.mops.domain.models.Datei> dateienListe = gruppe.getDateien();
         Set<String> tags = new HashSet<>();
         dateienListe.forEach(datei -> datei.getTags()
                 .forEach(tag -> tags.add(tag.getText())));
@@ -139,7 +137,7 @@ public final class ModelService implements IModelService {
         for (Gruppe gruppe : groups) {
             dateiTypen.addAll(gruppe.getDateien()
                     .stream()
-                    .map(Datei::getDateityp)
+                    .map(de.hhu.propra2.material2.mops.domain.models.Datei::getDateityp)
                     .collect(Collectors.toSet()));
         }
         return dateiTypen;
@@ -148,11 +146,11 @@ public final class ModelService implements IModelService {
     public Set<String> getAlleDateiTypenByGruppe(final Gruppe gruppe) {
         return gruppe.getDateien()
                 .stream()
-                .map(Datei::getDateityp)
+                .map(de.hhu.propra2.material2.mops.domain.models.Datei::getDateityp)
                 .collect(Collectors.toSet());
     }
 
-    public List<Datei> getAlleDateienByGruppeId(final Long id) {
+    public List<de.hhu.propra2.material2.mops.domain.models.Datei> getAlleDateienByGruppeId(final Long id) {
         Gruppe gruppe = load(gruppen.findById(id).get());
         return gruppe.getDateien();
     }

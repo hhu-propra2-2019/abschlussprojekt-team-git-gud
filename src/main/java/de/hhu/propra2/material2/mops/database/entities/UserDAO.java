@@ -10,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Entity

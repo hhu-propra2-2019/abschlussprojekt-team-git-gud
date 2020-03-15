@@ -2,8 +2,6 @@ package de.hhu.propra2.material2.mops.domain;
 
 
 import de.hhu.propra2.material2.mops.database.entities.DateiDAO;
-import de.hhu.propra2.material2.mops.database.entities.GruppeDAO;
-import de.hhu.propra2.material2.mops.database.entities.UserDAO;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.User;

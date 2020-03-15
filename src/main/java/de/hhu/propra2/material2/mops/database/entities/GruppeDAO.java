@@ -24,7 +24,6 @@ public class GruppeDAO {
         this.titel = title;
         this.beschreibung = description;
     }
-
     /**
      * Unique ID from database.
      */
@@ -41,8 +40,8 @@ public class GruppeDAO {
     /**
      * List of participating users from database.
      */
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "gruppen")
-    private List<UserDAO> userDAOS;
+    @OneToMany(mappedBy = "gruppe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<GruppenbelegungDAO> user;
     /**
      * List of related files from database.
      */

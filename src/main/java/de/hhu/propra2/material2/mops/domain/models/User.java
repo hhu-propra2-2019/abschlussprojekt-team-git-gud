@@ -15,7 +15,8 @@ public class User {
     private final String nachname;
     private final String keycloakname;
     private final HashMap<Gruppe, Boolean> belegungUndRechte;
+
     public List<Gruppe> getAllGruppen() {
-        return new ArrayList<>(belegungUndRechte.keySet());
+       return new ArrayList<>(belegungUndRechte.keySet());
     }
 }

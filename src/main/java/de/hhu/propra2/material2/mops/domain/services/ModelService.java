@@ -1,17 +1,13 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
-import de.hhu.propra2.material2.mops.database.TagRepository;
-import de.hhu.propra2.material2.mops.database.entities.Datei;
-import de.hhu.propra2.material2.mops.database.entities.Gruppe;
-import de.hhu.propra2.material2.mops.database.entities.Tag;
-import de.hhu.propra2.material2.mops.database.entities.User;
+
 import de.hhu.propra2.material2.mops.database.DateiRepository;
 import de.hhu.propra2.material2.mops.database.GruppeRepository;
 import de.hhu.propra2.material2.mops.database.UserRepository;
 import de.hhu.propra2.material2.mops.domain.IModelService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,11 +15,9 @@ import java.util.stream.Collectors;
 
 @Service
 public final class ModelService implements IModelService {
-
-    private final DateiRepository dateiRepository;
-    private final GruppeRepository gruppeRepository;
-    private final UserRepository userRepository;
-    private final TagRepository tagRepository;
+    private final DateiRepository dateien;
+    private final GruppeRepository gruppen;
+    private final UserRepository users;
 
 
     /**
@@ -35,69 +29,71 @@ public final class ModelService implements IModelService {
      */
     public ModelService(final DateiRepository dateiRepo,
                         final GruppeRepository gruppenRepo,
-                        final UserRepository userRepo,
-                        final TagRepository tagRepo) {
-        this.dateiRepository = dateiRepo;
-        this.gruppeRepository = gruppenRepo;
-        this.userRepository = userRepo;
-        this.tagRepository = tagRepo;
+                        final UserRepository userRepo) {
+        this.dateien = dateiRepo;
+        this.gruppen = gruppenRepo;
+        this.users = userRepo;
     }
 
-    public Datei loadDatei(final long dateiId) {
-        Iterable<Datei> data = dateiRepository.findAll();
-        for (Datei datei: data) {
-            if (datei.getDateiID() == dateiId) {
-                return datei;
-            }
-        }
-        return null;
+    public Datei loadDatei(final DateiDTO dto) {
+        List<Tag> tags = dto.getTagDTOs().stream()
+                .map(this::load)
+                .collect(Collectors.toList());
+        return new Datei(
+                dto.getId(),
+                dto.getName(),
+                dto.getPfad(),
+                loadUser(dto.getUploader()),
+                tags,
+                dto.getUploaddatum(),
+                dto.getVeroeffentlichungsdatum(),
+                dto.getDateigroesse(),
+                dto.getDateityp());
     }
 
-    public Tag loadTag(final long tagId) {
-        Iterable<Tag> data = tagRepository.findAll();
-        for (Tag tag: data) {
-            if (tag.getTagID() == tagId) {
-                return tag;
-            }
-        }
-        return null;
+    public Tag load(final TagDTO dto) {
+        return new Tag(dto.getId(), dto.getText());
     }
 
-    public User loadUser(final String keyCloakName) {
-        //TODO load Belegungsrechte
-        Iterable<User> data = userRepository.findAll();
-        for (User user: data) {
-            if (user.getKeyCloakName() == keyCloakName) {
-                return user;
-            }
+    public User loadUser(final UserDTO dto) {
+        HashMap<Gruppe, Boolean> belegungUndRechte = new HashMap<>();
+        for (GruppeDTO gruppeDTO : dto.getBelegungUndRechte().keySet()) {
+            belegungUndRechte.put(
+                    load(gruppeDTO),
+                    dto.getBelegungUndRechte().get(gruppeDTO));
         }
-        return null;
+
+        return new User(
+                dto.getId(),
+                dto.getVorname(),
+                dto.getNachname(),
+                dto.getKeycloakname(),
+                belegungUndRechte);
     }
 
-    public Gruppe loadGruppe(final long gruppeId) {
-        Iterable<Gruppe> gruppen = gruppeRepository.findAll();
-        for (Gruppe gruppe: gruppen) {
-            if (gruppe.getGruppeID() == gruppeId) {
-                return gruppe;
-            }
-        }
-        return null;
+    public Gruppe load(final GruppeDTO dto) {
+        List<Datei> zugehoerigeDateien =
+                dto.getDateien()
+                        .stream()
+                        .map(this::loadDatei)
+                        .collect(Collectors.toList());
+        return new Gruppe(dto.getId(), dto.getName(), zugehoerigeDateien);
     }
 
     public List<Gruppe> getAlleGruppenByUser(final User user) {
-        return user.getGruppen();
+        return user.getAllGruppen();
     }
 
     public List<Datei> getAlleDateienByGruppe(final Gruppe gruppe) {
         return gruppe.getDateien();
     }
 
-    public List getAlleTagsByUser(final User user) {
-        List<Gruppe> groups = user.getGruppen();
-        List tags = new ArrayList();
+    public Set<String> getAlleTagsByUser(final User user) {
+        List<Gruppe> groups = user.getAllGruppen();
+        Set<String> tags = new HashSet<>();
         for (Gruppe gruppe : groups) {
             gruppe.getDateien().forEach(datei -> datei.getTags()
-                    .forEach(tag -> tags.add(tag.getTagname())));
+                    .forEach(tag -> tags.add(tag.getText())));
         }
         return tags;
     }
@@ -106,17 +102,17 @@ public final class ModelService implements IModelService {
         List<Datei> dateienListe = gruppe.getDateien();
         Set<String> tags = new HashSet<>();
         dateienListe.forEach(datei -> datei.getTags()
-                .forEach(tag -> tags.add(tag.getTagname())));
+                .forEach(tag -> tags.add(tag.getText())));
         return tags;
     }
 
-    public List<String> getAlleUploaderByUser(final User user) {
-        List<Gruppe> groups = user.getGruppen();
-        List<String> uploader = new ArrayList<>();
+    public Set<String> getAlleUploaderByUser(final User user) {
+        List<Gruppe> groups = user.getAllGruppen();
+        Set<String> uploader = new HashSet<String>();
         for (Gruppe gruppe : groups) {
             uploader.addAll(gruppe.getDateien()
                     .stream()
-                    .map(datei -> datei.getUploader().getKeyCloakName())
+                    .map(datei -> datei.getUploader().getNachname())
                     .collect(Collectors.toSet()));
         }
         return uploader;
@@ -125,13 +121,13 @@ public final class ModelService implements IModelService {
     public Set<String> getAlleUploaderByGruppe(final Gruppe gruppe) {
         return gruppe.getDateien()
                 .stream()
-                .map(datei -> datei.getUploader().getKeyCloakName())
+                .map(datei -> datei.getUploader().getNachname())
                 .collect(Collectors.toSet());
     }
 
-    public List<String> getAlleDateiTypenByUser(final User user) {
-        List<Gruppe> groups = user.getGruppen();
-        List<String> dateiTypen = new ArrayList<>();
+    public Set<String> getAlleDateiTypenByUser(final User user) {
+        List<Gruppe> groups = user.getAllGruppen();
+        Set<String> dateiTypen = new HashSet<String>();
         for (Gruppe gruppe : groups) {
             dateiTypen.addAll(gruppe.getDateien()
                     .stream()
@@ -149,11 +145,11 @@ public final class ModelService implements IModelService {
     }
 
     public List<Datei> getAlleDateienByGruppeId(final Long id) {
-        Gruppe gruppe = loadGruppe(id);
+        Gruppe gruppe = load(gruppen.findById(id).get());
         return gruppe.getDateien();
     }
 
     public User getUserByKeyCloackName(final String name) {
-        return loadUser(name);
+        return loadUser(users.findByKeycloakname(name));
     }
 }

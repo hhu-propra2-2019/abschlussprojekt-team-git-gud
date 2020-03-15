@@ -16,10 +16,10 @@ import java.util.List;
 @Entity
 @Table(name = "tags")
 @Data
-public class Tag {
-    public Tag() { }
+public class TagDAO {
+    public TagDAO() { }
 
-    public Tag(final int id, final String name) {
+    public TagDAO(final int id, final String name) {
         this.tagID = id;
         this.tagname = name;
     }
@@ -32,6 +32,6 @@ public class Tag {
     private String tagname;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "tags")
-    private List<Datei> dateien;
+    private List<DateiDAO> dateien;
 
 }

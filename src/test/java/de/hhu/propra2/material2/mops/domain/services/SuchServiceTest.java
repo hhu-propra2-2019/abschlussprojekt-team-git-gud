@@ -1,6 +1,6 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
-import de.hhu.propra2.material2.mops.database.entities.User;
+import de.hhu.propra2.material2.mops.database.entities.UserDAO;
 import de.hhu.propra2.material2.mops.database.DateiRepository;
 import de.hhu.propra2.material2.mops.database.GruppeRepository;
 import de.hhu.propra2.material2.mops.database.UserRepository;
@@ -63,7 +63,7 @@ public class SuchServiceTest {
                 userRepoMock,
                 modelServiceMock);
 
-        Mockito.lenient().when(modelServiceMock.loadUser(any(User.class))).thenReturn(userMock);
+        Mockito.lenient().when(modelServiceMock.loadUser(any(UserDAO.class))).thenReturn(userMock);
         Mockito.lenient().when(modelServiceMock.loadUser(null)).thenReturn(userMock);
 
         //Date for Datei

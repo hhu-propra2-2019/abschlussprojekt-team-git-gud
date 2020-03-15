@@ -22,9 +22,9 @@
                 <label for="SelectGroup">Gruppenauswahl</label>
                 <select class="form-control" onchange="auswahl.submit()" id="SelectGroup" name="gruppenId">
                     <option value="0">Alle</option>
-                    <option th:each="gruppe : ${gruppen}"
-                            th:value="${gruppe.getGruppeID()}"
-                            th:text="${gruppe.getTitel()}">
+                    <option th:each="gruppeDAO : ${gruppen}"
+                            th:value="${gruppeDAO.getGruppeID()}"
+                            th:text="${gruppeDAO.getTitel()}">
                     </option>
                 </select>
             </div>
@@ -36,7 +36,7 @@
 
             <div class="form-group list-inline">
                 <label for="Tag">Tag </label>
-                <div class="form-check" th:each="tag : ${tags}">
+                <div class="form-check" th:each="tag : ${tagDAOS}">
                     <input class="form-check-input" type="checkbox" value="" id="Tag"
                            th:value="${tag.getTagID()}" name="tags">
                     <label class="form-check-label" for="Tag" th:text="${tag.getTagname()}"></label>

@@ -15,11 +15,11 @@ import java.util.List;
 @Entity
 @Table(name = "gruppe")
 @Data
-public class Gruppe {
+public class GruppeDAO {
 
-    public Gruppe() { }
+    public GruppeDAO() { }
 
-    public Gruppe(final long id, final String title, final String description) {
+    public GruppeDAO(final long id, final String title, final String description) {
         this.gruppeID = id;
         this.titel = title;
         this.beschreibung = description;
@@ -42,10 +42,10 @@ public class Gruppe {
      * List of participating users from database.
      */
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "gruppen")
-    private List<User> users;
+    private List<UserDAO> userDAOS;
     /**
      * List of related files from database.
      */
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "gruppe")
-    private List<Datei> dateien;
+    private List<DateiDAO> dateien;
 }

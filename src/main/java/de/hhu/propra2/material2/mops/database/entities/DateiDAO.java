@@ -19,12 +19,12 @@ import java.util.List;
 @Entity
 @Table(name = "datei")
 @Data
-public final class Datei {
-    public Datei() { }
+public final class DateiDAO {
+    public DateiDAO() { }
 
-    public Datei(final long id, final String fileName, final String fileDir,
-                 final User fileSubmitter, final LocalDate uploadDate, final LocalDate releaseDate,
-                 final long fileSize, final String dataTyp, final String category, final Gruppe group) {
+    public DateiDAO(final long id, final String fileName, final String fileDir,
+                    final UserDAO fileSubmitter, final LocalDate uploadDate, final LocalDate releaseDate,
+                    final long fileSize, final String dataTyp, final String category, final GruppeDAO group) {
         this.dateiID = id;
         this.name = fileName;
         this.pfad = fileDir;
@@ -34,7 +34,7 @@ public final class Datei {
         this.dateigroesse = fileSize;
         this.dateityp = dataTyp;
         this.kategorie = category;
-        this.gruppe = group;
+        this.gruppeDAO = group;
     }
 
     @Id
@@ -51,12 +51,12 @@ public final class Datei {
     @ManyToMany
     @JoinTable(name = "tagnutzung",
                joinColumns = {@JoinColumn(name = "dateiid")}, inverseJoinColumns = {@JoinColumn(name = "tagid")})
-    private List<Tag> tags;
+    private List<TagDAO> tagDAOS;
 
     @ManyToOne
-    private Gruppe gruppe;
+    private GruppeDAO gruppeDAO;
 
     @OneToOne
-    private User uploader;
+    private UserDAO uploader;
 
 }

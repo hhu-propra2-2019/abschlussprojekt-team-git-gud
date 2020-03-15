@@ -15,10 +15,10 @@ import java.util.List;
 @Entity
 @Table(name = "user")
 @Data
-public class User {
-    public User() { }
+public class UserDAO {
+    public UserDAO() { }
 
-    public User(final long id, final String nickname, final String familyName, final String dbName) {
+    public UserDAO(final long id, final String nickname, final String familyName, final String dbName) {
         this.userID = id;
         this.vorname = nickname;
         this.nachname = familyName;
@@ -47,5 +47,5 @@ public class User {
     @ManyToMany
     @JoinTable(name = "gruppenbelegung",
                joinColumns = {@JoinColumn(name = "userid")}, inverseJoinColumns = {@JoinColumn(name = "gruppeid")})
-    private List<Gruppe> gruppen;
+    private List<GruppeDAO> gruppen;
 }

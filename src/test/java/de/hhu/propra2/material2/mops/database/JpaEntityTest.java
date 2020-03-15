@@ -8,13 +8,13 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 public class JpaEntityTest {
 
     @Autowired
-    DateiRepository dateiRepository;
+    private DateiRepository dateiRepository;
 
     @Autowired
-    GruppeRepository gruppeRepository;
+    private GruppeRepository gruppeRepository;
 
     @Test
-    public void createDateiWithTagsTest(){
+    public void createDateiWithTagsTest() {
 
     }
 

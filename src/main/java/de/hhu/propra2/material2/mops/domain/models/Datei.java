@@ -1,12 +1,12 @@
 package de.hhu.propra2.material2.mops.domain.models;
 
-import lombok.Data;
+import lombok.Value;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Data
+@Value
 public class Datei {
 
     private long id;

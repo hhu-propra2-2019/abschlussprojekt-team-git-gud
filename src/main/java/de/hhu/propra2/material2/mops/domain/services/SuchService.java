@@ -3,8 +3,9 @@ package de.hhu.propra2.material2.mops.domain.services;
 import de.hhu.propra2.material2.mops.database.DateiRepository;
 import de.hhu.propra2.material2.mops.database.GruppeRepository;
 import de.hhu.propra2.material2.mops.database.UserRepository;
-import de.hhu.propra2.material2.mops.database.entities.Datei;
-import de.hhu.propra2.material2.mops.database.entities.User;
+import de.hhu.propra2.material2.mops.domain.models.Datei;
+import de.hhu.propra2.material2.mops.domain.models.User;
+import de.hhu.propra2.material2.mops.domain.models.Suche;
 import de.hhu.propra2.material2.mops.domain.services.suchComparators.DateiDateiTypComparator;
 import de.hhu.propra2.material2.mops.domain.services.suchComparators.DateiDatumComparator;
 import de.hhu.propra2.material2.mops.domain.services.suchComparators.DateiNamenComparator;
@@ -20,18 +21,18 @@ import java.util.stream.Collectors;
 @Service
 public class SuchService {
 
-    private final DateiRepository dateiRepository;
-    private final GruppeRepository gruppeRepository;
-    private final UserRepository userRepository;
+    private final DateiRepository dateien;
+    private final GruppeRepository gruppen;
+    private final UserRepository users;
     private final ModelService modelService;
 
     public SuchService(final DateiRepository dateienArg,
                        final GruppeRepository gruppenArg,
                        final UserRepository usersArg,
                        final ModelService modelServiceArg) {
-        this.dateiRepository = dateienArg;
-        this.gruppeRepository = gruppenArg;
-        this.userRepository = usersArg;
+        this.dateien = dateienArg;
+        this.gruppen = gruppenArg;
+        this.users = usersArg;
         this.modelService = modelServiceArg;
     }
 
@@ -40,10 +41,9 @@ public class SuchService {
      * @param keyCloackName
      * @return
      */
-
     public List<Datei> starteSuche(final Suche suche,
                                    final String keyCloackName) {
-        User user = modelService.loadUser(userRepository.findByKeyCloakName(keyCloackName).getKeycloakname());
+        User user = modelService.loadUser(users.findByKeycloakname(keyCloackName));
 
         final List<Datei> zuFiltern = new ArrayList<>();
         List<Datei> result;
@@ -51,7 +51,7 @@ public class SuchService {
         if (suche.getGruppenId() != null) {
             zuFiltern.addAll(modelService.getAlleDateienByGruppeId(suche.getGruppenId()));
         } else {
-            user.getGruppen()
+            user.getAllGruppen()
                     .forEach(gruppe -> zuFiltern.addAll(gruppe.getDateien()));
         }
         result = zuFiltern;
@@ -142,6 +142,7 @@ public class SuchService {
         for (String upload : uploader) {
             result.addAll(zuFiltern.stream()
                     .filter(datei -> datei.getUploader()
+                            .getNachname()
                             .equalsIgnoreCase(upload))
                     .collect(Collectors.toList()));
         }

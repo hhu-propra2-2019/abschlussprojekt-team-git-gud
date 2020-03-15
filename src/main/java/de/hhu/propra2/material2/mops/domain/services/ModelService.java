@@ -11,8 +11,11 @@ import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Tag;
 import de.hhu.propra2.material2.mops.domain.models.User;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -157,5 +160,27 @@ public final class ModelService implements IModelService {
 
     public User getUserByKeyCloackName(final String name) {
         return loadUser(users.findByKeycloakname(name));
+    }
+
+    @SuppressWarnings("checkstyle:MagicNumber")
+    public User createDummyUser() {
+        HashMap mapUser = new HashMap();
+        HashMap mapUploader = new HashMap();
+
+
+        List<Tag> tags = new ArrayList<>();
+        tags.add(new Tag(1, "Cool"));
+        tags.add(new Tag(2, "Auch Cool"));
+        LocalDate uploadDatum = LocalDate.of(2010, 10, 10);
+        LocalDate veroeffentlichung = LocalDate.of(2010, 10, 10);
+
+        User uploader = new User(2, "Jens", "Bendisposto", "Jeben", mapUploader);
+        List<Datei> data = new ArrayList<>();
+        data.add(new Datei(1, "Blatt 1", "", uploader, tags, uploadDatum, veroeffentlichung, 100, "PDF"));
+
+        Gruppe gruppe = new Gruppe(1, "ProPra", data);
+        mapUser.put(gruppe, false);
+        User user = new User(1, "Hans", "Müller", "Hamue", mapUser);
+        return user;
     }
 }

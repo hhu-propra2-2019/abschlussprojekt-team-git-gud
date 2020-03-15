@@ -33,14 +33,14 @@ public class GruppeDAO {
      * Groups name from database.
      */
     private String titel;
-    /**
-     * List of participating users from database.
-     */
     private String beschreibung;
     /**
      * List of participating users from database.
      */
-    @OneToMany(mappedBy = "gruppe", cascade = CascadeType.ALL, orphanRemoval = true)
+    /**
+     * List of participating users from database.
+     */
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "gruppe")
     private List<GruppenbelegungDAO> user;
     /**
      * List of related files from database.

@@ -3,10 +3,7 @@ package de.hhu.propra2.material2.mops.domain.services;
 import de.hhu.propra2.material2.mops.database.DateiRepository;
 import de.hhu.propra2.material2.mops.database.GruppeRepository;
 import de.hhu.propra2.material2.mops.database.UserRepository;
-import de.hhu.propra2.material2.mops.database.entities.DateiDAO;
-import de.hhu.propra2.material2.mops.database.entities.GruppeDAO;
-import de.hhu.propra2.material2.mops.database.entities.TagDAO;
-import de.hhu.propra2.material2.mops.database.entities.UserDAO;
+import de.hhu.propra2.material2.mops.database.entities.*;
 import de.hhu.propra2.material2.mops.domain.IModelService;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
@@ -63,10 +60,8 @@ public final class ModelService implements IModelService {
 
     public User loadUser(final UserDAO dao) {
         HashMap<Gruppe, Boolean> belegungUndRechte = new HashMap<>();
-        for (GruppeDAO gruppeDAO : dao.getBelegungUndRechte().keySet()) {
-            belegungUndRechte.put(
-                    load(gruppeDAO),
-                    dao.getBelegungUndRechte().get(gruppeDAO));
+        for (GruppenbelegungDAO belegung : dao.getGruppen()) {
+            belegungUndRechte.put(load(belegung.getGruppe()), belegung.isBerechtigung());
         }
 
         return new User(

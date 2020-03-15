@@ -22,6 +22,12 @@ public class UserDAO {
         this.keyCloakName = dbName;
     }
     /**
+     * Unique name provided by
+     * keycloak.
+     */
+    @Column(name = "keycloakname")
+    private String keyCloakName;
+    /**
      * Unique ID from database.
      */
     @Id
@@ -34,18 +40,13 @@ public class UserDAO {
      * Users last name.
      */
     private String nachname;
-    /**
-     * Unique name provided by
-     * keycloak.
-     */
-    @Column(name = "keycloakname")
-    private String keyCloakName;
+
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GruppenbelegungDAO> gruppen;
 
-    public void addGroup(GruppeDAO gruppe) {
-        GruppenbelegungDAO gruppenbelegung = new GruppenbelegungDAO(gruppe, this);
+    public void addGroup(GruppeDAO gruppe, boolean berechtigung) {
+        GruppenbelegungDAO gruppenbelegung = new GruppenbelegungDAO(gruppe, this, berechtigung);
         gruppen.add(gruppenbelegung);
         gruppe.getUser().add(gruppenbelegung);
     }

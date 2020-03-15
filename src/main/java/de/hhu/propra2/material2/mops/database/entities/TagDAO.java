@@ -31,7 +31,7 @@ public class TagDAO {
     @Column(name = "tagname")
     private String tagname;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "tags")
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "tagDAOS")
     private List<DateiDAO> dateien;
 
 }

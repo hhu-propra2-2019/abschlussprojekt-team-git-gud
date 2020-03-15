@@ -23,14 +23,14 @@ public class GruppenbelegungDAO {
     private UserDAO user;
 
     @Column(name = "uploadberechtigung")
-    private boolean berechtigt;
+    private boolean berechtigung;
 
     public GruppenbelegungDAO() { }
 
     public GruppenbelegungDAO(GruppeDAO group, UserDAO u, boolean belegung) {
         this.gruppe = group;
         this.user = u;
-        this.berechtigt = belegung;
+        this.berechtigung = belegung;
         this.gruppenbelegungid = new GruppenbelegungID(gruppe.getGruppeID(), user.getUserID());
     }
 

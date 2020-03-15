@@ -34,18 +34,31 @@ public final class DateiDAO {
         this.dateigroesse = fileSize;
         this.dateityp = dataTyp;
         this.kategorie = category;
-        this.gruppeDAO = group;
+        this.gruppe = group;
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long dateiID;
+
     private String name;
+
     private String pfad;
+
+    @OneToOne
+    private UserDAO uploader;
+
     private LocalDate uploaddatum;
+
     private LocalDate veroeffentlichungsdatum;
+
     private long dateigroesse;
+
     private String dateityp;
+
+    @ManyToOne
+    private GruppeDAO gruppe;
+
     private String kategorie;
 
     @ManyToMany
@@ -53,10 +66,8 @@ public final class DateiDAO {
                joinColumns = {@JoinColumn(name = "dateiid")}, inverseJoinColumns = {@JoinColumn(name = "tagid")})
     private List<TagDAO> tagDAOS;
 
-    @ManyToOne
-    private GruppeDAO gruppeDAO;
 
-    @OneToOne
-    private UserDAO uploader;
+
+
 
 }

@@ -1,6 +1,7 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
 import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
+import de.hhu.propra2.material2.mops.Database.Repository;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
@@ -14,10 +15,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -37,6 +36,8 @@ public class SuchServiceTest {
     private User uploaderMock1;
     @Mock
     private User uploaderMock2;
+    @Mock
+    private Repository repositoryMock;
 
     private SuchService suchService;
     private Gruppe gruppe1;
@@ -46,13 +47,14 @@ public class SuchServiceTest {
     private Datei datei3;
     private Datei datei4;
 
+
     /**
      * setUP: SetUp needed for each test.
      */
     @BeforeEach
     @SuppressWarnings("checkstyle:magicnumber")
     public void setUp() {
-        this.suchService = new SuchService(modelServiceMock);
+        this.suchService = new SuchService(modelServiceMock, repositoryMock);
 
         Mockito.lenient().when(modelServiceMock.loadUser(any(UserDTO.class))).thenReturn(userMock);
         Mockito.lenient().when(modelServiceMock.loadUser(null)).thenReturn(userMock);

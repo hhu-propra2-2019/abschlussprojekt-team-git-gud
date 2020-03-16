@@ -7,6 +7,7 @@ import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
 import de.hhu.propra2.material2.mops.Material2Application;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.sql.SQLException;
@@ -21,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest(classes = Material2Application.class)
 public final class RepositoryTest {
 
+    @Autowired
+    private Repository repository;
     private GruppeDTO gruppe;
     private UserDTO user;
     private TagDTO tag;
@@ -41,15 +44,15 @@ public final class RepositoryTest {
         datei = new DateiDTO("gaedata", "/materialsammlung/gaedata/",
                 user, tags, LocalDate.now(), LocalDate.now(), 200, "gae", gruppe, "gae");
 
-        Repository.saveUser(user);
-        Repository.saveDatei(datei);
+        repository.saveUser(user);
+        repository.saveDatei(datei);
     }
 
 
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
     public void loadUserTest() throws SQLException {
-        UserDTO userDTO = Repository.findUserByKeycloakname("gae");
+        UserDTO userDTO = repository.findUserByKeycloakname("gae");
 
         assertTrue(userDTO.getVorname().equals("Why are you gae?"));
         assertTrue(userDTO.getNachname().equals("You are gae"));
@@ -74,9 +77,9 @@ public final class RepositoryTest {
                 user, newTags, LocalDate.now(), LocalDate.now(), 300, "gae", gruppe, "gae");
 
 
-        Repository.saveDatei(newDatei);
+        repository.saveDatei(newDatei);
 
-        UserDTO userDTO = Repository.findUserByKeycloakname("gae");
+        UserDTO userDTO = repository.findUserByKeycloakname("gae");
         List<TagDTO> tagDTOS = new ArrayList<>();
         for (GruppeDTO gruppeDTO : userDTO.getBelegungUndRechte().keySet()) {
             tagDTOS = gruppeDTO.getDateien().get(0).getTagDTOs();
@@ -100,10 +103,10 @@ public final class RepositoryTest {
         newDatei = new DateiDTO(101, "gaedata", "/materialsammlung/gaedata/",
                 user, newTags, LocalDate.now(), LocalDate.now(), 300, "gae", gruppe, "gae");
 
-        Repository.saveDatei(newDatei);
-        Repository.saveDatei(newDatei);
+        repository.saveDatei(newDatei);
+        repository.saveDatei(newDatei);
 
-        UserDTO userDTO = Repository.findUserByKeycloakname("gae");
+        UserDTO userDTO = repository.findUserByKeycloakname("gae");
         List<TagDTO> tagDTOS = new ArrayList<>();
         for (GruppeDTO gruppeDTO : userDTO.getBelegungUndRechte().keySet()) {
             tagDTOS = gruppeDTO.getDateien().get(0).getTagDTOs();

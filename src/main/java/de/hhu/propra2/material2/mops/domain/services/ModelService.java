@@ -24,12 +24,13 @@ import java.util.stream.Collectors;
 public final class ModelService {
 
 
-
+    private final Repository repository;
     /**
      * Constructor of ModelService.
      *
      */
-    public ModelService() {
+    public ModelService(final Repository repositoryArg) {
+        repository = repositoryArg;
     }
 
     public Datei loadDatei(final DateiDTO dto) {
@@ -148,7 +149,7 @@ public final class ModelService {
 
     public User getUserByKeyCloakName(final String name) {
         try {
-            return loadUser(Repository.findUserByKeycloakname(name));
+            return loadUser(repository.findUserByKeycloakname(name));
         } catch (SQLException e) {
             e.printStackTrace();
             return null;

@@ -5,7 +5,9 @@ import de.hhu.propra2.material2.mops.Database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.Database.DTOs.TagDTO;
 import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -20,30 +22,26 @@ import java.util.List;
 //https://spotbugs.readthedocs.io/en/stable/bugDescriptions.html
 //it seems to work fine not sure how to fix this
 @SuppressFBWarnings("OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE")
+@Component
 public final class Repository {
-    private static Connection connection;
+    private Connection connection;
+    private Environment env;
 
-    @Value("${<material2.properties.spring.datasource.username>}")
-    private static String ACCESS;
-
-    @Value("${<material2.properties.spring.datasource.password>}")
-    private static String PASSWORD;
-
-    static {    //load up connection
+    @Autowired
+    public Repository(final Environment envArg) {
+        this.env = envArg;
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:23306/materialsammlung", ACCESS, PASSWORD);
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:23306/materialsammlung",
+                    env.getProperty("spring.datasource.username"), env.getProperty("spring.datasource.password"));
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    private Repository() {
     }
     /*
         PUBLIC METHODS
      */
 
-    public static UserDTO findUserByKeycloakname(final String keyCloakNameArg) throws SQLException {
+    public UserDTO findUserByKeycloakname(final String keyCloakNameArg) throws SQLException {
         UserDTO user = null;
 
         PreparedStatement preparedStatement =
@@ -67,7 +65,7 @@ public final class Repository {
 
     @SuppressWarnings("checkstyle:magicnumber")
     @SuppressFBWarnings("WMI_WRONG_MAP_ITERATOR") //need to iterate through both value and keys.
-    public static void saveUser(final UserDTO userDTO) throws SQLException {
+    public void saveUser(final UserDTO userDTO) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
                         "insert ignore into User (userID, vorname, nachname, key_cloak_name)" + " values (?, ?, ?, ?)");
@@ -88,7 +86,7 @@ public final class Repository {
         preparedStatement.close();
     }
 
-    public static void deleteUserByUserId(final long userId) throws SQLException {
+    public void deleteUserByUserId(final long userId) throws SQLException {
         deleteUserGroupRelationByUserId(userId);
 
         PreparedStatement preparedStatement =
@@ -99,7 +97,7 @@ public final class Repository {
         preparedStatement.close();
     }
 
-    public static void deleteGroupByGroupId(final long gruppeId) throws SQLException {
+    public void deleteGroupByGroupId(final long gruppeId) throws SQLException {
         deleteUserGroupRelationByGroupId(gruppeId);
 
         PreparedStatement preparedStatement =
@@ -111,7 +109,7 @@ public final class Repository {
     }
 
     @SuppressWarnings("checkstyle:magicnumber")
-    public static void saveDatei(final DateiDTO dateiDTO) throws SQLException {
+    public void saveDatei(final DateiDTO dateiDTO) throws SQLException {
 
         if (!dateiExists(dateiDTO)) {
             PreparedStatement preparedStatement =
@@ -148,7 +146,7 @@ public final class Repository {
         }
     }
 
-    public static TagDTO findTagById(final long id) throws SQLException {
+    public TagDTO findTagById(final long id) throws SQLException {
         TagDTO tag = null;
 
         PreparedStatement preparedStatement =
@@ -174,7 +172,7 @@ public final class Repository {
      */
 
     @SuppressWarnings("checkstyle:magicnumber")
-    private static void updateDatei(final DateiDTO dateiDTO) throws SQLException {
+    private void updateDatei(final DateiDTO dateiDTO) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
                         "update Datei set veroeffentlichungs_datum=?, datei_groesse=?, kategorie=?");
@@ -195,7 +193,8 @@ public final class Repository {
     }
 
     @SuppressWarnings("checkstyle:magicnumber")
-    private static boolean dateiExists(final DateiDTO dateiDTO) throws SQLException {
+    private boolean dateiExists(final DateiDTO dateiDTO) throws SQLException {
+        boolean doesItExist = false;
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
                         "select * from Datei where name=? AND datei_typ=? AND gruppeID=?");
@@ -206,13 +205,15 @@ public final class Repository {
 
         ResultSet result = preparedStatement.executeQuery();
 
+        doesItExist = result.next();
+
         preparedStatement.close();
         result.close();
 
-        return result.next();
+        return doesItExist;
     }
 
-    private static ArrayList<DateiDTO> findAllDateiByGruppeId(final long gruppeId) throws SQLException {
+    private ArrayList<DateiDTO> findAllDateiByGruppeId(final long gruppeId) throws SQLException {
         ArrayList<DateiDTO> dateien = new ArrayList<DateiDTO>();
 
         PreparedStatement preparedStatement =
@@ -230,7 +231,7 @@ public final class Repository {
         return dateien;
     }
 
-    private static DateiDTO findDateiById(final long id) throws SQLException {
+    private DateiDTO findDateiById(final long id) throws SQLException {
         DateiDTO datei = null;
 
         PreparedStatement preparedStatement =
@@ -259,7 +260,7 @@ public final class Repository {
         return datei;
     }
 
-    public static void deleteDateiByDateiId(final long dateiId) throws SQLException {
+    public void deleteDateiByDateiId(final long dateiId) throws SQLException {
         deleteTagRelationsByDateiId(dateiId);
 
         PreparedStatement preparedStatement =
@@ -275,7 +276,7 @@ public final class Repository {
         TAG METHODS
      */
 
-    private static void saveTagnutzung(final long dateiId, final long tagId) throws SQLException {
+    private void saveTagnutzung(final long dateiId, final long tagId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
                         "insert ignore into Tagnutzung (dateiID, tagID)" + " values (?, ?)");
@@ -287,7 +288,7 @@ public final class Repository {
         preparedStatement.close();
     }
 
-    private static void saveTag(final TagDTO tagDTO, final long dateiId) throws SQLException {
+    private void saveTag(final TagDTO tagDTO, final long dateiId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
                         "insert ignore into Tags (tag_name)" + " values (?)", Statement.RETURN_GENERATED_KEYS);
@@ -306,7 +307,8 @@ public final class Repository {
         id.close();
     }
 
-    private static long getTagIdByTagname(final String tagName) throws SQLException {
+    private long getTagIdByTagname(final String tagName) throws SQLException {
+        long tagId = -1;
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select tagID from Tags where tag_name=?");
         preparedStatement.setString(1, tagName);
@@ -314,13 +316,15 @@ public final class Repository {
         ResultSet idResult = preparedStatement.executeQuery();
         idResult.next();
 
+        tagId = idResult.getLong("tagID");
+
         preparedStatement.close();
         idResult.close();
 
-        return idResult.getLong("tagID");
+        return tagId;
     }
 
-    private static ArrayList<TagDTO> findAllTagsbyDateiId(final long dateiId) throws SQLException {
+    private ArrayList<TagDTO> findAllTagsbyDateiId(final long dateiId) throws SQLException {
         ArrayList<TagDTO> tags = new ArrayList<TagDTO>();
 
         PreparedStatement preparedStatement =
@@ -339,7 +343,7 @@ public final class Repository {
         return tags;
     }
 
-    private static void deleteTagRelationsByDateiId(final long dateiId) throws SQLException {
+    private void deleteTagRelationsByDateiId(final long dateiId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement("delete from Tagnutzung where dateiID=?");
         preparedStatement.setLong(1, dateiId);
@@ -354,7 +358,7 @@ public final class Repository {
      */
 
     @SuppressWarnings("checkstyle:magicnumber")
-    private static void saveGruppe(final GruppeDTO gruppeDTO) throws SQLException {
+    private void saveGruppe(final GruppeDTO gruppeDTO) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
                         "insert ignore into Gruppe (gruppeID, titel, beschreibung)" + " values (?, ?, ?)");
@@ -367,7 +371,7 @@ public final class Repository {
         preparedStatement.close();
     }
 
-    private static void resetGruppenbelegung(final long gruppeId) throws SQLException {
+    private void resetGruppenbelegung(final long gruppeId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement("delete from Gruppenbelegung where gruppeID=?");
 
@@ -379,8 +383,8 @@ public final class Repository {
     }
 
     @SuppressWarnings("checkstyle:magicnumber")
-    private static void saveGruppenbelegung(final long userId,
-                                            final long gruppeId, final boolean berechtigung) throws SQLException {
+    private void saveGruppenbelegung(final long userId,
+                                     final long gruppeId, final boolean berechtigung) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
                         "insert ignore into Gruppenbelegung (upload_berechtigung,"
@@ -394,7 +398,7 @@ public final class Repository {
         preparedStatement.close();
     }
 
-    private static HashMap<GruppeDTO, Boolean> findAllGruppeByUserID(final long userId) throws SQLException {
+    private HashMap<GruppeDTO, Boolean> findAllGruppeByUserID(final long userId) throws SQLException {
         HashMap<GruppeDTO, Boolean> gruppen = new HashMap<GruppeDTO, Boolean>();
 
         PreparedStatement preparedStatement =
@@ -413,7 +417,7 @@ public final class Repository {
         return gruppen;
     }
 
-    private static GruppeDTO findGruppeById(final long id) throws SQLException {
+    private GruppeDTO findGruppeById(final long id) throws SQLException {
         GruppeDTO gruppe = null;
 
         PreparedStatement preparedStatement =
@@ -436,7 +440,7 @@ public final class Repository {
         return gruppe;
     }
 
-    private static void deleteUserGroupRelationByGroupId(final long gruppeId) throws SQLException {
+    private void deleteUserGroupRelationByGroupId(final long gruppeId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement("delete from Gruppenbelegung where gruppeID=?");
         preparedStatement.setLong(1, gruppeId);
@@ -446,7 +450,7 @@ public final class Repository {
         preparedStatement.close();
     }
 
-    private static void deleteUserGroupRelationByUserId(final long userId) throws SQLException {
+    private void deleteUserGroupRelationByUserId(final long userId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement("delete from Gruppenbelegung where userID=?");
         preparedStatement.setLong(1, userId);
@@ -460,7 +464,7 @@ public final class Repository {
         USER METHODS
      */
 
-    private static ArrayList<UserDTO> findAllUserByGruppeId(final long gruppeId) throws SQLException {
+    private ArrayList<UserDTO> findAllUserByGruppeId(final long gruppeId) throws SQLException {
         ArrayList<UserDTO> users = new ArrayList<UserDTO>();
 
         PreparedStatement preparedStatement =
@@ -478,7 +482,7 @@ public final class Repository {
         return users;
     }
 
-    private static UserDTO findUserByIdLAZY(final long id) throws SQLException {
+    private UserDTO findUserByIdLAZY(final long id) throws SQLException {
         UserDTO user = null;
 
         PreparedStatement preparedStatement =

@@ -22,9 +22,11 @@ import java.util.stream.Collectors;
 public class SuchService {
 
     private final ModelService modelService;
+    private final Repository repository;
 
-    public SuchService(final ModelService modelServiceArg) {
+    public SuchService(final ModelService modelServiceArg, final Repository repositoryArg) {
         this.modelService = modelServiceArg;
+        this.repository = repositoryArg;
     }
 
     /**
@@ -36,7 +38,7 @@ public class SuchService {
                                    final String keyCloackName) {
         User user;
         try {
-            user = modelService.loadUser(Repository.findUserByKeycloakname(keyCloackName));
+            user = modelService.loadUser(repository.findUserByKeycloakname(keyCloackName));
         } catch (SQLException e) {
             log.error("Unknown SQLException occured.");
             return new ArrayList<>();

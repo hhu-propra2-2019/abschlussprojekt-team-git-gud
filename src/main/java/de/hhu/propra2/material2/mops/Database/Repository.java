@@ -198,25 +198,6 @@ public final class Repository {
         }
     }
 
-    public TagDTO findTagById(final long id) throws SQLException {
-        TagDTO tag = null;
-
-        PreparedStatement preparedStatement =
-                connection.prepareStatement("select * from Tags where tagID=?");
-        preparedStatement.setString(1, "" + id);
-
-        ResultSet tagResult = preparedStatement.executeQuery();
-
-        tagResult.next();
-
-        tag = new TagDTO(tagResult.getLong("tagID"), tagResult.getString("tag_name"));
-
-        preparedStatement.close();
-        tagResult.close();
-
-        return tag;
-    }
-
     public void deleteDateiByDateiId(final long dateiId) throws SQLException {
         deleteTagRelationsByDateiId(dateiId);
 
@@ -230,7 +211,7 @@ public final class Repository {
     }
 
     /*
-        METHODS
+        --- PACKAGE PRIVATE METHODS ---
 
         DATEI METHODS
      */
@@ -374,6 +355,25 @@ public final class Repository {
         idResult.close();
 
         return tagId;
+    }
+
+    TagDTO findTagById(final long id) throws SQLException {
+        TagDTO tag = null;
+
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("select * from Tags where tagID=?");
+        preparedStatement.setString(1, "" + id);
+
+        ResultSet tagResult = preparedStatement.executeQuery();
+
+        tagResult.next();
+
+        tag = new TagDTO(tagResult.getLong("tagID"), tagResult.getString("tag_name"));
+
+        preparedStatement.close();
+        tagResult.close();
+
+        return tag;
     }
 
     ArrayList<TagDTO> findAllTagsbyDateiId(final long dateiId) throws SQLException {

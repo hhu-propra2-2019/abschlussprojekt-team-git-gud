@@ -1,9 +1,7 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
 import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
-import de.hhu.propra2.material2.mops.Database.DateiRepository;
-import de.hhu.propra2.material2.mops.Database.GruppeRepository;
-import de.hhu.propra2.material2.mops.Database.UserRepository;
+import de.hhu.propra2.material2.mops.Database.Repository;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
@@ -31,12 +29,6 @@ import static org.mockito.Mockito.when;
 public class SuchServiceTest {
 
     @Mock
-    private DateiRepository dateiRepoMock;
-    @Mock
-    private GruppeRepository gruppenRepoMock;
-    @Mock
-    private UserRepository userRepoMock;
-    @Mock
     private ModelService modelServiceMock;
     @Mock
     private User userMock;
@@ -44,6 +36,8 @@ public class SuchServiceTest {
     private User uploaderMock1;
     @Mock
     private User uploaderMock2;
+    @Mock
+    private Repository repositoryMock;
 
     private SuchService suchService;
     private Gruppe gruppe1;
@@ -53,22 +47,19 @@ public class SuchServiceTest {
     private Datei datei3;
     private Datei datei4;
 
+
     /**
      * setUP: SetUp needed for each test.
      */
     @BeforeEach
     @SuppressWarnings("checkstyle:magicnumber")
     public void setUp() {
-        this.suchService = new SuchService(dateiRepoMock,
-                gruppenRepoMock,
-                userRepoMock,
-                modelServiceMock);
+        this.suchService = new SuchService(modelServiceMock, repositoryMock);
 
         Mockito.lenient().when(modelServiceMock.loadUser(any(UserDTO.class))).thenReturn(userMock);
         Mockito.lenient().when(modelServiceMock.loadUser(null)).thenReturn(userMock);
 
         //Date for Datei
-        LocalDate veroeffentlichung = LocalDate.now();
         LocalDate date1 = LocalDate.of(2020, 1, 3);
         LocalDate date2 = LocalDate.of(2020, 3, 5);
 
@@ -87,13 +78,13 @@ public class SuchServiceTest {
 
         //Dateien for List<Datei>
         datei1 = new Datei(1, "1", "a/b/2", uploaderMock1, tags1,
-                date1, veroeffentlichung, 1, "pdf");
+                date1, date1, 1, "pdf");
         datei2 = new Datei(2, "2", "a/b/2", uploaderMock2, tags2,
-                date1, veroeffentlichung, 1, "pdf");
+                date1, date1, 1, "pdf");
         datei3 = new Datei(3, "3", "a/b/3", uploaderMock1, tags3,
-                date1, veroeffentlichung, 1, "jpg");
+                date1, date1, 1, "jpg");
         datei4 = new Datei(4, "4", "a/b/4", uploaderMock2, tags3,
-                date2, veroeffentlichung, 1, "jpg");
+                date2, date2, 1, "jpg");
         List<Datei> dateienGruppe1 = new ArrayList<>(Arrays.asList(datei1, datei2, datei3));
         List<Datei> dateienGruppe2 = new ArrayList<>(Arrays.asList(datei4));
 

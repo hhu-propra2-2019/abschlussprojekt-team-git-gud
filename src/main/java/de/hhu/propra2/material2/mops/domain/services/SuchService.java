@@ -1,17 +1,16 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
-import de.hhu.propra2.material2.mops.Database.DateiRepository;
-import de.hhu.propra2.material2.mops.Database.GruppeRepository;
-import de.hhu.propra2.material2.mops.Database.UserRepository;
+import de.hhu.propra2.material2.mops.Database.Repository;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.User;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
+import lombok.extern.slf4j.Slf4j;
 import de.hhu.propra2.material2.mops.domain.services.suchComparators.DateiDateiTypComparator;
 import de.hhu.propra2.material2.mops.domain.services.suchComparators.DateiDatumComparator;
 import de.hhu.propra2.material2.mops.domain.services.suchComparators.DateiNamenComparator;
 import de.hhu.propra2.material2.mops.domain.services.suchComparators.DateiUploaderComparator;
 import org.springframework.stereotype.Service;
-
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,21 +18,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class SuchService {
 
-    private final DateiRepository dateien;
-    private final GruppeRepository gruppen;
-    private final UserRepository users;
     private final ModelService modelService;
+    private final Repository repository;
 
-    public SuchService(final DateiRepository dateienArg,
-                       final GruppeRepository gruppenArg,
-                       final UserRepository usersArg,
-                       final ModelService modelServiceArg) {
-        this.dateien = dateienArg;
-        this.gruppen = gruppenArg;
-        this.users = usersArg;
+    public SuchService(final ModelService modelServiceArg, final Repository repositoryArg) {
         this.modelService = modelServiceArg;
+        this.repository = repositoryArg;
     }
 
     /**
@@ -43,7 +36,13 @@ public class SuchService {
      */
     public List<Datei> starteSuche(final Suche suche,
                                    final String keyCloackName) {
-        User user = modelService.loadUser(users.findByKeycloakname(keyCloackName));
+        User user;
+        try {
+            user = modelService.loadUser(repository.findUserByKeycloakname(keyCloackName));
+        } catch (SQLException e) {
+            log.error("Unknown SQLException occured.");
+            return new ArrayList<>();
+        }
 
         final List<Datei> zuFiltern = new ArrayList<>();
         List<Datei> result;
@@ -106,7 +105,7 @@ public class SuchService {
         return zuFiltern.stream()
                 .filter(datei -> datumInZeitraum(von,
                         bis,
-                        datei.getUploaddatum()))
+                        datei.getVeroeffentlichungsdatum()))
                 .collect(Collectors.toList());
 
     }

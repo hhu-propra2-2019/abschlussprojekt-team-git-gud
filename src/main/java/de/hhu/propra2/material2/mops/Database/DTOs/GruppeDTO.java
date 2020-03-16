@@ -1,6 +1,8 @@
 package de.hhu.propra2.material2.mops.Database.DTOs;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 
 import java.util.List;
 
@@ -15,29 +17,29 @@ public class GruppeDTO {
      */
     private final String name;
     /**
-     * List of participating users from database.
+     * Groups description from database.
      */
-    private final List<UserDTO> users;
+    private final String description;
     /**
      * List of related files from database.
      */
+    @Getter(AccessLevel.PUBLIC)
     private final List<DateiDTO> dateien;
 
     /**
      * Standard AllArgsConstructor for import from database.
-     *
-     * @param idArg
+     *  @param idArg
      * @param nameArg
-     * @param userArgs
+     * @param descriptionArg
      * @param dateiArgs
      */
     public GruppeDTO(final long idArg,
                      final String nameArg,
-                     final List<UserDTO> userArgs,
+                     final String descriptionArg,
                      final List<DateiDTO> dateiArgs) {
         this.id = idArg;
         this.name = nameArg;
-        this.users = userArgs;
+        this.description = descriptionArg;
         this.dateien = dateiArgs;
     }
 }

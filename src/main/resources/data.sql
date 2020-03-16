@@ -3,7 +3,7 @@
 -- Host: 127.0.0.1    Database: materialsammlung
 -- ------------------------------------------------------
 -- Server version	5.7.29
-
+Set foreign_key_checks=0;
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -140,7 +140,7 @@ DROP TABLE IF EXISTS `Tags`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Tags` (
   `tagID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `tag_name` text NOT NULL,
+  `tag_name` VARCHAR(255) UNIQUE NOT NULL,
   PRIMARY KEY (`tagID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;

@@ -165,4 +165,12 @@ public final class ModelService implements IModelService {
             return null;
         }
     }
+
+    @Override
+    public Set<String> getAlleKategorienByFiles(final List<Datei> dateien) {
+        Set<String> kategorien = new HashSet<>();
+        dateien.forEach(datei -> kategorien.add(datei.getKategorie()));
+        return kategorien;
+    }
+
 }

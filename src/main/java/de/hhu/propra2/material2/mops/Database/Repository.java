@@ -27,6 +27,15 @@ public final class Repository {
     private Connection connection;
     private Environment env;
 
+
+    /**
+     * Constructor that autowires
+     * an Environment to load up
+     * the connection to the database
+     * which needs to be done only once.
+     *
+     * @param envArg
+     */
     @Autowired
     public Repository(final Environment envArg) {
         this.env = envArg;
@@ -37,10 +46,21 @@ public final class Repository {
             e.printStackTrace();
         }
     }
+
     /*
         PUBLIC METHODS
      */
 
+    /**
+     * Eager search for a user that loads
+     * all his groups, rights and
+     * files assigned to their group with
+     * their tags.
+     *
+     * @param keyCloakNameArg
+     * @return
+     * @throws SQLException
+     */
     public UserDTO findUserByKeycloakname(final String keyCloakNameArg) throws SQLException {
         UserDTO user = null;
 
@@ -63,6 +83,15 @@ public final class Repository {
         return user;
     }
 
+    /**
+     * Saves a User with all his groups
+     * and rights.
+     * To be used for syncronization
+     * with gruppenbildung.
+     *
+     * @param userDTO
+     * @throws SQLException
+     */
     @SuppressWarnings("checkstyle:magicnumber")
     @SuppressFBWarnings("WMI_WRONG_MAP_ITERATOR") //need to iterate through both value and keys.
     public void saveUser(final UserDTO userDTO) throws SQLException {
@@ -86,6 +115,14 @@ public final class Repository {
         preparedStatement.close();
     }
 
+    /**
+     * Deletes User by ID.
+     * To be used for synchronization
+     * with gruppenbildung.
+     *
+     * @param userId
+     * @throws SQLException
+     */
     public void deleteUserByUserId(final long userId) throws SQLException {
         deleteUserGroupRelationByUserId(userId);
 
@@ -97,6 +134,14 @@ public final class Repository {
         preparedStatement.close();
     }
 
+    /**
+     * Deletes a group by its ID.
+     * To be used for synchronization
+     * with grupppenbildung.
+     *
+     * @param gruppeId
+     * @throws SQLException
+     */
     public void deleteGroupByGroupId(final long gruppeId) throws SQLException {
         deleteUserGroupRelationByGroupId(gruppeId);
 
@@ -108,6 +153,13 @@ public final class Repository {
         preparedStatement.close();
     }
 
+    /**
+     * Saves a file by
+     * dateiDTO
+     *
+     * @param dateiDTO
+     * @throws SQLException
+     */
     @SuppressWarnings("checkstyle:magicnumber")
     public void saveDatei(final DateiDTO dateiDTO) throws SQLException {
 
@@ -163,6 +215,18 @@ public final class Repository {
         tagResult.close();
 
         return tag;
+    }
+
+    public void deleteDateiByDateiId(final long dateiId) throws SQLException {
+        deleteTagRelationsByDateiId(dateiId);
+
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("delete from Datei where dateiID=?");
+        preparedStatement.setLong(1, dateiId);
+
+        preparedStatement.execute();
+
+        preparedStatement.close();
     }
 
     /*
@@ -258,18 +322,6 @@ public final class Repository {
         dateiResult.close();
 
         return datei;
-    }
-
-    public void deleteDateiByDateiId(final long dateiId) throws SQLException {
-        deleteTagRelationsByDateiId(dateiId);
-
-        PreparedStatement preparedStatement =
-                connection.prepareStatement("delete from Datei where dateiID=?");
-        preparedStatement.setLong(1, dateiId);
-
-        preparedStatement.execute();
-
-        preparedStatement.close();
     }
 
     /*

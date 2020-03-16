@@ -21,6 +21,9 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.comparesEqualTo;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -53,7 +56,7 @@ public class UploadServiceTest {
         calender.set(2020, Calendar.MARCH, 13);
         date1303 = calender.getTime();
 
-        this.uploadService = new UploadService(modelServiceMock, fileUploadServiceMock);
+        uploadService = new UploadService(modelServiceMock, fileUploadServiceMock);
         when(gruppeMock.getId()).thenReturn(1L);
 
         file = new MockMultipartFile("test.txt",
@@ -66,17 +69,20 @@ public class UploadServiceTest {
         tag2 = new Tag(2, "tag2");
         tag3 = new Tag(3, "tag3");
         tags = new ArrayList<>();
-        tags.add(tag1);
-        tags.add(tag2);
-        tags.add(tag3);
+    }
+
+    @Test
+    public void uploadFileProveFileUploadServiceUploadCall() throws Exception {
+        when(fileUploadServiceMock.upload(file, null, "1"))
+                .thenReturn("1/test.txt");
+
+        uploadService.dateiHochladen(file, null, userMock, gruppeMock, date1303, tags);
+
+        verify(fileUploadServiceMock, times(1)).upload(file, null, "1");
     }
 
     @Test
     public void uploadFileWithoutNewFileName() throws Exception {
-        tags.add(tag1);
-        tags.add(tag2);
-        tags.add(tag3);
-
         when(fileUploadServiceMock.upload(file, null, "1"))
                 .thenReturn("1/test.txt");
         Datei datei = uploadService.dateiHochladen(file, null, userMock, gruppeMock, date1303, tags);
@@ -93,10 +99,6 @@ public class UploadServiceTest {
 
     @Test
     public void uploadFileWithNewFileNameWithoutExtension() throws Exception {
-        tags.add(tag1);
-        tags.add(tag2);
-        tags.add(tag3);
-
         when(fileUploadServiceMock.upload(file, "Humbug", "1"))
                 .thenReturn("1/Humbug.txt");
         Datei datei = uploadService.dateiHochladen(file, "Humbug", userMock, gruppeMock, date1303, tags);
@@ -113,10 +115,6 @@ public class UploadServiceTest {
 
     @Test
     public void uploadFileWithNewFileNameWithExtension() throws Exception {
-        tags.add(tag1);
-        tags.add(tag2);
-        tags.add(tag3);
-
         when(fileUploadServiceMock.upload(file, "Humbug.pdf", "1"))
                 .thenReturn("1/Humbug.pdf");
         Datei datei = uploadService.dateiHochladen(file, "Humbug.pdf", userMock, gruppeMock, date1303, tags);
@@ -129,5 +127,23 @@ public class UploadServiceTest {
         assertThat(datei.getDateigroesse(), comparesEqualTo(72L));
         assertThat(datei.getDateityp(), comparesEqualTo("pdf"));
         verify(modelServiceMock, times(1)).saveDatei(datei, gruppeMock);
+    }
+
+    @Test
+    public void uploadFileWithTags() throws Exception {
+        when(fileUploadServiceMock.upload(file, null, "1"))
+                .thenReturn("1/text.txt");
+        tags.add(tag1);
+        tags.add(tag2);
+        tags.add(tag3);
+
+        Datei datei = uploadService.dateiHochladen(file, null, userMock, gruppeMock, date1303, tags);
+
+        assertThat(datei.getTags().size(), equalTo(3));
+        assertThat(datei.getTags(), contains(
+                hasProperty("text", is("tag1")),
+                hasProperty("text", is("tag2")),
+                hasProperty("text", is("tag3"))
+        ));
     }
 }

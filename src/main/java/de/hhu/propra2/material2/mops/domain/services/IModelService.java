@@ -18,5 +18,4 @@ public interface IModelService {
     Set<String> getAlleUploaderByUser(User user);
     Set<String> getAlleUploaderByGruppe(Gruppe gruppe);
     User getUserByKeyCloakName(String name);
-    User createDummyUser();
 }

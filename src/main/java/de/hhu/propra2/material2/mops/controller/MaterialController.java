@@ -36,7 +36,7 @@ public class MaterialController {
     private Suche suche;
 
     public MaterialController(final MeterRegistry registry, final IModelService ms) {
-        User user = ms.createDummyUser();
+        User user = ms.getUserByKeyCloakName("alihu100");
         gruppen = user.getAllGruppen();
         tags = ms.getAlleTagsByUser(user);
         dateiTypen = ms.getAlleDateiTypenByUser(user);
@@ -121,7 +121,7 @@ public class MaterialController {
         model.addAttribute("uploader", uploader);
         this.suche = suchen;
         if (search == null) {
-            return  "redirect:/suche";
+            return "redirect:/suche";
         }
         return "redirect:/";
     }

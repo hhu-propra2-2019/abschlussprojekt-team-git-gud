@@ -1,6 +1,6 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
-import de.hhu.propra2.material2.mops.Exceptions.MinioDownloadException;
+import de.hhu.propra2.material2.mops.Exceptions.DownloadException;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import io.minio.MinioClient;
 import io.minio.errors.ErrorResponseException;
@@ -18,7 +18,7 @@ import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-public final class MinioDownloadService {
+public final class MinioDownloadService implements IDownloadService {
 
     private final MinioClient minioClient;
 
@@ -31,9 +31,9 @@ public final class MinioDownloadService {
      *
      * @param datei datei for download
      * @return url for the download
-     * @throws MinioDownloadException Exception if anything went wrong with the minIO download
+     * @throws DownloadException Exception if anything went wrong with the minIO download
      */
-    public String getUrl(final Datei datei) throws MinioDownloadException {
+    public String getUrl(final Datei datei) throws DownloadException {
         final String bucket = "materialsammlung";
         final String objectName = datei.getPfad();
         final int expiration = 3600;
@@ -51,7 +51,7 @@ public final class MinioDownloadService {
                 | InvalidBucketNameException
                 | XmlPullParserException
                 | ErrorResponseException e) {
-            throw new MinioDownloadException(e.getMessage());
+            throw new DownloadException("Could not download from MinIO: " + e.getMessage());
         }
     }
 
@@ -60,9 +60,9 @@ public final class MinioDownloadService {
      *
      * @param datei datei for download
      * @return downloadDatei as InputStream
-     * @throws MinioDownloadException Exception if anything went wrong with the minIO Download
+     * @throws DownloadException Exception if anything went wrong with the minIO Download
      */
-    public InputStream getObject(final Datei datei) throws MinioDownloadException {
+    public InputStream getObject(final Datei datei) throws DownloadException {
         final String bucket = "materialsammlung";
         final String objectName = datei.getPfad();
 
@@ -79,7 +79,7 @@ public final class MinioDownloadService {
                 | InvalidBucketNameException
                 | XmlPullParserException
                 | ErrorResponseException e) {
-            throw new MinioDownloadException(e.getMessage());
+            throw new DownloadException("Could not download from MinIO: " + e.getMessage());
         }
     }
 }

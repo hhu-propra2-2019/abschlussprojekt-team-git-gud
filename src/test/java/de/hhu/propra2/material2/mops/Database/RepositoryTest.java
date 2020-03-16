@@ -5,6 +5,7 @@ import de.hhu.propra2.material2.mops.Database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.Database.DTOs.TagDTO;
 import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
 import de.hhu.propra2.material2.mops.Material2Application;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +31,8 @@ public final class RepositoryTest {
     private ArrayList<TagDTO> tags;
     private DateiDTO datei;
 
-    @BeforeEach
     @SuppressWarnings("checkstyle:magicnumber")
-    public void preparation() throws SQLException {
+    public RepositoryTest() {
         gruppe = new GruppeDTO(99999999, "gruppe", "this is a description", null);
         HashMap<GruppeDTO, Boolean> berechtigung = new HashMap<GruppeDTO, Boolean>();
         berechtigung.put(gruppe, true);
@@ -43,9 +43,21 @@ public final class RepositoryTest {
         tags.add(tag);
         datei = new DateiDTO("gaedata", "/materialsammlung/gaedata/",
                 user, tags, LocalDate.now(), LocalDate.now(), 200, "gae", gruppe, "gae");
+    }
 
+    @BeforeEach
+    public void preparation() throws SQLException {
         repository.saveUser(user);
-        repository.saveDatei(datei);
+        datei = new DateiDTO(repository.saveDatei(datei), datei.getName(), datei.getPfad(),
+            datei.getUploader(), datei.getTagDTOs(), datei.getUploaddatum(),
+                datei.getVeroeffentlichungsdatum(), datei.getDateigroesse(),
+                datei.getDateityp(), datei.getGruppe(), datei.getKategorie());
+    }
+
+    @AfterEach
+    public void deletionOfRemainingStuff() throws SQLException {
+        repository.deleteUserByUserId(user.getId());
+        repository.deleteDateiByDateiId(datei.getId());
     }
 
 
@@ -73,7 +85,7 @@ public final class RepositoryTest {
         newTags.add(tag1);
         newTags.add(tag2);
 
-        newDatei = new DateiDTO(101, "gaedata", "/materialsammlung/gaedata/",
+        newDatei = new DateiDTO(datei.getId(), "gaedata", "/materialsammlung/gaedata/",
                 user, newTags, LocalDate.now(), LocalDate.now(), 300, "gae", gruppe, "gae");
 
 
@@ -100,7 +112,7 @@ public final class RepositoryTest {
         newTags.add(tag1);
         newTags.add(tag2);
 
-        newDatei = new DateiDTO(101, "gaedata", "/materialsammlung/gaedata/",
+        newDatei = new DateiDTO(datei.getId(), "gaedata", "/materialsammlung/gaedata/",
                 user, newTags, LocalDate.now(), LocalDate.now(), 300, "gae", gruppe, "gae");
 
         repository.saveDatei(newDatei);

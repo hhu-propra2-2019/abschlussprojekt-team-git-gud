@@ -130,6 +130,9 @@ public final class Repository {
                 connection.prepareStatement("delete from User where userID=?");
         preparedStatement.setLong(1, userId);
 
+        deleteUserGroupRelationByUserId(userId);
+        changeUploaderToDeletedForAllDateiByUploaderId(userId);
+
         preparedStatement.execute();
         preparedStatement.close();
     }
@@ -155,13 +158,14 @@ public final class Repository {
 
     /**
      * Saves a file with all its tags
-     * by * dateiDTO.
+     * by dateiDTO and
+     * returns its generated ID.
      *
      * @param dateiDTO
      * @throws SQLException
      */
     @SuppressWarnings("checkstyle:magicnumber")
-    public void saveDatei(final DateiDTO dateiDTO) throws SQLException {
+    public long saveDatei(final DateiDTO dateiDTO) throws SQLException {
 
         if (!dateiExists(dateiDTO)) {
             PreparedStatement preparedStatement =
@@ -186,15 +190,17 @@ public final class Repository {
 
             ResultSet id = preparedStatement.getGeneratedKeys();
             id.next();
+            long dateiId = id.getLong(1);
 
             for (TagDTO tag : tags) {
-                saveTag(tag, id.getLong(1));
+                saveTag(tag, dateiId);
             }
             preparedStatement.close();
             id.close();
-
+            return dateiId;
         } else {
-            updateDatei(dateiDTO);
+            updateDatei(dateiDTO, dateiDTO.getId());
+            return dateiDTO.getId();
         }
     }
 
@@ -204,6 +210,8 @@ public final class Repository {
         PreparedStatement preparedStatement =
                 connection.prepareStatement("delete from Datei where dateiID=?");
         preparedStatement.setLong(1, dateiId);
+
+        deleteTagRelationsByDateiId(dateiId);
 
         preparedStatement.execute();
 
@@ -216,15 +224,51 @@ public final class Repository {
         DATEI METHODS
      */
 
+    ArrayList<DateiDTO> findAllDateiByUploaderId(final long userId) throws SQLException {
+        ArrayList<DateiDTO> dateien = new ArrayList<DateiDTO>();
+
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("select * from Datei where uploaderID=?");
+
+        preparedStatement.setString(1, "" + userId);
+
+        ResultSet dateiResult = preparedStatement.executeQuery();
+        while (dateiResult.next()) {
+            dateien.add(findDateiById(dateiResult.getLong("dateiID")));
+        }
+
+        preparedStatement.close();
+        dateiResult.close();
+
+        return dateien;
+    }
+
+    void changeUploaderToDeletedForAllDateiByUploaderId(final long userId) throws SQLException {
+        ArrayList<DateiDTO> dateien = findAllDateiByUploaderId(userId);
+
+        for (DateiDTO dateiDTO: dateien) {
+            updateDatei(new DateiDTO(dateiDTO.getId(), dateiDTO.getName(),
+                    dateiDTO.getPfad(), new UserDTO(-1, "User",
+                    "deleted", "-", null),
+                    dateiDTO.getTagDTOs(), dateiDTO.getUploaddatum(), dateiDTO.getVeroeffentlichungsdatum(),
+                    dateiDTO.getDateigroesse(), dateiDTO.getDateityp(),
+                    dateiDTO.getGruppe(), dateiDTO.getKategorie()), dateiDTO.getId());
+        }
+
+    }
+
     @SuppressWarnings("checkstyle:magicnumber")
-    void updateDatei(final DateiDTO dateiDTO) throws SQLException {
+    void updateDatei(final DateiDTO dateiDTO, final long dateiId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
-                        "update Datei set veroeffentlichungs_datum=?, datei_groesse=?, kategorie=?");
+                        "update Datei set uploaderID=?,veroeffentlichungs_datum=?, datei_groesse=?, kategorie=?"
+                                + "where dateiID=?");
 
-        preparedStatement.setDate(1, java.sql.Date.valueOf(dateiDTO.getVeroeffentlichungsdatum()));
-        preparedStatement.setLong(2, dateiDTO.getDateigroesse());
-        preparedStatement.setString(3, dateiDTO.getKategorie());
+        preparedStatement.setLong(1, dateiDTO.getUploader().getId());
+        preparedStatement.setDate(2, java.sql.Date.valueOf(dateiDTO.getVeroeffentlichungsdatum()));
+        preparedStatement.setLong(3, dateiDTO.getDateigroesse());
+        preparedStatement.setString(4, dateiDTO.getKategorie());
+        preparedStatement.setLong(5, dateiId);
 
         List<TagDTO> tags = dateiDTO.getTagDTOs();
         preparedStatement.execute();

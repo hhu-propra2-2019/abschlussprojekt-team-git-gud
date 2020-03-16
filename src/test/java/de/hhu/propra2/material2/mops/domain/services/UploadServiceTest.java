@@ -4,7 +4,6 @@ import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Tag;
 import de.hhu.propra2.material2.mops.domain.models.User;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,14 +43,6 @@ public class UploadServiceTest {
     private Gruppe gruppeMock;
     private UploadService uploadService;
     private MultipartFile file;
-
-    /**
-     * setDates: sets the dates before all tests
-     */
-    @BeforeAll
-    public static void setDates() {
-
-    }
 
     /**
      * setUP: SetUp needed for each test.

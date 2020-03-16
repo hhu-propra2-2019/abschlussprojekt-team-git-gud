@@ -158,5 +158,4 @@ public class ModelServiceTest {
         assertThat(result.size(), is(3));
     }
 
-
 }

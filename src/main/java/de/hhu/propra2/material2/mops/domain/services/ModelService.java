@@ -104,11 +104,10 @@ public final class ModelService implements IModelService {
     }
 
     public Set<String> getAlleTagsByUser(final String name) {
-        if (users.findByKeycloakname(name) == null) {
+        if (userMissingInKeycloak(name)) {
             return new HashSet<>();
         }
-        User user = loadUser(users.findByKeycloakname(name));
-        List<Gruppe> groups = user.getAllGruppen();
+        List<Gruppe> groups = loadUser(users.findByKeycloakname(name)).getAllGruppen();
         Set<String> tags = new HashSet<>();
         for (Gruppe gruppe : groups) {
             gruppe.getDateien().forEach(datei -> datei.getTags()
@@ -126,11 +125,10 @@ public final class ModelService implements IModelService {
     }
 
     public Set<String> getAlleUploaderByUser(final String name) {
-        if (users.findByKeycloakname(name) == null) {
+        if (userMissingInKeycloak(name)) {
             return new HashSet<>();
         }
-        User user = loadUser(users.findByKeycloakname(name));
-        List<Gruppe> groups = user.getAllGruppen();
+        List<Gruppe> groups = loadUser(users.findByKeycloakname(name)).getAllGruppen();
         Set<String> uploader = new HashSet<>();
         for (Gruppe gruppe : groups) {
             uploader.addAll(gruppe.getDateien()
@@ -149,11 +147,10 @@ public final class ModelService implements IModelService {
     }
 
     public Set<String> getAlleDateiTypenByUser(final String name) {
-        if (users.findByKeycloakname(name) == null) {
+        if (userMissingInKeycloak(name)) {
             return new HashSet<>();
         }
-        User user = loadUser(users.findByKeycloakname(name));
-        List<Gruppe> groups = user.getAllGruppen();
+        List<Gruppe> groups = loadUser(users.findByKeycloakname(name)).getAllGruppen();
         Set<String> dateiTypen = new HashSet<>();
         for (Gruppe gruppe : groups) {
             dateiTypen.addAll(gruppe.getDateien()
@@ -169,5 +166,9 @@ public final class ModelService implements IModelService {
                 .stream()
                 .map(Datei::getDateityp)
                 .collect(Collectors.toSet());
+    }
+
+    private boolean userMissingInKeycloak(final String name) {
+        return (users.findByKeycloakname(name) == null);
     }
 }

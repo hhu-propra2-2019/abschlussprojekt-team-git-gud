@@ -142,7 +142,9 @@ public class MaterialController {
         model.addAttribute("account", createAccountFromPrincipal(token));
         authenticatedAccess.increment();
         model.addAttribute("gruppen", gruppen);
-        model.addAttribute("tags", tags);
+
+        model.addAttribute("tagText", tags);
+
         model.addAttribute("uploader", uploader);
         model.addAttribute("dateitypen", dateiTypen);
         return "upload";

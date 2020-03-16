@@ -5,6 +5,7 @@ import de.hhu.propra2.material2.mops.Database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.Database.DTOs.TagDTO;
 import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -17,13 +18,20 @@ import java.util.HashMap;
 import java.util.List;
 
 //https://spotbugs.readthedocs.io/en/stable/bugDescriptions.html
+//it seems to work fine not sure how to fix this
 @SuppressFBWarnings("OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE")
 public final class Repository {
     private static Connection connection;
 
+    @Value("${<material2.properties.spring.datasource.username>}")
+    private static String ACCESS;
+
+    @Value("${<material2.properties.spring.datasource.password>}")
+    private static String PASSWORD;
+
     static {    //load up connection
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:23306/materialsammlung", "root", "secret");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:23306/materialsammlung", ACCESS, PASSWORD);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -58,6 +66,7 @@ public final class Repository {
     }
 
     @SuppressWarnings("checkstyle:magicnumber")
+    @SuppressFBWarnings("WMI_WRONG_MAP_ITERATOR") //need to iterate through both value and keys.
     public static void saveUser(final UserDTO userDTO) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(

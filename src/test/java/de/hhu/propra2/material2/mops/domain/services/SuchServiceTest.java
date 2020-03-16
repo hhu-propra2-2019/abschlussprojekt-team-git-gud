@@ -14,15 +14,10 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-<<<<<<< HEAD
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-=======
-import java.util.ArrayList;
-import java.util.Arrays;
->>>>>>> master
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -63,19 +58,9 @@ public class SuchServiceTest {
         Mockito.lenient().when(modelServiceMock.loadUser(null)).thenReturn(userMock);
 
         //Date for Datei
-<<<<<<< HEAD
-        Calendar calender = Calendar.getInstance();
-        calender.set(2020, 1, 3);
-        LocalDate date1 = calender.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        calender.set(2020, 3, 5);
-        LocalDate date2 = calender.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        calender.set(2020, 1, 1);
-        LocalDate veroeffentlichung = calender.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-=======
         LocalDate veroeffentlichung = LocalDate.now();
         LocalDate date1 = LocalDate.of(2020, 1, 3);
         LocalDate date2 = LocalDate.of(2020, 3, 5);
->>>>>>> master
 
         //Tags for Datei
         Tag tag1 = new Tag(1, "Vorlesung");

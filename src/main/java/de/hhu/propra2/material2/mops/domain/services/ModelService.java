@@ -41,20 +41,20 @@ public final class ModelService implements IModelService {
         this.users = userRepo;
     }
 
-    private Datei loadDatei(final DateiDTO dto) {
-        List<Tag> tags = dto.getTagDTOs().stream()
+    private Datei loadDatei(final DateiDTO dateiDTO) {
+        List<Tag> tags = dateiDTO.getTagDTOs().stream()
                 .map(this::loadTag)
                 .collect(Collectors.toList());
         return new Datei(
-                dto.getId(),
-                dto.getName(),
-                dto.getPfad(),
-                loadUser(dto.getUploader()),
+                dateiDTO.getId(),
+                dateiDTO.getName(),
+                dateiDTO.getPfad(),
+                loadUser(dateiDTO.getUploader()),
                 tags,
-                dto.getUploaddatum(),
-                dto.getVeroeffentlichungsdatum(),
-                dto.getDateigroesse(),
-                dto.getDateityp());
+                dateiDTO.getUploaddatum(),
+                dateiDTO.getVeroeffentlichungsdatum(),
+                dateiDTO.getDateigroesse(),
+                dateiDTO.getDateityp());
     }
 
     private Tag loadTag(final TagDTO tagDTO) {
@@ -84,7 +84,7 @@ public final class ModelService implements IModelService {
         return new Gruppe(gruppeDTO.getId(), gruppeDTO.getName(), dateienDerGruppe(gruppeDTO));
     }
 
-    private List<Datei> dateienDerGruppe(final GruppeDTO gruppeDTO) {
+    public List<Datei> dateienDerGruppe(final GruppeDTO gruppeDTO) {
         return gruppeDTO.getDateien()
                 .stream()
                 .map(this::loadDatei)

@@ -1,6 +1,7 @@
 package de.hhu.propra2.material2.mops.Database.DTOs;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -35,7 +36,8 @@ public final class DateiDTO {
      * Assigned group.
      */
     @Getter
-    private final GruppeDTO gruppe;
+    @Setter
+    private GruppeDTO gruppe;
     /**
      * Upload date.
      */
@@ -58,11 +60,16 @@ public final class DateiDTO {
      */
     @Getter
     private final String dateityp;
+    /**
+     * Category for gui.
+     */
+    @Getter
+    private final String kategorie;
 
     /**
-     * Standard AllArgsConstructor for import from database.
-     *
-     * @param idArg
+     * Standard Constructor for import from database
+     * and for saving changes to existing Datei.
+     *  @param idArg
      * @param nameArg
      * @param pfadArg
      * @param uploaderArg
@@ -72,6 +79,7 @@ public final class DateiDTO {
      * @param dateigroesseArg
      * @param dateitypArg
      * @param gruppeArg
+     * @param kategorieArg
      */
     public DateiDTO(final long idArg,
                     final String nameArg,
@@ -82,7 +90,8 @@ public final class DateiDTO {
                     final LocalDate veroeffentlichungsdatumArg,
                     final long dateigroesseArg,
                     final String dateitypArg,
-                    final GruppeDTO gruppeArg) {
+                    final GruppeDTO gruppeArg,
+                    final String kategorieArg) {
         this.id = idArg;
         this.name = nameArg;
         this.pfad = pfadArg;
@@ -90,15 +99,14 @@ public final class DateiDTO {
         this.tagDTOs = tagDTOsArg;
         this.gruppe = gruppeArg;
         this.uploaddatum = uploaddatumArg;
-        this.veroeffentlichungsdatum =
-                veroeffentlichungsdatumArg;
+        this.veroeffentlichungsdatum = veroeffentlichungsdatumArg;
         this.dateigroesse = dateigroesseArg;
         this.dateityp = dateitypArg;
+        this.kategorie = kategorieArg;
     }
 
     /**
      * Constructor for saving to database.
-     *
      * @param nameArg
      * @param pfadArg
      * @param uploaderArg
@@ -108,6 +116,7 @@ public final class DateiDTO {
      * @param dateigroesseArg
      * @param dateitypArg
      * @param gruppeArg
+     * @param kategorieArg
      */
     public DateiDTO(final String nameArg,
                     final String pfadArg,
@@ -117,7 +126,8 @@ public final class DateiDTO {
                     final LocalDate veroeffentlichungsdatumArg,
                     final long dateigroesseArg,
                     final String dateitypArg,
-                    final GruppeDTO gruppeArg) {
+                    final GruppeDTO gruppeArg,
+                    final String kategorieArg) {
         this.id = -1;
         this.name = nameArg;
         this.pfad = pfadArg;
@@ -125,11 +135,9 @@ public final class DateiDTO {
         this.tagDTOs = tagDTOsArg;
         this.gruppe = gruppeArg;
         this.uploaddatum = uploaddatumArg;
-        this.veroeffentlichungsdatum =
-                veroeffentlichungsdatumArg;
+        this.veroeffentlichungsdatum = veroeffentlichungsdatumArg;
         this.dateigroesse = dateigroesseArg;
         this.dateityp = dateitypArg;
+        this.kategorie = kategorieArg;
     }
-
-
 }

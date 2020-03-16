@@ -38,12 +38,15 @@ public class Datei {
     /**
      * Upload date.
      */
+    @Getter
     private final LocalDate uploaddatum;
     /**
      * Date for when the file
      * will be visible to non-uploaders
      * of its group.
      */
+
+    @Getter
     private final LocalDate veroeffentlichungsdatum;
     /**
      * File size.
@@ -100,8 +103,7 @@ public class Datei {
         this.uploader = uploaderArgs;
         this.tags = tagsArgs;
         this.uploaddatum = uploaddatumArgs;
-        this.veroeffentlichungsdatum =
-                veroeffentlichungsdatumArgs;
+        this.veroeffentlichungsdatum = veroeffentlichungsdatumArgs;
         this.dateigroesse = dateigroesseArgs;
         this.dateityp = dateitypArgs;
     }

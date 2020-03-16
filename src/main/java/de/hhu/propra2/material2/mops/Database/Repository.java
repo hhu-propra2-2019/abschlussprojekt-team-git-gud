@@ -457,8 +457,8 @@ public final class Repository {
                 connection.prepareStatement("select tagID from Tagnutzung where dateiID=?");
         preparedStatement.setLong(1, dateiId);
 
-        ResultSet Result = preparedStatement.executeQuery();
-        boolean doesExist = Result.next();
+        ResultSet result = preparedStatement.executeQuery();
+        boolean doesExist = result.next();
 
         return doesExist;
     }

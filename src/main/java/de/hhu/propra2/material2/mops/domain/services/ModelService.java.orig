@@ -4,7 +4,14 @@ import de.hhu.propra2.material2.mops.Database.DTOs.DateiDTO;
 import de.hhu.propra2.material2.mops.Database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.Database.DTOs.TagDTO;
 import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
+<<<<<<< HEAD
+import de.hhu.propra2.material2.mops.Database.DateiRepository;
+import de.hhu.propra2.material2.mops.Database.GruppeRepository;
+import de.hhu.propra2.material2.mops.Database.TagRepository;
+import de.hhu.propra2.material2.mops.Database.UserRepository;
+=======
 import de.hhu.propra2.material2.mops.Database.Repository;
+>>>>>>> master
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Tag;
@@ -15,28 +22,54 @@ import org.springframework.stereotype.Service;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public final class ModelService implements IModelService {
+<<<<<<< HEAD
+    private final DateiRepository dateien;
+    private final GruppeRepository gruppen;
+    private final UserRepository users;
+    private final TagRepository tags;
+=======
+>>>>>>> master
 
 
     private final Repository repository;
-
     /**
      * Constructor of ModelService.
+     *
+<<<<<<< HEAD
+     * @param dateiRepo   DateiRepository
+     * @param gruppenRepo GruppeRepository
+     * @param userRepo    UserRepository
+     * @param tagRepo     TagRepository
+     */
+    public ModelService(final DateiRepository dateiRepo,
+                        final GruppeRepository gruppenRepo,
+                        final UserRepository userRepo,
+                        final TagRepository tagRepo) {
+        this.dateien = dateiRepo;
+        this.gruppen = gruppenRepo;
+        this.users = userRepo;
+        this.tags = tagRepo;
+=======
      */
     public ModelService(final Repository repositoryArg) {
         repository = repositoryArg;
+>>>>>>> master
     }
 
     public Datei loadDatei(final DateiDTO dto) {
-        List<Tag> tags = dto.getTagDTOs().stream()
+        List<Tag> tagList = dto.getTagDTOs().stream()
                 .map(this::load)
                 .collect(Collectors.toList());
         return new Datei(
@@ -44,7 +77,7 @@ public final class ModelService implements IModelService {
                 dto.getName(),
                 dto.getPfad(),
                 loadUser(dto.getUploader()),
-                tags,
+                tagList,
                 dto.getUploaddatum(),
                 dto.getVeroeffentlichungsdatum(),
                 dto.getDateigroesse(),
@@ -90,20 +123,20 @@ public final class ModelService implements IModelService {
 
     public Set<String> getAlleTagsByUser(final User user) {
         List<Gruppe> groups = user.getAllGruppen();
-        Set<String> tags = new HashSet<>();
+        Set<String> tagList = new HashSet<>();
         for (Gruppe gruppe : groups) {
             gruppe.getDateien().forEach(datei -> datei.getTags()
-                    .forEach(tag -> tags.add(tag.getText())));
+                    .forEach(tag -> tagList.add(tag.getText())));
         }
-        return tags;
+        return tagList;
     }
 
     public Set<String> getAlleTagsByGruppe(final Gruppe gruppe) {
         List<Datei> dateienListe = gruppe.getDateien();
-        Set<String> tags = new HashSet<>();
+        Set<String> tagList = new HashSet<>();
         dateienListe.forEach(datei -> datei.getTags()
-                .forEach(tag -> tags.add(tag.getText())));
-        return tags;
+                .forEach(tag -> tagList.add(tag.getText())));
+        return tagList;
     }
 
     public Set<String> getAlleUploaderByUser(final User user) {
@@ -145,6 +178,90 @@ public final class ModelService implements IModelService {
     }
 
     public List<Datei> getAlleDateienByGruppeId(final Long id) {
+<<<<<<< HEAD
+        Gruppe gruppe = load(gruppen.findById(id).get());
+        return gruppe.getDateien();
+    }
+
+    private DateiDTO saveDateiWithoutTags(
+            final Datei datei, final GruppeDTO gruppeDTO,
+            final UserDTO userDTO) {
+        return saveDatei(datei, gruppeDTO, userDTO, null);
+    }
+
+    private DateiDTO saveDatei(final Datei datei, final GruppeDTO gruppeDTO,
+                               final UserDTO userDTO,
+                               final List<TagDTO> tagDTOs) {
+        DateiDTO dateiDTO = new DateiDTO(datei.getName(),
+                datei.getPfad(), userDTO, tagDTOs, datei.getUploaddatum(),
+                datei.getVeroeffentlichungsdatum(), datei.getDateigroesse(),
+                datei.getDateityp(), gruppeDTO);
+        return dateien.save(dateiDTO);
+    }
+
+    public void saveDatei(final Datei datei, final Gruppe gruppe)
+            throws Exception {
+        if (datei == null || gruppe == null) {
+            throw new IllegalArgumentException();
+        }
+
+        Optional<GruppeDTO> optionalGruppeDTO =
+                gruppen.findById(gruppe.getId());
+        if (!optionalGruppeDTO.isPresent()) {
+            throw new Exception("no group found");
+        }
+        final GruppeDTO gruppeDTO = optionalGruppeDTO.get();
+
+        Optional<UserDTO> optionalUserDTO =
+                users.findById(datei.getUploader().getId());
+        if (!optionalGruppeDTO.isPresent()) {
+            throw new Exception("no user found");
+        }
+        final UserDTO userDTO = optionalUserDTO.get();
+
+        DateiDTO dateiDTO = saveDateiWithoutTags(datei, gruppeDTO, userDTO);
+
+        Iterable<TagDTO> savedTags = this.saveNewTags(datei.getTags(), dateiDTO);
+        List<TagDTO> tagDTOs = new ArrayList<>();
+        savedTags.forEach(tagDTOs::add);
+
+        dateiDTO = saveDatei(datei, gruppeDTO, userDTO, tagDTOs);
+    }
+
+    private Iterable<TagDTO> saveNewTags(final List<Tag> potentiallyNewTags,
+                                         final DateiDTO dateiDTO) {
+        if (potentiallyNewTags == null || potentiallyNewTags.isEmpty()) {
+            return null;
+        }
+
+        Iterable<TagDTO> tagDTOs =
+                tags.findAllByText(potentiallyNewTags.stream()
+                        .map(Tag::getText)
+                        .collect(Collectors.toList()));
+
+        List<TagDTO> newTagDTOs = new ArrayList<>();
+        for (Tag potentiallyNewTag : potentiallyNewTags) {
+            boolean exists = false;
+            for (TagDTO tagDTO : tagDTOs) {
+                if (potentiallyNewTag.getText().equals(tagDTO.getText())) {
+                    exists = true;
+                    break;
+                }
+            }
+
+            if (!exists) {
+                newTagDTOs.add(new TagDTO(-1, potentiallyNewTag.getText(),
+                        Collections.singletonList(dateiDTO)));
+            }
+        }
+
+        for (TagDTO tagDTO : tagDTOs) {
+            tagDTO.getDateien().add(dateiDTO);
+        }
+
+        newTagDTOs.addAll((Collection<? extends TagDTO>) tagDTOs);
+        return tags.saveAll(newTagDTOs);
+=======
 
         return null;
     }
@@ -195,5 +312,6 @@ public final class ModelService implements IModelService {
 
         User user = new User(1, "Hans", "Müller", "Hamue", mapUser);
         return user;
+>>>>>>> master
     }
 }

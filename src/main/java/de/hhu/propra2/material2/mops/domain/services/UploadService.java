@@ -1,6 +1,7 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
 import com.google.common.base.Strings;
+import de.hhu.propra2.material2.mops.Database.Repository;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Tag;
@@ -10,16 +11,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
 public class UploadService {
 
+    private final Repository repository;
     private final ModelService modelService;
     private final FileUploadService fileUploadService;
 
-    public UploadService(final ModelService modelServiceArg, final FileUploadService fileUploadServiceArg) {
+    public UploadService(final Repository repositoryArg, final ModelService modelServiceArg,
+                         final FileUploadService fileUploadServiceArg) {
+        this.repository = repositoryArg;
         this.modelService = modelServiceArg;
         this.fileUploadService = fileUploadServiceArg;
     }
@@ -38,7 +42,7 @@ public class UploadService {
     public Datei dateiHochladen(final MultipartFile file, final String newFileName,
                                 final User user,
                                 final Gruppe gruppe,
-                                final Date veroeffentlichungsdatum,
+                                final LocalDate veroeffentlichungsdatum,
                                 final List<Tag> tags) throws Exception {
         String fileName = Strings.isNullOrEmpty(newFileName) ? file.getName() : newFileName;
         String fileExtension = FilenameUtils.getExtension(fileName);
@@ -50,8 +54,8 @@ public class UploadService {
 
         String objectStoragePath = fileUploadService.upload(file, newFileName, String.valueOf(gruppe.getId()));
         Datei datei = new Datei(1, fileName, objectStoragePath, user, tags,
-                new Date(), veroeffentlichungsdatum, file.getSize(), fileExtension);
-        modelService.saveDatei(datei, gruppe);
+                LocalDate.now(), veroeffentlichungsdatum, file.getSize(), fileExtension);
+        //modelService.saveDatei(datei, gruppe);
         return datei;
     }
 }

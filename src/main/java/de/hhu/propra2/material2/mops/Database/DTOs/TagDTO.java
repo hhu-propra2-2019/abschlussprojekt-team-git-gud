@@ -2,7 +2,6 @@ package de.hhu.propra2.material2.mops.Database.DTOs;
 
 import lombok.Data;
 
-import java.util.List;
 
 @Data
 public class TagDTO {
@@ -15,24 +14,17 @@ public class TagDTO {
      * and can be searched for.
      */
     private final String text;
-    /**
-     * Related files to this tag.
-     */
-    private final List<DateiDTO> dateien;
 
     /**
      * Standard AllArgsConstructor for import from database.
      *
      * @param idArg
      * @param textArg
-     * @param dateienArg
      */
     public TagDTO(final long idArg,
-                  final String textArg,
-                  final List<DateiDTO> dateienArg) {
+                  final String textArg) {
         this.id = idArg;
         this.text = textArg;
-        this.dateien = dateienArg;
     }
 
     /**
@@ -40,13 +32,10 @@ public class TagDTO {
      * saving to database.
      *
      * @param textArg
-     * @param dateienArg
      */
-    public TagDTO(final String textArg,
-                  final List<DateiDTO> dateienArg) {
+    public TagDTO(final String textArg) {
         this.id = 0;
         this.text = textArg;
-        this.dateien = dateienArg;
     }
 
 }

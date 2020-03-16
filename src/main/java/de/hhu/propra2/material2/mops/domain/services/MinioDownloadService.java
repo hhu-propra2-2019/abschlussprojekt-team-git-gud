@@ -1,6 +1,7 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
 import de.hhu.propra2.material2.mops.Exceptions.MinioDownloadException;
+import de.hhu.propra2.material2.mops.domain.models.Datei;
 import io.minio.MinioClient;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
@@ -19,7 +20,7 @@ import java.security.NoSuchAlgorithmException;
 
 public final class MinioDownloadService {
 
-    private MinioClient minioClient;
+    private final MinioClient minioClient;
 
     public MinioDownloadService(final MinioClient client) {
         this.minioClient = client;
@@ -28,13 +29,15 @@ public final class MinioDownloadService {
     /**
      * returns Downloadlink with expiration time 1h
      *
-     * @param bucket     name of the minIO bucket
-     * @param objectName name of the object in the miniIO bucket
+     * @param datei datei for download
      * @return url for the download
-     * @throws MinioDownloadException if something wents wrong with the minIO download
+     * @throws MinioDownloadException Exception if anything went wrong with the minIO download
      */
-    public String getUrl(final String bucket, final String objectName) throws MinioDownloadException {
+    public String getUrl(final Datei datei) throws MinioDownloadException {
+        final String bucket = "materialsammlung";
+        final String objectName = datei.getPfad();
         final int expiration = 3600;
+
         try {
             return minioClient.presignedGetObject(bucket, objectName, expiration);
         } catch (IOException
@@ -54,12 +57,15 @@ public final class MinioDownloadService {
 
     /**
      * return InputStream from object.
-     * @param bucket
-     * @param objectName
-     * @return
-     * @throws MinioDownloadException
+     *
+     * @param datei datei for download
+     * @return downloadDatei as InputStream
+     * @throws MinioDownloadException Exception if anything went wrong with the minIO Download
      */
-    public InputStream getObject(final String bucket, final String objectName) throws MinioDownloadException {
+    public InputStream getObject(final Datei datei) throws MinioDownloadException {
+        final String bucket = "materialsammlung";
+        final String objectName = datei.getPfad();
+
         try {
             return minioClient.getObject(bucket, objectName);
         } catch (IOException

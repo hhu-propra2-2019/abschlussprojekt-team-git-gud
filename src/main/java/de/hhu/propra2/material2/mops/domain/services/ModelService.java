@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public final class ModelService {
+public final class ModelService implements IModelService {
 
 
     private final Repository repository;

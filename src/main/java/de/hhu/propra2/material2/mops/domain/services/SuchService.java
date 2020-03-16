@@ -73,7 +73,7 @@ public class SuchService {
             result = dateiNamenSuche(suche.getDateiName(), result);
         }
         if (suche.getReihenfolge() != null) {
-            result = sortieren(suche.getSortierung(),
+            result = sortieren(suche.getSortierKriterium(),
                     suche.getReihenfolge(),
                     result);
         }

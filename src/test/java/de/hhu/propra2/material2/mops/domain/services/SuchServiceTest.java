@@ -443,4 +443,28 @@ public class SuchServiceTest {
         assertTrue(result.contains(datei2));
         assertTrue(result.contains(datei3));
     }
+
+    @Test
+    @SuppressWarnings("checkstyle:magicnumber")
+    public void sortierungDateiName() {
+        Suche suche = new Suche(
+                "",
+                "",
+                null,
+                null,
+                null,
+                "name",
+                null,
+                "",
+                null);
+
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
+
+        final int expectedSizeOfList = 4;
+        assertThat(result.size(), is(expectedSizeOfList));
+        assertTrue(datei1.equals(result.get(0)));
+        assertTrue(datei2.equals(result.get(1)));
+        assertTrue(datei3.equals(result.get(2)));
+        assertTrue(datei4.equals(result.get(3)));
+    }
 }

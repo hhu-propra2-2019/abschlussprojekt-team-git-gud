@@ -42,11 +42,11 @@ public final class ModelService implements IModelService {
         this.users = userRepo;
     }
 
-    public de.hhu.propra2.material2.mops.domain.models.Datei loadDatei(final DateiDAO dao) {
+    public Datei loadDatei(final DateiDAO dao) {
         List<Tag> tags = dao.getTagDAOS().stream()
                 .map(this::load)
                 .collect(Collectors.toList());
-        return new de.hhu.propra2.material2.mops.domain.models.Datei(
+        return new Datei(
                 dao.getDateiID(),
                 dao.getName(),
                 dao.getPfad(),
@@ -145,7 +145,7 @@ public final class ModelService implements IModelService {
     public Set<String> getAlleDateiTypenByGruppe(final Gruppe gruppe) {
         return gruppe.getDateien()
                 .stream()
-                .map(de.hhu.propra2.material2.mops.domain.models.Datei::getDateityp)
+                .map(Datei::getDateityp)
                 .collect(Collectors.toSet());
     }
 

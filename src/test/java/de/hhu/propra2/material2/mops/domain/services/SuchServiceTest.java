@@ -4,10 +4,7 @@ import de.hhu.propra2.material2.mops.database.entities.UserDAO;
 import de.hhu.propra2.material2.mops.database.DateiRepository;
 import de.hhu.propra2.material2.mops.database.GruppeRepository;
 import de.hhu.propra2.material2.mops.database.UserRepository;
-import de.hhu.propra2.material2.mops.domain.models.Datei;
-import de.hhu.propra2.material2.mops.domain.models.Gruppe;
-import de.hhu.propra2.material2.mops.domain.models.Suche;
-import de.hhu.propra2.material2.mops.domain.models.Tag;
+import de.hhu.propra2.material2.mops.domain.models.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,11 +35,11 @@ public class SuchServiceTest {
     @Mock
     private ModelService modelServiceMock;
     @Mock
-    private de.hhu.propra2.material2.mops.domain.models.User userMock;
+    private User userMock;
     @Mock
-    private de.hhu.propra2.material2.mops.domain.models.User uploaderMock1;
+    private User uploaderMock1;
     @Mock
-    private de.hhu.propra2.material2.mops.domain.models.User uploaderMock2;
+    private User uploaderMock2;
 
     private SuchService suchService;
     private Gruppe gruppe1;

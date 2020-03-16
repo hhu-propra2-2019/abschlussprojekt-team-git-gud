@@ -119,6 +119,7 @@ public class MaterialController {
         model.addAttribute("tags", tags);
         model.addAttribute("dateiTypen", dateiTypen);
         model.addAttribute("uploader", uploader);
+        this.suche = suchen;
         if (search == null) {
             return  "redirect:/suche";
         }

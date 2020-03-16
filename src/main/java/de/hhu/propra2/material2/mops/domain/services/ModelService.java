@@ -4,15 +4,15 @@ import de.hhu.propra2.material2.mops.Database.DTOs.DateiDTO;
 import de.hhu.propra2.material2.mops.Database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.Database.DTOs.TagDTO;
 import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
-import de.hhu.propra2.material2.mops.Database.DateiRepository;
-import de.hhu.propra2.material2.mops.Database.GruppeRepository;
-import de.hhu.propra2.material2.mops.Database.UserRepository;
+import de.hhu.propra2.material2.mops.Database.Repository;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Tag;
 import de.hhu.propra2.material2.mops.domain.models.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,25 +22,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public final class ModelService implements IModelService {
-    private final DateiRepository dateien;
-    private final GruppeRepository gruppen;
-    private final UserRepository users;
 
 
+    private final Repository repository;
     /**
      * Constructor of ModelService.
      *
-     * @param dateiRepo   DateiRepository
-     * @param gruppenRepo GruppenRepository
-     * @param userRepo    UserRepository
      */
-    public ModelService(final DateiRepository dateiRepo,
-                        final GruppeRepository gruppenRepo,
-                        final UserRepository userRepo) {
-        this.dateien = dateiRepo;
-        this.gruppen = gruppenRepo;
-        this.users = userRepo;
+    public ModelService(final Repository repositoryArg) {
+        repository = repositoryArg;
     }
 
     public Datei loadDatei(final DateiDTO dto) {
@@ -153,12 +145,17 @@ public final class ModelService implements IModelService {
     }
 
     public List<Datei> getAlleDateienByGruppeId(final Long id) {
-        Gruppe gruppe = load(gruppen.findById(id).get());
-        return gruppe.getDateien();
+
+        return null;
     }
 
-    public User getUserByKeyCloackName(final String name) {
-        return loadUser(users.findByKeycloakname(name));
+    public User getUserByKeyCloakName(final String name) {
+        try {
+            return loadUser(repository.findUserByKeycloakname(name));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @SuppressWarnings("checkstyle:MagicNumber")

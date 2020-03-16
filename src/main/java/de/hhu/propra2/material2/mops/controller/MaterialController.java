@@ -10,7 +10,6 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,12 +18,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Controller
+@SuppressWarnings("checkstyle:ParenPad")
+/**
+ * After the @RolesAllowed Annotation the Syle Code wants a space after
+ * the opening bracket, but that throwas the ParenPad Warning, so we cannot
+ * satisfy both conditions and have to disable one
+ */
 public class MaterialController {
 
     private final Counter authenticatedAccess;
@@ -34,7 +37,6 @@ public class MaterialController {
     private final Set<String> tags;
     private final Set<String> dateiTypen;
     private final Set<String> uploader;
-
 
     public MaterialController(final MeterRegistry registry, final IModelService ms) {
         authenticatedAccess = registry.counter("access.authenticated");
@@ -97,6 +99,7 @@ public class MaterialController {
      *
      * @return String
      */
+
     @GetMapping("/suche")
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
     public String vorSuche(final KeycloakAuthenticationToken token, final Model model) {
@@ -134,7 +137,7 @@ public class MaterialController {
      * @return String
      */
     @GetMapping("/upload")
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
     public String upload(final KeycloakAuthenticationToken token, final Model model) {
         model.addAttribute("account", createAccountFromPrincipal(token));
         authenticatedAccess.increment();
@@ -153,7 +156,7 @@ public class MaterialController {
      * @return upload routing
      */
     @PostMapping("/upload")
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
     public String upload(final KeycloakAuthenticationToken token, final Model model, final UploadForm upForm) {
         model.addAttribute("account", createAccountFromPrincipal(token));
         authenticatedAccess.increment();

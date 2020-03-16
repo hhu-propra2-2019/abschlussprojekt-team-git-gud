@@ -11,7 +11,6 @@ import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Tag;
 import de.hhu.propra2.material2.mops.domain.models.User;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -171,15 +170,32 @@ public final class ModelService implements IModelService {
         List<Tag> tags = new ArrayList<>();
         tags.add(new Tag(1, "Cool"));
         tags.add(new Tag(2, "Auch Cool"));
+
+        List<Tag> tags2 = new ArrayList<>();
+        tags.add(new Tag(1, "Nice"));
+        tags.add(new Tag(2, "Auch Nice"));
+
         LocalDate uploadDatum = LocalDate.of(2010, 10, 10);
         LocalDate veroeffentlichung = LocalDate.of(2010, 10, 10);
 
+        LocalDate uploadDatum2 = LocalDate.of(2020, 10, 10);
+        LocalDate veroeffentlichung2 = LocalDate.of(2020, 10, 10);
+
         User uploader = new User(2, "Jens", "Bendisposto", "Jeben", mapUploader);
+        User uploader2 = new User(2, "Oleg", "BesterMann", "Olbes", mapUploader);
         List<Datei> data = new ArrayList<>();
         data.add(new Datei(1, "Blatt 1", "", uploader, tags, uploadDatum, veroeffentlichung, 100, "PDF"));
 
-        Gruppe gruppe = new Gruppe(1, "ProPra", data);
-        mapUser.put(gruppe, false);
+        List<Datei> data2 = new ArrayList<>();
+        data2.add(new Datei(1, "Blatt 12", "", uploader2, tags2, uploadDatum2, veroeffentlichung2, 100, "jpeg"));
+        data.add(new Datei(1, "Blatt 12", "", uploader2, tags2, uploadDatum2, veroeffentlichung2, 100, "jpeg"));
+
+
+        Gruppe gruppe1 = new Gruppe(1, "ProPra", data);
+        Gruppe gruppe2 = new Gruppe(2, "BWL", data2);
+        mapUser.put(gruppe1, false);
+        mapUser.put(gruppe2, true);
+
         User user = new User(1, "Hans", "Müller", "Hamue", mapUser);
         return user;
     }

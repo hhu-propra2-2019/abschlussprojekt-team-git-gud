@@ -13,8 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -43,12 +41,13 @@ public final class ModelService implements IModelService {
                 dateiDTO.getId(),
                 dateiDTO.getName(),
                 dateiDTO.getPfad(),
-                loadUser(dateiDTO.getUploader()),
+                loadUploader(dateiDTO.getUploader()),
                 tags,
                 dateiDTO.getUploaddatum(),
                 dateiDTO.getVeroeffentlichungsdatum(),
                 dateiDTO.getDateigroesse(),
-                dateiDTO.getDateityp());
+                dateiDTO.getDateityp(),
+                dateiDTO.getKategorie());
     }
 
     private Tag loadTag(final TagDTO tagDTO) {
@@ -83,11 +82,21 @@ public final class ModelService implements IModelService {
         return new Gruppe(gruppeDTO.getId(), gruppeDTO.getName(), dateienDerGruppe(gruppeDTO));
     }
 
+    private User loadUploader(final UserDTO dto) {
+        return new User(
+                dto.getId(),
+                dto.getVorname(),
+                dto.getNachname(),
+                dto.getKeycloakname(),
+                new HashMap<>());
+    }
+
     public List<Datei> dateienDerGruppe(final GruppeDTO gruppeDTO) {
         return gruppeDTO.getDateien()
                 .stream()
                 .map(this::loadDatei)
                 .collect(Collectors.toList());
+
     }
 
     public List<Gruppe> getAlleGruppenByUser(final User user) {
@@ -169,43 +178,10 @@ public final class ModelService implements IModelService {
         }
     }
 
-    @SuppressWarnings("checkstyle:magicnumber")
-    public User createDummyUser() {
-        HashMap mapUser = new HashMap();
-        HashMap mapUploader = new HashMap();
-
-
-        List<Tag> tags = new ArrayList<>();
-        tags.add(new Tag(1, "Cool"));
-        tags.add(new Tag(2, "Auch Cool"));
-
-        List<Tag> tags2 = new ArrayList<>();
-        tags.add(new Tag(1, "Nice"));
-        tags.add(new Tag(2, "Auch Nice"));
-
-        LocalDate uploadDatum = LocalDate.of(2010, 10, 10);
-        LocalDate veroeffentlichung = LocalDate.of(2010, 10, 10);
-
-        LocalDate uploadDatum2 = LocalDate.of(2020, 10, 10);
-        LocalDate veroeffentlichung2 = LocalDate.of(2020, 10, 10);
-
-        User uploader = new User(2, "Jens", "Bendisposto", "Jeben", mapUploader);
-        User uploader2 = new User(2, "Oleg", "BesterMann", "Olbes", mapUploader);
-        List<Datei> data = new ArrayList<>();
-        data.add(new Datei(1, "Blatt 1", "", uploader, tags, uploadDatum, veroeffentlichung, 100, "PDF"));
-
-        List<Datei> data2 = new ArrayList<>();
-        data2.add(new Datei(1, "Blatt 12", "", uploader2, tags2, uploadDatum2, veroeffentlichung2, 100, "jpeg"));
-        data.add(new Datei(1, "Blatt 12", "", uploader2, tags2, uploadDatum2, veroeffentlichung2, 100, "jpeg"));
-
-
-        Gruppe gruppe1 = new Gruppe(1, "ProPra", data);
-        Gruppe gruppe2 = new Gruppe(2, "BWL", data2);
-        mapUser.put(gruppe1, false);
-        mapUser.put(gruppe2, true);
-
-        User user = new User(1, "Hans", "Müller", "Hamue", mapUser);
-        return user;
-
+    @Override
+    public Set<String> getAlleKategorienByFiles(final List<Datei> dateien) {
+        Set<String> kategorien = new HashSet<>();
+        dateien.forEach(datei -> kategorien.add(datei.getKategorie()));
+        return kategorien;
     }
 }

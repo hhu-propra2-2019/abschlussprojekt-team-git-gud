@@ -79,13 +79,14 @@ public class SuchServiceTest {
 
         //Dateien for List<Datei>
         datei1 = new Datei(1, "1", "a/b/2", uploaderMock1, tags1,
-                uploadDate, date1, 1, "pdf");
+                uploadDate, date1, 1, "pdf", "Uebung");
         datei2 = new Datei(2, "2", "a/b/2", uploaderMock2, tags2,
-                uploadDate, date1, 1, "pdf");
+                uploadDate, date1, 1, "pdf", "Uebung");
         datei3 = new Datei(3, "3", "a/b/3", uploaderMock1, tags3,
-                uploadDate, date1, 1, "jpg");
+                uploadDate, date1, 1, "jpg", "Uebung");
         datei4 = new Datei(4, "4", "a/b/4", uploaderMock2, tags3,
-                uploadDate, date2, 1, "jpg");
+                uploadDate, date2, 1, "jpg", "Uebung");
+
         List<Datei> dateienGruppe1 = new ArrayList<>(Arrays.asList(datei1, datei2, datei3));
         List<Datei> dateienGruppe2 = new ArrayList<>(Arrays.asList(datei4));
 

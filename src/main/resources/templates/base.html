@@ -33,11 +33,9 @@
                     Upload
                 </a>
             </li>
-            <th:block th:object="${gruppen}">
-                <li th:each="gruppe : ${gruppen}"  >
-                    <a th:href="@{/dateiSicht}" th:text="${gruppe.getName()}"></a>
-                </li>
-            </th:block>
+            <li th:each="gruppe : ${gruppen}"  >
+                <a th:href="@{/dateiSicht}" th:text="${gruppe.getName()}"></a>
+            </li>
         </ul>
     </nav>
 </header>

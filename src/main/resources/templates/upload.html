@@ -40,9 +40,34 @@
                 <label for="input-tags">Tags </label>
                 <input type="text" name="selectedTags"  id="input-tags">
             </div>
-
             <script src="../static/dist/tokenfield.min.js" th:src="@{dist/tokenfield.min.js}"></script>
-            <script src="../static/dist/mytokenfield.js" th:src="@{dist/mytokenfield.js}"></script>
+            <script th:inline="javascript">
+                var student = [];
+                var tagTexts = /*[[${tagText}]]*/ [];
+
+                for (count = 0; count < tagTexts.length; count++)
+                {
+                    var obj = {
+                        id: count,
+                        name: tagTexts[count]
+                    };
+                    student.push(obj);
+                }
+
+                var jp = new Tokenfield({
+                    el: document.querySelector('#input-tags'),
+                    items: student,
+                    newItems: true,
+                    addItemOnBlur: true,
+                    filterSetItems: false,
+                    addItemsOnPaste: true,
+                    delimiters: [',', ' '],
+                    minChars: 0,
+                    maxSuggestWindow: 5,
+                    singleInput: true,
+                    singleInputValue: 'name'
+                });
+            </script>
             <!--  <div>
                   <label for="tagsIn">Tags </label>
                   <input type="text" class="form-control" id="tagsIn" name="selectedTags"  placeholder="Vorlesung, ">

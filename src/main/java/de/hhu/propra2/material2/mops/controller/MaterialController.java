@@ -135,6 +135,12 @@ public class MaterialController {
         model.addAttribute("account", createAccountFromPrincipal(token));
         authenticatedAccess.increment();
         model.addAttribute("gruppen", gruppen);
+        List<String> tagText = new ArrayList<>();
+        tagText.add("Vorlesung");
+        tagText.add("Übung");
+
+        model.addAttribute("tags", tags);
+        model.addAttribute("tagText", tagText);
         model.addAttribute("uploader", uploader);
         model.addAttribute("dateitypen", dateiTypen);
         return "upload";

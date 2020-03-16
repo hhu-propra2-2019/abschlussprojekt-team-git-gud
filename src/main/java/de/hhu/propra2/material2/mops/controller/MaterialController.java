@@ -9,25 +9,39 @@ import de.hhu.propra2.material2.mops.security.Account;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Set;
 
-@Controller
-@SuppressWarnings("checkstyle:ParenPad")
 /**
  * After the @RolesAllowed Annotation the Syle Code wants a space after
  * the opening bracket, but that throwas the ParenPad Warning, so we cannot
  * satisfy both conditions and have to disable one
  */
+@Controller
+@SuppressWarnings("checkstyle:ParenPad")
 public class MaterialController {
+
+    @Autowired
+    private RestTemplate serviceAccountRestTemplate;
+
+    /**
+     * Beispiel aus der KeycloakDemo
+     * //
+     * THIS IS JUST AN EXAMPLE! DO NOT QUERY A SERVICE IN THE REQUEST/RESPONSE CYCLE!
+     * //
+     * var res = Arrays.asList(serviceAccountRestTemplate
+     *      .getForEntity("http://localhost:8080/api/text", Entry[].class).getBody());
+     */
 
     private List<Gruppe> gruppen;
     private Set<String> tags;

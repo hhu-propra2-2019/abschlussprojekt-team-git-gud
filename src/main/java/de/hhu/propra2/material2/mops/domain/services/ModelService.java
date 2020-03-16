@@ -33,41 +33,53 @@ public final class ModelService implements IModelService {
         repository = repositoryArg;
     }
 
-    public Datei loadDatei(final DateiDTO dto) {
-        List<Tag> tags = dto.getTagDTOs().stream()
+    private Datei loadDatei(final DateiDTO dateiDTO) {
+        List<Tag> tags = dateiDTO.getTagDTOs().stream()
                 .map(this::loadTag)
                 .collect(Collectors.toList());
         return new Datei(
-                dto.getId(),
-                dto.getName(),
-                dto.getPfad(),
-                loadUploader(dto.getUploader()),
+                dateiDTO.getId(),
+                dateiDTO.getName(),
+                dateiDTO.getPfad(),
+                loadUploader(dateiDTO.getUploader()),
                 tags,
-                dto.getUploaddatum(),
-                dto.getVeroeffentlichungsdatum(),
-                dto.getDateigroesse(),
-                dto.getDateityp(),
-                dto.getKategorie());
+                dateiDTO.getUploaddatum(),
+                dateiDTO.getVeroeffentlichungsdatum(),
+                dateiDTO.getDateigroesse(),
+                dateiDTO.getDateityp(),
+                dateiDTO.getKategorie());
     }
 
-    public Tag loadTag(final TagDTO dto) {
-        return new Tag(dto.getId(), dto.getText());
+    private Tag loadTag(final TagDTO tagDTO) {
+        return new Tag(tagDTO.getId(), tagDTO.getText());
     }
 
-    public User loadUser(final UserDTO dto) {
-        HashMap<Gruppe, Boolean> belegungUndRechte = new HashMap<>();
-        for (GruppeDTO gruppeDTO : dto.getBelegungUndRechte().keySet()) {
-            belegungUndRechte.put(
-                    loadGruppe(gruppeDTO),
-                    dto.getBelegungUndRechte().get(gruppeDTO));
+    public User loadUser(final UserDTO userDTO) {
+
+        if (userDTO == null) {
+            return new User(-1L, "", "", "", new HashMap<>());
         }
 
         return new User(
-                dto.getId(),
-                dto.getVorname(),
-                dto.getNachname(),
-                dto.getKeycloakname(),
-                belegungUndRechte);
+                userDTO.getId(),
+                userDTO.getVorname(),
+                userDTO.getNachname(),
+                userDTO.getKeycloakname(),
+                convertHashMapGruppeDTOtoGruppe(userDTO));
+    }
+
+    public HashMap<Gruppe, Boolean> convertHashMapGruppeDTOtoGruppe(final UserDTO userDTO) {
+        HashMap<Gruppe, Boolean> belegungUndRechte = new HashMap<>();
+        for (GruppeDTO gruppeDTO : userDTO.getBelegungUndRechte().keySet()) {
+            belegungUndRechte.put(
+                    loadGruppe(gruppeDTO),
+                    userDTO.getBelegungUndRechte().get(gruppeDTO));
+        }
+        return belegungUndRechte;
+    }
+
+    private Gruppe loadGruppe(final GruppeDTO gruppeDTO) {
+        return new Gruppe(gruppeDTO.getId(), gruppeDTO.getName(), dateienDerGruppe(gruppeDTO));
     }
 
     private User loadUploader(final UserDTO dto) {
@@ -79,13 +91,12 @@ public final class ModelService implements IModelService {
                 new HashMap<>());
     }
 
-    public Gruppe loadGruppe(final GruppeDTO dto) {
-        List<Datei> zugehoerigeDateien =
-                dto.getDateien()
-                        .stream()
-                        .map(this::loadDatei)
-                        .collect(Collectors.toList());
-        return new Gruppe(dto.getId(), dto.getName(), zugehoerigeDateien);
+    public List<Datei> dateienDerGruppe(final GruppeDTO gruppeDTO) {
+        return gruppeDTO.getDateien()
+                .stream()
+                .map(this::loadDatei)
+                .collect(Collectors.toList());
+
     }
 
     public List<Gruppe> getAlleGruppenByUser(final User user) {
@@ -114,6 +125,7 @@ public final class ModelService implements IModelService {
         return tags;
     }
 
+
     public Set<String> getAlleUploaderByUser(final User user) {
         List<Gruppe> groups = user.getAllGruppen();
         Set<String> uploader = new HashSet<String>();
@@ -132,6 +144,7 @@ public final class ModelService implements IModelService {
                 .map(datei -> datei.getUploader().getNachname())
                 .collect(Collectors.toSet());
     }
+
 
     public Set<String> getAlleDateiTypenByUser(final User user) {
         List<Gruppe> groups = user.getAllGruppen();
@@ -153,7 +166,6 @@ public final class ModelService implements IModelService {
     }
 
     public List<Datei> getAlleDateienByGruppeId(final Long id) {
-
         return null;
     }
 
@@ -162,7 +174,7 @@ public final class ModelService implements IModelService {
             return loadUser(repository.findUserByKeycloakname(name));
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
+            return new User(-1L, "", "", "", new HashMap<>());
         }
     }
 
@@ -172,5 +184,4 @@ public final class ModelService implements IModelService {
         dateien.forEach(datei -> kategorien.add(datei.getKategorie()));
         return kategorien;
     }
-
 }

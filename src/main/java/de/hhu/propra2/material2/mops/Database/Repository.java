@@ -395,6 +395,8 @@ public final class Repository {
         return tags;
     }
 
+
+
     void deleteTagRelationsByDateiId(final long dateiId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement("delete from Tagnutzung where dateiID=?");
@@ -403,6 +405,18 @@ public final class Repository {
         preparedStatement.execute();
 
         preparedStatement.close();
+    }
+
+   boolean getTagRelationByDateiId(final long dateiId) throws SQLException {
+
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("select tagID from Tagnutzung where dateiID=?");
+        preparedStatement.setLong(1, dateiId);
+
+        ResultSet Result = preparedStatement.executeQuery();
+        boolean doesExist = Result.next();
+
+        return doesExist;
     }
 
     /*

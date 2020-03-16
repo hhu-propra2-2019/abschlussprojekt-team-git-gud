@@ -10,12 +10,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -119,6 +121,22 @@ public final class RepositoryTest {
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
     public void deleteTagnutzungByDatei() throws SQLException {
+        ArrayList<TagDTO> newTags = new ArrayList<TagDTO>();
+        TagDTO tag1 = new TagDTO("gae1");
+        TagDTO tag2 = new TagDTO("gae2");
+        DateiDTO newDatei;
+
+        newTags.add(tag1);
+        newTags.add(tag2);
+
+        newDatei = new DateiDTO(101, "gaedata", "/materialsammlung/gaedata/",
+                user, newTags, LocalDate.now(), LocalDate.now(), 300, "gae", gruppe, "gae");
+
+        repository.saveDatei(newDatei);
+        repository.saveDatei(newDatei);
+
+        repository.deleteTagRelationsByDateiId(101);
+        assertFalse(repository.getTagRelationByDateiId(101));
 
     }
 

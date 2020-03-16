@@ -459,6 +459,8 @@ public final class Repository {
 
         ResultSet result = preparedStatement.executeQuery();
         boolean doesExist = result.next();
+        result.close();
+        preparedStatement.close();
 
         return doesExist;
     }

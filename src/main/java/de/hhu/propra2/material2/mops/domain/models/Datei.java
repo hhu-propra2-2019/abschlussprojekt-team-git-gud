@@ -59,6 +59,8 @@ public class Datei {
     @Getter
     private final String dateityp;
 
+    private final String kategorie;
+
     private List<String> getTagNames() {
         return tags.stream()
                 .map(Tag::getText)
@@ -96,7 +98,8 @@ public class Datei {
             final LocalDate uploaddatumArgs,
             final LocalDate veroeffentlichungsdatumArgs,
             final double dateigroesseArgs,
-            final String dateitypArgs) {
+            final String dateitypArgs,
+            final String kategorieArgs) {
         this.id = idArgs;
         this.name = nameArgs;
         this.pfad = pfadArgs;
@@ -106,5 +109,6 @@ public class Datei {
         this.veroeffentlichungsdatum = veroeffentlichungsdatumArgs;
         this.dateigroesse = dateigroesseArgs;
         this.dateityp = dateitypArgs;
+        this.kategorie = kategorieArgs;
     }
 }

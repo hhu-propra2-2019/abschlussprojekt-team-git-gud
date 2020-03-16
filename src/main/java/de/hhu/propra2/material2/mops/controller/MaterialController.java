@@ -2,6 +2,7 @@ package de.hhu.propra2.material2.mops.controller;
 
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
+import de.hhu.propra2.material2.mops.domain.models.Tag;
 import de.hhu.propra2.material2.mops.domain.models.UploadForm;
 import de.hhu.propra2.material2.mops.security.Account;
 import io.micrometer.core.instrument.Counter;
@@ -135,20 +136,12 @@ public class MaterialController {
         model.addAttribute("account", createAccountFromPrincipal(token));
         authenticatedAccess.increment();
         model.addAttribute("gruppen", gruppen);
-//
-        List<Tag> tags = new ArrayList<>();
-        tags.add(new Tag(1, "Vorlesung"));
-        tags.add(new Tag(2, "Übung"));
-        model.addAttribute("tags", tags);
-        //
         List<String> tagText = new ArrayList<>();
         tagText.add("Vorlesung");
         tagText.add("Übung");
+
+        model.addAttribute("tags", tags);
         model.addAttribute("tagText", tagText);
-        //
-        List<String> uploader = new ArrayList<>();
-        uploader.add("Jenz");
-        uploader.add("Doomguy");
         model.addAttribute("uploader", uploader);
         model.addAttribute("dateitypen", dateiTypen);
         return "upload";

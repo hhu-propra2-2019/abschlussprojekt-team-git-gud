@@ -50,7 +50,7 @@ public class UploadService implements IUploadService {
                                 final User user,
                                 final Gruppe gruppe,
                                 final LocalDate veroeffentlichungsdatum,
-                                final List<Tag> tags) throws FileUploadException {
+                                final List<Tag> tags) throws FileUploadException, SQLException {
         String fileName = Strings.isNullOrEmpty(newFileName) ? file.getName() : newFileName;
         String fileExtension = FilenameUtils.getExtension(fileName);
         //if the newFileName does not have an extension use the original file extension

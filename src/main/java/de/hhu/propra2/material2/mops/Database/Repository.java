@@ -447,7 +447,7 @@ public final class Repository {
         preparedStatement.close();
     }
 
-   boolean getTagRelationByDateiId(final long dateiId) throws SQLException {
+   boolean doTagsExistByDateiId(final long dateiId) throws SQLException {
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select tagID from Tagnutzung where dateiID=?");

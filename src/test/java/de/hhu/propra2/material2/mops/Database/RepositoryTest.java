@@ -143,11 +143,11 @@ public final class RepositoryTest {
         newDatei = new DateiDTO(101, "gaedata", "/materialsammlung/gaedata/",
                 user, newTags, LocalDate.now(), LocalDate.now(), 300, "gae", gruppe, "gae");
 
-        repository.saveDatei(newDatei);
+        newDatei.setId(repository.saveDatei(newDatei));
         repository.saveDatei(newDatei);
 
-        repository.deleteTagRelationsByDateiId(101);
-        assertFalse(repository.getTagRelationByDateiId(101));
+        repository.deleteTagRelationsByDateiId(newDatei.getId());
+        assertFalse(repository.doTagsExistByDateiId(newDatei.getId()));
 
     }
 

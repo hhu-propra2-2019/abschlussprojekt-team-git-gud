@@ -105,7 +105,6 @@ public class MaterialController {
      *
      * @return String
      */
-
     @GetMapping("/suche")
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
     public String vorSuche(final KeycloakAuthenticationToken token, final Model model) {

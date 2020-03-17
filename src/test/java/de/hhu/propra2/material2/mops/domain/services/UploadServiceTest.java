@@ -17,7 +17,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -34,10 +33,13 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class UploadServiceTest {
     private static LocalDate date1303;
+
     private Tag tag1 = new Tag(1, "tag1");
     private Tag tag2 = new Tag(2, "tag2");
     private Tag tag3 = new Tag(3, "tag3");
     private List<Tag> tags = new ArrayList<>();
+    @Mock
+    private Repository repositoryMock;
     @Mock
     private FileUploadService fileUploadServiceMock;
     @Mock
@@ -46,9 +48,6 @@ public class UploadServiceTest {
     private User userMock;
     @Mock
     private Gruppe gruppeMock;
-    @Mock
-    Repository repositoryMock;
-
     private UploadService uploadService;
     private MultipartFile file;
 

@@ -29,7 +29,7 @@ public class MaterialController {
     private RestTemplate serviceAccountRestTemplate;
 
     @Autowired
-    private IModelService modelService;
+    private ModelService modelService;
     /**start routing.
      * @return String
      */
@@ -49,7 +49,7 @@ public class MaterialController {
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
     public String sicht(final KeycloakAuthenticationToken token, final Model model, final Long gruppenId) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
-        model.addAttribute("gruppen", gruppen);
+        model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
         return "dateiSicht";
     }
 
@@ -62,12 +62,11 @@ public class MaterialController {
     @GetMapping("/suche")
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
     public String vorSuche(final KeycloakAuthenticationToken token, final Model model) {
-        model.addAttribute("account", modelService.getAccountFromKeycloak(token));;
-        model.addAttribute("gruppen", gruppen);
-        model.addAttribute("tags", tags);
-        model.addAttribute("dateiTypen", dateiTypen);
-        model.addAttribute("uploader", uploader);
-        model.addAttribute("suche", suche);
+        model.addAttribute("account", modelService.getAccountFromKeycloak(token));
+        model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
+        model.addAttribute("tags", modelService.getAlleTagsByUser(token));
+        model.addAttribute("dateiTypen", modelService.getAlleDateiTypenByUser(token));
+        model.addAttribute("uploader", modelService.getAlleUploaderByUser(token));
         return "suche";
     }
 
@@ -82,10 +81,10 @@ public class MaterialController {
             final KeycloakAuthenticationToken token, final Model model, final @ModelAttribute Suche suchen,
             final String search) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
-        model.addAttribute("gruppen", gruppen);
-        model.addAttribute("tags", tags);
-        model.addAttribute("dateiTypen", dateiTypen);
-        model.addAttribute("uploader", uploader);
+        model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
+        model.addAttribute("tags", modelService.getAlleTagsByUser(token));
+        model.addAttribute("dateiTypen", modelService.getAlleDateiTypenByUser(token));
+        model.addAttribute("uploader", modelService.getAlleUploaderByUser(token));
         if (search == null) {
             model.addAttribute("suche", suchen);
             return "redirect:/suche";
@@ -102,10 +101,10 @@ public class MaterialController {
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
     public String upload(final KeycloakAuthenticationToken token, final Model model) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
-        model.addAttribute("gruppen", gruppen);
-        model.addAttribute("tagText", tags);
-        model.addAttribute("uploader", uploader);
-        model.addAttribute("dateitypen", dateiTypen);
+        model.addAttribute("gruppen", modelService.getAlleUploaderByUser(token));
+        model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
+        model.addAttribute("uploader", modelService.getAlleDateiTypenByUser(token));
+        model.addAttribute("dateitypen", modelService.getAlleDateiTypenByUser(token));
         return "upload";
     }
 

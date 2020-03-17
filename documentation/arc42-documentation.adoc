@@ -177,7 +177,11 @@ Entwicklungsdatenbank wurden DBeaver und MySQL-Workbench verwendet.
 | Architektur | Aufgebaut nach Arch42-Template
 | Codestyle | Es wird der von Checkstyle erwartete Codestyle verwendet
 | Bennenung | Fachspezifische Begriffe werden in Deutsch geschrieben. Methodenpräfixe
+<<<<<<< HEAD
 wie z.B get, set, is usw. und technische Begriffe bleiben Englisch.
+=======
+                wie z.B get, set, is usw. und technische Begriffe bleiben Englisch.
+>>>>>>> master
 |===
 
 <<<<

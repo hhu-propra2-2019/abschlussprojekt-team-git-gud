@@ -18,19 +18,17 @@ public interface IModelService {
 
     Set<String> getAlleTagsByUser(KeycloakAuthenticationToken token);
 
-    Set<String> getAlleTagsByGruppe(Long gruppeId);
+    Set<String> getAlleTagsByGruppe(Long gruppeId, KeycloakAuthenticationToken token);
 
     Set<String> getAlleDateiTypenByUser(KeycloakAuthenticationToken token);
 
     Set<String> getAlleDateiTypenByGruppe(Long gruppeId, KeycloakAuthenticationToken token);
 
-    Set<String> getAlleUploaderByUser(User user);
+    Set<String> getAlleUploaderByUser(KeycloakAuthenticationToken token);
 
     Set<String> getAlleUploaderByGruppe(Long gruppeId, KeycloakAuthenticationToken token);
 
     User getUserByKeyCloakName(String name);
-
-    Set<String> getAlleKategorienByFiles(List<Datei> dateien);
 
     void suchen(Suche suche);
 

@@ -20,7 +20,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -78,15 +81,14 @@ public class SuchServiceTest {
         Mockito.lenient().when(uploaderMock2.getNachname()).thenReturn("Stein");
 
         //Dateien for List<Datei>
-        datei1 = new Datei(1, "1", "a/b/2", uploaderMock1, tags1,
+        datei1 = new Datei(1, "My stuff",  uploaderMock1, tags1,
                 uploadDate, date1, 1, "pdf", "Uebung");
-        datei2 = new Datei(2, "2", "a/b/2", uploaderMock2, tags2,
-                uploadDate, date1, 1, "pdf", "Uebung");
-        datei3 = new Datei(3, "3", "a/b/3", uploaderMock1, tags3,
+        datei2 = new Datei(2, "Something",  uploaderMock2, tags2,
+                uploadDate, date2, 1, "pdf", "Uebung");
+        datei3 = new Datei(3, "Insert here",  uploaderMock1, tags3,
                 uploadDate, date1, 1, "jpg", "Uebung");
-        datei4 = new Datei(4, "4", "a/b/4", uploaderMock2, tags3,
+        datei4 = new Datei(4, "This datei",  uploaderMock2, tags3,
                 uploadDate, date2, 1, "jpg", "Uebung");
-
         List<Datei> dateienGruppe1 = new ArrayList<>(Arrays.asList(datei1, datei2, datei3));
         List<Datei> dateienGruppe2 = new ArrayList<>(Arrays.asList(datei4));
 
@@ -158,8 +160,9 @@ public class SuchServiceTest {
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
 
-        final int expectedSizeOfList = 1;
+        final int expectedSizeOfList = 2;
         assertThat(result.size(), is(expectedSizeOfList));
+        assertTrue(result.contains(datei2));
         assertTrue(result.contains(datei4));
     }
 
@@ -178,10 +181,9 @@ public class SuchServiceTest {
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
 
-        final int expectedSizeOfList = 3;
+        final int expectedSizeOfList = 2;
         assertThat(result.size(), is(expectedSizeOfList));
         assertTrue(result.contains(datei1));
-        assertTrue(result.contains(datei2));
         assertTrue(result.contains(datei3));
     }
 
@@ -443,5 +445,221 @@ public class SuchServiceTest {
         assertTrue(result.contains(datei1));
         assertTrue(result.contains(datei2));
         assertTrue(result.contains(datei3));
+    }
+
+    @Test
+    @SuppressWarnings("checkstyle:magicnumber")
+    public void sortierungDateiNameAufsteigend() {
+        Suche suche = new Suche(
+                "",
+                "",
+                null,
+                null,
+                null,
+                "name",
+                null,
+                "",
+                null);
+
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
+
+        final int expectedSizeOfList = 4;
+        assertThat(result.size(), is(expectedSizeOfList));
+        assertEquals(result.get(0), datei3);
+        assertEquals(result.get(1), datei1);
+        assertEquals(result.get(2), datei2);
+        assertEquals(result.get(3), datei4);
+    }
+
+    @Test
+    @SuppressWarnings("checkstyle:magicnumber")
+    public void sortierungDateiNameAbsteigend() {
+        Suche suche = new Suche(
+                "",
+                "",
+                null,
+                null,
+                null,
+                "name",
+                null,
+                "",
+                "absteigend");
+
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
+
+        final int expectedSizeOfList = 4;
+        assertThat(result.size(), is(expectedSizeOfList));
+        assertEquals(result.get(0), datei4);
+        assertEquals(result.get(1), datei2);
+        assertEquals(result.get(2), datei1);
+        assertEquals(result.get(3), datei3);
+    }
+
+    @Test
+    @SuppressWarnings("checkstyle:magicnumber")
+    public void sortierungDateiTypAufsteigend() {
+        Suche suche = new Suche(
+                "",
+                "",
+                null,
+                null,
+                null,
+                "Dateityp",
+                null,
+                "",
+                null);
+
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
+
+        final int expectedSizeOfList = 4;
+        assertThat(result.size(), is(expectedSizeOfList));
+        assertTrue(result.contains(datei1));
+        assertTrue(result.contains(datei2));
+        assertTrue(result.contains(datei3));
+        assertTrue(result.contains(datei4));
+        assertThat(result.get(0), anyOf(equalTo(datei3), equalTo(datei4)));
+        assertThat(result.get(1), anyOf(equalTo(datei3), equalTo(datei4)));
+        assertThat(result.get(2), anyOf(equalTo(datei1), equalTo(datei2)));
+        assertThat(result.get(3), anyOf(equalTo(datei1), equalTo(datei2)));
+    }
+
+    @Test
+    @SuppressWarnings("checkstyle:magicnumber")
+    public void sortierungDateiTypAbsteigend() {
+        Suche suche = new Suche(
+                "",
+                "",
+                null,
+                null,
+                null,
+                "Dateityp",
+                null,
+                "",
+                "absteigend");
+
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
+
+        final int expectedSizeOfList = 4;
+        assertThat(result.size(), is(expectedSizeOfList));
+        assertTrue(result.contains(datei1));
+        assertTrue(result.contains(datei2));
+        assertTrue(result.contains(datei3));
+        assertTrue(result.contains(datei4));
+        assertThat(result.get(0), anyOf(equalTo(datei1), equalTo(datei2)));
+        assertThat(result.get(1), anyOf(equalTo(datei1), equalTo(datei2)));
+        assertThat(result.get(2), anyOf(equalTo(datei3), equalTo(datei4)));
+        assertThat(result.get(3), anyOf(equalTo(datei3), equalTo(datei4)));
+    }
+
+    @Test
+    @SuppressWarnings("checkstyle:magicnumber")
+    public void sortierungUploaderAufsteigend() {
+        Suche suche = new Suche(
+                "",
+                "",
+                null,
+                null,
+                null,
+                "Uploader",
+                null,
+                "",
+                null);
+
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
+
+        final int expectedSizeOfList = 4;
+        assertThat(result.size(), is(expectedSizeOfList));
+        assertTrue(result.contains(datei1));
+        assertTrue(result.contains(datei2));
+        assertTrue(result.contains(datei3));
+        assertTrue(result.contains(datei4));
+        assertThat(result.get(0), anyOf(equalTo(datei1), equalTo(datei3)));
+        assertThat(result.get(1), anyOf(equalTo(datei1), equalTo(datei3)));
+        assertThat(result.get(2), anyOf(equalTo(datei2), equalTo(datei4)));
+        assertThat(result.get(3), anyOf(equalTo(datei2), equalTo(datei4)));
+    }
+
+    @Test
+    @SuppressWarnings("checkstyle:magicnumber")
+    public void sortierungUploaderAbsteigend() {
+        Suche suche = new Suche(
+                "",
+                "",
+                null,
+                null,
+                null,
+                "Uploader",
+                null,
+                "",
+                "absteigend");
+
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
+
+        final int expectedSizeOfList = 4;
+        assertThat(result.size(), is(expectedSizeOfList));
+        assertTrue(result.contains(datei1));
+        assertTrue(result.contains(datei2));
+        assertTrue(result.contains(datei3));
+        assertTrue(result.contains(datei4));
+        assertThat(result.get(0), anyOf(equalTo(datei2), equalTo(datei4)));
+        assertThat(result.get(1), anyOf(equalTo(datei2), equalTo(datei4)));
+        assertThat(result.get(2), anyOf(equalTo(datei1), equalTo(datei3)));
+        assertThat(result.get(3), anyOf(equalTo(datei1), equalTo(datei3)));
+    }
+
+    @Test
+    @SuppressWarnings("checkstyle:magicnumber")
+    public void sortierungDatumAufsteigend() {
+        Suche suche = new Suche(
+                "",
+                "",
+                null,
+                null,
+                null,
+                "Datum",
+                null,
+                "",
+                null);
+
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
+
+        final int expectedSizeOfList = 4;
+        assertThat(result.size(), is(expectedSizeOfList));
+        assertTrue(result.contains(datei1));
+        assertTrue(result.contains(datei2));
+        assertTrue(result.contains(datei3));
+        assertTrue(result.contains(datei4));
+        assertThat(result.get(0), anyOf(equalTo(datei1), equalTo(datei3)));
+        assertThat(result.get(1), anyOf(equalTo(datei1), equalTo(datei3)));
+        assertThat(result.get(2), anyOf(equalTo(datei2), equalTo(datei4)));
+        assertThat(result.get(3), anyOf(equalTo(datei2), equalTo(datei4)));
+    }
+
+    @Test
+    @SuppressWarnings("checkstyle:magicnumber")
+    public void sortierungDatumAbsteigend() {
+        Suche suche = new Suche(
+                "",
+                "",
+                null,
+                null,
+                null,
+                "Datum",
+                null,
+                "",
+                "absteigend");
+
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
+
+        final int expectedSizeOfList = 4;
+        assertThat(result.size(), is(expectedSizeOfList));
+        assertTrue(result.contains(datei1));
+        assertTrue(result.contains(datei2));
+        assertTrue(result.contains(datei3));
+        assertTrue(result.contains(datei4));
+        assertThat(result.get(0), anyOf(equalTo(datei2), equalTo(datei4)));
+        assertThat(result.get(1), anyOf(equalTo(datei2), equalTo(datei4)));
+        assertThat(result.get(2), anyOf(equalTo(datei1), equalTo(datei3)));
+        assertThat(result.get(3), anyOf(equalTo(datei1), equalTo(datei3)));
     }
 }

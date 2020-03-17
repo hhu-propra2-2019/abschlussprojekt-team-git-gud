@@ -44,14 +44,22 @@ public final class GruppeDTO {
         this.dateien = dateiArgs;
     }
 
-    @SuppressWarnings({"checkstyle:EqualsHashCode", "checkstyle:FinalParameters"})
+    @SuppressWarnings({"checkstyle:FinalParameters"})
     @Override
     public boolean equals(Object o) {
-        if (o.getClass() == this.getClass()) {
-            GruppeDTO gruppeDTO = (GruppeDTO) o;
-            return gruppeDTO.getId() == this.id;
+        if (o == null) {
+            return false;
         }
 
+        if (o.getClass() == this.getClass()) {
+            GruppeDTO gruppeDTO = (GruppeDTO) o;
+            return gruppeDTO.hashCode() == this.hashCode();
+        }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) id;
     }
 }

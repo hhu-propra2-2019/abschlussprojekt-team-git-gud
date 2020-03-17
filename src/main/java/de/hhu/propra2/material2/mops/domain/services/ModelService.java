@@ -40,7 +40,6 @@ public final class ModelService implements IModelService {
         return new Datei(
                 dateiDTO.getId(),
                 dateiDTO.getName(),
-                dateiDTO.getPfad(),
                 loadUploader(dateiDTO.getUploader()),
                 tags,
                 dateiDTO.getUploaddatum(),

@@ -20,6 +20,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -466,5 +468,33 @@ public class SuchServiceTest {
         assertTrue(datei2.equals(result.get(1)));
         assertTrue(datei3.equals(result.get(2)));
         assertTrue(datei4.equals(result.get(3)));
+    }
+
+    @Test
+    @SuppressWarnings("checkstyle:magicnumber")
+    public void sortierungDateiTyp() {
+        Suche suche = new Suche(
+                "",
+                "",
+                null,
+                null,
+                null,
+                "Dateityp",
+                null,
+                "",
+                null);
+
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
+
+        final int expectedSizeOfList = 4;
+        assertThat(result.size(), is(expectedSizeOfList));
+        assertTrue(result.contains(datei1));
+        assertTrue(result.contains(datei2));
+        assertTrue(result.contains(datei3));
+        assertTrue(result.contains(datei4));
+        assertThat(result.get(0), anyOf(equalTo(datei3), equalTo(datei4)));
+        assertThat(result.get(1), anyOf(equalTo(datei3), equalTo(datei4)));
+        assertThat(result.get(2), anyOf(equalTo(datei1), equalTo(datei2)));
+        assertThat(result.get(3), anyOf(equalTo(datei1), equalTo(datei2)));
     }
 }

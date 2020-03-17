@@ -14,19 +14,19 @@ public interface IModelService {
 
     List<Gruppe> getAlleGruppenByUser(KeycloakAuthenticationToken token);
 
-    List<Datei> getAlleDateienByGruppe(Gruppe gruppe);
+    List<Datei> getAlleDateienByGruppe(Long gruppeId, KeycloakAuthenticationToken token );
 
     Set<String> getAlleTagsByUser(KeycloakAuthenticationToken token);
 
-    Set<String> getAlleTagsByGruppe(Gruppe gruppe);
+    Set<String> getAlleTagsByGruppe(Long gruppeId);
 
     Set<String> getAlleDateiTypenByUser(KeycloakAuthenticationToken token);
 
-    Set<String> getAlleDateiTypenByGruppe(Gruppe gruppe);
+    Set<String> getAlleDateiTypenByGruppe(Long gruppeId);
 
     Set<String> getAlleUploaderByUser(User user);
 
-    Set<String> getAlleUploaderByGruppe(Gruppe gruppe);
+    Set<String> getAlleUploaderByGruppe(Long gruppeId);
 
     User getUserByKeyCloakName(String name);
 
@@ -34,6 +34,11 @@ public interface IModelService {
 
     void suchen(Suche suche);
 
-    List<Datei> getSuchergebnisse(Token token);
+    List<Datei> getSuchergebnisse(KeycloakAuthenticationToken token);
 
+    List<String> getKategorienFromSuche(KeycloakAuthenticationToken token);
+
+    List<String> getKategorienByGruppe(List<Datei> datein);
+
+    Boolean isSortedByKategorie(KeycloakAuthenticationToken token);
 }

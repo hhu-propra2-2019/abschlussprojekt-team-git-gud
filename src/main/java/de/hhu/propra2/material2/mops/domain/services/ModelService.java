@@ -158,6 +158,9 @@ public final class ModelService implements IModelService {
         }
     }
 
+    public void saveDatei(final Datei datei, final Gruppe gruppe) {
+    }
+
     @SuppressWarnings("checkstyle:MagicNumber")
     public User createDummyUser() {
         HashMap mapUser = new HashMap();

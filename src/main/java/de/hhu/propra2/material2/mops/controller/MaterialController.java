@@ -36,8 +36,8 @@ public class MaterialController {
     public String startseite(final KeycloakAuthenticationToken token, final Model model) {
         if (token != null) {
             model.addAttribute("account", modelService.getAccountFromKeycloak(token));
+            model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
         }
-        model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
         return "start";
     }
 
@@ -99,9 +99,9 @@ public class MaterialController {
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
     public String upload(final KeycloakAuthenticationToken token, final Model model) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
-        model.addAttribute("gruppen", modelService.getAlleUploaderByUser(token));
+        model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
         model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
-        model.addAttribute("uploader", modelService.getAlleDateiTypenByUser(token));
+        model.addAttribute("uploader", modelService.getAlleUploaderByUser(token));
         model.addAttribute("dateitypen", modelService.getAlleDateiTypenByUser(token));
         return "upload";
     }

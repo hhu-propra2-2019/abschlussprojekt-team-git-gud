@@ -7,9 +7,13 @@ import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
 import de.hhu.propra2.material2.mops.Database.Repository;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
+import de.hhu.propra2.material2.mops.domain.models.Suche;
 import de.hhu.propra2.material2.mops.domain.models.Tag;
 import de.hhu.propra2.material2.mops.domain.models.User;
+import de.hhu.propra2.material2.mops.security.Account;
 import lombok.extern.slf4j.Slf4j;
+import org.keycloak.KeycloakPrincipal;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -25,12 +29,15 @@ public final class ModelService implements IModelService {
 
 
     private final Repository repository;
+    private final SuchService suchService;
+    private Suche suche;
 
     /**
      * Constructor of ModelService.
      */
-    public ModelService(final Repository repositoryArg) {
+    public ModelService(final Repository repositoryArg, final SuchService suchServiceArg) {
         repository = repositoryArg;
+        suchService = suchServiceArg;
     }
 
     private Datei loadDatei(final DateiDTO dateiDTO) {
@@ -99,15 +106,19 @@ public final class ModelService implements IModelService {
 
     }
 
-    public List<Gruppe> getAlleGruppenByUser(final User user) {
+    public List<Gruppe> getAlleGruppenByUser(final KeycloakAuthenticationToken token) {
+        User user = createUserByToken(token);
         return user.getAllGruppen();
     }
 
-    public List<Datei> getAlleDateienByGruppe(final Gruppe gruppe) {
-        return gruppe.getDateien();
+    public List<Datei> getAlleDateienByGruppe(final Long gruppeId,
+                                              final KeycloakAuthenticationToken token) {
+        User user = createUserByToken(token);
+        return user.getGruppeById(gruppeId).getDateien();
     }
 
-    public Set<String> getAlleTagsByUser(final User user) {
+    public Set<String> getAlleTagsByUser(final KeycloakAuthenticationToken token) {
+        User user = createUserByToken(token);
         List<Gruppe> groups = user.getAllGruppen();
         Set<String> tags = new HashSet<>();
         for (Gruppe gruppe : groups) {
@@ -117,8 +128,10 @@ public final class ModelService implements IModelService {
         return tags;
     }
 
-    public Set<String> getAlleTagsByGruppe(final Gruppe gruppe) {
-        List<Datei> dateienListe = gruppe.getDateien();
+    public Set<String> getAlleTagsByGruppe(final Long gruppeId,
+                                           final KeycloakAuthenticationToken token) {
+        User user = createUserByToken(token);
+        List<Datei> dateienListe = user.getGruppeById(gruppeId).getDateien();
         Set<String> tags = new HashSet<>();
         dateienListe.forEach(datei -> datei.getTags()
                 .forEach(tag -> tags.add(tag.getText())));
@@ -126,7 +139,8 @@ public final class ModelService implements IModelService {
     }
 
 
-    public Set<String> getAlleUploaderByUser(final User user) {
+    public Set<String> getAlleUploaderByUser(final KeycloakAuthenticationToken token) {
+        User user = createUserByToken(token);
         List<Gruppe> groups = user.getAllGruppen();
         Set<String> uploader = new HashSet<String>();
         for (Gruppe gruppe : groups) {
@@ -138,15 +152,44 @@ public final class ModelService implements IModelService {
         return uploader;
     }
 
-    public Set<String> getAlleUploaderByGruppe(final Gruppe gruppe) {
-        return gruppe.getDateien()
+    public Set<String> getAlleUploaderByGruppe(final Long gruppeId,
+                                               final KeycloakAuthenticationToken token) {
+        User user = createUserByToken(token);
+        return user.getGruppeById(gruppeId).getDateien()
                 .stream()
                 .map(datei -> datei.getUploader().getNachname())
                 .collect(Collectors.toSet());
     }
 
+    public void suchen(final Suche sucheArg) {
+        this.suche = sucheArg;
+    }
 
-    public Set<String> getAlleDateiTypenByUser(final User user) {
+    public List<Datei> getSuchergebnisse(final KeycloakAuthenticationToken token) {
+        Account account = getAccountFromKeycloak(token);
+        return suchService.starteSuche(suche, account.getName());
+    }
+
+    public Set<String> getKategorienFromSuche(final KeycloakAuthenticationToken token) {
+        List<Datei> dateien = getSuchergebnisse(token);
+        Set<String> kategorien = new HashSet<>();
+        dateien.forEach(datei -> kategorien.add(datei.getKategorie()));
+        return kategorien;
+    }
+
+    public Set<String> getKategorienByGruppe(final Long gruppeId, final KeycloakAuthenticationToken token) {
+        List<Datei> dateien = getAlleDateienByGruppe(gruppeId, token);
+        Set<String> kategorien = new HashSet<>();
+        dateien.forEach(datei -> kategorien.add(datei.getKategorie()));
+        return kategorien;
+    }
+
+    public Boolean isSortedByKategorie() {
+        return "Kategorie".equals(suche.getSortierung());
+    }
+
+    public Set<String> getAlleDateiTypenByUser(final KeycloakAuthenticationToken token) {
+        User user = createUserByToken(token);
         List<Gruppe> groups = user.getAllGruppen();
         Set<String> dateiTypen = new HashSet<String>();
         for (Gruppe gruppe : groups) {
@@ -158,30 +201,32 @@ public final class ModelService implements IModelService {
         return dateiTypen;
     }
 
-    public Set<String> getAlleDateiTypenByGruppe(final Gruppe gruppe) {
-        return gruppe.getDateien()
+    public Set<String> getAlleDateiTypenByGruppe(final Long gruppeId,
+                                                 final KeycloakAuthenticationToken token) {
+        User user = createUserByToken(token);
+        return user.getGruppeById(gruppeId).getDateien()
                 .stream()
                 .map(Datei::getDateityp)
                 .collect(Collectors.toSet());
     }
 
-    public List<Datei> getAlleDateienByGruppeId(final Long id) {
-        return null;
+    public Account getAccountFromKeycloak(final KeycloakAuthenticationToken token) {
+        KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+        return new Account(
+                principal.getName(),
+                principal.getKeycloakSecurityContext().getIdToken().getEmail(),
+                null,
+                token.getAccount().getRoles());
     }
 
-    public User getUserByKeyCloakName(final String name) {
+    private User createUserByToken(final KeycloakAuthenticationToken token) {
+        Account account = getAccountFromKeycloak(token);
+
         try {
-            return loadUser(repository.findUserByKeycloakname(name));
+            return loadUser(repository.findUserByKeycloakname(account.getName()));
         } catch (SQLException e) {
             e.printStackTrace();
             return new User(-1L, "", "", "", new HashMap<>());
         }
-    }
-
-    @Override
-    public Set<String> getAlleKategorienByFiles(final List<Datei> dateien) {
-        Set<String> kategorien = new HashSet<>();
-        dateien.forEach(datei -> kategorien.add(datei.getKategorie()));
-        return kategorien;
     }
 }

@@ -24,7 +24,8 @@ public class User {
      */
     private final String nachname;
 
-    /**.
+    /**
+     * .
      * Unique name provided by
      * keycloak.
      */
@@ -41,5 +42,15 @@ public class User {
      */
     public List<Gruppe> getAllGruppen() {
         return new ArrayList<>(belegungUndRechte.keySet());
+    }
+
+    public Gruppe getGruppeById(final long gruppenId) {
+        List<Gruppe> gruppen = this.getAllGruppen();
+        for (Gruppe gruppe : gruppen) {
+            if (gruppe.getId() == gruppenId) {
+                return gruppe;
+            }
+        }
+        return new Gruppe(-1, "", new ArrayList<>());
     }
 }

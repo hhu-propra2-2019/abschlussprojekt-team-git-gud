@@ -28,8 +28,6 @@ public interface IModelService {
 
     Set<String> getAlleUploaderByGruppe(Long gruppeId, KeycloakAuthenticationToken token);
 
-    User getUserByKeyCloakName(String name);
-
     void suchen(Suche suche);
 
     List<Datei> getSuchergebnisse(KeycloakAuthenticationToken token);

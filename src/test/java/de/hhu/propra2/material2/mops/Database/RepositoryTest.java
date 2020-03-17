@@ -29,37 +29,39 @@ public final class RepositoryTest {
     private GruppeDTO gruppe;
     private UserDTO user;
     private TagDTO tag;
-    private ArrayList<TagDTO> tags;
+    private ArrayList<TagDTO> tags = new ArrayList<TagDTO>();
+    ;
     private DateiDTO datei;
+    private ArrayList<DateiDTO> dateien = new ArrayList<DateiDTO>();
+    ;
+    private HashMap<GruppeDTO, Boolean> berechtigung = new HashMap<GruppeDTO, Boolean>();
 
     @SuppressWarnings("checkstyle:magicnumber")
     public RepositoryTest() {
-        gruppe = new GruppeDTO(99999999, "gruppe", "this is a description", null);
-        HashMap<GruppeDTO, Boolean> berechtigung = new HashMap<GruppeDTO, Boolean>();
+        tag = new TagDTO("gae");
+        tags.add(tag);
+
+        gruppe = new GruppeDTO(99999999, "gruppe", "this is a description", dateien);
         berechtigung.put(gruppe, true);
+
         user = new UserDTO(999999, "Why are you gae?", "You are gae",
                 "gae", berechtigung);
-        tag = new TagDTO("gae");
-        tags = new ArrayList<TagDTO>();
-        tags.add(tag);
+
         datei = new DateiDTO("gaedata", "/materialsammlung/gaedata/",
                 user, tags, LocalDate.now(), LocalDate.now(), 200, "gae", gruppe, "gae");
+        gruppe.getDateien().add(datei);
     }
 
     @BeforeEach
     public void preparation() throws SQLException {
         repository.saveUser(user);
-        datei = new DateiDTO(repository.saveDatei(datei), datei.getName(), datei.getPfad(),
-            datei.getUploader(), datei.getTagDTOs(), datei.getUploaddatum(),
-                datei.getVeroeffentlichungsdatum(), datei.getDateigroesse(),
-                datei.getDateityp(), datei.getGruppe(), datei.getKategorie());
+        datei.setId(repository.saveDatei(datei));
     }
 
     @AfterEach
     public void deletionOfRemainingStuff() throws SQLException {
-        repository.deleteUserByUserId(user.getId());
-        repository.deleteDateiByDateiId(datei.getId());
-        repository.deleteGroupByGroupId(gruppe.getId());
+        repository.deleteUserByUserDTO(user);
+        repository.deleteGroupByGroupDTO(gruppe);
     }
 
 
@@ -154,7 +156,7 @@ public final class RepositoryTest {
 
     @Test
     public void deleteUserByIdTest() throws SQLException {
-        repository.deleteUserByUserId(user.getId());
+        repository.deleteUserByUserDTO(user);
 
         UserDTO shouldBeNull = repository.findUserByIdLAZY(user.getId());
 
@@ -163,7 +165,7 @@ public final class RepositoryTest {
 
     @Test
     public void deleteGruppeByGruppeIdTest() throws SQLException {
-        repository.deleteGroupByGroupId(gruppe.getId());
+        repository.deleteGroupByGroupDTO(gruppe);
 
         assertTrue(repository.findGruppeByGruppeId(gruppe.getId()) == null);
         assertTrue(repository.findAllUserByGruppeId(gruppe.getId()).isEmpty());

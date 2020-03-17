@@ -105,7 +105,7 @@ public final class Repository {
 
         for (GruppeDTO gruppe : gruppenBelegung.keySet()) {
             saveGruppe(gruppe);
-            resetGruppenbelegung(gruppe.getId());
+            deleteUserGroupRelationByGroupId(gruppe.getId());
             saveGruppenbelegung(userDTO.getId(), gruppe.getId(), gruppenBelegung.get(gruppe));
         }
         preparedStatement.close();
@@ -116,18 +116,18 @@ public final class Repository {
      * To be used for synchronization
      * with gruppenbildung.
      *
-     * @param userId
+     * @param userDTO
      * @throws SQLException
      */
-    public void deleteUserByUserId(final long userId) throws SQLException {
-        deleteUserGroupRelationByUserId(userId);
+    public void deleteUserByUserDTO(final UserDTO userDTO) throws SQLException {
+        deleteUserGroupRelationByUserId(userDTO.getId());
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement("delete from User where userID=?");
-        preparedStatement.setLong(1, userId);
+        preparedStatement.setLong(1, userDTO.getId());
 
-        deleteUserGroupRelationByUserId(userId);
-        changeUploaderToDeletedForAllDateiByUploaderId(userId);
+        deleteUserGroupRelationByUserId(userDTO.getId());
+        changeUploaderToDeletedForAllDateiByUploaderId(userDTO.getId());
 
         preparedStatement.execute();
         preparedStatement.close();
@@ -138,15 +138,19 @@ public final class Repository {
      * To be used for synchronization
      * with grupppenbildung.
      *
-     * @param gruppeId
+     * @param gruppeDTO
      * @throws SQLException
      */
-    public void deleteGroupByGroupId(final long gruppeId) throws SQLException {
-        deleteUserGroupRelationByGroupId(gruppeId);
+    public void deleteGroupByGroupDTO(final GruppeDTO gruppeDTO) throws SQLException {
+        deleteUserGroupRelationByGroupId(gruppeDTO.getId());
+
+        for (DateiDTO dateiDTO : gruppeDTO.getDateien()) {
+            deleteDateiByDateiId(dateiDTO.getId());
+        }
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement("delete from Gruppe where gruppeID=?");
-        preparedStatement.setLong(1, gruppeId);
+        preparedStatement.setLong(1, gruppeDTO.getId());
 
         preparedStatement.execute();
         preparedStatement.close();
@@ -470,17 +474,6 @@ public final class Repository {
         preparedStatement.setLong(1, gruppeDTO.getId());
         preparedStatement.setString(2, gruppeDTO.getName());
         preparedStatement.setString(3, gruppeDTO.getDescription());
-        preparedStatement.execute();
-
-        preparedStatement.close();
-    }
-
-    void resetGruppenbelegung(final long gruppeId) throws SQLException {
-        PreparedStatement preparedStatement =
-                connection.prepareStatement("delete from Gruppenbelegung where gruppeID=?");
-
-        preparedStatement.setString(1, "" + gruppeId);
-
         preparedStatement.execute();
 
         preparedStatement.close();

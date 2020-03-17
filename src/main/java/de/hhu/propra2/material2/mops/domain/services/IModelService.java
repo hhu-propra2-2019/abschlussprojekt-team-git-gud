@@ -1,10 +1,10 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
-import ch.qos.logback.core.subst.Token;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
 import de.hhu.propra2.material2.mops.domain.models.User;
+import de.hhu.propra2.material2.mops.security.Account;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 
 import java.util.List;
@@ -14,7 +14,7 @@ public interface IModelService {
 
     List<Gruppe> getAlleGruppenByUser(KeycloakAuthenticationToken token);
 
-    List<Datei> getAlleDateienByGruppe(Long gruppeId, KeycloakAuthenticationToken token );
+    List<Datei> getAlleDateienByGruppe(Long gruppeId, KeycloakAuthenticationToken token);
 
     Set<String> getAlleTagsByUser(KeycloakAuthenticationToken token);
 
@@ -41,4 +41,6 @@ public interface IModelService {
     List<String> getKategorienByGruppe(List<Datei> datein);
 
     Boolean isSortedByKategorie(KeycloakAuthenticationToken token);
+
+    Account getAccountFromKeycloak(KeycloakAuthenticationToken token);
 }

@@ -12,60 +12,60 @@ public final class DateiDTO {
     /**
      * Unique ID from database.
      */
-    
+
     private long id;
     /**
      * Name of file.
      */
-    
+
     private String name;
     /**
      * Path of file.
      */
-    
+
     private String pfad;
     /**
      * User that uploaded the file.
      */
-    
+
     private UserDTO uploader;
     /**
      * All assigned tags.
      */
-    
+
     private List<TagDTO> tagDTOs;
     /**
      * Assigned group.
      */
-    
-    
+
+
     private GruppeDTO gruppe;
     /**
      * Upload date.
      */
-    
+
     private LocalDate uploaddatum;
     /**
      * Date for when the file
      * will be visible to non-uploaders
      * of its group.
      */
-    
+
     private LocalDate veroeffentlichungsdatum;
     /**
      * File size.
      */
-    
+
     private long dateigroesse;
     /**
      * File type.
      */
-    
+
     private String dateityp;
     /**
      * Category for gui.
      */
-    
+
     private String kategorie;
 
     /**

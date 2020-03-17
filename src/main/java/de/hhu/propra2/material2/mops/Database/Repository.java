@@ -247,12 +247,8 @@ public final class Repository {
         ArrayList<DateiDTO> dateien = findAllDateiByUploaderId(userId);
 
         for (DateiDTO dateiDTO: dateien) {
-            updateDatei(new DateiDTO(dateiDTO.getId(), dateiDTO.getName(),
-                    dateiDTO.getPfad(), new UserDTO(-1, "User",
-                    "deleted", "-", null),
-                    dateiDTO.getTagDTOs(), dateiDTO.getUploaddatum(), dateiDTO.getVeroeffentlichungsdatum(),
-                    dateiDTO.getDateigroesse(), dateiDTO.getDateityp(),
-                    dateiDTO.getGruppe(), dateiDTO.getKategorie()), dateiDTO.getId());
+            dateiDTO.setUploader(new UserDTO(-1, "User", "Deleted", "-", null));
+            updateDatei(dateiDTO, dateiDTO.getId());
         }
 
     }

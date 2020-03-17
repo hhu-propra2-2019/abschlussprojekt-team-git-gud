@@ -20,11 +20,6 @@ public class Datei {
     @Getter
     private String name;
     /**
-     * Path of file.
-     */
-    @Getter
-    private final String pfad;
-    /**
      * User that uploaded the file.
      */
     @Getter
@@ -92,7 +87,6 @@ public class Datei {
     public Datei(
             final long idArgs,
             final String nameArgs,
-            final String pfadArgs,
             final User uploaderArgs,
             final List<Tag> tagsArgs,
             final LocalDate uploaddatumArgs,
@@ -102,7 +96,6 @@ public class Datei {
             final String kategorieArgs) {
         this.id = idArgs;
         this.name = nameArgs;
-        this.pfad = pfadArgs;
         this.uploader = uploaderArgs;
         this.tags = tagsArgs;
         this.uploaddatum = uploaddatumArgs;

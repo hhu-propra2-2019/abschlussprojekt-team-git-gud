@@ -33,5 +33,6 @@ erreichen können
 
 == Dokumentationsverzeichnis
 
-- Architekturdokumentation: Vgl. den Ordner documentation
-- Methodendokumentation: Methodenfunktionalität in Javadocs festgehalten
+- Methodendokumentation: Die Methoden der Anwendung sind im Quellcode mti Javadocs versehen, die ihre Fiunktionalität beschreiben.
+
+- Architekturdokumentation: Architkekturbdokumentation befindet sich im Order "documentations"

@@ -18,11 +18,6 @@ public final class DateiDTO {
     @Getter
     private final String name;
     /**
-     * Path of file.
-     */
-    @Getter
-    private final String pfad;
-    /**
      * User that uploaded the file.
      */
     @Getter
@@ -71,7 +66,6 @@ public final class DateiDTO {
      * and for saving changes to existing Datei.
      *  @param idArg
      * @param nameArg
-     * @param pfadArg
      * @param uploaderArg
      * @param tagDTOsArg
      * @param uploaddatumArg
@@ -83,7 +77,6 @@ public final class DateiDTO {
      */
     public DateiDTO(final long idArg,
                     final String nameArg,
-                    final String pfadArg,
                     final UserDTO uploaderArg,
                     final List<TagDTO> tagDTOsArg,
                     final LocalDate uploaddatumArg,
@@ -94,7 +87,6 @@ public final class DateiDTO {
                     final String kategorieArg) {
         this.id = idArg;
         this.name = nameArg;
-        this.pfad = pfadArg;
         this.uploader = uploaderArg;
         this.tagDTOs = tagDTOsArg;
         this.gruppe = gruppeArg;
@@ -108,7 +100,6 @@ public final class DateiDTO {
     /**
      * Constructor for saving to database.
      * @param nameArg
-     * @param pfadArg
      * @param uploaderArg
      * @param tagDTOsArg
      * @param uploaddatumArg
@@ -119,7 +110,6 @@ public final class DateiDTO {
      * @param kategorieArg
      */
     public DateiDTO(final String nameArg,
-                    final String pfadArg,
                     final UserDTO uploaderArg,
                     final List<TagDTO> tagDTOsArg,
                     final LocalDate uploaddatumArg,
@@ -130,7 +120,6 @@ public final class DateiDTO {
                     final String kategorieArg) {
         this.id = -1;
         this.name = nameArg;
-        this.pfad = pfadArg;
         this.uploader = uploaderArg;
         this.tagDTOs = tagDTOsArg;
         this.gruppe = gruppeArg;

@@ -191,7 +191,7 @@ public final class ModelService implements IModelService {
     }
 
     public Boolean isSortedByKategorie() {
-        return "Kategorie".equals(suche.getSortierung());
+        return "Kategorie".equals(suche.getSortierKriterium());
     }
 
     public Set<String> getAlleDateiTypenByUser(final KeycloakAuthenticationToken token) {

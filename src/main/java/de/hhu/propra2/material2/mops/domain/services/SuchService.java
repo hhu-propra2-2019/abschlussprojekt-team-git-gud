@@ -2,7 +2,6 @@ package de.hhu.propra2.material2.mops.domain.services;
 
 import de.hhu.propra2.material2.mops.Database.Repository;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
-import de.hhu.propra2.material2.mops.domain.models.User;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
 import lombok.extern.slf4j.Slf4j;
 import de.hhu.propra2.material2.mops.domain.services.suchComparators.DateiDateiTypComparator;
@@ -23,7 +22,7 @@ public class SuchService {
 
     private final Repository repository;
 
-    public SuchService(final ModelService modelServiceArg, final Repository repositoryArg) {
+    public SuchService(final Repository repositoryArg) {
         this.repository = repositoryArg;
     }
 

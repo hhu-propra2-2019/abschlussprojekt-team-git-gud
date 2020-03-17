@@ -38,9 +38,9 @@ public class MaterialController {
      * Beispiel aus der KeycloakDemo
      * //
      * THIS IS JUST AN EXAMPLE! DO NOT QUERY A SERVICE IN THE REQUEST/RESPONSE CYCLE!
-     * //
+     * <p>
      * var res = Arrays.asList(serviceAccountRestTemplate
-     *      .getForEntity("http://localhost:8080/api/text", Entry[].class).getBody());
+     * .getForEntity("http://localhost:8080/api/text", Entry[].class).getBody());
      */
 
     private List<Gruppe> gruppen;
@@ -50,7 +50,7 @@ public class MaterialController {
     private Suche suche;
 
     public MaterialController(final MeterRegistry registry, final IModelService ms) {
-        User user = ms.createDummyUser();
+        User user = ms.getUserByKeyCloakName("studentin1");
         gruppen = user.getAllGruppen();
         tags = ms.getAlleTagsByUser(user);
         dateiTypen = ms.getAlleDateiTypenByUser(user);
@@ -105,7 +105,6 @@ public class MaterialController {
      *
      * @return String
      */
-
     @GetMapping("/suche")
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
     public String vorSuche(final KeycloakAuthenticationToken token, final Model model) {
@@ -135,7 +134,7 @@ public class MaterialController {
         model.addAttribute("uploader", uploader);
         this.suche = suchen;
         if (search == null) {
-            return  "redirect:/suche";
+            return "redirect:/suche";
         }
         return "redirect:/";
     }

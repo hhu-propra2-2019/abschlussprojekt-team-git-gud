@@ -84,7 +84,7 @@ public class SuchServiceTest {
         datei1 = new Datei(1, "My stuff", "a/b/2", uploaderMock1, tags1,
                 uploadDate, date1, 1, "pdf");
         datei2 = new Datei(2, "Something", "a/b/2", uploaderMock2, tags2,
-                uploadDate, date1, 1, "pdf");
+                uploadDate, date2, 1, "pdf");
         datei3 = new Datei(3, "Insert here", "a/b/3", uploaderMock1, tags3,
                 uploadDate, date1, 1, "jpg");
         datei4 = new Datei(4, "This datei", "a/b/4", uploaderMock2, tags3,
@@ -160,8 +160,9 @@ public class SuchServiceTest {
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
 
-        final int expectedSizeOfList = 1;
+        final int expectedSizeOfList = 2;
         assertThat(result.size(), is(expectedSizeOfList));
+        assertTrue(result.contains(datei2));
         assertTrue(result.contains(datei4));
     }
 
@@ -180,10 +181,9 @@ public class SuchServiceTest {
 
         List<Datei> result = suchService.starteSuche(suche, "Peter");
 
-        final int expectedSizeOfList = 3;
+        final int expectedSizeOfList = 2;
         assertThat(result.size(), is(expectedSizeOfList));
         assertTrue(result.contains(datei1));
-        assertTrue(result.contains(datei2));
         assertTrue(result.contains(datei3));
     }
 
@@ -509,6 +509,34 @@ public class SuchServiceTest {
                 null,
                 null,
                 "Uploader",
+                null,
+                "",
+                null);
+
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
+
+        final int expectedSizeOfList = 4;
+        assertThat(result.size(), is(expectedSizeOfList));
+        assertTrue(result.contains(datei1));
+        assertTrue(result.contains(datei2));
+        assertTrue(result.contains(datei3));
+        assertTrue(result.contains(datei4));
+        assertThat(result.get(0), anyOf(equalTo(datei1), equalTo(datei3)));
+        assertThat(result.get(1), anyOf(equalTo(datei1), equalTo(datei3)));
+        assertThat(result.get(2), anyOf(equalTo(datei2), equalTo(datei4)));
+        assertThat(result.get(3), anyOf(equalTo(datei2), equalTo(datei4)));
+    }
+
+    @Test
+    @SuppressWarnings("checkstyle:magicnumber")
+    public void sortierungDatum() {
+        Suche suche = new Suche(
+                "",
+                "",
+                null,
+                null,
+                null,
+                "Datum",
                 null,
                 "",
                 null);

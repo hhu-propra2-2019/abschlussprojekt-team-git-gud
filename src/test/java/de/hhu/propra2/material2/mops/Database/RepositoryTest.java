@@ -42,14 +42,14 @@ public final class RepositoryTest {
         tag = new TagDTO("gae");
         tags = new ArrayList<TagDTO>();
         tags.add(tag);
-        datei = new DateiDTO("gaedata", "/materialsammlung/gaedata/",
+        datei = new DateiDTO("gaedata",
                 user, tags, LocalDate.now(), LocalDate.now(), 200, "gae", gruppe, "gae");
     }
 
     @BeforeEach
     public void preparation() throws SQLException {
         repository.saveUser(user);
-        datei = new DateiDTO(repository.saveDatei(datei), datei.getName(), datei.getPfad(),
+        datei = new DateiDTO(repository.saveDatei(datei), datei.getName(),
             datei.getUploader(), datei.getTagDTOs(), datei.getUploaddatum(),
                 datei.getVeroeffentlichungsdatum(), datei.getDateigroesse(),
                 datei.getDateityp(), datei.getGruppe(), datei.getKategorie());
@@ -86,7 +86,7 @@ public final class RepositoryTest {
         newTags.add(tag1);
         newTags.add(tag2);
 
-        newDatei = new DateiDTO(datei.getId(), "gaedata", "/materialsammlung/gaedata/",
+        newDatei = new DateiDTO(datei.getId(), "gaedata",
                 user, newTags, LocalDate.now(), LocalDate.now(), 300, "gae", gruppe, "gae");
 
 
@@ -113,7 +113,7 @@ public final class RepositoryTest {
         newTags.add(tag1);
         newTags.add(tag2);
 
-        newDatei = new DateiDTO(datei.getId(), "gaedata", "/materialsammlung/gaedata/",
+        newDatei = new DateiDTO(datei.getId(), "gaedata",
                 user, newTags, LocalDate.now(), LocalDate.now(), 300, "gae", gruppe, "gae");
 
         repository.saveDatei(newDatei);
@@ -140,7 +140,7 @@ public final class RepositoryTest {
         newTags.add(tag1);
         newTags.add(tag2);
 
-        newDatei = new DateiDTO(101, "gaedata", "/materialsammlung/gaedata/",
+        newDatei = new DateiDTO(101, "gaedata",
                 user, newTags, LocalDate.now(), LocalDate.now(), 300, "gae", gruppe, "gae");
 
         repository.saveDatei(newDatei);

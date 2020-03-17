@@ -44,6 +44,11 @@ public class User {
         return new ArrayList<>(belegungUndRechte.keySet());
     }
 
+    /**
+     * returns group by GroupId
+     * @param gruppenId
+     * @return Gruppe
+     */
     public Gruppe getGruppeById(final long gruppenId) {
         List<Gruppe> gruppen = this.getAllGruppen();
         for (Gruppe gruppe : gruppen) {

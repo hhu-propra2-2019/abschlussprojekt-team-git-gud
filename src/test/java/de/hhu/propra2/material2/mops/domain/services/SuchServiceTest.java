@@ -23,6 +23,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -80,13 +81,13 @@ public class SuchServiceTest {
         Mockito.lenient().when(uploaderMock2.getNachname()).thenReturn("Stein");
 
         //Dateien for List<Datei>
-        datei1 = new Datei(1, "1", "a/b/2", uploaderMock1, tags1,
+        datei1 = new Datei(1, "My stuff", "a/b/2", uploaderMock1, tags1,
                 uploadDate, date1, 1, "pdf");
-        datei2 = new Datei(2, "2", "a/b/2", uploaderMock2, tags2,
+        datei2 = new Datei(2, "Something", "a/b/2", uploaderMock2, tags2,
                 uploadDate, date1, 1, "pdf");
-        datei3 = new Datei(3, "3", "a/b/3", uploaderMock1, tags3,
+        datei3 = new Datei(3, "Insert here", "a/b/3", uploaderMock1, tags3,
                 uploadDate, date1, 1, "jpg");
-        datei4 = new Datei(4, "4", "a/b/4", uploaderMock2, tags3,
+        datei4 = new Datei(4, "This datei", "a/b/4", uploaderMock2, tags3,
                 uploadDate, date2, 1, "jpg");
         List<Datei> dateienGruppe1 = new ArrayList<>(Arrays.asList(datei1, datei2, datei3));
         List<Datei> dateienGruppe2 = new ArrayList<>(Arrays.asList(datei4));
@@ -464,10 +465,10 @@ public class SuchServiceTest {
 
         final int expectedSizeOfList = 4;
         assertThat(result.size(), is(expectedSizeOfList));
-        assertTrue(datei1.equals(result.get(0)));
-        assertTrue(datei2.equals(result.get(1)));
-        assertTrue(datei3.equals(result.get(2)));
-        assertTrue(datei4.equals(result.get(3)));
+        assertEquals(result.get(0), datei3);
+        assertEquals(result.get(1), datei1);
+        assertEquals(result.get(2), datei2);
+        assertEquals(result.get(3), datei4);
     }
 
     @Test

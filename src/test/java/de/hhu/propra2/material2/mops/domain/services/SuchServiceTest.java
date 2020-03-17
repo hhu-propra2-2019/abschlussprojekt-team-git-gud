@@ -498,4 +498,32 @@ public class SuchServiceTest {
         assertThat(result.get(2), anyOf(equalTo(datei1), equalTo(datei2)));
         assertThat(result.get(3), anyOf(equalTo(datei1), equalTo(datei2)));
     }
+
+    @Test
+    @SuppressWarnings("checkstyle:magicnumber")
+    public void sortierungUploader() {
+        Suche suche = new Suche(
+                "",
+                "",
+                null,
+                null,
+                null,
+                "Uploader",
+                null,
+                "",
+                null);
+
+        List<Datei> result = suchService.starteSuche(suche, "Peter");
+
+        final int expectedSizeOfList = 4;
+        assertThat(result.size(), is(expectedSizeOfList));
+        assertTrue(result.contains(datei1));
+        assertTrue(result.contains(datei2));
+        assertTrue(result.contains(datei3));
+        assertTrue(result.contains(datei4));
+        assertThat(result.get(0), anyOf(equalTo(datei1), equalTo(datei3)));
+        assertThat(result.get(1), anyOf(equalTo(datei1), equalTo(datei3)));
+        assertThat(result.get(2), anyOf(equalTo(datei2), equalTo(datei4)));
+        assertThat(result.get(3), anyOf(equalTo(datei2), equalTo(datei4)));
+    }
 }

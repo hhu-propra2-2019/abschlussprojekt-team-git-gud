@@ -34,7 +34,7 @@ public class MaterialController {
     @Autowired
     private RestTemplate serviceAccountRestTemplate;
 
-    /**
+    /*
      * Beispiel aus der KeycloakDemo
      * //
      * THIS IS JUST AN EXAMPLE! DO NOT QUERY A SERVICE IN THE REQUEST/RESPONSE CYCLE!
@@ -94,9 +94,11 @@ public class MaterialController {
      */
     @GetMapping("/dateiSicht")
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
-    public String sicht(final KeycloakAuthenticationToken token, final Model model) {
+    public String sicht(final KeycloakAuthenticationToken token, final Model model, final Long gruppeId,
+                        final String gruppeName) {
         model.addAttribute("account", createAccountFromPrincipal(token));
         model.addAttribute("gruppen", gruppen);
+        model.addAttribute("gruppeName", gruppeName);
         return "dateiSicht";
     }
 

@@ -6,64 +6,66 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.List;
 
+@Getter
+@Setter
 public final class DateiDTO {
     /**
      * Unique ID from database.
      */
-    @Getter
+    
     private long id;
     /**
      * Name of file.
      */
-    @Getter
+    
     private String name;
     /**
      * Path of file.
      */
-    @Getter
+    
     private String pfad;
     /**
      * User that uploaded the file.
      */
-    @Getter
+    
     private UserDTO uploader;
     /**
      * All assigned tags.
      */
-    @Getter
+    
     private List<TagDTO> tagDTOs;
     /**
      * Assigned group.
      */
-    @Getter
-    @Setter
+    
+    
     private GruppeDTO gruppe;
     /**
      * Upload date.
      */
-    @Getter
+    
     private LocalDate uploaddatum;
     /**
      * Date for when the file
      * will be visible to non-uploaders
      * of its group.
      */
-    @Getter
+    
     private LocalDate veroeffentlichungsdatum;
     /**
      * File size.
      */
-    @Getter
+    
     private long dateigroesse;
     /**
      * File type.
      */
-    @Getter
+    
     private String dateityp;
     /**
      * Category for gui.
      */
-    @Getter
+    
     private String kategorie;
 
     /**

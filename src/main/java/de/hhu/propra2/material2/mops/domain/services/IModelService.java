@@ -22,11 +22,11 @@ public interface IModelService {
 
     Set<String> getAlleDateiTypenByUser(KeycloakAuthenticationToken token);
 
-    Set<String> getAlleDateiTypenByGruppe(Long gruppeId);
+    Set<String> getAlleDateiTypenByGruppe(Long gruppeId, KeycloakAuthenticationToken token);
 
     Set<String> getAlleUploaderByUser(User user);
 
-    Set<String> getAlleUploaderByGruppe(Long gruppeId);
+    Set<String> getAlleUploaderByGruppe(Long gruppeId, KeycloakAuthenticationToken token);
 
     User getUserByKeyCloakName(String name);
 
@@ -38,7 +38,7 @@ public interface IModelService {
 
     List<String> getKategorienFromSuche(KeycloakAuthenticationToken token);
 
-    List<String> getKategorienByGruppe(List<Datei> datein);
+    List<String> getKategorienByGruppe(Long gruppeId, KeycloakAuthenticationToken token);
 
     Boolean isSortedByKategorie(KeycloakAuthenticationToken token);
 

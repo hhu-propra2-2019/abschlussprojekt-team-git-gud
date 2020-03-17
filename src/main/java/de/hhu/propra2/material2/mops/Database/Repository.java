@@ -528,12 +528,11 @@ public final class Repository {
                     gruppeResult.getString("titel"),
                     gruppeResult.getString("beschreibung"),
                     findAllDateiByGruppeId(gruppeId));
-        }
 
-        for (DateiDTO datei : gruppe.getDateien()) {
-            datei.setGruppe(gruppe);
+            for (DateiDTO datei : gruppe.getDateien()) {
+                datei.setGruppe(gruppe);
+            }
         }
-
         preparedStatement.close();
         gruppeResult.close();
 

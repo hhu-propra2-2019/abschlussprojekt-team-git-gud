@@ -24,20 +24,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest(classes = Material2Application.class)
 public final class RepositoryTest {
 
-    @Autowired
     private Repository repository;
     private GruppeDTO gruppe;
     private UserDTO user;
     private TagDTO tag;
     private ArrayList<TagDTO> tags = new ArrayList<TagDTO>();
-    ;
     private DateiDTO datei;
     private ArrayList<DateiDTO> dateien = new ArrayList<DateiDTO>();
-    ;
     private HashMap<GruppeDTO, Boolean> berechtigung = new HashMap<GruppeDTO, Boolean>();
 
     @SuppressWarnings("checkstyle:magicnumber")
-    public RepositoryTest() {
+    @Autowired
+    public RepositoryTest(final Repository repositoryArg) {
+        repository = repositoryArg;
+
         tag = new TagDTO("gae");
         tags.add(tag);
 

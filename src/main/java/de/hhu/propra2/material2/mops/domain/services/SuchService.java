@@ -10,7 +10,7 @@ import de.hhu.propra2.material2.mops.domain.services.suchComparators.DateiDatumC
 import de.hhu.propra2.material2.mops.domain.services.suchComparators.DateiNamenComparator;
 import de.hhu.propra2.material2.mops.domain.services.suchComparators.DateiUploaderComparator;
 import org.springframework.stereotype.Service;
-import java.sql.SQLException;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,39 +21,21 @@ import java.util.stream.Collectors;
 @Slf4j
 public class SuchService {
 
-    private final ModelService modelService;
     private final Repository repository;
 
     public SuchService(final ModelService modelServiceArg, final Repository repositoryArg) {
-        this.modelService = modelServiceArg;
         this.repository = repositoryArg;
     }
 
     /**
      * @param suche
-     * @param keyCloackName
+     * @param zuFiltern
      * @return
      */
     public List<Datei> starteSuche(final Suche suche,
-                                   final String keyCloackName) {
-        User user;
-        try {
-            user = modelService.loadUser(repository.findUserByKeycloakname(keyCloackName));
-        } catch (SQLException e) {
-            log.error("Unknown SQLException occured.");
-            return new ArrayList<>();
-        }
+                                   final List<Datei> zuFiltern) {
+        List<Datei> result = zuFiltern;
 
-        final List<Datei> zuFiltern = new ArrayList<>();
-        List<Datei> result;
-
-        if (suche.getGruppenId() != null) {
-            zuFiltern.addAll(modelService.getAlleDateienByGruppeId(suche.getGruppenId()));
-        } else {
-            user.getAllGruppen()
-                    .forEach(gruppe -> zuFiltern.addAll(gruppe.getDateien()));
-        }
-        result = zuFiltern;
         if (suche.getTags() != null) {
             result = tagSuche(suche.getTags(), result);
         }

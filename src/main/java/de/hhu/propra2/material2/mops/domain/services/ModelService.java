@@ -17,6 +17,7 @@ import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -167,11 +168,17 @@ public final class ModelService implements IModelService {
 
     public List<Datei> getSuchergebnisse(final KeycloakAuthenticationToken token) {
         Account account = getAccountFromKeycloak(token);
-        return suchService.starteSuche(suche, account.getName());
+        List<Datei> zuFiltern = new ArrayList<>();
+        if (suche.getGruppenId() != null) {
+            zuFiltern = getAlleDateienByGruppe(suche.getGruppenId(), token);
+        } else {
+            User user = createUserByToken(token);
+            zuFiltern = getAlleDateienByUser(user);
+        }
+        return suchService.starteSuche(suche, zuFiltern);
     }
 
-    public Set<String> getKategorienFromSuche(final KeycloakAuthenticationToken token) {
-        List<Datei> dateien = getSuchergebnisse(token);
+    public Set<String> getKategorienFromSuche(final List<Datei> dateien) {
         Set<String> kategorien = new HashSet<>();
         dateien.forEach(datei -> kategorien.add(datei.getKategorie()));
         return kategorien;
@@ -228,5 +235,11 @@ public final class ModelService implements IModelService {
             e.printStackTrace();
             return new User(-1L, "", "", "", new HashMap<>());
         }
+    }
+
+    private List<Datei> getAlleDateienByUser(final User user) {
+        List<Datei> alleDateien = new ArrayList<>();
+        user.getAllGruppen().forEach(gruppe -> alleDateien.addAll(gruppe.getDateien()));
+        return alleDateien;
     }
 }

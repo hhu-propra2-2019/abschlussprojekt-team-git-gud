@@ -3,7 +3,6 @@ package de.hhu.propra2.material2.mops.domain.services;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
-import de.hhu.propra2.material2.mops.domain.models.User;
 import de.hhu.propra2.material2.mops.security.Account;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 
@@ -32,7 +31,7 @@ public interface IModelService {
 
     List<Datei> getSuchergebnisse(KeycloakAuthenticationToken token);
 
-    Set<String> getKategorienFromSuche(KeycloakAuthenticationToken token);
+    Set<String> getKategorienFromSuche(List<Datei> dateien);
 
     Set<String> getKategorienByGruppe(Long gruppeId, KeycloakAuthenticationToken token);
 

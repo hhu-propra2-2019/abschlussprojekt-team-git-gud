@@ -4,7 +4,7 @@
 // toc-title definition MUST follow document title without blank line!
 = Dokumentation zur Materialsammlung (Gruppe: Material2)
 :toc:
-:toc-title: Inhaltsverzeichnis
+:toc-title:  Inhaltsverzeichnis
 
 // enable table-of-contents
 :toc:
@@ -50,29 +50,28 @@ Created by Dr. Peter Hruschka & Dr. Gernot Starke.
 <<<<
 // 1. Anforderungen und Ziele
 [[section-introduction-and-goals]]
+
 ==	Einführung und Ziele
-
-
 Unser Ziel ist es eine schnelle, effeziente und benutzerfreundliche Materialsammlung zu entwicklen,
 die dazu dient Vorlesungsinhalte und Lerngruppeninhalte zur Verfügung zu stellen.
 
-Der Weg von einer Materialsammlungsansicht bis zur gewollten Datei soll hierbei nicht mehr als 5 Klicks
+- Der Weg von einer Materialsammlungsansicht bis zur gewollten Datei soll hierbei nicht mehr als 5 Klicks
 benötigen.
 
-Uploadberechtigungen sollen gesetzt werden.
+- Uploadberechtigungen sollen gesetzt werden.
 
-Die Benutzerschnittstelle soll dem gegebenen Styleguide entsprechen und übersichtlich sein.
+- Die Benutzerschnittstelle soll dem gegebenen Styleguide entsprechen und übersichtlich sein.
 
-Dateinen sollen mit tag versehen sein. Diese sollen einerseits aus voreingesellten Tags wählbar sein
-andererseits sollen auch eigene Tags ersetllt werden sollen.
+- Dateinen sollen mit Tags versehen sein. Diese sollen einerseits aus voreingesellten Tags wählbar sein
+andererseits sollen auch eigene Tags erstetllt werden können.
 
-Es soll möglich gemacht werden Dateien zeitgesteuert für Studenten zugreifbar zu machen.
+- Es soll möglich gemacht werden Dateien zeitgesteuert für Studenten zugreifbar zu machen.
 
-Das Suchen in den benötigten Datenbanken soll schnell realisiert werden.
+- Das Suchen in den benötigten Datenbanken soll schnell realisiert werden.
 
-Das Suchen innerhalb der GUI soll nach Tags, Daten, Dateinamen, Gruppenname, Dateiart, Dateigröße, Uploader.
+- Das Suchen innerhalb der GUI soll nach Tags, Daten, Dateinamen, Gruppenname, Dateiart, Dateigröße und Uploader funktionieren.
 
-Schnittstellen zum Zugriff auf Materialsammlungen für andere Module.
+- Schnittstellen zum Zugriff auf Materialsammlungen für andere Module.
 
 === Aufgabenstellung
 
@@ -80,19 +79,22 @@ Folgende Aufgaben gilt es zu meistern:
 
 - Aufgaben der Persisitenzschicht:
 
-1. Es muss mit dem Team, das für die Gruppeneinteilung zuständig ist, sowohl eine Schnittstelle für den Zugriff auf die
-  von uns gebrauchten Daten wie z.B die Gruppenzugehörigket von Benutzern definiert als auch ein Protokoll zum übermitteln
-  und aktuallisieren eben dieser vereinbart werden. Für letzteres steht die Frage im Hintergrund ob die aktuallisierung
-  in zeitlichen Intervallen oder nach bestimmten Triggern erfolgen soll.
+1. *Kommunikation mit datenliefernden Gruppen* :  Es muss mit dem Team, das für die Gruppeneinteilung zuständig ist, sowohl eine Schnittstelle für den Zugriff auf die
+von uns gebrauchten Daten wie z.B die Gruppenzugehörigket von Benutzern definiert als auch ein Protokoll zum übermitteln
+und aktuallisieren eben dieser vereinbart werden. Für letzteres steht die Frage im Hintergrund ob die Aktuallisierung
+in zeitlichen Intervallen oder nach bestimmten Triggern erfolgen soll.
 
-2. Die Beziehung zwischen Benutzern, Gruppen und Dateien muss in einem ER-Diagramm festgehalten und in einem Datenbankschema
-  realisiert werden. Die Tabellen sollen die entstehenden Abhängigkeiten vollständig darstellen und aus den in
-  Punkt 1 übermittleten Daten gebildet werden können.
+2. *Modellierung* : Die Beziehung zwischen Benutzern, Gruppen und Dateien muss in einem ER-Diagramm festgehalten und in einem Datenbankschema
+realisiert werden. Die Tabellen sollen die entstehenden Abhängigkeiten vollständig darstellen und aus den in
+Punkt 1 übermittleten Daten gebildet werden können.
 
-3. Das in Punkt 3 genannte Datenbankschema muss durch passende DTOs in der Anwendung abgebildet werden. Die Beziehungen der
-  einzelnen Entitäten im Datenbankschema muss passend in den DTOs abgebildet werden.
+3. *Abbildung der Datenbank in der Anwendung* : Das in Punkt 3 genannte Datenbankschema muss durch passende DTOs in der Anwendung abgebildet werden. Die Beziehungen der
+einzelnen Entitäten im Datenbankschema muss passend in den DTOs abgebildet werden.
 
-4. Es sollen den Entitäten des Datenbankschemas entsprechende Repositorys implementiert werden.
+4. *Aufsetzen eines MinIO-Speichers* : Es muss ein MinIO speicher aufgesetzt werden, der es erlaubt Daten zu speichern.
+Außerdem muss eine Verbindung zwischen MinIO und der Datenbank realisiert werden z.b durch einen gespreicherten Link.
+
+4. *Kommunikation zwischen Datenbank und Geschäftslogik* : Es sollen den Entitäten des Datenbankschemas entsprechende Repositorys implementiert werden.
 
 - Aufgaben der GUI:
 
@@ -101,17 +103,27 @@ Folgende Aufgaben gilt es zu meistern:
 2. *Dateiübersicht* : Zeigt die zum Download verfügbaren Dateien einer Gruppe an.
 
 3. *Suche* : Eine Seite fürs Suchen und Filtern der Dateien, wo die Such parameter mit einem PostMapping an die Businesslogic weiter-
-  gegeben wird.
+gegeben wird.
 
 4. *Hochladen* : Eine Seite fürs hochladen der Dateien. Hochladen dürfen Professoren und User, die in ihrer Lerngruppe die Berechtigung haben.
 
-5. Eine Schnittstelle, für die Lernportfolio, wahrscheinlich mit hilfe von transklusion teile unserer Dateiübersicht.
+5. *Schnitstelle* : Eine Schnittstelle, für das Lernportfolio, wahrscheinlich mit Hilfe von Transklusion teile unserer Dateiübersicht.
 
+- Aufgaben der Geschäftslogik:
+
+1. *Laden von Modelobjekten* : Die aus den Einträgen der Datenbanktabllen enstandenen DTOs müssen sollen,
+zur besseren Abgrenzung zwischen Persistenz- und Logikobjekten, in Logikobjekte überführt werden.
+
+2. *Suche nach Dateien* : Es soll Logik implementiert werden, die dazu dient die einem Benutzer zugewiesenen
+Dateien zu finden und der GUI zur Verfügung zu stellen.
+
+3. *MinIO-Steuerung* : Downloadbarkeit sowie uploudbarkeit einer Datei sollen bestimmt werden können. Auch muss
+die Funktion implementiert werden, dass Dateien zeitesteuert zur Verfügung gestellt werden.
 
 
 === Qualitätsziele
 
-- Wartbarkeit
+- Effizienz
 
 - Modifizierbarkeit
 
@@ -131,8 +143,42 @@ Folgende Aufgaben gilt es zu meistern:
 [[section-architecture-constraints]]
 == Randbedingungen
 
+=== Technische Randbedingungen
+[cols="1,1" options="header"]
+|===
+|Randbedingung |Erläuterung
+| Betrieb als Docker-Image | Da die Materialsammlung als Subsystem von MOPS fungiert und alle anderen Subsysteme ebenfalls
+Docker-Images sind muss dieser Standard eingehalten werden.
+| Java als Implementierungssprache | Java soll als Lehrsprache des Praktikums verwendet werden
+| MinIO Fremdsystemintegration | Um die Persisitenz von Realdateien zu gewährleisten soll MinIO als
+konstenloses und "dockerfizierbares" System genutzt werden.
+|===
 
+=== Organisatorische Randbedingungen
+[cols="1,1" options="header"]
+|===
+|Randbedingung |Erläuterung
+| Team | Acht Personen großes Team cooler Leute
+| Zeitplan | Die Anwendung muss bis zum 27.03.2020, 17:00 fertig und als Docker-Image bereitgestellt werden.
+| Entwicklungswerkzeuge | Teamweites Entwicklungswerkzeug ist IntelliJ. Das Projekt benutzt Gradle sowie verschiedene
+Spring Module wie z.B Spring Data JDBC, Spring web-dev tools und Thymeleaf. Auch werden Lombok,
+Checkstyle und Sportbugs verwendet. Zur Erstellung der
+Entwicklungsdatenbank wurden DBeaver und MySQL-Workbench verwendet.
+| Versionskontrolle | Die Versionsverwaltung erfolgt über GitHub
+| Testing | Zum Testen werden die Spring Testframeworks, JUnit 4 und Mockito verwendet.
+| Veröffentlichung als Docker-Image | Die Anwendung wird als Docker-Image zur weiteren Integration zur Verfügung gestellt.
 
+|===
+
+=== Konventionen
+[cols="1,1" options="header"]
+|===
+|Randbedingung |Erläuterung
+| Architektur | Aufgebaut nach Arch42-Template
+| Codestyle | Es wird der von Checkstyle erwartete Codestyle verwendet
+| Bennenung | Fachspezifische Begriffe werden in Deutsch geschrieben. Methodenpräfixe
+wie z.B get, set, is usw. und technische Begriffe bleiben Englisch.
+|===
 
 <<<<
 // 3. Kontextabgrenzung
@@ -234,24 +280,6 @@ _<Whitebox-Template>_
 _<Whitebox-Template>_
 
 <<<<
-// 6. Laufzeitsicht
-[[section-runtime-view]]
-== Laufzeitsicht
-
-=== _<Bezeichnung Laufzeitszenario 1>_
-
-* <hier Laufzeitdiagramm oder Ablaufbeschreibung einfügen>
-* <hier Besonderheiten bei dem Zusammenspiel der Bausteine in diesem Szenario erläutern>
-
-=== _<Bezeichnung Laufzeitszenario 2>_
-
-...
-
-=== _<Bezeichnung Laufzeitszenario n>_
-
-...
-
-<<<<
 // 7. Verteilungssicht
 [[section-deployment-view]]
 == Verteilungssicht
@@ -306,41 +334,7 @@ _<Erklärung>_
 [[section-design-decisions]]
 == Entwurfsentscheidungen
 
-
-
-<<<<
-// 10. Qualität...
-[[section-quality-scenarios]]
-== Qualitätsanforderungen
-
-=== Qualitätsbaum
-
-=== Qualitätsszenarien
-
-
-
 <<<<
 // 11. Risiken
 [[section-technical-risks]]
 == Risiken und technische Schulden
-
-
-
-
-<<<<
-// 12. Glossar
-[[section-glossary]]
-== Glossar
-
-[cols="1,2" options="header"]
-|===
-|Begriff
-|Definition
-
-|_<Begriff-1>_
-|_<Definition-1>_
-
-
-|_<Begriff-2_
-|_<Definition-2>_
-|===

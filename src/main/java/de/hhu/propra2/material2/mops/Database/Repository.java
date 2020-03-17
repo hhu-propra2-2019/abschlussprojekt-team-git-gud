@@ -170,20 +170,19 @@ public final class Repository {
         if (!dateiExists(dateiDTO)) {
             PreparedStatement preparedStatement =
                     connection.prepareStatement(
-                            "insert into Datei (name, pfad, uploaderID, upload_datum,"
+                            "insert into Datei (name, uploaderID, upload_datum,"
                                     + "veroeffentlichungs_datum, datei_groesse,"
                                     + "datei_typ, gruppeID, kategorie) "
-                                    + " values (?, ?, ?, ?, ?, ?, ? ,?, ?)", Statement.RETURN_GENERATED_KEYS);
+                                    + " values (?, ?, ?, ?, ?, ? ,?, ?)", Statement.RETURN_GENERATED_KEYS);
 
             preparedStatement.setString(1, dateiDTO.getName());
-            preparedStatement.setString(2, dateiDTO.getPfad());
-            preparedStatement.setLong(3, dateiDTO.getUploader().getId());
-            preparedStatement.setDate(4, java.sql.Date.valueOf(dateiDTO.getUploaddatum()));
-            preparedStatement.setDate(5, java.sql.Date.valueOf(dateiDTO.getVeroeffentlichungsdatum()));
-            preparedStatement.setLong(6, dateiDTO.getDateigroesse());
-            preparedStatement.setString(7, dateiDTO.getDateityp());
-            preparedStatement.setLong(8, dateiDTO.getGruppe().getId());
-            preparedStatement.setString(9, dateiDTO.getKategorie());
+            preparedStatement.setLong(2, dateiDTO.getUploader().getId());
+            preparedStatement.setDate(3, java.sql.Date.valueOf(dateiDTO.getUploaddatum()));
+            preparedStatement.setDate(4, java.sql.Date.valueOf(dateiDTO.getVeroeffentlichungsdatum()));
+            preparedStatement.setLong(5, dateiDTO.getDateigroesse());
+            preparedStatement.setString(6, dateiDTO.getDateityp());
+            preparedStatement.setLong(7, dateiDTO.getGruppe().getId());
+            preparedStatement.setString(8, dateiDTO.getKategorie());
 
             List<TagDTO> tags = dateiDTO.getTagDTOs();
             preparedStatement.execute();
@@ -248,7 +247,7 @@ public final class Repository {
 
         for (DateiDTO dateiDTO: dateien) {
             updateDatei(new DateiDTO(dateiDTO.getId(), dateiDTO.getName(),
-                    dateiDTO.getPfad(), new UserDTO(-1, "User",
+                    new UserDTO(-1, "User",
                     "deleted", "-", null),
                     dateiDTO.getTagDTOs(), dateiDTO.getUploaddatum(), dateiDTO.getVeroeffentlichungsdatum(),
                     dateiDTO.getDateigroesse(), dateiDTO.getDateityp(),
@@ -332,7 +331,6 @@ public final class Repository {
 
         datei = new DateiDTO(dateiResult.getLong("dateiID"),
                 dateiResult.getString("name"),
-                dateiResult.getString("pfad"),
                 findUserByIdLAZY(dateiResult.getLong("uploaderID")),
                 findAllTagsbyDateiId(id),
                 dateiResult.getDate("upload_datum").toLocalDate(),

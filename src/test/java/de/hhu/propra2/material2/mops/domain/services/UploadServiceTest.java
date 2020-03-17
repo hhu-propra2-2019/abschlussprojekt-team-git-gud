@@ -1,5 +1,6 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
+import de.hhu.propra2.material2.mops.Database.Repository;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Tag;
@@ -13,6 +14,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -31,7 +33,7 @@ import static org.mockito.Mockito.when;
 @SuppressWarnings("checkstyle:magicnumber")
 @ExtendWith(MockitoExtension.class)
 public class UploadServiceTest {
-    private static Date date1303;
+    private static LocalDate date1303;
     private Tag tag1 = new Tag(1, "tag1");
     private Tag tag2 = new Tag(2, "tag2");
     private Tag tag3 = new Tag(3, "tag3");
@@ -44,6 +46,9 @@ public class UploadServiceTest {
     private User userMock;
     @Mock
     private Gruppe gruppeMock;
+    @Mock
+    Repository repositoryMock;
+
     private UploadService uploadService;
     private MultipartFile file;
 
@@ -54,9 +59,9 @@ public class UploadServiceTest {
     public void setUp() {
         Calendar calender = Calendar.getInstance();
         calender.set(2020, Calendar.MARCH, 13);
-        date1303 = calender.getTime();
+        date1303 = LocalDate.of(2020, Calendar.MARCH, 13);
 
-        uploadService = new UploadService(modelServiceMock, fileUploadServiceMock);
+        uploadService = new UploadService(repositoryMock, modelServiceMock, fileUploadServiceMock);
         when(gruppeMock.getId()).thenReturn(1L);
 
         file = new MockMultipartFile("test.txt",

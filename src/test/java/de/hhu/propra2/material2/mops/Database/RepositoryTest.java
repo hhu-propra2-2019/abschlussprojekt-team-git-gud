@@ -59,6 +59,7 @@ public final class RepositoryTest {
     public void deletionOfRemainingStuff() throws SQLException {
         repository.deleteUserByUserId(user.getId());
         repository.deleteDateiByDateiId(datei.getId());
+        repository.deleteGroupByGroupId(gruppe.getId());
     }
 
 
@@ -149,6 +150,24 @@ public final class RepositoryTest {
         repository.deleteTagRelationsByDateiId(newDatei.getId());
         assertFalse(repository.doTagsExistByDateiId(newDatei.getId()));
 
+    }
+
+    @Test
+    public void deleteUserByIdTest() throws SQLException {
+        repository.deleteUserByUserId(user.getId());
+
+        UserDTO shouldBeNull = repository.findUserByIdLAZY(user.getId());
+
+        assertTrue(shouldBeNull == null);
+    }
+
+    @Test
+    public void deleteGruppeByGruppeIdTest() throws SQLException {
+        repository.deleteGroupByGroupId(gruppe.getId());
+
+        assertTrue(repository.findGruppeByGruppeId(gruppe.getId()) == null);
+        assertTrue(repository.findAllUserByGruppeId(gruppe.getId()).isEmpty());
+        assertTrue(repository.findAllDateiByGruppeId(gruppe.getId()).isEmpty());
     }
 
 }

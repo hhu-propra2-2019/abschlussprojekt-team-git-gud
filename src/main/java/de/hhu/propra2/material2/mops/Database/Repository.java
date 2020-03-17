@@ -9,12 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -70,12 +65,13 @@ public final class Repository {
 
         ResultSet users = preparedStatement.executeQuery();
 
-        users.next();
-        user = new UserDTO(users.getLong("userID"),
-                users.getString("vorname"),
-                users.getString("nachname"),
-                users.getString("key_cloak_name"),
-                findAllGruppeByUserID(users.getLong("userID")));
+        if (users.next()) {
+            user = new UserDTO(users.getLong("userID"),
+                    users.getString("vorname"),
+                    users.getString("nachname"),
+                    users.getString("key_cloak_name"),
+                    findAllGruppeByUserID(users.getLong("userID")));
+        }
 
         preparedStatement.close();
         users.close();
@@ -324,20 +320,20 @@ public final class Repository {
         preparedStatement.setString(1, "" + id);
 
         ResultSet dateiResult = preparedStatement.executeQuery();
-        dateiResult.next();
 
-        datei = new DateiDTO(dateiResult.getLong("dateiID"),
-                dateiResult.getString("name"),
-                dateiResult.getString("pfad"),
-                findUserByIdLAZY(dateiResult.getLong("uploaderID")),
-                findAllTagsbyDateiId(id),
-                dateiResult.getDate("upload_datum").toLocalDate(),
-                dateiResult.getDate("veroeffentlichungs_datum").toLocalDate(),
-                dateiResult.getLong("datei_groesse"),
-                dateiResult.getString("datei_typ"),
-                null,
-                dateiResult.getString("kategorie"));
-
+        if (dateiResult.next()) {
+            datei = new DateiDTO(dateiResult.getLong("dateiID"),
+                    dateiResult.getString("name"),
+                    dateiResult.getString("pfad"),
+                    findUserByIdLAZY(dateiResult.getLong("uploaderID")),
+                    findAllTagsbyDateiId(id),
+                    dateiResult.getDate("upload_datum").toLocalDate(),
+                    dateiResult.getDate("veroeffentlichungs_datum").toLocalDate(),
+                    dateiResult.getLong("datei_groesse"),
+                    dateiResult.getString("datei_typ"),
+                    null,
+                    dateiResult.getString("kategorie"));
+        }
 
         preparedStatement.close();
         dateiResult.close();
@@ -406,9 +402,9 @@ public final class Repository {
 
         ResultSet tagResult = preparedStatement.executeQuery();
 
-        tagResult.next();
-
-        tag = new TagDTO(tagResult.getLong("tagID"), tagResult.getString("tag_name"));
+        if (tagResult.next()) {
+            tag = new TagDTO(tagResult.getLong("tagID"), tagResult.getString("tag_name"));
+        }
 
         preparedStatement.close();
         tagResult.close();
@@ -515,7 +511,7 @@ public final class Repository {
         ResultSet gruppenResult = preparedStatement.executeQuery();
 
         while (gruppenResult.next()) {
-            gruppen.put(findGruppeById(gruppenResult.getLong("gruppeID")),
+            gruppen.put(findGruppeByGruppeId(gruppenResult.getLong("gruppeID")),
                     gruppenResult.getBoolean("upload_berechtigung"));
         }
 
@@ -525,19 +521,22 @@ public final class Repository {
         return gruppen;
     }
 
-    GruppeDTO findGruppeById(final long id) throws SQLException {
+    GruppeDTO findGruppeByGruppeId(final long gruppeId) throws SQLException {
         GruppeDTO gruppe = null;
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select * from Gruppe where gruppeID=?");
-        preparedStatement.setString(1, "" + id);
+        preparedStatement.setString(1, "" + gruppeId);
 
         ResultSet gruppeResult = preparedStatement.executeQuery();
-        gruppeResult.next();
-        gruppe = new GruppeDTO(id,
-                gruppeResult.getString("titel"),
-                gruppeResult.getString("beschreibung"),
-                findAllDateiByGruppeId(id));
+
+        if (gruppeResult.next()) {
+            gruppe = new GruppeDTO(gruppeId,
+                    gruppeResult.getString("titel"),
+                    gruppeResult.getString("beschreibung"),
+                    findAllDateiByGruppeId(gruppeId));
+        }
+
         for (DateiDTO datei : gruppe.getDateien()) {
             datei.setGruppe(gruppe);
         }
@@ -598,11 +597,13 @@ public final class Repository {
         preparedStatement.setString(1, "" + id);
 
         ResultSet userResult = preparedStatement.executeQuery();
-        userResult.next();
-        user = new UserDTO(id, userResult.getString("vorname"),
-                userResult.getString("nachname"),
-                userResult.getString("key_cloak_name"),
-                null);
+        if (userResult.next()) {
+            user = new UserDTO(id, userResult.getString("vorname"),
+                    userResult.getString("nachname"),
+                    userResult.getString("key_cloak_name"),
+                    null);
+        }
+
 
         preparedStatement.close();
         userResult.close();

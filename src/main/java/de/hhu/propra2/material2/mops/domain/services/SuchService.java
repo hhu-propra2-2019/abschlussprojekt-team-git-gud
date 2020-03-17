@@ -20,12 +20,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class SuchService {
 
-    private final Repository repository;
-
-    public SuchService(final Repository repositoryArg) {
-        this.repository = repositoryArg;
-    }
-
     /**
      * @param suche
      * @param zuFiltern

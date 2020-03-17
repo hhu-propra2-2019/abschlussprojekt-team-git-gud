@@ -9,6 +9,6 @@ public class DateiDatumComparator implements Comparator<Datei>, Serializable {
 
     @Override
     public final int compare(final Datei d1, final Datei d2) {
-        return d1.getUploaddatum().compareTo(d2.getUploaddatum());
+        return d1.getVeroeffentlichungsdatum().compareTo(d2.getVeroeffentlichungsdatum());
     }
 }

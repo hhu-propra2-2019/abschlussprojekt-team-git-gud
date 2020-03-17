@@ -29,7 +29,7 @@ public class MaterialController {
     private RestTemplate serviceAccountRestTemplate;
 
     @Autowired
-    private IModelService modelService;
+    private ModelService modelService;
     /**start routing.
      * @return String
      */

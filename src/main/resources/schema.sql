@@ -38,7 +38,6 @@ CREATE TABLE Datei
 (
     dateiID      BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
     name         text NOT NULL,
-    pfad         text NOT NULL,
     uploaderID   BIGINT NOT NULL,
     upload_datum DATE NOT NULL,
     veroeffentlichungs_datum DATE NOT NULL,

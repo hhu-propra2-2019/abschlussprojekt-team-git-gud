@@ -47,8 +47,8 @@ public final class RepositoryTest {
         user = new UserDTO(999999, "Why are you gae?", "You are gae",
                 "gae", berechtigung);
 
-        datei = new DateiDTO("gaedata", "/materialsammlung/gaedata/",
-                user, tags, LocalDate.now(), LocalDate.now(), 200, "gae", gruppe, "gae");
+        datei = new DateiDTO("gaedata", user, tags, LocalDate.now(),
+                LocalDate.now(), 200, "gae", gruppe, "gae");
         gruppe.getDateien().add(datei);
     }
 
@@ -89,7 +89,7 @@ public final class RepositoryTest {
         newTags.add(tag1);
         newTags.add(tag2);
 
-        newDatei = new DateiDTO(datei.getId(), "gaedata", "/materialsammlung/gaedata/",
+        newDatei = new DateiDTO(datei.getId(), "gaedata",
                 user, newTags, LocalDate.now(), LocalDate.now(), 300, "gae", gruppe, "gae");
 
 
@@ -116,7 +116,7 @@ public final class RepositoryTest {
         newTags.add(tag1);
         newTags.add(tag2);
 
-        newDatei = new DateiDTO(datei.getId(), "gaedata", "/materialsammlung/gaedata/",
+        newDatei = new DateiDTO(datei.getId(), "gaedata",
                 user, newTags, LocalDate.now(), LocalDate.now(), 300, "gae", gruppe, "gae");
 
         repository.saveDatei(newDatei);
@@ -143,7 +143,7 @@ public final class RepositoryTest {
         newTags.add(tag1);
         newTags.add(tag2);
 
-        newDatei = new DateiDTO(101, "gaedata", "/materialsammlung/gaedata/",
+        newDatei = new DateiDTO(101, "gaedata",
                 user, newTags, LocalDate.now(), LocalDate.now(), 300, "gae", gruppe, "gae");
 
         newDatei.setId(repository.saveDatei(newDatei));

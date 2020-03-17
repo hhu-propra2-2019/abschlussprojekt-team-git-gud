@@ -35,7 +35,7 @@ public final class MinioDownloadService implements IDownloadService {
      */
     public String getUrl(final Datei datei) throws DownloadException {
         final String bucket = "materialsammlung";
-        final String objectName = datei.getPfad();
+        final String objectName = Long.toString(datei.getId());
         final int expiration = 3600;
 
         try {
@@ -64,7 +64,7 @@ public final class MinioDownloadService implements IDownloadService {
      */
     public InputStream getObject(final Datei datei) throws DownloadException {
         final String bucket = "materialsammlung";
-        final String objectName = datei.getPfad();
+        final String objectName = Long.toString(datei.getId());
 
         try {
             return minioClient.getObject(bucket, objectName);

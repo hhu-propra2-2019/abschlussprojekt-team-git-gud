@@ -59,13 +59,13 @@ public final class MinioDownloadService implements IDownloadService {
     /**
      * return InputStream from object.
      *
-     * @param datei datei for download
+     * @param fileId datei for download
      * @return downloadDatei as InputStream
      * @throws DownloadException Exception if anything went wrong with the minIO Download
      */
-    public InputStream getObject(final Datei datei) throws DownloadException {
+    public InputStream getObject(final Long fileId) throws DownloadException {
         final String bucket = "materialsammlung";
-        final String objectName = Long.toString(datei.getId());
+        final String objectName = Long.toString(fileId);
 
         try {
             return minioClient.getObject(bucket, objectName);

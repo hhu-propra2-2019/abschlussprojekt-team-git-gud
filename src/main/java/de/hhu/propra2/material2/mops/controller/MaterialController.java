@@ -1,5 +1,6 @@
 package de.hhu.propra2.material2.mops.controller;
 
+import de.hhu.propra2.material2.mops.Exceptions.DownloadException;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
 import de.hhu.propra2.material2.mops.domain.models.UploadForm;
 import de.hhu.propra2.material2.mops.domain.services.MinioDownloadService;
@@ -144,17 +145,17 @@ public class MaterialController {
         return "redirect:/";
     }
 
-    @GetMapping(value = "/files")
+    @GetMapping("/files}")
     public void getFile(
-            final String fileName,
+            final Long fileId,
             final HttpServletResponse response) {
         try {
             // get your file as InputStream
-            InputStream input = minioDownloadService.getObject(++++Datei muss hier rein++++);
+            InputStream input = minioDownloadService.getObject(fileId);
             // copy it to response's OutputStream
             FileCopyUtils.copy(input, response.getOutputStream());
             response.flushBuffer();
-        } catch (IOException ex) {
+        } catch (IOException | DownloadException ex) {
             throw new RuntimeException("IOError writing file to output stream");
         }
     }

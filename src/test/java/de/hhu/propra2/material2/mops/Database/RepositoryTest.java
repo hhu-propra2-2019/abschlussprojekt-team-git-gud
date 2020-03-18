@@ -16,7 +16,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -48,7 +47,7 @@ public final class RepositoryTest {
         user = new UserDTO(999999, "Why are you gae?", "You are gae",
                 "gae", berechtigung);
 
-        datei = new DateiDTO("gaedata", user, tags, LocalDate.now(),
+        datei = new DateiDTO("gaedata", user, tags, LocalDate.of(2020, 3, 01),
                 LocalDate.now(), 200, "gae", gruppe, "gae");
         gruppe.getDateien().add(datei);
     }
@@ -89,19 +88,6 @@ public final class RepositoryTest {
 
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
-    public void loadDateiByGruppeTest() throws SQLException {
-        List<DateiDTO> dateien = gruppe.getDateien();
-
-        DateiDTO datei = dateien.get(0);
-
-        assertTrue(datei.getName().equals("gaedata"));
-        assertTrue(datei.getDateityp().equals("gae"));
-        assertTrue(datei.getKategorie().equals("gae"));
-
-    }
-
-    @Test
-    @SuppressWarnings("checkstyle:magicnumber")
     public void updateDateiTest() throws SQLException {
         ArrayList<TagDTO> newTags = new ArrayList<TagDTO>();
         TagDTO tag1 = new TagDTO("gae1");
@@ -111,8 +97,7 @@ public final class RepositoryTest {
         newTags.add(tag1);
         newTags.add(tag2);
 
-        LocalDate newVeroeffentlichungsDatum = LocalDate.now();
-        System.out.println(newVeroeffentlichungsDatum);
+        LocalDate newVeroeffentlichungsDatum = LocalDate.of(2020, 3, 10);
         newDatei = new DateiDTO(datei.getId(), "gaedata",
                 user, newTags, LocalDate.now(), newVeroeffentlichungsDatum, 400, "fish", gruppe, "gaee");
 
@@ -131,8 +116,6 @@ public final class RepositoryTest {
                 .getDateien().get(0).getDateityp().equals("gae"));
         assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
                 .getDateien().get(0).getKategorie().equals("gaee"));
-        System.out.println(newVeroeffentlichungsDatum);
-        System.out.println(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0]).getDateien().get(0).getVeroeffentlichungsdatum());
 
         assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
                 .getDateien().get(0).getVeroeffentlichungsdatum().equals(newVeroeffentlichungsDatum));
@@ -146,13 +129,13 @@ public final class RepositoryTest {
         ArrayList<TagDTO> newTags = new ArrayList<TagDTO>();
         TagDTO tag1 = new TagDTO("gae1");
         TagDTO tag2 = new TagDTO("gae2");
-        TagDTO tag3 = new TagDTO("gae2");
+        TagDTO tag3 = new TagDTO("gae3");
         DateiDTO newDatei;
 
         newTags.add(tag1);
         newTags.add(tag2);
 
-        LocalDate newVeroeffentlichungsDatum = LocalDate.now();
+        LocalDate newVeroeffentlichungsDatum = LocalDate.of(2020, 3, 10);
         newDatei = new DateiDTO(datei.getId(), "gaedata",
                 user, newTags, LocalDate.now(), newVeroeffentlichungsDatum, 400, "fish", gruppe, "gaee");
 
@@ -162,8 +145,8 @@ public final class RepositoryTest {
         newDatei.setDateityp("new");
         newDatei.setKategorie("new");
         newDatei.setTagDTOs(newTags);
-        newVeroeffentlichungsDatum = LocalDate.now();
-        newDatei.setUploaddatum(newVeroeffentlichungsDatum);
+        newVeroeffentlichungsDatum = LocalDate.of(2020, 3, 11);
+        newDatei.setVeroeffentlichungsdatum(newVeroeffentlichungsDatum);
         repository.saveDatei(newDatei);
 
         UserDTO userDTO = repository.findUserByKeycloakname("gae");
@@ -178,11 +161,13 @@ public final class RepositoryTest {
                 .getDateien().get(0).getDateityp().equals("gae"));
         assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
                 .getDateien().get(0).getKategorie().equals("new"));
+        System.out.println(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
+                .getDateien().get(0).getVeroeffentlichungsdatum());
         assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
                 .getDateien().get(0).getVeroeffentlichungsdatum().equals(newVeroeffentlichungsDatum));
         assertTrue(tagDTOS.get(0).getText().equals("gae1"));
         assertTrue(tagDTOS.get(1).getText().equals("gae2"));
-        assertTrue(tagDTOS.get(1).getText().equals("gae3"));
+        assertTrue(tagDTOS.get(2).getText().equals("gae3"));
     }
 
     @Test

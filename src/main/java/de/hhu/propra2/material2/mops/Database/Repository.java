@@ -193,8 +193,10 @@ public final class Repository {
 
             preparedStatement.setString(1, dateiDTO.getName());
             preparedStatement.setLong(2, dateiDTO.getUploader().getId());
-            preparedStatement.setDate(3, java.sql.Date.valueOf(dateiDTO.getUploaddatum()));
-            preparedStatement.setDate(4, java.sql.Date.valueOf(dateiDTO.getVeroeffentlichungsdatum()));
+            preparedStatement.setDate(3, java.sql.Date.valueOf(dateiDTO.getUploaddatum()),
+                    java.util.Calendar.getInstance());
+            preparedStatement.setDate(4, java.sql.Date.valueOf(dateiDTO.getVeroeffentlichungsdatum()),
+                    java.util.Calendar.getInstance());
             preparedStatement.setLong(5, dateiDTO.getDateigroesse());
             preparedStatement.setString(6, dateiDTO.getDateityp());
             preparedStatement.setLong(7, dateiDTO.getGruppe().getId());
@@ -276,7 +278,8 @@ public final class Repository {
                                 + "name=? where dateiID=?");
 
         preparedStatement.setLong(1, dateiDTO.getUploader().getId());
-        preparedStatement.setDate(2, java.sql.Date.valueOf(dateiDTO.getVeroeffentlichungsdatum()));
+        preparedStatement.setDate(2, java.sql.Date.valueOf(dateiDTO.getVeroeffentlichungsdatum()),
+                java.util.Calendar.getInstance());
         preparedStatement.setLong(3, dateiDTO.getDateigroesse());
         preparedStatement.setString(4, dateiDTO.getKategorie());
         preparedStatement.setString(5, dateiDTO.getName());
@@ -573,7 +576,7 @@ public final class Repository {
     }
 
 
-    public boolean getUserGroupRelationByUserId(long userId) throws SQLException {
+    public boolean getUserGroupRelationByUserId(final long userId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select gruppeID from Gruppenbelegung where userID=?");
         preparedStatement.setLong(1, userId);
@@ -586,7 +589,7 @@ public final class Repository {
         return doesExist;
     }
 
-    public boolean getUserGroupRelationByGroupId(long gruppeId) throws SQLException {
+    public boolean getUserGroupRelationByGroupId(final long gruppeId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select userID from Gruppenbelegung where gruppeID=?");
         preparedStatement.setLong(1, gruppeId);

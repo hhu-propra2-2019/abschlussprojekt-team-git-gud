@@ -108,6 +108,7 @@ public final class FileUploadService {
                     null, null, null, file.getContentType());
             return true;
         } catch (Exception e) {
+            log.info("Exception: " + e);
             return false;
         }
     }

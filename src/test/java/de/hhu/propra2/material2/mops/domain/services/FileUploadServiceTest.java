@@ -1,6 +1,5 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
-import io.minio.MinioClient;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
 import io.minio.errors.InternalException;
@@ -22,15 +21,11 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 public class FileUploadServiceTest {
 
-    @Mock
-    private MinioClient minioClientMock;
-    @Mock
-    private MinIOProperties minIOPropertiesMock;
     @Mock
     private MultipartFile fileMock;
 
@@ -45,21 +40,22 @@ public class FileUploadServiceTest {
             NoResponseException, InvalidBucketNameException,
             XmlPullParserException, ErrorResponseException,
             RegionConflictException {
-        this.fileUploadService = new FileUploadService(minIOPropertiesMock);
+
+        MinIOProperties minIOProperties = new MinIOProperties();
+        minIOProperties.setEndpoint("http://localhost:23307/");
+        minIOProperties.setAccesskey("minio");
+        minIOProperties.setSecretkey("minio123");
+        minIOProperties.setBucketname("materialsammlungtest");
+
+        this.fileUploadService = new FileUploadService(minIOProperties);
     }
 
     @Test
     public void testUploadNameMaking1() {
         String fileName = "newFileName";
-        String prefix = "";
-        String result = "";
-        try{
-            result = fileUploadService.upload(fileMock, fileName, prefix);
-        }
-        catch (Exception e) {
-            System.out.println("Exception thrown");
-        }
 
-        assertEquals(result, "newFileName");
+        boolean result = fileUploadService.upload(fileMock, fileName);
+
+        assertTrue(result);
     }
 }

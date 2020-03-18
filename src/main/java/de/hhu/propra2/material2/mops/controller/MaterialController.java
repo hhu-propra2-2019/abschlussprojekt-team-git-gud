@@ -46,9 +46,10 @@ public class MaterialController {
      */
     @GetMapping("/dateiSicht")
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
-    public String sicht(final KeycloakAuthenticationToken token, final Model model, final Long gruppenId) {
+    public String sicht(final KeycloakAuthenticationToken token, final Model model, final Long gruppeId) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
+        model.addAttribute("kategorien", modelService.getKategorienByGruppe(gruppeId, token));
         return "dateiSicht";
     }
 

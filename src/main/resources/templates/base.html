@@ -34,7 +34,7 @@
                 </a>
             </li>
             <li th:each="gruppe : ${gruppen}"  >
-                <a th:href="@{/dateiSicht(gruppeId=${gruppe.id}, gruppeName=${gruppe.name})}" href="#" th:text="${gruppe.getName()}"></a>
+                <a th:href="@{/dateiSicht(gruppeId=${gruppe.getId()}, gruppeName=${gruppe.getName()})}" href="#" th:text="${gruppe.getName()}"></a>
             </li>
         </ul>
     </nav>

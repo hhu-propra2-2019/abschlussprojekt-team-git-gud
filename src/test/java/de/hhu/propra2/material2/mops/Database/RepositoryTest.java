@@ -64,7 +64,6 @@ public final class RepositoryTest {
         repository.deleteGroupByGroupDTO(gruppe);
     }
 
-
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
     public void loadUserTest() throws SQLException {
@@ -179,6 +178,15 @@ public final class RepositoryTest {
         repository.deleteUserGroupRelationByUserId(userId);
 
         assertFalse(repository.getUserGroupRelationByUserId(userId));
+    }
+
+    @Test
+    public void deleteGruppenbelegungByUserDTOandGruppeDTOTest() throws SQLException {
+        repository.deleteUserGroupRelationByUserDTOAndGruppeDTO(user, gruppe);
+
+        UserDTO loadedUser = repository.findUserByKeycloakname(user.getKeycloakname());
+
+        assertTrue(loadedUser.getBelegungUndRechte().keySet().isEmpty());
     }
 
 }

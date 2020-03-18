@@ -30,7 +30,6 @@ public final class MinioDownloadService implements IDownloadService {
     @SuppressWarnings("checkStyle:magicnumber")
     public MinioDownloadService() throws InvalidPortException, InvalidEndpointException {
         this.minioClient = new MinioClient(HttpUrl.parse("http://localhost:23307"), "minio", "minio123");
-        minioClient.
     }
 
     /**
@@ -70,12 +69,12 @@ public final class MinioDownloadService implements IDownloadService {
      * @return downloadDatei as InputStream
      * @throws DownloadException Exception if anything went wrong with the minIO Download
      */
-    public InputStream getObject(final String fileId) throws DownloadException {
+    public InputStream getObject(final Long fileId) throws DownloadException {
         final String bucket = "materialsammlung";
-        //final String objectName = Long.toString(fileId);
+        final String objectName = Long.toString(fileId);
 
         try {
-            return minioClient.getObject(bucket, fileId);
+            return minioClient.getObject(bucket, objectName);
         } catch (IOException
                 | InvalidKeyException
                 | NoSuchAlgorithmException

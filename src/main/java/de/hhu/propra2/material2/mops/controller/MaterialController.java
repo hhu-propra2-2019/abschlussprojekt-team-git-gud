@@ -158,7 +158,7 @@ public class MaterialController {
             final HttpServletResponse response) {
         try {
             // get your file as InputStream
-            InputStream input = minioDownloadService.getObject("1.odt");
+            InputStream input = minioDownloadService.getObject(fileId);
             // copy it to response's OutputStream
             FileCopyUtils.copy(input, response.getOutputStream());
             response.flushBuffer();

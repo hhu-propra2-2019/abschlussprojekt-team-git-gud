@@ -8,6 +8,6 @@ import java.io.InputStream;
 public interface IDownloadService {
 
     String getUrl(Datei datei) throws DownloadException;
-    InputStream getObject(String id) throws DownloadException;
+    InputStream getObject(Long id) throws DownloadException;
 
 }

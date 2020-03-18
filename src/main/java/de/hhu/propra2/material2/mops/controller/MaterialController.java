@@ -12,10 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
+
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.security.RolesAllowed;
@@ -40,7 +39,10 @@ public class MaterialController {
     private ModelService modelService;
     @Autowired
     private MinioDownloadService minioDownloadService;
-    /**start routing.
+
+    /**
+     * start routing.
+     *
      * @return String
      */
     @GetMapping("/")
@@ -52,7 +54,9 @@ public class MaterialController {
         return "start";
     }
 
-    /**Shows the documents of a Group.
+    /**
+     * Shows the documents of a Group.
+     *
      * @return String
      */
     @GetMapping("/dateiSicht")
@@ -98,7 +102,7 @@ public class MaterialController {
             model.addAttribute("suche", suchen);
             return "redirect:/suche";
         }
-        return "redirect:/";
+        return "redirect:/suche";
     }
 
     /**
@@ -145,13 +149,16 @@ public class MaterialController {
         return "redirect:/";
     }
 
-    @GetMapping("/files}")
+    /**
+     *
+     */
+    @GetMapping("/files")
     public void getFile(
             final Long fileId,
             final HttpServletResponse response) {
         try {
             // get your file as InputStream
-            InputStream input = minioDownloadService.getObject(fileId);
+            InputStream input = minioDownloadService.getObject("1.odt");
             // copy it to response's OutputStream
             FileCopyUtils.copy(input, response.getOutputStream());
             response.flushBuffer();

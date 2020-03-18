@@ -8,22 +8,29 @@ import io.minio.errors.InsufficientDataException;
 import io.minio.errors.InternalException;
 import io.minio.errors.InvalidArgumentException;
 import io.minio.errors.InvalidBucketNameException;
+import io.minio.errors.InvalidEndpointException;
 import io.minio.errors.InvalidExpiresRangeException;
+import io.minio.errors.InvalidPortException;
 import io.minio.errors.InvalidResponseException;
 import io.minio.errors.NoResponseException;
+import okhttp3.HttpUrl;
+import org.springframework.stereotype.Service;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
+@Service
 public final class MinioDownloadService implements IDownloadService {
 
     private final MinioClient minioClient;
-
-    public MinioDownloadService(final MinioClient client) {
-        this.minioClient = client;
+    @SuppressWarnings("checkStyle:magicnumber")
+    public MinioDownloadService() throws InvalidPortException, InvalidEndpointException {
+        this.minioClient = new MinioClient(HttpUrl.parse("http://localhost:23307"), "minio", "minio123");
+        minioClient.
     }
 
     /**
@@ -63,12 +70,12 @@ public final class MinioDownloadService implements IDownloadService {
      * @return downloadDatei as InputStream
      * @throws DownloadException Exception if anything went wrong with the minIO Download
      */
-    public InputStream getObject(final Long fileId) throws DownloadException {
+    public InputStream getObject(final String fileId) throws DownloadException {
         final String bucket = "materialsammlung";
-        final String objectName = Long.toString(fileId);
+        //final String objectName = Long.toString(fileId);
 
         try {
-            return minioClient.getObject(bucket, objectName);
+            return minioClient.getObject(bucket, fileId);
         } catch (IOException
                 | InvalidKeyException
                 | NoSuchAlgorithmException

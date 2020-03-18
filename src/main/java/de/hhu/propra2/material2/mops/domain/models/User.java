@@ -44,6 +44,19 @@ public class User {
     }
 
     /**
+     * returns group by GroupId
+     * @param gruppenId
+     * @return Gruppe
+     */
+    public Gruppe getGruppeById(final long gruppenId) {
+        List<Gruppe> gruppen = this.getAllGruppen();
+        for (Gruppe gruppe : gruppen) {
+            if (gruppe.getId() == gruppenId) {
+                return gruppe;
+            }
+        }
+        return new Gruppe(-1, "", new ArrayList<>());
+    /**
      * @param gruppenName
      * @return returns the group the student participates in with the given gruppenName if such group does not exists
      * it returns null

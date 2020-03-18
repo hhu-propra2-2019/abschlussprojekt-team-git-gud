@@ -43,7 +43,8 @@ public class ModelServiceTest {
     private UserDTO angelaDTO;
 
     private ModelService modelService;
-
+    @Mock
+    private SuchService suchServiceMock;
     /**
      * setUp for every test.
      * Creates a new ModelService object with mocked repositories.
@@ -52,7 +53,8 @@ public class ModelServiceTest {
     @SuppressWarnings("checkstyle:magicnumber")
     public void setUp() {
         this.modelService = new ModelService(
-                repoMock);
+                repoMock,
+                suchServiceMock);
     }
 
     @Test

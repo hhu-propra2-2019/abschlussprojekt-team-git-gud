@@ -134,7 +134,7 @@ public final class RepositoryTest {
 
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
-    public void deleteTagnutzungByDatei() throws SQLException {
+    public void deleteTagnutzungByDateiTest() throws SQLException {
         ArrayList<TagDTO> newTags = new ArrayList<TagDTO>();
         TagDTO tag1 = new TagDTO("gae1");
         TagDTO tag2 = new TagDTO("gae2");
@@ -170,6 +170,15 @@ public final class RepositoryTest {
         assertTrue(repository.findGruppeByGruppeId(gruppe.getId()) == null);
         assertTrue(repository.findAllUserByGruppeId(gruppe.getId()).isEmpty());
         assertTrue(repository.findAllDateiByGruppeId(gruppe.getId()).isEmpty());
+    }
+
+    @Test
+    public void deleteGruppenbelegungByUserTest() throws SQLException {
+        long userId = user.getId();
+
+        repository.deleteUserGroupRelationByUserId(userId);
+
+        assertFalse(repository.getUserGroupRelationByUserId(userId));
     }
 
 }

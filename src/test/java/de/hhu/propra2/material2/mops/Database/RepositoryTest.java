@@ -79,6 +79,16 @@ public final class RepositoryTest {
 
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
+    public void loadGruppeTest() throws SQLException {
+        GruppeDTO gruppeDto = repository.findGruppeByGruppeId(99999999);
+
+        assertTrue(gruppeDto.getName().equals("gruppe"));
+        assertTrue(gruppeDto.getDescription().equals("this is a description"));
+
+    }
+
+    @Test
+    @SuppressWarnings("checkstyle:magicnumber")
     public void updateDateiTest() throws SQLException {
         ArrayList<TagDTO> newTags = new ArrayList<TagDTO>();
         TagDTO tag1 = new TagDTO("gae1");

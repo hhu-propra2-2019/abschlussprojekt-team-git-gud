@@ -150,4 +150,15 @@ public final class RepositoryTest {
         assertFalse(repository.getTagRelationByDateiId(101));
     }
 
+    @Test
+    @SuppressWarnings("checkstyle:magicnumber")
+    public void deleteGruppenbelegungByUser() throws SQLException {
+        long userId = user.getId();
+
+        repository.deleteUserGroupRelationByUserId(userId);
+
+        assertFalse(repository.getUserGroupRelationByUserId(userId));
+    }
+
+
 }

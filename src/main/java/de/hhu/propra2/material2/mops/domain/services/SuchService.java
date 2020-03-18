@@ -1,8 +1,6 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
-import de.hhu.propra2.material2.mops.Database.Repository;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
-import de.hhu.propra2.material2.mops.domain.models.User;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
 import lombok.extern.slf4j.Slf4j;
 import de.hhu.propra2.material2.mops.domain.services.suchComparators.DateiDateiTypComparator;
@@ -10,7 +8,7 @@ import de.hhu.propra2.material2.mops.domain.services.suchComparators.DateiDatumC
 import de.hhu.propra2.material2.mops.domain.services.suchComparators.DateiNamenComparator;
 import de.hhu.propra2.material2.mops.domain.services.suchComparators.DateiUploaderComparator;
 import org.springframework.stereotype.Service;
-import java.sql.SQLException;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,39 +19,15 @@ import java.util.stream.Collectors;
 @Slf4j
 public class SuchService {
 
-    private final ModelService modelService;
-    private final Repository repository;
-
-    public SuchService(final ModelService modelServiceArg, final Repository repositoryArg) {
-        this.modelService = modelServiceArg;
-        this.repository = repositoryArg;
-    }
-
     /**
      * @param suche
-     * @param keyCloackName
+     * @param zuFiltern
      * @return
      */
     public List<Datei> starteSuche(final Suche suche,
-                                   final String keyCloackName) {
-        User user;
-        try {
-            user = modelService.loadUser(repository.findUserByKeycloakname(keyCloackName));
-        } catch (SQLException e) {
-            log.error("Unknown SQLException occured.");
-            return new ArrayList<>();
-        }
+                                   final List<Datei> zuFiltern) {
+        List<Datei> result = zuFiltern;
 
-        final List<Datei> zuFiltern = new ArrayList<>();
-        List<Datei> result;
-
-        if (suche.getGruppenId() != null) {
-            zuFiltern.addAll(modelService.getAlleDateienByGruppeId(suche.getGruppenId()));
-        } else {
-            user.getAllGruppen()
-                    .forEach(gruppe -> zuFiltern.addAll(gruppe.getDateien()));
-        }
-        result = zuFiltern;
         if (suche.getTags() != null) {
             result = tagSuche(suche.getTags(), result);
         }
@@ -72,8 +46,8 @@ public class SuchService {
         if (!suche.getDateiName().trim().isEmpty()) {
             result = dateiNamenSuche(suche.getDateiName(), result);
         }
-        if (suche.getReihenfolge() != null) {
-            result = sortieren(suche.getSortierung(),
+        if (suche.getSortierKriterium() != null) {
+            result = sortieren(suche.getSortierKriterium(),
                     suche.getReihenfolge(),
                     result);
         }
@@ -160,14 +134,11 @@ public class SuchService {
         List<Datei> sort = zuSortieren;
         if ("name".equals(sortierStyle)) {
             sort.sort(new DateiNamenComparator());
-        }
-        if ("Dateityp".equals(sortierStyle)) {
+        } else if ("Dateityp".equals(sortierStyle)) {
             sort.sort(new DateiDateiTypComparator());
-        }
-        if ("Uploader".equals(sortierStyle)) {
+        } else if ("Uploader".equals(sortierStyle)) {
             sort.sort(new DateiUploaderComparator());
-        }
-        if ("Datum".equals(sortierStyle)) {
+        } else if ("Datum".equals(sortierStyle)) {
             sort.sort(new DateiDatumComparator());
         }
         if (reihenfolge != null) {

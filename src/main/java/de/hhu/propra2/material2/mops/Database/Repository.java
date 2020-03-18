@@ -138,6 +138,17 @@ public final class Repository {
         preparedStatement.close();
     }
 
+    public void deleteUserGroupRelationByUserDTOAndGruppeDTO(final UserDTO userDTO,
+                                                             final GruppeDTO gruppeDTO) throws SQLException {
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("delete from Gruppenbelegung where gruppeID=? and userID=?");
+        preparedStatement.setLong(1, gruppeDTO.getId());
+        preparedStatement.setLong(2, userDTO.getId());
+
+        preparedStatement.execute();
+        preparedStatement.close();
+    }
+
     /**
      * Deletes a group by its ID.
      * To be used for synchronization
@@ -605,6 +616,4 @@ public final class Repository {
 
         return user;
     }
-
-
 }

@@ -11,7 +11,7 @@ Suche und angenehmen Zugriff auf ihre digitalen Lehrmaterialien erlauben.
 
 === Momentane Probleme:
 
-- Realisierung von Schnittstellen zu anderen Programmmodulen.
+- Implementierung von MinIO un dessen Verbindung zur Datenbank.
 
 == Ziele und Features
 

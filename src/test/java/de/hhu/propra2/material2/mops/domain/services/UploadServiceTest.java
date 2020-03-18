@@ -14,6 +14,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,6 +26,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -55,13 +57,13 @@ public class UploadServiceTest {
      * setUP: SetUp needed for each test.
      */
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws SQLException {
         Calendar calender = Calendar.getInstance();
         calender.set(2020, Calendar.MARCH, 13);
         date1303 = LocalDate.of(2020, Calendar.MARCH, 13);
 
         uploadService = new UploadService(repositoryMock, modelServiceMock, fileUploadServiceMock);
-        when(gruppeMock.getId()).thenReturn(1L);
+        when(modelServiceMock.saveDatei(any(), any())).thenReturn(1L);
 
         file = new MockMultipartFile("test.txt",
                 "test.txt",

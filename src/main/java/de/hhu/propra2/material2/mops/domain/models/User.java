@@ -45,6 +45,7 @@ public class User {
 
     /**
      * returns group by GroupId
+     *
      * @param gruppenId
      * @return Gruppe
      */
@@ -56,12 +57,14 @@ public class User {
             }
         }
         return new Gruppe(-1, "", new ArrayList<>());
+    }
+
     /**
      * @param gruppenName
      * @return returns the group the student participates in with the given gruppenName if such group does not exists
      * it returns null
      */
-    public Gruppe getGroup(final String gruppenName) {
+    public Gruppe getGroupByName(final String gruppenName) {
         if (belegungUndRechte == null) {
             return null;
         }

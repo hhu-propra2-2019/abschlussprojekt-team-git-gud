@@ -59,14 +59,13 @@ public class UploadService implements IUploadService {
             fileName += "." + fileExtension;
         }
 
-        String objectStoragePath = null;
         try {
-            objectStoragePath = fileUploadService.upload(file, newFileName, String.valueOf(gruppe.getId()));
+            fileUploadService.upload(file, newFileName, String.valueOf(gruppe.getId()));
         } catch (Exception e) {
             throw new FileUploadException("Uploading file to minIO causes an error");
         }
-        Datei datei = new Datei(1, fileName, objectStoragePath, user, tags,
-                LocalDate.now(), veroeffentlichungsdatum, file.getSize(), fileExtension);
+        Datei datei = new Datei(1, fileName, user, tags,
+                LocalDate.now(), veroeffentlichungsdatum, file.getSize(), fileExtension, null);
         modelService.saveDatei(datei, gruppe);
         return datei;
     }
@@ -80,7 +79,7 @@ public class UploadService implements IUploadService {
         UserDTO userDTO = repository.findUserByKeycloakname(uploader);
         User user = modelService.loadUser(userDTO);
 
-        Gruppe gruppe = user.getGroup(upForm.getGruppenwahl());
+        Gruppe gruppe = user.getGroupByName(upForm.getGruppenwahl());
 
         if (!user.hasUploadPermission(gruppe)) {
             throw new NoUploadPermissionException("User has no upload permission");

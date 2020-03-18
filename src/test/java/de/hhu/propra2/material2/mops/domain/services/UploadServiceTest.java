@@ -77,22 +77,21 @@ public class UploadServiceTest {
 
     @Test
     public void uploadFileProveFileUploadServiceUploadCall() throws Exception {
-        when(fileUploadServiceMock.upload(file, null, "1"))
-                .thenReturn("1/test.txt");
+        when(fileUploadServiceMock.upload(file, "1"))
+                .thenReturn(true);
 
         uploadService.dateiHochladen(file, null, userMock, gruppeMock, date1303, tags);
 
-        verify(fileUploadServiceMock, times(1)).upload(file, null, "1");
+        verify(fileUploadServiceMock, times(1)).upload(file, "1");
     }
 
     @Test
     public void uploadFileWithoutNewFileName() throws Exception {
-        when(fileUploadServiceMock.upload(file, null, "1"))
-                .thenReturn("1/test.txt");
+        when(fileUploadServiceMock.upload(file, "1"))
+                .thenReturn(true);
         Datei datei = uploadService.dateiHochladen(file, null, userMock, gruppeMock, date1303, tags);
 
         assertThat(datei.getName(), comparesEqualTo("test.txt"));
-        assertThat(datei.getPfad(), comparesEqualTo("1/test.txt"));
         assertThat(datei.getUploader(), equalTo(userMock));
         assertThat(datei.getTags(), equalTo(tags));
         assertThat(datei.getVeroeffentlichungsdatum(), equalTo(date1303));
@@ -103,12 +102,11 @@ public class UploadServiceTest {
 
     @Test
     public void uploadFileWithNewFileNameWithoutExtension() throws Exception {
-        when(fileUploadServiceMock.upload(file, "Humbug", "1"))
-                .thenReturn("1/Humbug.txt");
+        when(fileUploadServiceMock.upload(file, "1"))
+                .thenReturn(true);
         Datei datei = uploadService.dateiHochladen(file, "Humbug", userMock, gruppeMock, date1303, tags);
 
         assertThat(datei.getName(), comparesEqualTo("Humbug.txt"));
-        assertThat(datei.getPfad(), comparesEqualTo("1/Humbug.txt"));
         assertThat(datei.getUploader(), equalTo(userMock));
         assertThat(datei.getTags(), equalTo(tags));
         assertThat(datei.getVeroeffentlichungsdatum(), equalTo(date1303));
@@ -119,12 +117,11 @@ public class UploadServiceTest {
 
     @Test
     public void uploadFileWithNewFileNameWithExtension() throws Exception {
-        when(fileUploadServiceMock.upload(file, "Humbug.pdf", "1"))
-                .thenReturn("1/Humbug.pdf");
+        when(fileUploadServiceMock.upload(file, "1"))
+                .thenReturn(true);
         Datei datei = uploadService.dateiHochladen(file, "Humbug.pdf", userMock, gruppeMock, date1303, tags);
 
         assertThat(datei.getName(), comparesEqualTo("Humbug.pdf"));
-        assertThat(datei.getPfad(), comparesEqualTo("1/Humbug.pdf"));
         assertThat(datei.getUploader(), equalTo(userMock));
         assertThat(datei.getTags(), equalTo(tags));
         assertThat(datei.getVeroeffentlichungsdatum(), equalTo(date1303));
@@ -135,8 +132,8 @@ public class UploadServiceTest {
 
     @Test
     public void uploadFileWithTags() throws Exception {
-        when(fileUploadServiceMock.upload(file, null, "1"))
-                .thenReturn("1/text.txt");
+        when(fileUploadServiceMock.upload(file, "1"))
+                .thenReturn(true);
         tags.add(tag1);
         tags.add(tag2);
         tags.add(tag3);

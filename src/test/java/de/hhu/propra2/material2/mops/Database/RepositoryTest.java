@@ -181,6 +181,15 @@ public final class RepositoryTest {
     }
 
     @Test
+    public void deleteGruppenbelegungByGruppeTest() throws SQLException {
+        long gruppeId = gruppe.getId();
+
+        repository.deleteUserGroupRelationByGroupId(gruppeId);
+
+        assertFalse(repository.getUserGroupRelationByGroupId(gruppeId));
+    }
+
+    @Test
     public void deleteGruppenbelegungByUserDTOandGruppeDTOTest() throws SQLException {
         repository.deleteUserGroupRelationByUserDTOAndGruppeDTO(user, gruppe);
 

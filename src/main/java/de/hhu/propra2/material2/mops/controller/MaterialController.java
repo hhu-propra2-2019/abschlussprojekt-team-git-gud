@@ -144,10 +144,10 @@ public class MaterialController {
         return "redirect:/";
     }
 
-    @RequestMapping(value = "/files/{file_name}", method = RequestMethod.GET)
+    @GetMapping(value = "/files")
     public void getFile(
-            @PathVariable("file_name") String fileName,
-            HttpServletResponse response) {
+            final String fileName,
+            final HttpServletResponse response) {
         try {
             // get your file as InputStream
             InputStream input = minioDownloadService.getObject(++++Datei muss hier rein++++);
@@ -157,6 +157,5 @@ public class MaterialController {
         } catch (IOException ex) {
             throw new RuntimeException("IOError writing file to output stream");
         }
-
     }
 }

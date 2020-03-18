@@ -88,8 +88,10 @@ public final class RepositoryTest {
         newTags.add(tag1);
         newTags.add(tag2);
 
+        LocalDate newVeroeffentlichungsDatum = LocalDate.now();
+        System.out.println(newVeroeffentlichungsDatum);
         newDatei = new DateiDTO(datei.getId(), "gaedata",
-                user, newTags, LocalDate.now(), LocalDate.now(), 300, "gae", gruppe, "gae");
+                user, newTags, LocalDate.now(), newVeroeffentlichungsDatum, 400, "fish", gruppe, "gaee");
 
 
         repository.saveDatei(newDatei);
@@ -100,6 +102,17 @@ public final class RepositoryTest {
             tagDTOS = gruppeDTO.getDateien().get(0).getTagDTOs();
         }
 
+        assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
+                .getDateien().get(0).getDateigroesse() == 400);
+        assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
+                .getDateien().get(0).getDateityp().equals("gae"));
+        assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
+                .getDateien().get(0).getKategorie().equals("gaee"));
+        System.out.println(newVeroeffentlichungsDatum);
+        System.out.println(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0]).getDateien().get(0).getVeroeffentlichungsdatum());
+
+        assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
+                .getDateien().get(0).getVeroeffentlichungsdatum().equals(newVeroeffentlichungsDatum));
         assertTrue(tagDTOS.get(0).getText().equals("gae1"));
         assertTrue(tagDTOS.get(1).getText().equals("gae2"));
     }
@@ -110,15 +123,24 @@ public final class RepositoryTest {
         ArrayList<TagDTO> newTags = new ArrayList<TagDTO>();
         TagDTO tag1 = new TagDTO("gae1");
         TagDTO tag2 = new TagDTO("gae2");
+        TagDTO tag3 = new TagDTO("gae2");
         DateiDTO newDatei;
 
         newTags.add(tag1);
         newTags.add(tag2);
 
+        LocalDate newVeroeffentlichungsDatum = LocalDate.now();
         newDatei = new DateiDTO(datei.getId(), "gaedata",
-                user, newTags, LocalDate.now(), LocalDate.now(), 300, "gae", gruppe, "gae");
+                user, newTags, LocalDate.now(), newVeroeffentlichungsDatum, 400, "fish", gruppe, "gaee");
 
         repository.saveDatei(newDatei);
+        newTags.add(tag3);
+        newDatei.setDateigroesse(500);
+        newDatei.setDateityp("new");
+        newDatei.setKategorie("new");
+        newDatei.setTagDTOs(newTags);
+        newVeroeffentlichungsDatum = LocalDate.now();
+        newDatei.setUploaddatum(newVeroeffentlichungsDatum);
         repository.saveDatei(newDatei);
 
         UserDTO userDTO = repository.findUserByKeycloakname("gae");
@@ -127,29 +149,25 @@ public final class RepositoryTest {
             tagDTOS = gruppeDTO.getDateien().get(0).getTagDTOs();
         }
 
+        assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
+                .getDateien().get(0).getDateigroesse() == 500);
+        assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
+                .getDateien().get(0).getDateityp().equals("gae"));
+        assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
+                .getDateien().get(0).getKategorie().equals("new"));
+        assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
+                .getDateien().get(0).getVeroeffentlichungsdatum().equals(newVeroeffentlichungsDatum));
         assertTrue(tagDTOS.get(0).getText().equals("gae1"));
         assertTrue(tagDTOS.get(1).getText().equals("gae2"));
+        assertTrue(tagDTOS.get(1).getText().equals("gae3"));
     }
 
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
     public void deleteTagnutzungByDateiTest() throws SQLException {
-        ArrayList<TagDTO> newTags = new ArrayList<TagDTO>();
-        TagDTO tag1 = new TagDTO("gae1");
-        TagDTO tag2 = new TagDTO("gae2");
-        DateiDTO newDatei;
 
-        newTags.add(tag1);
-        newTags.add(tag2);
-
-        newDatei = new DateiDTO(101, "gaedata",
-                user, newTags, LocalDate.now(), LocalDate.now(), 300, "gae", gruppe, "gae");
-
-        newDatei.setId(repository.saveDatei(newDatei));
-        repository.saveDatei(newDatei);
-
-        repository.deleteTagRelationsByDateiId(newDatei.getId());
-        assertFalse(repository.doTagsExistByDateiId(newDatei.getId()));
+        repository.deleteTagRelationsByDateiId(datei.getId());
+        assertFalse(repository.doTagsExistByDateiId(datei.getId()));
 
     }
 

@@ -272,14 +272,15 @@ public final class Repository {
     void updateDatei(final DateiDTO dateiDTO, final long dateiId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
-                        "update Datei set uploaderID=?,veroeffentlichungs_datum=?, datei_groesse=?, kategorie=?"
-                                + "where dateiID=?");
+                        "update Datei set uploaderID=?, veroeffentlichungs_datum=?, datei_groesse=?, kategorie=?,"
+                                + "name=? where dateiID=?");
 
         preparedStatement.setLong(1, dateiDTO.getUploader().getId());
         preparedStatement.setDate(2, java.sql.Date.valueOf(dateiDTO.getVeroeffentlichungsdatum()));
         preparedStatement.setLong(3, dateiDTO.getDateigroesse());
         preparedStatement.setString(4, dateiDTO.getKategorie());
-        preparedStatement.setLong(5, dateiId);
+        preparedStatement.setString(5, dateiDTO.getName());
+        preparedStatement.setLong(6, dateiId);
 
         List<TagDTO> tags = dateiDTO.getTagDTOs();
         preparedStatement.execute();
@@ -297,11 +298,9 @@ public final class Repository {
         boolean doesItExist = false;
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
-                        "select * from Datei where name=? AND datei_typ=? AND gruppeID=?");
+                        "select * from Datei where dateiID=?");
 
-        preparedStatement.setString(1, dateiDTO.getName());
-        preparedStatement.setString(2, dateiDTO.getDateityp());
-        preparedStatement.setLong(3, dateiDTO.getGruppe().getId());
+        preparedStatement.setString(1, "" + dateiDTO.getId());
 
         ResultSet result = preparedStatement.executeQuery();
 

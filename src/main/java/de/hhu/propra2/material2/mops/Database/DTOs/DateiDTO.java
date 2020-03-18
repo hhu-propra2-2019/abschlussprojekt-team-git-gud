@@ -19,15 +19,8 @@ public final class DateiDTO {
      */
 
     private String name;
-    /**
-<<<<<<< HEAD
-     * Path of file.
-     */
 
-    private String pfad;
     /**
-=======
->>>>>>> master
      * User that uploaded the file.
      */
 

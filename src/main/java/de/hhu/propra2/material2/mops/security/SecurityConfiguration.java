@@ -3,9 +3,12 @@ package de.hhu.propra2.material2.mops.security;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
+import org.keycloak.adapters.springsecurity.client.KeycloakClientRequestFactory;
+import org.keycloak.adapters.springsecurity.client.KeycloakRestTemplate;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
 import org.keycloak.representations.AccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +33,8 @@ import javax.servlet.http.HttpServletRequest;
 @EnableWebSecurity
 @ComponentScan(basePackageClasses = KeycloakSecurityComponents.class)
 class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter {
+    @Autowired
+    private KeycloakClientRequestFactory keycloakClientRequestFactory;
 
     @Autowired
     public void configureGlobal(final AuthenticationManagerBuilder auth) {
@@ -37,6 +42,12 @@ class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter {
                 = keycloakAuthenticationProvider();
         keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
         auth.authenticationProvider(keycloakAuthenticationProvider);
+    }
+
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public KeycloakRestTemplate keycloakRestTemplate() {
+        return new KeycloakRestTemplate(keycloakClientRequestFactory);
     }
 
     @Bean

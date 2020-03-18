@@ -20,11 +20,6 @@ public class Datei {
     @Getter
     private String name;
     /**
-     * Path of file.
-     */
-    @Getter
-    private final String pfad;
-    /**
      * User that uploaded the file.
      */
     @Getter
@@ -59,26 +54,7 @@ public class Datei {
     @Getter
     private final String dateityp;
 
-    public Datei(
-            final long idArgs,
-            final String nameArgs,
-            final String pfadArgs,
-            final User uploaderArgs,
-            final List<Tag> tagsArgs,
-            final LocalDate uploaddatumArgs,
-            final LocalDate veroeffentlichungsdatumArgs,
-            final long dateigroesseArgs,
-            final String dateitypArgs) {
-        this.id = idArgs;
-        this.name = nameArgs;
-        this.pfad = pfadArgs;
-        this.uploader = uploaderArgs;
-        this.tags = tagsArgs;
-        this.uploaddatum = uploaddatumArgs;
-        this.veroeffentlichungsdatum = veroeffentlichungsdatumArgs;
-        this.dateigroesse = dateigroesseArgs;
-        this.dateityp = dateitypArgs;
-    }
+    private final String kategorie;
 
     private List<String> getTagNames() {
         return tags.stream()
@@ -106,5 +82,26 @@ public class Datei {
             }
         }
         return true;
+    }
+
+    public Datei(
+            final long idArgs,
+            final String nameArgs,
+            final User uploaderArgs,
+            final List<Tag> tagsArgs,
+            final LocalDate uploaddatumArgs,
+            final LocalDate veroeffentlichungsdatumArgs,
+            final long dateigroesseArgs,
+            final String dateitypArgs,
+            final String kategorieArgs) {
+        this.id = idArgs;
+        this.name = nameArgs;
+        this.uploader = uploaderArgs;
+        this.tags = tagsArgs;
+        this.uploaddatum = uploaddatumArgs;
+        this.veroeffentlichungsdatum = veroeffentlichungsdatumArgs;
+        this.dateigroesse = dateigroesseArgs;
+        this.dateityp = dateitypArgs;
+        this.kategorie = kategorieArgs;
     }
 }

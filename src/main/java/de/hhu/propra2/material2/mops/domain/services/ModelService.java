@@ -13,8 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -35,49 +33,69 @@ public final class ModelService implements IModelService {
         repository = repositoryArg;
     }
 
-    public Datei loadDatei(final DateiDTO dto) {
-        List<Tag> tags = dto.getTagDTOs().stream()
-                .map(this::load)
+    private Datei loadDatei(final DateiDTO dateiDTO) {
+        List<Tag> tags = dateiDTO.getTagDTOs().stream()
+                .map(this::loadTag)
                 .collect(Collectors.toList());
         return new Datei(
-                dto.getId(),
-                dto.getName(),
-                dto.getPfad(),
-                loadUser(dto.getUploader()),
+                dateiDTO.getId(),
+                dateiDTO.getName(),
+                loadUploader(dateiDTO.getUploader()),
                 tags,
-                dto.getUploaddatum(),
-                dto.getVeroeffentlichungsdatum(),
-                dto.getDateigroesse(),
-                dto.getDateityp());
+                dateiDTO.getUploaddatum(),
+                dateiDTO.getVeroeffentlichungsdatum(),
+                dateiDTO.getDateigroesse(),
+                dateiDTO.getDateityp(),
+                dateiDTO.getKategorie());
     }
 
-    public Tag load(final TagDTO dto) {
-        return new Tag(dto.getId(), dto.getText());
+    private Tag loadTag(final TagDTO tagDTO) {
+        return new Tag(tagDTO.getId(), tagDTO.getText());
     }
 
-    public User loadUser(final UserDTO dto) {
-        HashMap<Gruppe, Boolean> belegungUndRechte = new HashMap<>();
-        for (GruppeDTO gruppeDTO : dto.getBelegungUndRechte().keySet()) {
-            belegungUndRechte.put(
-                    load(gruppeDTO),
-                    dto.getBelegungUndRechte().get(gruppeDTO));
+    public User loadUser(final UserDTO userDTO) {
+
+        if (userDTO == null) {
+            return new User(-1L, "", "", "", new HashMap<>());
         }
 
+        return new User(
+                userDTO.getId(),
+                userDTO.getVorname(),
+                userDTO.getNachname(),
+                userDTO.getKeycloakname(),
+                convertHashMapGruppeDTOtoGruppe(userDTO));
+    }
+
+    public HashMap<Gruppe, Boolean> convertHashMapGruppeDTOtoGruppe(final UserDTO userDTO) {
+        HashMap<Gruppe, Boolean> belegungUndRechte = new HashMap<>();
+        for (GruppeDTO gruppeDTO : userDTO.getBelegungUndRechte().keySet()) {
+            belegungUndRechte.put(
+                    loadGruppe(gruppeDTO),
+                    userDTO.getBelegungUndRechte().get(gruppeDTO));
+        }
+        return belegungUndRechte;
+    }
+
+    private Gruppe loadGruppe(final GruppeDTO gruppeDTO) {
+        return new Gruppe(gruppeDTO.getId(), gruppeDTO.getName(), dateienDerGruppe(gruppeDTO));
+    }
+
+    private User loadUploader(final UserDTO dto) {
         return new User(
                 dto.getId(),
                 dto.getVorname(),
                 dto.getNachname(),
                 dto.getKeycloakname(),
-                belegungUndRechte);
+                new HashMap<>());
     }
 
-    public Gruppe load(final GruppeDTO dto) {
-        List<Datei> zugehoerigeDateien =
-                dto.getDateien()
-                        .stream()
-                        .map(this::loadDatei)
-                        .collect(Collectors.toList());
-        return new Gruppe(dto.getId(), dto.getName(), zugehoerigeDateien);
+    public List<Datei> dateienDerGruppe(final GruppeDTO gruppeDTO) {
+        return gruppeDTO.getDateien()
+                .stream()
+                .map(this::loadDatei)
+                .collect(Collectors.toList());
+
     }
 
     public List<Gruppe> getAlleGruppenByUser(final User user) {
@@ -106,6 +124,7 @@ public final class ModelService implements IModelService {
         return tags;
     }
 
+
     public Set<String> getAlleUploaderByUser(final User user) {
         List<Gruppe> groups = user.getAllGruppen();
         Set<String> uploader = new HashSet<String>();
@@ -124,6 +143,7 @@ public final class ModelService implements IModelService {
                 .map(datei -> datei.getUploader().getNachname())
                 .collect(Collectors.toSet());
     }
+
 
     public Set<String> getAlleDateiTypenByUser(final User user) {
         List<Gruppe> groups = user.getAllGruppen();
@@ -145,7 +165,6 @@ public final class ModelService implements IModelService {
     }
 
     public List<Datei> getAlleDateienByGruppeId(final Long id) {
-
         return null;
     }
 
@@ -154,11 +173,16 @@ public final class ModelService implements IModelService {
             return loadUser(repository.findUserByKeycloakname(name));
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
+            return new User(-1L, "", "", "", new HashMap<>());
         }
     }
 
-    public void saveDatei(final Datei datei, final Gruppe gruppe) throws SQLException {
+    @Override
+    public Set<String> getAlleKategorienByFiles(final List<Datei> dateien) {
+        Set<String> kategorien = new HashSet<>();
+        dateien.forEach(datei -> kategorien.add(datei.getKategorie()));
+        return kategorien;
+public void saveDatei(final Datei datei, final Gruppe gruppe) throws SQLException {
         if (datei == null || gruppe == null) {
             throw new IllegalArgumentException();
         }
@@ -185,43 +209,5 @@ public final class ModelService implements IModelService {
         }
         return tagDTOs;
     }
-
-    @SuppressWarnings("checkstyle:MagicNumber")
-    public User createDummyUser() {
-        HashMap mapUser = new HashMap();
-        HashMap mapUploader = new HashMap();
-
-
-        List<Tag> tags = new ArrayList<>();
-        tags.add(new Tag(1, "Cool"));
-        tags.add(new Tag(2, "Auch Cool"));
-
-        List<Tag> tags2 = new ArrayList<>();
-        tags.add(new Tag(1, "Nice"));
-        tags.add(new Tag(2, "Auch Nice"));
-
-        LocalDate uploadDatum = LocalDate.of(2010, 10, 10);
-        LocalDate veroeffentlichung = LocalDate.of(2010, 10, 10);
-
-        LocalDate uploadDatum2 = LocalDate.of(2020, 10, 10);
-        LocalDate veroeffentlichung2 = LocalDate.of(2020, 10, 10);
-
-        User uploader = new User(2, "Jens", "Bendisposto", "Jeben", mapUploader);
-        User uploader2 = new User(2, "Oleg", "BesterMann", "Olbes", mapUploader);
-        List<Datei> data = new ArrayList<>();
-        data.add(new Datei(1, "Blatt 1", "", uploader, tags, uploadDatum, veroeffentlichung, 100, "PDF"));
-
-        List<Datei> data2 = new ArrayList<>();
-        data2.add(new Datei(1, "Blatt 12", "", uploader2, tags2, uploadDatum2, veroeffentlichung2, 100, "jpeg"));
-        data.add(new Datei(1, "Blatt 12", "", uploader2, tags2, uploadDatum2, veroeffentlichung2, 100, "jpeg"));
-
-
-        Gruppe gruppe1 = new Gruppe(1, "ProPra", data);
-        Gruppe gruppe2 = new Gruppe(2, "BWL", data2);
-        mapUser.put(gruppe1, false);
-        mapUser.put(gruppe2, true);
-
-        User user = new User(1, "Hans", "Müller", "Hamue", mapUser);
-        return user;
     }
 }

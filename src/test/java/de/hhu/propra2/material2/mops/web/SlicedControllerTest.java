@@ -11,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.client.RestTemplate;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,10 +34,123 @@ public class SlicedControllerTest {
         //when(modelService.getAlleGruppenByUser()).thenReturn();
     }
 
+    //Public User Access tests
+
     @Test
-    @WithMockKeycloackAuth(name = "studentin1", roles = "TESTER")
-    void testStart() throws Exception {
+    @WithMockKeycloackAuth(name = "BennyGoodman", roles = "TESTER")
+    void testStart_PublicUser() throws Exception {
         mvc.perform(get("/"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "TESTER")
+    void testSuche_PublicUser() throws Exception {
+        mvc.perform(get("/suche"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "TESTER")
+    void testUpload_PublicUser() throws Exception {
+        mvc.perform(get("/upload"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "TESTER")
+    void testDateisicht_PublicUser() throws Exception {
+        mvc.perform(get("/dateiSicht"))
+                .andExpect(status().isForbidden());
+    }
+
+    //Student User Access tests
+
+    @Test
+    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "studentin")
+    void testStart_StudentUser() throws Exception {
+        mvc.perform(get("/"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "studentin")
+    void testSuche_StudentUser() throws Exception {
+        mvc.perform(get("/suche"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "studentin")
+    void testUpload_StudentUser() throws Exception {
+        mvc.perform(get("/upload"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "studentin")
+    void testDateisicht_StudentUser() throws Exception {
+        mvc.perform(get("/dateiSicht"))
+                .andExpect(status().isOk());
+    }
+
+    //Orga User Access tests
+
+    @Test
+    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "orga")
+    void testStart_OrgaUser() throws Exception {
+        mvc.perform(get("/"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "orga")
+    void testSuche_OrgaUser() throws Exception {
+        mvc.perform(get("/suche"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "orga")
+    void testUpload_OrgaUser() throws Exception {
+        mvc.perform(get("/upload"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "orga")
+    void testDateisicht_OrgaUser() throws Exception {
+        mvc.perform(get("/dateiSicht"))
+                .andExpect(status().isOk());
+    }
+
+    //Actuator User Access tests
+
+    @Test
+    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "actuator")
+    void testStart_OrgaUser() throws Exception {
+        mvc.perform(get("/"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "actuator")
+    void testSuche_OrgaUser() throws Exception {
+        mvc.perform(get("/suche"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "actuator")
+    void testUpload_OrgaUser() throws Exception {
+        mvc.perform(get("/upload"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "actuator")
+    void testDateisicht_OrgaUser() throws Exception {
+        mvc.perform(get("/dateiSicht"))
                 .andExpect(status().isOk());
     }
 }

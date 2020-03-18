@@ -1,11 +1,9 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
-import com.google.common.base.Strings;
 import io.minio.MinioClient;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
 import io.minio.errors.InternalException;
-import io.minio.errors.InvalidArgumentException;
 import io.minio.errors.InvalidBucketNameException;
 import io.minio.errors.InvalidEndpointException;
 import io.minio.errors.InvalidPortException;
@@ -14,7 +12,6 @@ import io.minio.errors.MinioException;
 import io.minio.errors.NoResponseException;
 import io.minio.errors.RegionConflictException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -92,8 +89,7 @@ public final class FileUploadService {
     }
 
     /**
-     * @param file   The file to upload
-     * @param prefix A prefix to apply individual policies
+     * @param file The file to upload
      * @return The object name
      * @throws IOException
      * @throws InvalidKeyException
@@ -105,19 +101,15 @@ public final class FileUploadService {
      * @throws XmlPullParserException
      * @throws ErrorResponseException
      */
-    public String upload(final MultipartFile file, final String newFileName,
-                         final String prefix)
-            throws IOException, InvalidKeyException, NoSuchAlgorithmException, InsufficientDataException,
-            InternalException, NoResponseException, InvalidBucketNameException, XmlPullParserException,
-            ErrorResponseException, InvalidResponseException, RegionConflictException, InvalidArgumentException {
-        createBucketIfNotExists(minIOProperties.getBucketname());
-        String fullObjectName = Strings.isNullOrEmpty(newFileName) ? file.getName() : newFileName;
-        fullObjectName =
-                Strings.isNullOrEmpty(prefix) ? fullObjectName : FilenameUtils.concat(prefix, fullObjectName);
-
-        minioClient.putObject(minIOProperties.getBucketname(), fullObjectName, file.getInputStream(),
-                null, null, null, file.getContentType());
-        return fullObjectName;
+    public boolean upload(final MultipartFile file, final String fileName) {
+        try {
+            createBucketIfNotExists(minIOProperties.getBucketname());
+            minioClient.putObject(minIOProperties.getBucketname(), fileName, file.getInputStream(),
+                    null, null, null, file.getContentType());
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private void createBucketIfNotExists(final String bucket) throws IOException,

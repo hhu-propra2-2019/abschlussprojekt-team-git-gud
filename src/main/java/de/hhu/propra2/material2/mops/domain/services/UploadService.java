@@ -59,15 +59,16 @@ public class UploadService implements IUploadService {
             fileName += "." + fileExtension;
         }
 
-        try {
-            fileUploadService.upload(file, newFileName, String.valueOf(gruppe.getId()));
-        } catch (Exception e) {
-            throw new FileUploadException("Uploading file to minIO causes an error");
-        }
         Datei datei = new Datei(1, fileName, user, tags,
                 LocalDate.now(), veroeffentlichungsdatum, file.getSize(), fileExtension, null);
-        modelService.saveDatei(datei, gruppe);
-        return datei;
+        long dateiId = modelService.saveDatei(datei, gruppe);
+
+        if (!fileUploadService.upload(file, String.valueOf(dateiId))) {
+            throw new FileUploadException();
+        }
+        return new Datei(dateiId, datei.getName(), datei.getUploader(), datei.getTags(),
+                datei.getUploaddatum(), datei.getVeroeffentlichungsdatum(), datei.getDateigroesse(),
+                datei.getDateityp(), datei.getKategorie());
     }
 
     /**

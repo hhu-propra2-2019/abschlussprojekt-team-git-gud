@@ -241,7 +241,7 @@ public final class ModelService implements IModelService {
         return alleDateien;
     }
 
-    public void saveDatei(final Datei datei, final Gruppe gruppe) throws SQLException {
+    public long saveDatei(final Datei datei, final Gruppe gruppe) throws SQLException {
         if (datei == null || gruppe == null) {
             throw new IllegalArgumentException();
         }
@@ -255,7 +255,7 @@ public final class ModelService implements IModelService {
         DateiDTO dateiDTO = new DateiDTO(datei.getName(), userDTO, tagsToTagDTOs(datei.getTags()),
                 datei.getUploaddatum(), datei.getVeroeffentlichungsdatum(), datei.getDateigroesse(),
                 datei.getDateityp(), groupDTO, null);
-        repository.saveDatei(dateiDTO);
+        return repository.saveDatei(dateiDTO);
     }
 
     private ArrayList<TagDTO> tagsToTagDTOs(final List<Tag> tags) {

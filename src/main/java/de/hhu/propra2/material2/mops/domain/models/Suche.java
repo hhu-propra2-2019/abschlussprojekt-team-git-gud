@@ -9,7 +9,7 @@ public class Suche {
     private final String[] tags;
     private final String[] dateiTyp;
     private final String[] uploader;
-    private final String sortierung;
+    private final String sortierKriterium;
     private final Long gruppenId;
     private final String dateiName;
     private final String reihenfolge;
@@ -32,7 +32,7 @@ public class Suche {
                  final String[] tags,
                  final String[] dateiTyp,
                  final String[] uploader,
-                 final String sortierung,
+                 final String sortierKriterium,
                  final Long gruppenId,
                  final String dateiName,
                  final String reihenfolge) {
@@ -41,7 +41,7 @@ public class Suche {
         this.bisDatum = bisDatum;
         this.tags = tags == null ? null : tags.clone();
         this.uploader = uploader == null ? null : uploader.clone();
-        this.sortierung = sortierung;
+        this.sortierKriterium = sortierKriterium;
         this.gruppenId = gruppenId;
         this.dateiName = dateiName;
         this.reihenfolge = reihenfolge;

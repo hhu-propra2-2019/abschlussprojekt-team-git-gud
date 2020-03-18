@@ -11,13 +11,7 @@ Suche und angenehmen Zugriff auf ihre digitalen Lehrmaterialien erlauben.
 
 === Momentane Probleme:
 
-- Händisches schreiben schneller SQL-Queries zum erreichen der gebrauchten Daten aus
-der Datenbank.
-
-- Verknüpfen der einzelnen Programmschichten (GUI, Geschäftslogik un Persistenz) zu einem
-einheitlichen Gesamtprodukt
-
-- Mögliche Probleme beim Abrufen von Daten anderer Anwendungsmodule.
+- Realisierung von Schnittstellen zu anderen Programmmodulen.
 
 == Ziele und Features
 
@@ -39,4 +33,6 @@ erreichen können
 
 == Dokumentationsverzeichnis
 
-- Architekturdokumentation:
+- Methodendokumentation: Die Methoden der Anwendung sind im Quellcode mti Javadocs versehen, die ihre Fiunktionalität beschreiben.
+
+- Architekturdokumentation: Architkekturbdokumentation befindet sich im Order "documentations"

@@ -148,7 +148,6 @@ public final class RepositoryTest {
 
         repository.deleteTagRelationsByDateiId(101);
         assertFalse(repository.getTagRelationByDateiId(101));
-
     }
 
 }

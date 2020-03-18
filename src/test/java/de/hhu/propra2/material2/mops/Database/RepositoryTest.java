@@ -203,7 +203,7 @@ public final class RepositoryTest {
 
         repository.deleteUserGroupRelationByUserId(userId);
 
-        assertFalse(repository.getUserGroupRelationByUserId(userId));
+        assertFalse(repository.doGroupRelationsExistByUserId(userId));
     }
 
     @Test
@@ -212,7 +212,7 @@ public final class RepositoryTest {
 
         repository.deleteUserGroupRelationByGroupId(gruppeId);
 
-        assertFalse(repository.getUserGroupRelationByGroupId(gruppeId));
+        assertFalse(repository.doGroupRelationsExistByGruppeId(gruppeId));
     }
 
     @Test

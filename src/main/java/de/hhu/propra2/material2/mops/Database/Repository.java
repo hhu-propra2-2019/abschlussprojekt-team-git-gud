@@ -576,7 +576,7 @@ public final class Repository {
     }
 
 
-    public boolean getUserGroupRelationByUserId(final long userId) throws SQLException {
+    boolean doGroupRelationsExistByUserId(final long userId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select gruppeID from Gruppenbelegung where userID=?");
         preparedStatement.setLong(1, userId);
@@ -589,7 +589,7 @@ public final class Repository {
         return doesExist;
     }
 
-    public boolean getUserGroupRelationByGroupId(final long gruppeId) throws SQLException {
+    boolean doGroupRelationsExistByGruppeId(final long gruppeId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select userID from Gruppenbelegung where gruppeID=?");
         preparedStatement.setLong(1, gruppeId);

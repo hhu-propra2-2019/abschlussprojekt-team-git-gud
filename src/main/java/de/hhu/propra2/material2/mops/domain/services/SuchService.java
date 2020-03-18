@@ -72,8 +72,8 @@ public class SuchService {
         if (!suche.getDateiName().trim().isEmpty()) {
             result = dateiNamenSuche(suche.getDateiName(), result);
         }
-        if (suche.getReihenfolge() != null) {
-            result = sortieren(suche.getSortierung(),
+        if (suche.getSortierKriterium() != null) {
+            result = sortieren(suche.getSortierKriterium(),
                     suche.getReihenfolge(),
                     result);
         }
@@ -160,14 +160,11 @@ public class SuchService {
         List<Datei> sort = zuSortieren;
         if ("name".equals(sortierStyle)) {
             sort.sort(new DateiNamenComparator());
-        }
-        if ("Dateityp".equals(sortierStyle)) {
+        } else if ("Dateityp".equals(sortierStyle)) {
             sort.sort(new DateiDateiTypComparator());
-        }
-        if ("Uploader".equals(sortierStyle)) {
+        } else if ("Uploader".equals(sortierStyle)) {
             sort.sort(new DateiUploaderComparator());
-        }
-        if ("Datum".equals(sortierStyle)) {
+        } else if ("Datum".equals(sortierStyle)) {
             sort.sort(new DateiDatumComparator());
         }
         if (reihenfolge != null) {

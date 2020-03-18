@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -75,6 +76,28 @@ public final class RepositoryTest {
         for (GruppeDTO gruppeDTO:userDTO.getBelegungUndRechte().keySet()) {
             assertTrue(userDTO.getBelegungUndRechte().get(gruppeDTO));
         }
+    }
+
+    @Test
+    @SuppressWarnings("checkstyle:magicnumber")
+    public void loadGruppeTest() throws SQLException {
+        GruppeDTO gruppeDto = repository.findGruppeByGruppeId(99999999);
+
+        assertTrue(gruppeDto.getName().equals("gruppe"));
+        assertTrue(gruppeDto.getDescription().equals("this is a description"));
+    }
+
+    @Test
+    @SuppressWarnings("checkstyle:magicnumber")
+    public void loadDateiByGruppeTest() throws SQLException {
+        List<DateiDTO> dateien = gruppe.getDateien();
+
+        DateiDTO datei = dateien.get(0);
+
+        assertTrue(datei.getName().equals("gaedata"));
+        assertTrue(datei.getDateityp().equals("gae"));
+        assertTrue(datei.getKategorie().equals("gae"));
+
     }
 
     @Test
@@ -190,6 +213,24 @@ public final class RepositoryTest {
     }
 
     @Test
+    public void deleteGruppenbelegungByUserTest() throws SQLException {
+        long userId = user.getId();
+
+        repository.deleteUserGroupRelationByUserId(userId);
+
+        assertFalse(repository.getUserGroupRelationByUserId(userId));
+    }
+
+    @Test
+    public void deleteGruppenbelegungByGruppeTest() throws SQLException {
+        long gruppeId = gruppe.getId();
+
+        repository.deleteUserGroupRelationByGroupId(gruppeId);
+
+        assertFalse(repository.getUserGroupRelationByGroupId(gruppeId));
+    }
+
+    @Test
     public void deleteGruppenbelegungByUserDTOandGruppeDTOTest() throws SQLException {
         repository.deleteUserGroupRelationByUserDTOAndGruppeDTO(user, gruppe);
 
@@ -197,4 +238,5 @@ public final class RepositoryTest {
 
         assertTrue(loadedUser.getBelegungUndRechte().keySet().isEmpty());
     }
+
 }

@@ -572,6 +572,33 @@ public final class Repository {
         preparedStatement.close();
     }
 
+
+    public boolean getUserGroupRelationByUserId(long userId) throws SQLException {
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("select gruppeID from Gruppenbelegung where userID=?");
+        preparedStatement.setLong(1, userId);
+
+        ResultSet result = preparedStatement.executeQuery();
+        boolean doesExist = result.next();
+        result.close();
+        preparedStatement.close();
+
+        return doesExist;
+    }
+
+    public boolean getUserGroupRelationByGroupId(long gruppeId) throws SQLException {
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("select userID from Gruppenbelegung where gruppeID=?");
+        preparedStatement.setLong(1, gruppeId);
+
+        ResultSet result = preparedStatement.executeQuery();
+        boolean doesExist = result.next();
+        result.close();
+        preparedStatement.close();
+
+        return doesExist;
+    }
+
     /*
         USER METHODS
      */
@@ -615,4 +642,6 @@ public final class Repository {
 
         return user;
     }
+
+
 }

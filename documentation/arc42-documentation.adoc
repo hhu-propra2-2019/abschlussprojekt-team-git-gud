@@ -193,7 +193,9 @@ image::/pictures/kontext.png[optional alt text]
             Daten hochzuladen, runterzuladen, anderen Nutzern zu Verfügung zu stellen und diese
             Daten mit eigenen Tags zu versehen.
 
-- *Cloudspeicher(Fremdsystem)*:
+- *Cloudspeicher(Fremdsystem)*: Wenn ein Nutzer eine Datei hochladen oder herunterladen will so wird
+                                dies nicht direkt über die Materialsammlung realisiert. Der Cloadspeicher
+                                nimmt die Speicher- oder Ladeanfragen an und setzt diese in seiner Umgenung um.
 
 === Technischer Kontext
 

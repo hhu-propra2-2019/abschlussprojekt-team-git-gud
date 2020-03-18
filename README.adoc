@@ -30,6 +30,8 @@ erreichen können
 
 * Schneller Zugriff auf benötigte Materialien
 
+* Umfangreiche Suche nach Dateien
+
 == Dokumentationsverzeichnis
 
 * Methodendokumentation: Die Methoden der Anwendung sind im Quellcode mti Javadocs versehen, die ihre Fiunktionalität beschreiben.

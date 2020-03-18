@@ -43,8 +43,8 @@ public class ModelServiceTest {
     private UserDTO angelaDTO;
 
     private ModelService modelService;
-
-    private SuchService suchService;
+    @Mock
+    private SuchService suchServiceMock;
     /**
      * setUp for every test.
      * Creates a new ModelService object with mocked repositories.
@@ -54,7 +54,7 @@ public class ModelServiceTest {
     public void setUp() {
         this.modelService = new ModelService(
                 repoMock,
-                suchService);
+                suchServiceMock);
     }
 
     @Test

@@ -166,8 +166,7 @@ public final class ModelService implements IModelService {
     }
 
     public List<Datei> getSuchergebnisse(final KeycloakAuthenticationToken token) {
-        Account account = getAccountFromKeycloak(token);
-        List<Datei> zuFiltern = new ArrayList<>();
+        List<Datei> zuFiltern;
         if (suche.getGruppenId() != null) {
             zuFiltern = getAlleDateienByGruppe(suche.getGruppenId(), token);
         } else {

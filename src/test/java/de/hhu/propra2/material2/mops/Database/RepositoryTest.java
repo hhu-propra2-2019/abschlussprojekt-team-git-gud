@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -84,6 +85,18 @@ public final class RepositoryTest {
 
         assertTrue(gruppeDto.getName().equals("gruppe"));
         assertTrue(gruppeDto.getDescription().equals("this is a description"));
+    }
+
+    @Test
+    @SuppressWarnings("checkstyle:magicnumber")
+    public void loadDateiByGruppeTest() throws SQLException {
+        List<DateiDTO> dateien = gruppe.getDateien();
+
+        DateiDTO datei = dateien.get(0);
+
+        assertTrue(datei.getName().equals("gaedata"));
+        assertTrue(datei.getDateityp().equals("gae"));
+        assertTrue(datei.getKategorie().equals("gae"));
 
     }
 

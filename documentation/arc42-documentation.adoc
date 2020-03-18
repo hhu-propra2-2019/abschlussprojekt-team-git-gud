@@ -79,45 +79,45 @@ Folgende Aufgaben gilt es zu meistern:
 
 - Aufgaben der Persisitenzschicht:
 
-1. *Kommunikation mit datenliefernden Gruppen* :  Es muss mit dem Team, das für die Gruppeneinteilung zuständig ist, sowohl eine Schnittstelle für den Zugriff auf die
+1. *Kommunikation mit datenliefernden Gruppen*:  Es muss mit dem Team, das für die Gruppeneinteilung zuständig ist, sowohl eine Schnittstelle für den Zugriff auf die
 von uns gebrauchten Daten wie z.B die Gruppenzugehörigket von Benutzern definiert als auch ein Protokoll zum übermitteln
 und aktuallisieren eben dieser vereinbart werden. Für letzteres steht die Frage im Hintergrund ob die Aktuallisierung
 in zeitlichen Intervallen oder nach bestimmten Triggern erfolgen soll.
 
-2. *Modellierung* : Die Beziehung zwischen Benutzern, Gruppen und Dateien muss in einem ER-Diagramm festgehalten und in einem Datenbankschema
+2. *Modellierung*: Die Beziehung zwischen Benutzern, Gruppen und Dateien muss in einem ER-Diagramm festgehalten und in einem Datenbankschema
 realisiert werden. Die Tabellen sollen die entstehenden Abhängigkeiten vollständig darstellen und aus den in
 Punkt 1 übermittleten Daten gebildet werden können.
 
-3. *Abbildung der Datenbank in der Anwendung* : Das in Punkt 3 genannte Datenbankschema muss durch passende DTOs in der Anwendung abgebildet werden. Die Beziehungen der
+3. *Abbildung der Datenbank in der Anwendung*: Das in Punkt 3 genannte Datenbankschema muss durch passende DTOs in der Anwendung abgebildet werden. Die Beziehungen der
 einzelnen Entitäten im Datenbankschema muss passend in den DTOs abgebildet werden.
 
-4. *Aufsetzen eines MinIO-Speichers* : Es muss ein MinIO speicher aufgesetzt werden, der es erlaubt Daten zu speichern.
+4. *Aufsetzen eines MinIO-Speichers*: Es muss ein MinIO speicher aufgesetzt werden, der es erlaubt Daten zu speichern.
 Außerdem muss eine Verbindung zwischen MinIO und der Datenbank realisiert werden z.b durch einen gespreicherten Link.
 
 4. *Kommunikation zwischen Datenbank und Geschäftslogik* : Es sollen den Entitäten des Datenbankschemas entsprechende Repositorys implementiert werden.
 
 - Aufgaben der GUI:
 
-1. *Startseite* : Gibt eine Einleitung in unsere System und erklärt den Umgang damit.
+1. *Startseite*: Gibt eine Einleitung in unsere System und erklärt den Umgang damit.
 
-2. *Dateiübersicht* : Zeigt die zum Download verfügbaren Dateien einer Gruppe an.
+2. *Dateiübersicht*: Zeigt die zum Download verfügbaren Dateien einer Gruppe an.
 
-3. *Suche* : Eine Seite fürs Suchen und Filtern der Dateien, wo die Such parameter mit einem PostMapping an die Businesslogic weiter-
+3. *Suche*: Eine Seite fürs Suchen und Filtern der Dateien, wo die Such parameter mit einem PostMapping an die Businesslogic weiter-
 gegeben wird.
 
-4. *Hochladen* : Eine Seite fürs hochladen der Dateien. Hochladen dürfen Professoren und User, die in ihrer Lerngruppe die Berechtigung haben.
+4. *Hochladen*: Eine Seite fürs hochladen der Dateien. Hochladen dürfen Professoren und User, die in ihrer Lerngruppe die Berechtigung haben.
 
-5. *Schnitstelle* : Eine Schnittstelle, für das Lernportfolio, wahrscheinlich mit Hilfe von Transklusion teile unserer Dateiübersicht.
+5. *Schnitstelle*: Eine Schnittstelle, für das Lernportfolio, wahrscheinlich mit Hilfe von Transklusion teile unserer Dateiübersicht.
 
 - Aufgaben der Geschäftslogik:
 
-1. *Laden von Modelobjekten* : Die aus den Einträgen der Datenbanktabllen enstandenen DTOs müssen sollen,
+1. *Laden von Modelobjekten*: Die aus den Einträgen der Datenbanktabllen enstandenen DTOs müssen sollen,
 zur besseren Abgrenzung zwischen Persistenz- und Logikobjekten, in Logikobjekte überführt werden.
 
-2. *Suche nach Dateien* : Es soll Logik implementiert werden, die dazu dient die einem Benutzer zugewiesenen
+2. *Suche nach Dateien*: Es soll Logik implementiert werden, die dazu dient die einem Benutzer zugewiesenen
 Dateien zu finden und der GUI zur Verfügung zu stellen.
 
-3. *MinIO-Steuerung* : Downloadbarkeit sowie uploudbarkeit einer Datei sollen bestimmt werden können. Auch muss
+3. *MinIO-Steuerung*: Downloadbarkeit sowie uploudbarkeit einer Datei sollen bestimmt werden können. Auch muss
 die Funktion implementiert werden, dass Dateien zeitesteuert zur Verfügung gestellt werden.
 
 
@@ -187,9 +187,13 @@ wie z.B get, set, is usw. und technische Begriffe bleiben Englisch.
 
 === Fachlicher Kontext
 
-**<Diagramm und/oder Tabelle>**
+image::/pictures/kontext.png[optional alt text]
 
-**<optional: Erläuterung der externen fachlichen Schnittstellen>**
+- *Nutzer*: Die Materialsammlung bietet dem Nutzer eine Möglichkeit, je nach Befugniss,
+            Daten hochzuladen, runterzuladen, anderen Nutzern zu Verfügung zu stellen und diese
+            Daten mit eigenen Tags zu versehen.
+
+- *Cloudspeicher(Fremdsystem)*:
 
 === Technischer Kontext
 

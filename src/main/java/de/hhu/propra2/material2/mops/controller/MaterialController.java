@@ -34,7 +34,6 @@ public class MaterialController {
 
     @Autowired
     private RestTemplate serviceAccountRestTemplate;
-
     @Autowired
     private ModelService modelService;
     @Autowired

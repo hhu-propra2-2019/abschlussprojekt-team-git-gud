@@ -9,16 +9,14 @@ import java.util.Objects;
 public class WebDTOService {
 
     @Autowired
-    RestTemplate serviceAccountRestTemplate;
-
-    public WebDTOService(){
-
-    }
+    private RestTemplate serviceAccountRestTemplate;
 
     public void loadGroupWebDTOFromGroupManagementAPI(final int status) {
+        String state = String.valueOf(status);
         try {
-            var res = Arrays.asList(Objects.requireNonNull(serviceAccountRestTemplate.getForEntity("http://localhost:8090/gruppen2/api/updateGroups/{status}"
-                    , GroupWebDTO[].class).getBody()));
+            var res = Objects.requireNonNull(serviceAccountRestTemplate.
+                    getForEntity("http://localhost:8090/gruppen2/api/updateGroups/{status}".replace("status", state),
+                            UpdatedGroupRequestMapper.class).getBody());
         } catch (Exception e) {
             e.printStackTrace();
         }

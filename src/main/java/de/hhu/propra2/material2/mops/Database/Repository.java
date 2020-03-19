@@ -284,7 +284,6 @@ public final class Repository {
         preparedStatement.setString(4, dateiDTO.getKategorie());
         preparedStatement.setString(5, dateiDTO.getName());
         preparedStatement.setLong(6, dateiId);
-
         List<TagDTO> tags = dateiDTO.getTagDTOs();
         preparedStatement.execute();
 

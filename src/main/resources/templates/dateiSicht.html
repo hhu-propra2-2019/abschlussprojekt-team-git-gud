@@ -20,13 +20,13 @@
         </p>
         <div class="accordion" id="dataCategorys">
             <div class="card" th:each="kategorie : ${kategorien}">
-                <div class="card-header" id="headingOne">
+                <div class="card-header" id="${kategorie}">
                     <h2 class="mb-0">
                         <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne"
-                                aria-expanded="true" aria-controls="collapseOne" th:text="kategorie"></button>
+                                aria-expanded="true" aria-controls="collapseOne" th:text="${kategorie}"></button>
                     </h2>
                 </div>
-                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#dataCategorys">
+                <div id="collapseOne" class="collapse show" aria-labelledby="${kategorie}" data-parent="#dataCategorys">
                     <ol>
                         <li class="list-group-item">Vorlesung1</li>
                         <li class="list-group-item">Vorlesung2</li>
@@ -49,6 +49,23 @@
                     </ol>
                 </div>
             </div>
+
+            <div class="card">
+                <div class="card-header" id="headingThree">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseTwo">
+                            test
+                        </button>
+                    </h2>
+                </div>
+                <div id="collapseThree" class="collapse" aria-labelledby="headingTwo" data-parent="#dataCategorys">
+                    <ol>
+                        <li class="list-group-item">Übung2</li>
+                        <li class="list-group-item">Übung2</li>
+                    </ol>
+                </div>
+            </div>
+
         </div>
     </div>
 </body>

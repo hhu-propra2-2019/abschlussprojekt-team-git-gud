@@ -19,14 +19,14 @@
             Hier könnte ihre Gruppenbeschreibung stehen.
         </p>
         <div class="accordion" id="dataCategorys">
-            <div class="card" th:each="kategorie : ${kategorien}">
+            <div class="card" th:each="kategorie, iter : ${kategorien}">
                 <div class="card-header" id="${kategorie}">
                     <h2 class="mb-0">
-                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne"
+                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" th:data-target="'#collapseOne' + ${iter.index}"
                                 aria-expanded="false" aria-controls="collapseOne" th:text="${kategorie}"></button>
                     </h2>
                 </div>
-                <div id="collapseOne" class="collapse" aria-labelledby="${kategorie}" data-parent="#dataCategorys">
+                <div th:id="'collapseOne' + ${iter.index}" class="collapse" aria-labelledby="${kategorie}" data-parent="#dataCategorys">
                     <ol>
                         <li class="list-group-item">Vorlesung1</li>
                         <li class="list-group-item">Vorlesung2</li>

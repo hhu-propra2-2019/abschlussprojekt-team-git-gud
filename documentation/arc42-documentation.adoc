@@ -132,9 +132,11 @@ die Funktion implementiert werden, dass Dateien zeitesteuert zur Verfügung gest
 [cols="1,1" options="header"]
 |===
 |Rolle |Erwartungshaltung
-| Professoren | Einfache und übersichtliche Verwendung, zuverlässig, schnell
-| Studierende | Übersichtlich, felxibel, erreichbar
-| Fachbereich Informatik | wartbar, stabil, modifizierbar, sicher
+| Professoren | Möglichst einfache und zuverlässige Bereitstellung an Lehr- und Vorbereitungsmaterialien, die ggf.
+                nachträglich bearbeitet werden können d.h das die Metadaten der hochgeladenen Datein bearbeitet werden können.
+| Studierende | Das finden von Lehr- und Vorbereitungsmaterialien soll intuitiv, einfach und schnell Verlaufen
+| Fachbereich Informatik | Die Materialsamlung soll auch große Aufrufs- und Suchaufträge zuverlässig reagieren können.
+                           Das System sollte überwachbar und widerstandsfähig sein,
 |===
 
 
@@ -187,17 +189,23 @@ wie z.B get, set, is usw. und technische Begriffe bleiben Englisch.
 
 === Fachlicher Kontext
 
-image::/pictures/kontext.png[optional alt text]
+image::/pictures/Kontextausschnitt.png[optional alt text]
 
 - *Nutzer*: Die Materialsammlung bietet dem Nutzer eine Möglichkeit, je nach Befugniss,
             Daten hochzuladen, runterzuladen, anderen Nutzern zu Verfügung zu stellen und diese
             Daten mit eigenen Tags zu versehen.
 
-- *Cloudspeicher(Fremdsystem)*:
+- *Cloudspeicher(Fremdsystem)*: Wenn ein Nutzer eine Datei hochladen oder herunterladen will so wird
+                                dies nicht direkt über die Materialsammlung realisiert. Der Cloadspeicher
+                                nimmt die Speicher- oder Ladeanfragen an und setzt diese in seiner Umgenung um.
+
+- *Gruppenbelegung(Fremdsystem)*: Dei Information welcher Nutzer zu welcher Gruppe gehört und welche Rechte dieser
+                                  Nutzer in seiner jeweiligen Gruppe hat wird durch dieses System der Materialsammlung
+                                  regelmäßig zur Verfügung gestellt.
 
 === Technischer Kontext
 
-**<Diagramm oder Tabelle>**
+image::/pictures/tech_kontext_ausschnitt.png[optional alt text]
 
 **<optional: Erläuterung der externen technischen Schnittstellen>**
 

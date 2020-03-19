@@ -5,7 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class UploadForm {
-    private String gruppenwahl;
+    private Long gruppenId;
     private String dateiname;
     private String selectedTags;
     private String timedUpload;

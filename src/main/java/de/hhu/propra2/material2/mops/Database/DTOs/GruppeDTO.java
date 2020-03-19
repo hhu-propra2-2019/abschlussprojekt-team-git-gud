@@ -1,13 +1,14 @@
 package de.hhu.propra2.material2.mops.Database.DTOs;
 
 import lombok.AccessLevel;
-import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
-@Data
-public class GruppeDTO {
+@Getter
+@Setter
+public final class GruppeDTO {
     /**
      * Unique ID from database.
      */
@@ -41,5 +42,24 @@ public class GruppeDTO {
         this.name = nameArg;
         this.description = descriptionArg;
         this.dateien = dateiArgs;
+    }
+
+    @SuppressWarnings({"checkstyle:FinalParameters"})
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
+
+        if (o.getClass() == this.getClass()) {
+            GruppeDTO gruppeDTO = (GruppeDTO) o;
+            return gruppeDTO.hashCode() == this.hashCode();
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) id;
     }
 }

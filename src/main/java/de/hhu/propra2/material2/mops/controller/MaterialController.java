@@ -1,19 +1,27 @@
 package de.hhu.propra2.material2.mops.controller;
 
+import de.hhu.propra2.material2.mops.Exceptions.DownloadException;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
 import de.hhu.propra2.material2.mops.domain.models.UploadForm;
+import de.hhu.propra2.material2.mops.domain.services.MinioDownloadService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+
 import org.springframework.web.bind.annotation.PostMapping;
+
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * After the @RolesAllowed Annotation the Syle Code wants a space after
@@ -29,7 +37,12 @@ public class MaterialController {
 
     @Autowired
     private ModelService modelService;
-    /**start routing.
+    @Autowired
+    private MinioDownloadService minioDownloadService;
+
+    /**
+     * start routing.
+     *
      * @return String
      */
     @GetMapping("/")
@@ -41,7 +54,9 @@ public class MaterialController {
         return "start";
     }
 
-    /**Shows the documents of a Group.
+    /**
+     * Shows the documents of a Group.
+     *
      * @return String
      */
     @GetMapping("/dateiSicht")
@@ -88,7 +103,7 @@ public class MaterialController {
             model.addAttribute("suche", suchen);
             return "redirect:/suche";
         }
-        return "redirect:/";
+        return "redirect:/suche";
     }
 
     /**
@@ -133,5 +148,23 @@ public class MaterialController {
     public String logout(final HttpServletRequest request) throws Exception {
         request.logout();
         return "redirect:/";
+    }
+
+    /**
+     *
+     */
+    @GetMapping("/files")
+    public void getFile(
+            final Long fileId,
+            final HttpServletResponse response) {
+        try {
+            // get your file as InputStream
+            InputStream input = minioDownloadService.getObject(fileId);
+            // copy it to response's OutputStream
+            FileCopyUtils.copy(input, response.getOutputStream());
+            response.flushBuffer();
+        } catch (IOException | DownloadException ex) {
+            throw new RuntimeException("IOError writing file to output stream");
+        }
     }
 }

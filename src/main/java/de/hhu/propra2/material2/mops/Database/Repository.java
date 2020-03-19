@@ -9,12 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -650,6 +645,7 @@ public final class Repository {
     /*
         TESTING METHOD
      */
+    @SuppressWarnings("checkstyle:magicnumber")
     void deleteAll() throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement("delete from Gruppenbelegung");
@@ -669,6 +665,15 @@ public final class Repository {
 
         preparedStatement =
                 connection.prepareStatement("delete from User");
+        preparedStatement.execute();
+
+        preparedStatement =
+                connection.prepareStatement("insert ignore into User (userID, vorname, nachname, key_cloak_name)"
+                        + "values (?, ?, ?, ?)");
+        preparedStatement.setString(1, "" + -1);
+        preparedStatement.setString(2, "User");
+        preparedStatement.setString(3, "Deleted");
+        preparedStatement.setString(4, "-");
         preparedStatement.execute();
 
         preparedStatement.close();

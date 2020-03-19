@@ -5,7 +5,6 @@ import de.hhu.propra2.material2.mops.Database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.Database.DTOs.TagDTO;
 import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
 import de.hhu.propra2.material2.mops.Material2Application;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,8 +69,9 @@ public final class RepositoryTest {
     }
 
     private DateiDTO generateRandomDatei() {
-        UUID uuid = UUID.randomUUID();
-        return new TagDTO(uuid.toString());
+        return new DateiDTO(UUID.randomUUID(), UUID.randomUUID().toString(),
+                UUID.randomUUID().toString(), UUID.randomUUID(),
+                LocalDate.now(), LocalDate.now(), -1, );
     }
 
     @Test

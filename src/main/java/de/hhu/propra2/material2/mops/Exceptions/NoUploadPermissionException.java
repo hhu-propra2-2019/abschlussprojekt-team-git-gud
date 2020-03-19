@@ -1,4 +1,4 @@
-package de.hhu.propra2.material2.mops.domain.services;
+package de.hhu.propra2.material2.mops.Exceptions;
 
 public class NoUploadPermissionException extends Exception {
     public NoUploadPermissionException() {

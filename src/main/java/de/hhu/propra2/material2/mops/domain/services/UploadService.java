@@ -3,6 +3,7 @@ package de.hhu.propra2.material2.mops.domain.services;
 import com.google.common.base.Strings;
 import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
 import de.hhu.propra2.material2.mops.Database.Repository;
+import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Tag;

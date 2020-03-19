@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
 @SuppressWarnings("checkstyle:magicnumber")
 @ExtendWith(MockitoExtension.class)
 public class UploadServiceTest {
-    private static LocalDate date1303;
+    private static LocalDate date1303 = LocalDate.of(2020, Calendar.MARCH, 13);
 
     private Tag tag1 = new Tag(1, "tag1");
     private Tag tag2 = new Tag(2, "tag2");
@@ -60,7 +60,6 @@ public class UploadServiceTest {
     public void setUp() throws SQLException {
         Calendar calender = Calendar.getInstance();
         calender.set(2020, Calendar.MARCH, 13);
-        date1303 = LocalDate.of(2020, Calendar.MARCH, 13);
 
         uploadService = new UploadService(repositoryMock, modelServiceMock, fileUploadServiceMock);
         when(modelServiceMock.saveDatei(any(), any())).thenReturn(1L);

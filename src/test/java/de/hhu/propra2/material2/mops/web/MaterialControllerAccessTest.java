@@ -2,7 +2,6 @@ package de.hhu.propra2.material2.mops.web;
 
 import com.c4_soft.springaddons.test.security.context.support.WithMockKeycloackAuth;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
@@ -12,27 +11,20 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
 @ComponentScan(basePackageClasses = { KeycloakSecurityComponents.class, KeycloakSpringBootConfigResolver.class })
-public class SlicedControllerTest {
+public class MaterialControllerAccessTest {
 
     @Autowired
     MockMvc mvc;
 
     @MockBean
     ModelService modelService;
-
-
-    @BeforeEach
-    void init(){
-        //when(modelService.getAlleGruppenByUser()).thenReturn();
-    }
 
     //Public User Access tests
 
@@ -48,12 +40,18 @@ public class SlicedControllerTest {
     void testSuche_PublicUser() throws Exception {
         mvc.perform(get("/suche"))
                 .andExpect(status().isForbidden());
+
+        mvc.perform(post("/suche").with(csrf()))
+                .andExpect(status().isForbidden());
     }
 
     @Test
     @WithMockKeycloackAuth(name = "Benny Goodman", roles = "TESTER")
     void testUpload_PublicUser() throws Exception {
         mvc.perform(get("/upload"))
+                .andExpect(status().isForbidden());
+
+        mvc.perform(post("/upload").with(csrf()))
                 .andExpect(status().isForbidden());
     }
 
@@ -67,28 +65,37 @@ public class SlicedControllerTest {
     //Student User Access tests
 
     @Test
-    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "studentin")
+    @WithMockKeycloackAuth(name = "Bruce W.", roles = "studentin")
     void testStart_StudentUser() throws Exception {
         mvc.perform(get("/"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "studentin")
+    @WithMockKeycloackAuth(name = "Bruce W.", roles = "studentin")
     void testSuche_StudentUser() throws Exception {
         mvc.perform(get("/suche"))
                 .andExpect(status().isOk());
+
+        mvc.perform(post("/suche")
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection());
     }
 
     @Test
-    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "studentin")
+    @WithMockKeycloackAuth(name = "Bruce W.", roles = "studentin")
     void testUpload_StudentUser() throws Exception {
         mvc.perform(get("/upload"))
                 .andExpect(status().isOk());
+
+        mvc.perform(post("/upload")
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection());
     }
 
+
     @Test
-    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "studentin")
+    @WithMockKeycloackAuth(name = "Bruce W.", roles = "studentin")
     void testDateisicht_StudentUser() throws Exception {
         mvc.perform(get("/dateiSicht"))
                 .andExpect(status().isOk());
@@ -97,28 +104,36 @@ public class SlicedControllerTest {
     //Orga User Access tests
 
     @Test
-    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "orga")
+    @WithMockKeycloackAuth(name = "Donald T.", roles = "orga")
     void testStart_OrgaUser() throws Exception {
         mvc.perform(get("/"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "orga")
+    @WithMockKeycloackAuth(name = "Donald T.", roles = "orga")
     void testSuche_OrgaUser() throws Exception {
         mvc.perform(get("/suche"))
                 .andExpect(status().isOk());
+
+        mvc.perform(post("/suche")
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection());
     }
 
     @Test
-    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "orga")
+    @WithMockKeycloackAuth(name = "Donald T.", roles = "orga")
     void testUpload_OrgaUser() throws Exception {
         mvc.perform(get("/upload"))
                 .andExpect(status().isOk());
+
+        mvc.perform(post("/upload")
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection());
     }
 
     @Test
-    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "orga")
+    @WithMockKeycloackAuth(name = "Donald T.", roles = "orga")
     void testDateisicht_OrgaUser() throws Exception {
         mvc.perform(get("/dateiSicht"))
                 .andExpect(status().isOk());
@@ -127,29 +142,37 @@ public class SlicedControllerTest {
     //Actuator User Access tests
 
     @Test
-    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "actuator")
-    void testStart_OrgaUser() throws Exception {
+    @WithMockKeycloackAuth(name = "James B.", roles = "actuator")
+    void testStart_ActuatorUser() throws Exception {
         mvc.perform(get("/"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "actuator")
-    void testSuche_OrgaUser() throws Exception {
+    @WithMockKeycloackAuth(name = "James B.", roles = "actuator")
+    void testSuche_ActuatorUserUser() throws Exception {
         mvc.perform(get("/suche"))
                 .andExpect(status().isOk());
+
+        mvc.perform(post("/suche")
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection());
     }
 
     @Test
-    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "actuator")
-    void testUpload_OrgaUser() throws Exception {
+    @WithMockKeycloackAuth(name = "James B.", roles = "actuator")
+    void testUpload_ActuatorUser() throws Exception {
         mvc.perform(get("/upload"))
                 .andExpect(status().isOk());
+
+        mvc.perform(post("/upload")
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection());
     }
 
     @Test
-    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "actuator")
-    void testDateisicht_OrgaUser() throws Exception {
+    @WithMockKeycloackAuth(name = "James B.", roles = "actuator")
+    void testDateisicht_ActuatorUser() throws Exception {
         mvc.perform(get("/dateiSicht"))
                 .andExpect(status().isOk());
     }

@@ -151,9 +151,10 @@ public class MaterialController {
      *
      */
     @GetMapping("/files")
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public void getFile(
             final Long fileId,
-            final HttpServletResponse response) {
+            final HttpServletResponse response, final KeycloakAuthenticationToken token) {
         try {
             // get your file as InputStream
             InputStream input = minioDownloadService.getObject(fileId);

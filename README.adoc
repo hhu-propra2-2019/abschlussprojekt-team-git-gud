@@ -6,33 +6,34 @@ Die hier implementierte Materialsammlung ist auf einer Schichtarchitektur
 aufgebaut und soll den Benutzern eine schnelle, effektive und übersichtliche
 Suche und angenehmen Zugriff auf ihre digitalen Lehrmaterialien erlauben.
 
-
 == Problembeschreibung
 
 === Momentane Probleme:
 
-- Realisierung von Schnittstellen zu anderen Programmmodulen.
+* Implementierung von MinIO un dessen Verbindung zur Datenbank.
 
 == Ziele und Features
 
 === Ziele der Anwendung:
 
-- Die Anwendung soll im Zusammenspiel mit anderen SCS von MOPS eine schnelle Suche und
+* Die Anwendung soll im Zusammenspiel mit anderen SCS von MOPS eine schnelle Suche und
 Bereitstellung von Lehrmateriallien bieten.
 
-- Die GUI der Anwendung soll eine schnelle und übersichtliche Navigation ermöglichen.
+* Die GUI der Anwendung soll eine schnelle und übersichtliche Navigation ermöglichen.
 
-- Den Studierenden sollen ohne Voreinstellungen ihre benötigten Gruppenlehrmaterialien
+* Den Studierenden sollen ohne Voreinstellungen ihre benötigten Gruppenlehrmaterialien
 erreichen können
 
 === Features der Anwendung:
 
-- Übersichtliches GUI
+* Übersichtliches GUI
 
-- Schneller Zugriff auf benötigte Materialien
+* Schneller Zugriff auf benötigte Materialien
+
+* Umfangreiche Suche nach Dateien
 
 == Dokumentationsverzeichnis
 
-- Methodendokumentation: Die Methoden der Anwendung sind im Quellcode mti Javadocs versehen, die ihre Fiunktionalität beschreiben.
+* Methodendokumentation: Die Methoden der Anwendung sind im Quellcode mti Javadocs versehen, die ihre Fiunktionalität beschreiben.
 
-- Architekturdokumentation: Architkekturbdokumentation befindet sich im Order "documentations"
+* Architekturdokumentation: Architkekturbdokumentation befindet sich im Order "documentations"

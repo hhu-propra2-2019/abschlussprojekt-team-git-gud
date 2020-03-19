@@ -1,26 +1,27 @@
 package de.hhu.propra2.material2.mops.controller;
 
-import de.hhu.propra2.material2.mops.domain.models.Gruppe;
+import de.hhu.propra2.material2.mops.Exceptions.DownloadException;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
 import de.hhu.propra2.material2.mops.domain.models.UploadForm;
-import de.hhu.propra2.material2.mops.domain.models.User;
-import de.hhu.propra2.material2.mops.domain.services.IModelService;
-import de.hhu.propra2.material2.mops.security.Account;
-import io.micrometer.core.instrument.MeterRegistry;
-import org.keycloak.KeycloakPrincipal;
+import de.hhu.propra2.material2.mops.domain.services.MinioDownloadService;
+import de.hhu.propra2.material2.mops.domain.services.ModelService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+
 import org.springframework.web.bind.annotation.PostMapping;
+
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Set;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * After the @RolesAllowed Annotation the Syle Code wants a space after
@@ -34,44 +35,10 @@ public class MaterialController {
     @Autowired
     private RestTemplate serviceAccountRestTemplate;
 
-    /*
-     * Beispiel aus der KeycloakDemo
-     * //
-     * THIS IS JUST AN EXAMPLE! DO NOT QUERY A SERVICE IN THE REQUEST/RESPONSE CYCLE!
-     * <p>
-     * var res = Arrays.asList(serviceAccountRestTemplate
-     * .getForEntity("http://localhost:8080/api/text", Entry[].class).getBody());
-     */
-
-    private List<Gruppe> gruppen;
-    private Set<String> tags;
-    private Set<String> dateiTypen;
-    private Set<String> uploader;
-    private Suche suche;
-
-    public MaterialController(final MeterRegistry registry, final IModelService ms) {
-        User user = ms.getUserByKeyCloakName("studentin1");
-        gruppen = user.getAllGruppen();
-        tags = ms.getAlleTagsByUser(user);
-        dateiTypen = ms.getAlleDateiTypenByUser(user);
-        uploader = ms.getAlleUploaderByUser(user);
-    }
-
-    /**
-     * Nimmt das Authentifizierungstoken von Keycloak und erzeugt ein AccountDTO
-     * für die Views.
-     *
-     * @param token keycloak token injection
-     * @return neuen Account der im Template verwendet wird
-     */
-    private Account createAccountFromPrincipal(final KeycloakAuthenticationToken token) {
-        KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
-        return new Account(
-                principal.getName(),
-                principal.getKeycloakSecurityContext().getIdToken().getEmail(),
-                null,
-                token.getAccount().getRoles());
-    }
+    @Autowired
+    private ModelService modelService;
+    @Autowired
+    private MinioDownloadService minioDownloadService;
 
     /**
      * start routing.
@@ -81,9 +48,9 @@ public class MaterialController {
     @GetMapping("/")
     public String startseite(final KeycloakAuthenticationToken token, final Model model) {
         if (token != null) {
-            model.addAttribute("account", createAccountFromPrincipal(token));
+            model.addAttribute("account", modelService.getAccountFromKeycloak(token));
+            model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
         }
-        model.addAttribute("gruppen", gruppen);
         return "start";
     }
 
@@ -94,11 +61,9 @@ public class MaterialController {
      */
     @GetMapping("/dateiSicht")
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
-    public String sicht(final KeycloakAuthenticationToken token, final Model model, final Long gruppeId,
-                        final String gruppeName) {
-        model.addAttribute("account", createAccountFromPrincipal(token));
-        model.addAttribute("gruppen", gruppen);
-        model.addAttribute("gruppeName", gruppeName);
+    public String sicht(final KeycloakAuthenticationToken token, final Model model, final Long gruppenId) {
+        model.addAttribute("account", modelService.getAccountFromKeycloak(token));
+        model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
         return "dateiSicht";
     }
 
@@ -110,12 +75,11 @@ public class MaterialController {
     @GetMapping("/suche")
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
     public String vorSuche(final KeycloakAuthenticationToken token, final Model model) {
-        model.addAttribute("account", createAccountFromPrincipal(token));
-        model.addAttribute("gruppen", gruppen);
-        model.addAttribute("tags", tags);
-        model.addAttribute("dateiTypen", dateiTypen);
-        model.addAttribute("uploader", uploader);
-        model.addAttribute("suche", suche);
+        model.addAttribute("account", modelService.getAccountFromKeycloak(token));
+        model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
+        model.addAttribute("tags", modelService.getAlleTagsByUser(token));
+        model.addAttribute("dateiTypen", modelService.getAlleDateiTypenByUser(token));
+        model.addAttribute("uploader", modelService.getAlleUploaderByUser(token));
         return "suche";
     }
 
@@ -129,16 +93,16 @@ public class MaterialController {
     public String suchen(
             final KeycloakAuthenticationToken token, final Model model, final @ModelAttribute Suche suchen,
             final String search) {
-        model.addAttribute("account", createAccountFromPrincipal(token));
-        model.addAttribute("gruppen", gruppen);
-        model.addAttribute("tags", tags);
-        model.addAttribute("dateiTypen", dateiTypen);
-        model.addAttribute("uploader", uploader);
-        this.suche = suchen;
+        model.addAttribute("account", modelService.getAccountFromKeycloak(token));
+        model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
+        model.addAttribute("tags", modelService.getAlleTagsByUser(token));
+        model.addAttribute("dateiTypen", modelService.getAlleDateiTypenByUser(token));
+        model.addAttribute("uploader", modelService.getAlleUploaderByUser(token));
         if (search == null) {
+            model.addAttribute("suche", suchen);
             return "redirect:/suche";
         }
-        return "redirect:/";
+        return "redirect:/suche";
     }
 
     /**
@@ -149,11 +113,11 @@ public class MaterialController {
     @GetMapping("/upload")
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
     public String upload(final KeycloakAuthenticationToken token, final Model model) {
-        model.addAttribute("account", createAccountFromPrincipal(token));
-        model.addAttribute("gruppen", gruppen);
-        model.addAttribute("tagText", tags);
-        model.addAttribute("uploader", uploader);
-        model.addAttribute("dateitypen", dateiTypen);
+        model.addAttribute("account", modelService.getAccountFromKeycloak(token));
+        model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
+        model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
+        model.addAttribute("uploader", modelService.getAlleUploaderByUser(token));
+        model.addAttribute("dateitypen", modelService.getAlleDateiTypenByUser(token));
         return "upload";
     }
 
@@ -167,7 +131,7 @@ public class MaterialController {
     @PostMapping("/upload")
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
     public String upload(final KeycloakAuthenticationToken token, final Model model, final UploadForm upForm) {
-        model.addAttribute("account", createAccountFromPrincipal(token));
+        model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         System.out.println(upForm);
         return "redirect:/upload";
     }
@@ -183,5 +147,23 @@ public class MaterialController {
     public String logout(final HttpServletRequest request) throws Exception {
         request.logout();
         return "redirect:/";
+    }
+
+    /**
+     *
+     */
+    @GetMapping("/files")
+    public void getFile(
+            final Long fileId,
+            final HttpServletResponse response) {
+        try {
+            // get your file as InputStream
+            InputStream input = minioDownloadService.getObject(fileId);
+            // copy it to response's OutputStream
+            FileCopyUtils.copy(input, response.getOutputStream());
+            response.flushBuffer();
+        } catch (IOException | DownloadException ex) {
+            throw new RuntimeException("IOError writing file to output stream");
+        }
     }
 }

@@ -4,24 +4,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
-import java.util.Objects;
 
 public class WebDTOService {
 
     @Autowired
     RestTemplate serviceAccountRestTemplate;
 
-    public WebDTOService(){
+    public UpdatedGroupRequestMapper loadUpdatedGroupRequestMapperromGroupManagementAPI(final int status) {
+        UpdatedGroupRequestMapper updatedGroupRequestMapper = null;
 
-    }
-
-    public void loadGroupWebDTOFromGroupManagementAPI(final int status) {
         try {
-            var res = Arrays.asList(Objects.requireNonNull(serviceAccountRestTemplate.getForEntity("http://localhost:8090/gruppen2/api/updateGroups/{status}"
-                    , GroupWebDTO[].class).getBody()));
+             updatedGroupRequestMapper = serviceAccountRestTemplate.getForObject("http://localhost:8090/gruppen2/api/updateGroups/{status}"
+                    , UpdatedGroupRequestMapper.class, status);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        return updatedGroupRequestMapper;
     }
 }

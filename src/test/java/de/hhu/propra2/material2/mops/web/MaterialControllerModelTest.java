@@ -14,8 +14,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -52,9 +50,17 @@ public class MaterialControllerModelTest {
         Set<String> tags = new HashSet<>();
         tags.add("Vorlesung");
         tags.add("Übung");
-        InputStream input =  new ByteArrayInputStream("test data".getBytes());
+        Set<String> uploader = new HashSet<>();
+        uploader.add("Chris");
+        uploader.add("Christian");
+        uploader.add("Christiano Ronaldo");
+        Set<String> dateiTypen = new HashSet<>();
+        dateiTypen.add("XML");
+        dateiTypen.add("JSON");
         when(modelService.getAlleGruppenByUser(any())).thenReturn(gruppen);
         when(modelService.getAlleTagsByUser(any())).thenReturn(tags);
+        when(modelService.getAlleUploaderByUser(any())).thenReturn(uploader);
+        when(modelService.getAlleDateiTypenByUser(any())).thenReturn(dateiTypen);
     }
 
     // Startseite Test
@@ -111,5 +117,51 @@ public class MaterialControllerModelTest {
     void TestReturnUploadTemplate() throws Exception {
         mvc.perform(get("/upload"))
                 .andExpect(content().string(containsString("Upload")));
+    }
+
+    //Suche Test
+
+    @Test
+    @WithMockKeycloackAuth(name = "studentin1", roles = "studentin")
+    void SucheTestGruppenTabsGetCreated() throws Exception {
+        mvc.perform(get("/suche"))
+                .andExpect(content().string(containsString("ProPra")))
+                .andExpect(content().string(containsString("RDB")));
+        verify(modelService, times(1)).getAlleGruppenByUser(any());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "studentin3", roles = "studentin")
+    void SucheTestTagsGetLoaded() throws Exception {
+        mvc.perform(get("/suche"))
+                .andExpect(content().string(containsString("Vorlesung")))
+                .andExpect(content().string(containsString("Übung")));
+        verify(modelService, times(1)).getAlleTagsByUser(any());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "studentin2", roles = "studentin")
+    void SucheTestDateiTypenGetLoaded() throws Exception {
+        mvc.perform(get("/suche"))
+                .andExpect(content().string(containsString("JSON")))
+                .andExpect(content().string(containsString("XML")));
+        verify(modelService, times(1)).getAlleUploaderByUser(any());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "studentin1", roles = "studentin")
+    void SucheTestUploaderGetLoaded() throws Exception {
+        mvc.perform(get("/suche"))
+                .andExpect(content().string(containsString("Chris")))
+                .andExpect(content().string(containsString("Christian")))
+                .andExpect(content().string(containsString("Christiano Ronaldo")));
+        verify(modelService, times(1)).getAlleUploaderByUser(any());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "Max Mustermann", roles = "studentin")
+    void TestReturnSucheTemplate() throws Exception {
+        mvc.perform(get("/suche"))
+                .andExpect(content().string(containsString("Suche")));
     }
 }

@@ -68,10 +68,13 @@ public final class RepositoryTest {
         return new TagDTO(uuid.toString());
     }
 
-    private DateiDTO generateRandomDatei() {
-        return new DateiDTO(UUID.randomUUID(), UUID.randomUUID().toString(),
-                UUID.randomUUID().toString(), UUID.randomUUID(),
-                LocalDate.now(), LocalDate.now(), -1, );
+    @SuppressWarnings("checkstyle:MagicNumber")
+    private DateiDTO generateRandomDatei(final ArrayList<TagDTO> tagsArg, final GruppeDTO gruppeDTO) {
+        return new DateiDTO(UUID.randomUUID().toString(),
+                new UserDTO(-1, "User", "Deleted", "-", null),
+                tagsArg, LocalDate.now(), LocalDate.now(),
+                200, UUID.randomUUID().toString(),
+                gruppeDTO, UUID.randomUUID().toString());
     }
 
     @Test

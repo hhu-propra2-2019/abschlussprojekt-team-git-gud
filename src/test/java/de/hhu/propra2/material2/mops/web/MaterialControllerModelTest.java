@@ -2,39 +2,33 @@ package de.hhu.propra2.material2.mops.web;
 
 import com.c4_soft.springaddons.test.security.context.support.WithMockKeycloackAuth;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
-import de.hhu.propra2.material2.mops.domain.services.IModelService;
+import de.hhu.propra2.material2.mops.domain.services.MinioDownloadService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.keycloak.Token;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
-import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.validation.constraints.AssertFalse;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
 @ComponentScan(basePackageClasses = { KeycloakSecurityComponents.class, KeycloakSpringBootConfigResolver.class })
@@ -46,6 +40,9 @@ public class MaterialControllerModelTest {
     @MockBean
     ModelService modelService;
 
+    @MockBean
+    MinioDownloadService minioDownloadService;
+
     @BeforeEach
     void init()
     {
@@ -55,6 +52,7 @@ public class MaterialControllerModelTest {
         Set<String> tags = new HashSet<>();
         tags.add("Vorlesung");
         tags.add("Übung");
+        InputStream input =  new ByteArrayInputStream("test data".getBytes());
         when(modelService.getAlleGruppenByUser(any())).thenReturn(gruppen);
         when(modelService.getAlleTagsByUser(any())).thenReturn(tags);
     }

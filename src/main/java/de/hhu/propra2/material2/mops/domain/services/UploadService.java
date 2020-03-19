@@ -36,14 +36,14 @@ public class UploadService implements IUploadService {
     }
 
     /**
-     * @param file
-     * @param newFileName
-     * @param user
-     * @param gruppe
-     * @param veroeffentlichungsdatum
-     * @param tags
-     * @return
-     * @throws Exception
+     * @param file                    The file to upload.
+     * @param newFileName             The name the file is saved with. If null the original file name is used
+     * @param user                    The user who is saved as uploader.
+     * @param gruppe                  The group in which the file is saved.
+     * @param veroeffentlichungsdatum The date which controls the availability of the file. If null the file is direct
+     *                                available after upload.
+     * @param tags                    The tags for the file
+     * @return A Datei object which represents the saved File
      */
     @Transactional
     public Datei dateiHochladen(final MultipartFile file, final String newFileName,
@@ -94,8 +94,7 @@ public class UploadService implements IUploadService {
         if (Strings.isNullOrEmpty(tagStrings.trim())) {
             return new ArrayList<>();
         }
-        ArrayList<String> tagTexts = Arrays.asList(tagStrings.split(","))
-                .stream()
+        ArrayList<String> tagTexts = Arrays.stream(tagStrings.split(","))
                 .map(String::trim)
                 .map(String::toLowerCase).collect(Collectors.toCollection(ArrayList::new));
 

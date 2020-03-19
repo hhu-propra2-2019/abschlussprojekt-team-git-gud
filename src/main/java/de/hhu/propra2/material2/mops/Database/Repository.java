@@ -660,7 +660,15 @@ public final class Repository {
         preparedStatement.execute();
 
         preparedStatement =
-                connection.prepareStatement("delete from Tagnutzung");
+                connection.prepareStatement("delete from Datei");
+        preparedStatement.execute();
+
+        preparedStatement =
+                connection.prepareStatement("delete from Gruppe");
+        preparedStatement.execute();
+
+        preparedStatement =
+                connection.prepareStatement("delete from User");
         preparedStatement.execute();
 
         preparedStatement.close();

@@ -55,14 +55,9 @@ public final class RepositoryTest {
 
     @BeforeEach
     public void preparation() throws SQLException {
+        repository.deleteAll();
         repository.saveUser(user);
         datei.setId(repository.saveDatei(datei));
-    }
-
-    @AfterEach
-    public void deletionOfRemainingStuff() throws SQLException {
-        repository.deleteUserByUserDTO(user);
-        repository.deleteGroupByGroupDTO(gruppe);
     }
 
     private ArrayList<UserDTO> generate10UsersWith500GroupsWith500FilesWith100UniqueTagsEach() {

@@ -24,43 +24,45 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest(classes = Material2Application.class)
 public final class RepositoryTest {
 
-    @Autowired
     private Repository repository;
     private GruppeDTO gruppe;
     private UserDTO user;
     private TagDTO tag;
-    private ArrayList<TagDTO> tags;
+    private ArrayList<TagDTO> tags = new ArrayList<TagDTO>();
     private DateiDTO datei;
+    private ArrayList<DateiDTO> dateien = new ArrayList<DateiDTO>();
+    private HashMap<GruppeDTO, Boolean> berechtigung = new HashMap<GruppeDTO, Boolean>();
 
     @SuppressWarnings("checkstyle:magicnumber")
-    public RepositoryTest() {
-        gruppe = new GruppeDTO(99999999, "gruppe", "this is a description", null);
-        HashMap<GruppeDTO, Boolean> berechtigung = new HashMap<GruppeDTO, Boolean>();
+    @Autowired
+    public RepositoryTest(final Repository repositoryArg) {
+        repository = repositoryArg;
+
+        tag = new TagDTO("gae");
+        tags.add(tag);
+
+        gruppe = new GruppeDTO(99999999, "gruppe", "this is a description", dateien);
         berechtigung.put(gruppe, true);
+
         user = new UserDTO(999999, "Why are you gae?", "You are gae",
                 "gae", berechtigung);
-        tag = new TagDTO("gae");
-        tags = new ArrayList<TagDTO>();
-        tags.add(tag);
-        datei = new DateiDTO("gaedata",
-                user, tags, LocalDate.now(), LocalDate.now(), 200, "gae", gruppe, "gae");
+
+        datei = new DateiDTO("gaedata", user, tags, LocalDate.of(2020, 3, 01),
+                LocalDate.now(), 200, "gae", gruppe, "gae");
+        gruppe.getDateien().add(datei);
     }
 
     @BeforeEach
     public void preparation() throws SQLException {
         repository.saveUser(user);
-        datei = new DateiDTO(repository.saveDatei(datei), datei.getName(),
-            datei.getUploader(), datei.getTagDTOs(), datei.getUploaddatum(),
-                datei.getVeroeffentlichungsdatum(), datei.getDateigroesse(),
-                datei.getDateityp(), datei.getGruppe(), datei.getKategorie());
+        datei.setId(repository.saveDatei(datei));
     }
 
     @AfterEach
     public void deletionOfRemainingStuff() throws SQLException {
-        repository.deleteUserByUserId(user.getId());
-        repository.deleteDateiByDateiId(datei.getId());
+        repository.deleteUserByUserDTO(user);
+        repository.deleteGroupByGroupDTO(gruppe);
     }
-
 
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
@@ -77,6 +79,15 @@ public final class RepositoryTest {
 
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
+    public void loadGruppeTest() throws SQLException {
+        GruppeDTO gruppeDto = repository.findGruppeByGruppeId(99999999);
+
+        assertTrue(gruppeDto.getName().equals("gruppe"));
+        assertTrue(gruppeDto.getDescription().equals("this is a description"));
+    }
+
+    @Test
+    @SuppressWarnings("checkstyle:magicnumber")
     public void updateDateiTest() throws SQLException {
         ArrayList<TagDTO> newTags = new ArrayList<TagDTO>();
         TagDTO tag1 = new TagDTO("gae1");
@@ -86,8 +97,9 @@ public final class RepositoryTest {
         newTags.add(tag1);
         newTags.add(tag2);
 
+        LocalDate newVeroeffentlichungsDatum = LocalDate.of(2020, 3, 10);
         newDatei = new DateiDTO(datei.getId(), "gaedata",
-                user, newTags, LocalDate.now(), LocalDate.now(), 300, "gae", gruppe, "gae");
+                user, newTags, LocalDate.now(), newVeroeffentlichungsDatum, 400, "fish", gruppe, "gaee");
 
 
         repository.saveDatei(newDatei);
@@ -98,6 +110,15 @@ public final class RepositoryTest {
             tagDTOS = gruppeDTO.getDateien().get(0).getTagDTOs();
         }
 
+        assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
+                .getDateien().get(0).getDateigroesse() == 400);
+        assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
+                .getDateien().get(0).getDateityp().equals("gae"));
+        assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
+                .getDateien().get(0).getKategorie().equals("gaee"));
+
+        assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
+                .getDateien().get(0).getVeroeffentlichungsdatum().equals(newVeroeffentlichungsDatum));
         assertTrue(tagDTOS.get(0).getText().equals("gae1"));
         assertTrue(tagDTOS.get(1).getText().equals("gae2"));
     }
@@ -108,15 +129,24 @@ public final class RepositoryTest {
         ArrayList<TagDTO> newTags = new ArrayList<TagDTO>();
         TagDTO tag1 = new TagDTO("gae1");
         TagDTO tag2 = new TagDTO("gae2");
+        TagDTO tag3 = new TagDTO("gae3");
         DateiDTO newDatei;
 
         newTags.add(tag1);
         newTags.add(tag2);
 
+        LocalDate newVeroeffentlichungsDatum = LocalDate.of(2020, 3, 10);
         newDatei = new DateiDTO(datei.getId(), "gaedata",
-                user, newTags, LocalDate.now(), LocalDate.now(), 300, "gae", gruppe, "gae");
+                user, newTags, LocalDate.now(), newVeroeffentlichungsDatum, 400, "fish", gruppe, "gaee");
 
         repository.saveDatei(newDatei);
+        newTags.add(tag3);
+        newDatei.setDateigroesse(500);
+        newDatei.setDateityp("new");
+        newDatei.setKategorie("new");
+        newDatei.setTagDTOs(newTags);
+        newVeroeffentlichungsDatum = LocalDate.of(2020, 3, 11);
+        newDatei.setVeroeffentlichungsdatum(newVeroeffentlichungsDatum);
         repository.saveDatei(newDatei);
 
         UserDTO userDTO = repository.findUserByKeycloakname("gae");
@@ -125,29 +155,73 @@ public final class RepositoryTest {
             tagDTOS = gruppeDTO.getDateien().get(0).getTagDTOs();
         }
 
+        assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
+                .getDateien().get(0).getDateigroesse() == 500);
+        assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
+                .getDateien().get(0).getDateityp().equals("gae"));
+        assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
+                .getDateien().get(0).getKategorie().equals("new"));
+        System.out.println(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
+                .getDateien().get(0).getVeroeffentlichungsdatum());
+        assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
+                .getDateien().get(0).getVeroeffentlichungsdatum().equals(newVeroeffentlichungsDatum));
         assertTrue(tagDTOS.get(0).getText().equals("gae1"));
         assertTrue(tagDTOS.get(1).getText().equals("gae2"));
+        assertTrue(tagDTOS.get(2).getText().equals("gae3"));
     }
 
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
-    public void deleteTagnutzungByDatei() throws SQLException {
-        ArrayList<TagDTO> newTags = new ArrayList<TagDTO>();
-        TagDTO tag1 = new TagDTO("gae1");
-        TagDTO tag2 = new TagDTO("gae2");
-        DateiDTO newDatei;
+    public void deleteTagnutzungByDateiTest() throws SQLException {
 
-        newTags.add(tag1);
-        newTags.add(tag2);
+        repository.deleteTagRelationsByDateiId(datei.getId());
+        assertFalse(repository.doTagsExistByDateiId(datei.getId()));
 
-        newDatei = new DateiDTO(101, "gaedata",
-                user, newTags, LocalDate.now(), LocalDate.now(), 300, "gae", gruppe, "gae");
+    }
 
-        repository.saveDatei(newDatei);
-        repository.saveDatei(newDatei);
+    @Test
+    public void deleteUserByIdTest() throws SQLException {
+        repository.deleteUserByUserDTO(user);
 
-        repository.deleteTagRelationsByDateiId(101);
-        assertFalse(repository.getTagRelationByDateiId(101));
+        UserDTO shouldBeNull = repository.findUserByIdLAZY(user.getId());
+
+        assertTrue(shouldBeNull == null);
+    }
+
+    @Test
+    public void deleteGruppeByGruppeIdTest() throws SQLException {
+        repository.deleteGroupByGroupDTO(gruppe);
+
+        assertTrue(repository.findGruppeByGruppeId(gruppe.getId()) == null);
+        assertTrue(repository.findAllUserByGruppeId(gruppe.getId()).isEmpty());
+        assertTrue(repository.findAllDateiByGruppeId(gruppe.getId()).isEmpty());
+    }
+
+    @Test
+    public void deleteGruppenbelegungByUserTest() throws SQLException {
+        long userId = user.getId();
+
+        repository.deleteUserGroupRelationByUserId(userId);
+
+        assertFalse(repository.doGroupRelationsExistByUserId(userId));
+    }
+
+    @Test
+    public void deleteGruppenbelegungByGruppeTest() throws SQLException {
+        long gruppeId = gruppe.getId();
+
+        repository.deleteUserGroupRelationByGroupId(gruppeId);
+
+        assertFalse(repository.doGroupRelationsExistByGruppeId(gruppeId));
+    }
+
+    @Test
+    public void deleteGruppenbelegungByUserDTOandGruppeDTOTest() throws SQLException {
+        repository.deleteUserGroupRelationByUserDTOAndGruppeDTO(user, gruppe);
+
+        UserDTO loadedUser = repository.findUserByKeycloakname(user.getKeycloakname());
+
+        assertTrue(loadedUser.getBelegungUndRechte().keySet().isEmpty());
     }
 
 }

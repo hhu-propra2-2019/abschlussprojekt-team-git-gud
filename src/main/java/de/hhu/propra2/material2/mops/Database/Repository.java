@@ -655,22 +655,27 @@ public final class Repository {
         PreparedStatement preparedStatement =
                 connection.prepareStatement("delete from Gruppenbelegung");
         preparedStatement.execute();
+        preparedStatement.close();
 
         preparedStatement =
                 connection.prepareStatement("delete from Tagnutzung");
         preparedStatement.execute();
+        preparedStatement.close();
 
         preparedStatement =
                 connection.prepareStatement("delete from Datei");
         preparedStatement.execute();
+        preparedStatement.close();
 
         preparedStatement =
                 connection.prepareStatement("delete from Gruppe");
         preparedStatement.execute();
+        preparedStatement.close();
 
         preparedStatement =
                 connection.prepareStatement("delete from User");
         preparedStatement.execute();
+        preparedStatement.close();
 
         preparedStatement =
                 connection.prepareStatement("insert ignore into User (userID, vorname, nachname, key_cloak_name)"

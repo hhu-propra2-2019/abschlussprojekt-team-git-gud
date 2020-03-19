@@ -266,8 +266,9 @@ public final class RepositoryTest {
         assertTrue(loadedUser.getBelegungUndRechte().keySet().isEmpty());
     }
 
-    @Ignore
+
     @SuppressWarnings("checkstyle:MagicNumber")
+    @Ignore
     @Test
     public void add1UsersWith20GroupsWith100FilesWith10TagsEachAndLoad() throws SQLException {
         ArrayList<UserDTO> userDTOs =
@@ -304,8 +305,9 @@ public final class RepositoryTest {
         System.out.println("This took " + duration.getSeconds() + " seconds.");
     }
 
-    @Ignore
+
     @SuppressWarnings("checkstyle:MagicNumber")
+    @Ignore
     @Test
     public void add10UsersWith10GroupsWith50FilesWith20TagsEachAndLoad() throws SQLException {
         ArrayList<UserDTO> userDTOs =

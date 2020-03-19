@@ -81,7 +81,7 @@ public class UploadService implements IUploadService {
         UserDTO userDTO = repository.findUserByKeycloakname(uploader);
         User user = modelService.loadUser(userDTO);
 
-        Gruppe gruppe = user.getGroupByName(upForm.getGruppenwahl());
+        Gruppe gruppe = user.getGruppeById(upForm.getGruppenId());
 
         if (!user.hasUploadPermission(gruppe)) {
             throw new NoUploadPermissionException("User has no upload permission");

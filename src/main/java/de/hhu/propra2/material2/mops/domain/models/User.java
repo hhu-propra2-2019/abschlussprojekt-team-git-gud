@@ -60,23 +60,6 @@ public class User {
     }
 
     /**
-     * @param gruppenName
-     * @return returns the group the student participates in with the given gruppenName if such group does not exists
-     * it returns null
-     */
-    public Gruppe getGroupByName(final String gruppenName) {
-        if (belegungUndRechte == null) {
-            return null;
-        }
-        for (Gruppe gruppe : belegungUndRechte.keySet()) {
-            if (gruppe.getName().equals(gruppenName)) {
-                return gruppe;
-            }
-        }
-        return null;
-    }
-
-    /**
      * @param gruppe
      * @return returns true only if the user has upload permission in the given group
      */

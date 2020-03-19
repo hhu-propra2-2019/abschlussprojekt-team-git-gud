@@ -109,7 +109,6 @@ public final class RepositoryTest {
         TagDTO tag1 = new TagDTO("gae1");
         TagDTO tag2 = new TagDTO("gae2");
         DateiDTO newDatei;
-
         newTags.add(tag1);
         newTags.add(tag2);
 

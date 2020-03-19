@@ -26,8 +26,10 @@
             <div>
                 <label for="SelectGroup">Gruppenauswahl </label>
                 <select class="form-control" id="SelectGroup" name="gruppenwahl">
-                    <option>  ProPra  </option>
-                    <option>  RDB  </option>
+                    <option th:each="gruppe : ${gruppen}"
+                            th:value="${gruppe.getId()}"
+                            th:text="${gruppe.getName()}" >
+                    </option>
                 </select>
             </div>
 

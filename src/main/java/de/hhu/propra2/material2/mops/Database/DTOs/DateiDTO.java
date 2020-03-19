@@ -6,60 +6,63 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.List;
 
+@Getter
+@Setter
 public final class DateiDTO {
     /**
      * Unique ID from database.
      */
-    @Getter
-    private final long id;
+
+    private long id;
     /**
      * Name of file.
      */
-    @Getter
-    private final String name;
+
+    private String name;
+
     /**
      * User that uploaded the file.
      */
-    @Getter
-    private final UserDTO uploader;
+
+    private UserDTO uploader;
     /**
      * All assigned tags.
      */
-    @Getter
-    private final List<TagDTO> tagDTOs;
+
+    private List<TagDTO> tagDTOs;
     /**
      * Assigned group.
      */
-    @Getter
-    @Setter
+
+
     private GruppeDTO gruppe;
     /**
      * Upload date.
      */
-    @Getter
-    private final LocalDate uploaddatum;
+
+    private LocalDate uploaddatum;
     /**
      * Date for when the file
      * will be visible to non-uploaders
      * of its group.
      */
-    @Getter
-    private final LocalDate veroeffentlichungsdatum;
+
+    private LocalDate veroeffentlichungsdatum;
     /**
      * File size.
      */
-    @Getter
-    private final long dateigroesse;
+
+    private long dateigroesse;
     /**
      * File type.
      */
-    @Getter
-    private final String dateityp;
+
+    private String dateityp;
     /**
      * Category for gui.
      */
-    @Getter
-    private final String kategorie;
+
+    private String kategorie;
 
     /**
      * Standard Constructor for import from database

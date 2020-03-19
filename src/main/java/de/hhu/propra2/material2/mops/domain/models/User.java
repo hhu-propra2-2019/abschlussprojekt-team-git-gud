@@ -25,7 +25,6 @@ public class User {
     private final String nachname;
 
     /**
-     * .
      * Unique name provided by
      * keycloak.
      */
@@ -46,6 +45,7 @@ public class User {
 
     /**
      * returns group by GroupId
+     *
      * @param gruppenId
      * @return Gruppe
      */
@@ -57,5 +57,16 @@ public class User {
             }
         }
         return new Gruppe(-1, "", new ArrayList<>());
+    }
+
+    /**
+     * @param gruppe
+     * @return returns true only if the user has upload permission in the given group
+     */
+    public boolean hasUploadPermission(final Gruppe gruppe) {
+        if (belegungUndRechte == null || belegungUndRechte.isEmpty()) {
+            return false;
+        }
+        return belegungUndRechte.get(gruppe);
     }
 }

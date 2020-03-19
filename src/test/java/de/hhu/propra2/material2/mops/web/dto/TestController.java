@@ -1,28 +1,30 @@
 package de.hhu.propra2.material2.mops.web.dto;
 
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+@Controller
+public class TestController {
+    /**
+     * @param token
+     * @param model
+     * @return
+     */
+    @GetMapping("/yolo")
+    @ResponseBody
+    public String startseite(final KeycloakAuthenticationToken token,
+                             final Model model) throws JsonProcessingException {
 
-@ExtendWith(MockitoExtension.class)
-public class WebDTOServiceTest {
-
-    private String jsonFile;
-    private WebDTOService webDTOService;
-
-    @BeforeEach
-    private void setup() throws JsonProcessingException {
         UserWebDTO donald = new UserWebDTO("789@yahoo.de", "Trump", "Donald", "0");
         UserWebDTO matvey = new UserWebDTO("123@yahoo.de", "Lorkish", "Matvey", "1");
         UserWebDTO torben = new UserWebDTO("456@yahoo.de", "Schmitz", "Torben", "2");
@@ -55,15 +57,7 @@ public class WebDTOServiceTest {
 
         UpdatedGroupRequestMapper sample = new UpdatedGroupRequestMapper(Arrays.asList(gruppenArray), 1);
         ObjectMapper mapper = new ObjectMapper();
-        jsonFile = mapper.writeValueAsString(sample);
-        this.webDTOService = new WebDTOService();
-    }
-
-    @Test
-    public void methodGeneratesTheRightObject() {
-        UpdatedGroupRequestMapper updatedGroupRequestMapper =
-                webDTOService.loadUpdatedGroupRequestMapperromGroupManagementAPI(1, "localhost:8080/yolo");
-
-        assertThat(1, is(1));
+        System.out.println(mapper.writeValueAsString(sample));
+        return mapper.writeValueAsString(sample);
     }
 }

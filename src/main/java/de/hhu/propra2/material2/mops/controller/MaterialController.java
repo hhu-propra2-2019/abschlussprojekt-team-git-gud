@@ -45,7 +45,7 @@ public class MaterialController {
      * @return String
      */
     @GetMapping("/dateiSicht")
-    @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public String sicht(final KeycloakAuthenticationToken token, final Model model, final Long gruppenId) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
@@ -58,7 +58,7 @@ public class MaterialController {
      * @return String
      */
     @GetMapping("/suche")
-    @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public String vorSuche(final KeycloakAuthenticationToken token, final Model model) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
@@ -74,7 +74,7 @@ public class MaterialController {
      * @return String
      */
     @PostMapping("/suche")
-    @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public String suchen(
             final KeycloakAuthenticationToken token, final Model model, final @ModelAttribute Suche suchen,
             final String search) {
@@ -96,13 +96,11 @@ public class MaterialController {
      * @return String
      */
     @GetMapping("/upload")
-    @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public String upload(final KeycloakAuthenticationToken token, final Model model) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
         model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
-        model.addAttribute("uploader", modelService.getAlleUploaderByUser(token));
-        model.addAttribute("dateitypen", modelService.getAlleDateiTypenByUser(token));
         return "upload";
     }
 
@@ -114,7 +112,7 @@ public class MaterialController {
      * @return upload routing
      */
     @PostMapping("/upload")
-    @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public String upload(final KeycloakAuthenticationToken token, final Model model, final UploadForm upForm) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         System.out.println(upForm);

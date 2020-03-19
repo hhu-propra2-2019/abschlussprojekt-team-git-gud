@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -64,6 +65,20 @@ public final class RepositoryTest {
         repository.deleteGroupByGroupDTO(gruppe);
     }
 
+    private ArrayList<UserDTO> generate10UsersWith500GroupsWith500FilesWith100UniqueTagsEach() {
+
+    }
+
+    private TagDTO generateRandomTag() {
+        UUID uuid = UUID.randomUUID();
+        return new TagDTO(uuid.toString());
+    }
+
+    private DateiDTO generateRandomDatei() {
+        UUID uuid = UUID.randomUUID();
+        return new TagDTO(uuid.toString());
+    }
+
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
     public void loadUserTest() throws SQLException {
@@ -72,7 +87,7 @@ public final class RepositoryTest {
         assertTrue(userDTO.getVorname().equals("Why are you gae?"));
         assertTrue(userDTO.getNachname().equals("You are gae"));
         assertTrue(userDTO.getId() == 999999);
-        for (GruppeDTO gruppeDTO:userDTO.getBelegungUndRechte().keySet()) {
+        for (GruppeDTO gruppeDTO : userDTO.getBelegungUndRechte().keySet()) {
             assertTrue(userDTO.getBelegungUndRechte().get(gruppeDTO));
         }
     }

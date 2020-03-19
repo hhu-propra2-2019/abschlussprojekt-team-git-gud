@@ -647,4 +647,22 @@ public final class Repository {
     }
 
 
+    /*
+        TESTING METHOD
+     */
+    void deleteAll() throws SQLException {
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("delete from Gruppenbelegung");
+        preparedStatement.execute();
+
+        preparedStatement =
+                connection.prepareStatement("delete from Tagnutzung");
+        preparedStatement.execute();
+
+        preparedStatement =
+                connection.prepareStatement("delete from Tagnutzung");
+        preparedStatement.execute();
+
+        preparedStatement.close();
+    }
 }

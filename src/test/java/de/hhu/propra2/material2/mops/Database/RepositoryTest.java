@@ -77,6 +77,11 @@ public final class RepositoryTest {
                 gruppeDTO, UUID.randomUUID().toString());
     }
 
+    private GruppeDTO generateRandomGruppe() {
+        return new GruppeDTO(UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE,
+                " ", " ", new ArrayList<DateiDTO>());
+    }
+
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
     public void loadUserTest() throws SQLException {

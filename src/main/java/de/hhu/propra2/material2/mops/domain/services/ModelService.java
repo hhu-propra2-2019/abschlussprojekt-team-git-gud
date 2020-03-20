@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public final class ModelService implements IModelService {
 
-
     private final Repository repository;
     private final SuchService suchService;
     private Suche suche;
@@ -282,5 +281,9 @@ public final class ModelService implements IModelService {
             tagDTOs.add(new TagDTO(tag.getText()));
         }
         return tagDTOs;
+    }
+
+    public Datei findDateiById(long dateiId) throws SQLException {
+        return loadDatei(repository.findDateiById(dateiId));
     }
 }

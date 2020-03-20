@@ -3,7 +3,7 @@ package de.hhu.propra2.material2.mops.controller;
 import de.hhu.propra2.material2.mops.Exceptions.DownloadException;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
 import de.hhu.propra2.material2.mops.domain.models.UploadForm;
-import de.hhu.propra2.material2.mops.domain.services.MinioDownloadService;
+import de.hhu.propra2.material2.mops.domain.services.MinIOService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class MaterialController {
     @Autowired
     private ModelService modelService;
     @Autowired
-    private MinioDownloadService minioDownloadService;
+    private MinIOService minIOService;
 
     /**
      * start routing.
@@ -158,7 +158,7 @@ public class MaterialController {
             final HttpServletResponse response) {
         try {
             // get your file as InputStream
-            InputStream input = minioDownloadService.getObject(fileId);
+            InputStream input = minIOService.getObject(fileId);
             // copy it to response's OutputStream
             FileCopyUtils.copy(input, response.getOutputStream());
             response.flushBuffer();

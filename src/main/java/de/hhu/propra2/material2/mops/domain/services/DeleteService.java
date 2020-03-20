@@ -10,13 +10,13 @@ import java.sql.SQLException;
 public class DeleteService {
 
     private final Repository repository;
-    private final FileDeleteService fileDeleteService;
+    private final MinIOService minIOService;
     private final ModelService modelService;
 
-    public DeleteService(final Repository repositoryArgs, final FileDeleteService fileDeleteServiceArgs, final ModelService modelServiceArgs) {
-        this.repository = repositoryArgs;
-        this.fileDeleteService = fileDeleteServiceArgs;
-        this.modelService = modelServiceArgs;
+    public DeleteService(final Repository repositoryArg, final MinIOService minIOServiceArg, final ModelService modelServiceArg) {
+        this.repository = repositoryArg;
+        this.minIOService = minIOServiceArg;
+        this.modelService = modelServiceArg;
     }
 
     @Transactional
@@ -25,7 +25,7 @@ public class DeleteService {
         repository.deleteDateiByDateiId(dateiID);
 
         //minio delete
-        fileDeleteService.deleteFile(dateiID);
+        minIOService.deleteFile(dateiID);
     }
 
     public void deleteGroup(long gruppeID) {

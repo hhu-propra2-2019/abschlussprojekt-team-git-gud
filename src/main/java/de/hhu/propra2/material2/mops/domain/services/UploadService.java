@@ -27,13 +27,13 @@ public class UploadService implements IUploadService {
 
     private final Repository repository;
     private final ModelService modelService;
-    private final FileUploadService fileUploadService;
+    private final MinIOService minIOService;
 
     public UploadService(final Repository repositoryArg, final ModelService modelServiceArg,
-                         final FileUploadService fileUploadServiceArg) {
+                         final MinIOService minIOServiceArg) {
         this.repository = repositoryArg;
         this.modelService = modelServiceArg;
-        this.fileUploadService = fileUploadServiceArg;
+        this.minIOService = minIOServiceArg;
     }
 
     /**
@@ -64,7 +64,7 @@ public class UploadService implements IUploadService {
                 LocalDate.now(), veroeffentlichungsdatum, file.getSize(), fileExtension, null);
         long dateiId = modelService.saveDatei(datei, gruppe);
 
-        if (!fileUploadService.upload(file, String.valueOf(dateiId))) {
+        if (!minIOService.upload(file, String.valueOf(dateiId))) {
             throw new FileUploadException();
         }
         return new Datei(dateiId, datei.getName(), datei.getUploader(), datei.getTags(),

@@ -7,44 +7,37 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
-import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.wait.strategy.HttpWaitStrategy;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressFBWarnings(value = "HARD_CODE_PASSWORD", justification = "It's only for testing purposes")
 @ExtendWith(MockitoExtension.class)
+@Testcontainers
 public class FileUploadServiceTest {
     private static final String ACCESS_KEY = "admin";
     private static final String SECRET_KEY = "12345678";
     private static final String TEST_BUCKET_NAME = "testbucket";
     private static final int MINIO_PORT = 9000;
-    private static final int STARTUP_TIMEOUT = 10;
 
-    private static GenericContainer minioServer;
+    @Container
+    public static GenericContainer minioServer = new GenericContainer("minio/minio")
+            .withEnv("MINIO_ACCESS_KEY", ACCESS_KEY)
+            .withEnv("MINIO_SECRET_KEY", SECRET_KEY)
+            .withCommand("server /data")
+            .withExposedPorts(MINIO_PORT);
+
     private static String minioServerUrl;
     private static FileUploadService fileUploadService;
 
     @BeforeAll
     static void setUp() throws Exception {
-        minioServer = new GenericContainer("minio/minio")
-                .withEnv("MINIO_ACCESS_KEY", ACCESS_KEY)
-                .withEnv("MINIO_SECRET_KEY", SECRET_KEY)
-                .withCommand("server /data")
-                .withExposedPorts(MINIO_PORT)
-                .waitingFor(new HttpWaitStrategy()
-                        .forPath("/minio/health/ready")
-                        .forPort(MINIO_PORT)
-                        .withStartupTimeout(Duration.ofSeconds(STARTUP_TIMEOUT)));
-        minioServer.start();
-
-        Integer mappedPort = minioServer.getFirstMappedPort();
-        Testcontainers.exposeHostPorts(mappedPort);
-        minioServerUrl = String.format("http://%s:%s", minioServer.getContainerIpAddress(), mappedPort);
+        minioServerUrl = String.format("http://%s:%s", minioServer.getContainerIpAddress(),
+                minioServer.getFirstMappedPort());
 
         MinIOProperties minIOProperties = new MinIOProperties();
         minIOProperties.setEndpoint(minioServerUrl);

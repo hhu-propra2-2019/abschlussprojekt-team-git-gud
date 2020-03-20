@@ -10,7 +10,8 @@ import io.minio.errors.InvalidPortException;
 import io.minio.errors.InvalidResponseException;
 import io.minio.errors.NoResponseException;
 import io.minio.errors.RegionConflictException;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -28,6 +29,7 @@ import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 @SuppressFBWarnings(value = "HARD_CODE_PASSWORD", justification = "It's only for testing purposes")
 @ExtendWith(MockitoExtension.class)
@@ -35,7 +37,7 @@ public class MinIOServiceTest {
     private static final String ACCESS_KEY = "admin";
     private static final String SECRET_KEY = "12345678";
     private static final String TEST_BUCKET_NAME = "testbucket";
-    private static final int MINIO_PORT = 9000;
+    private static int MINIO_PORT = 9000;
     private static final int STARTUP_TIMEOUT = 10;
 
     private static GenericContainer minioServer;
@@ -43,8 +45,8 @@ public class MinIOServiceTest {
 
     private static MinIOService minIOService;
 
-    @BeforeAll
-    static void setUp() throws IOException, InvalidKeyException,
+    @BeforeEach
+    void setUp() throws IOException, InvalidKeyException,
             NoSuchAlgorithmException, XmlPullParserException,
             InvalidPortException, InvalidResponseException,
             ErrorResponseException, InternalException,
@@ -91,5 +93,27 @@ public class MinIOServiceTest {
         boolean result = minIOService.upload(file, dateiIdAsString);
 
         assertTrue(result);
+    }
+
+    @Test
+    public void deleteFile() {
+        String dateiIdAsString = "123";
+        MultipartFile file = new MockMultipartFile("test.txt",
+                "test.txt",
+                "text/plain",
+                ("The first rule of Fight Club is: You do not talk about Fight Club."
+                        + "The second rule of Fight Club is: You do not talk about Fight Club.")
+                        .getBytes(StandardCharsets.UTF_8));
+
+        assumeTrue(minIOService.upload(file, dateiIdAsString));
+
+        boolean result = minIOService.deleteFile(Long.parseLong(dateiIdAsString));
+
+        assertTrue(result);
+    }
+
+    @AfterEach
+    public void cleanUp() {
+        minioServer.stop();
     }
 }

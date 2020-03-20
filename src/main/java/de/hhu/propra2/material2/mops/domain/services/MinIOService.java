@@ -145,11 +145,13 @@ public class MinIOService implements IMinIOService {
      * removes file from minio-server.
      * @param dateiID
      */
-    public void deleteFile(final long dateiID) {
+    public boolean deleteFile(final long dateiID) {
         try {
             minioClient.removeObject(minIOProperties.getBucketname(), Long.toString(dateiID));
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
     }
 }

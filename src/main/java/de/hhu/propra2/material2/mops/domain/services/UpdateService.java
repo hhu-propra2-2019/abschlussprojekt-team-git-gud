@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,11 +30,12 @@ public class UpdateService {
     public Datei dateiUpdate(final Long dateiId, final Long gruppenId, final LocalDate veroeffentlichungsdatum,
                              final List<Tag> tags) throws SQLException {
         Datei datei = modelService.findDateiById(dateiId);
-        Datei changedDatei = new Datei(dateiId, datei.getName(), datei.getUploader(), tags,
+        Datei changedDatei = new Datei(dateiId, datei.getName(), datei.getUploader(),
+                tags == null ? new ArrayList<>() : tags,
                 datei.getUploaddatum(), veroeffentlichungsdatum, datei.getDateigroesse(),
                 datei.getDateityp(), datei.getKategorie());
 
-        modelService.saveDatei(datei, gruppenId);
+        modelService.saveDatei(changedDatei, gruppenId);
 
         return changedDatei;
     }

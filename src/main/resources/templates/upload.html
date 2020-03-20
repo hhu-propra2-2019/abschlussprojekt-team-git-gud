@@ -22,10 +22,18 @@
         <form method="post" enctype="multipart/form-data">
             <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
 
+            <div id="error-message" th:classappend="${error != null} ? 'alert alert-warning'" th:text="${error}">
+                Some error message
+            </div>
+
+            <div id="success-message" th:classappend="${success != null} ? 'alert alert-success'" th:text="${success}">
+                Jeah, it works!
+            </div>
+
 
             <div>
                 <label for="SelectGroup">Gruppenauswahl </label>
-                <select class="form-control" id="SelectGroup" name="gruppenwahl">
+                <select class="form-control" id="SelectGroup" name="gruppenId">
                     <option th:each="gruppe : ${gruppen}"
                             th:value="${gruppe.getId()}"
                             th:text="${gruppe.getName()}" >
@@ -70,18 +78,14 @@
                     singleInputValue: 'name'
                 });
             </script>
-            <!--  <div>
-                  <label for="tagsIn">Tags </label>
-                  <input type="text" class="form-control" id="tagsIn" name="selectedTags"  placeholder="Vorlesung, ">
-              </div>
 
-              <div class="form-group">
-                  <ul>
-                      <li th:each="tag : ${tags}">
-                          <span  th:text="${tag.text}">Vorlesung</span>
-                      </li>
-                  </ul>
-              </div> -->
+            <div>
+                <label for="selectKategorie">Kategorie</label>
+                <select class="form-control" id="selectKategorie" name="kategorie">
+                    <option>Vorlesung</option>
+                    <option>Übung</option>
+                </select>
+            </div>
 
               <div class="form-group">
                   <label for="timedDate">Getimete Veröffentlichung (optional)</label>
@@ -91,7 +95,7 @@
               </div>
 
               <div>
-                  <input type="file" name="datei" >
+                  <input type="file" name="datei" required >
               </div>
 
               <div>

@@ -116,7 +116,7 @@ public class MaterialControllerModelTest {
 
     @Test
     @WithMockKeycloackAuth(name = "BennyGoodman", roles = "studentin")
-    void TestReturnUploadTemplate() throws Exception {
+    void testReturnUploadTemplate() throws Exception {
         mvc.perform(get("/upload"))
                 .andExpect(content().string(containsString("Upload")));
     }

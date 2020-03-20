@@ -1,6 +1,14 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.minio.errors.ErrorResponseException;
+import io.minio.errors.InsufficientDataException;
+import io.minio.errors.InternalException;
+import io.minio.errors.InvalidBucketNameException;
+import io.minio.errors.InvalidEndpointException;
+import io.minio.errors.InvalidPortException;
+import io.minio.errors.InvalidResponseException;
+import io.minio.errors.NoResponseException;
+import io.minio.errors.RegionConflictException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,15 +18,18 @@ import org.springframework.web.multipart.MultipartFile;
 import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.HttpWaitStrategy;
+import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SuppressFBWarnings(value = "HARD_CODE_PASSWORD", justification = "It's only for testing purposes")
 @ExtendWith(MockitoExtension.class)
-public class FileUploadServiceTest {
+public class MinIOServiceTest {
     private static final String ACCESS_KEY = "admin";
     private static final String SECRET_KEY = "12345678";
     private static final String TEST_BUCKET_NAME = "testbucket";
@@ -27,10 +38,11 @@ public class FileUploadServiceTest {
 
     private static GenericContainer minioServer;
     private static String minioServerUrl;
-    private static FileUploadService fileUploadService;
+
+    private static MinIOService minIOService;
 
     @BeforeAll
-    static void setUp() throws Exception {
+    static void setUp() throws IOException, InvalidKeyException, NoSuchAlgorithmException, XmlPullParserException, InvalidPortException, InvalidResponseException, ErrorResponseException, InternalException, NoResponseException, InvalidBucketNameException, InsufficientDataException, InvalidEndpointException, RegionConflictException {
         minioServer = new GenericContainer("minio/minio")
                 .withEnv("MINIO_ACCESS_KEY", ACCESS_KEY)
                 .withEnv("MINIO_SECRET_KEY", SECRET_KEY)
@@ -52,9 +64,12 @@ public class FileUploadServiceTest {
         minIOProperties.setSecretkey(SECRET_KEY);
         minIOProperties.setBucketname(TEST_BUCKET_NAME);
 
-        fileUploadService = new FileUploadService(minIOProperties);
+        minIOService = new MinIOService(minIOProperties);
     }
 
+    /**
+     * test generic upload method with generic file.
+     */
     @Test
     public void uploadFile() {
         String dateiIdAsString = "123";
@@ -65,7 +80,7 @@ public class FileUploadServiceTest {
                         + "The second rule of Fight Club is: You do not talk about Fight Club.")
                         .getBytes(StandardCharsets.UTF_8));
 
-        boolean result = fileUploadService.upload(file, dateiIdAsString);
+        boolean result = minIOService.upload(file, dateiIdAsString);
 
         assertTrue(result);
     }

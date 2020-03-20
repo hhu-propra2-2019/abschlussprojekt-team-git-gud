@@ -24,8 +24,8 @@ public class UpdateService {
 
     /**
      * @param dateiId                 The id of the file which should be updated
-     * @param veroeffentlichungsdatum The new date which controls the availability of the file. If null the file is direct
-     *                                available after upload.
+     * @param veroeffentlichungsdatum The new date which controls the availability of the file.
+     *                                If null the file is direct available after upload.
      * @param tags                    The new tags for the file
      * @return A Datei object which represents the saved File
      */

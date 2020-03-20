@@ -21,20 +21,13 @@ public class DeleteService {
 
     @Transactional
     public void dateiLoeschen(long dateiID) throws SQLException {
-        //repository delete
         repository.deleteDateiByDateiId(dateiID);
-
-        //minio delete
         minIOService.deleteFile(dateiID);
-    }
-
-    public void deleteGroup(long gruppeID) {
-        //TODO
-        //repository.deleteGroupByGroupDTO();
     }
 
     public void deleteUser(long userID) {
         //TODO
+        //beim synchronisieren mit der Gruppenbildung
         //repository.deleteUserByUserDTO();
     }
 

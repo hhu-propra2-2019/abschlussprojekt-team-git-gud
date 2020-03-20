@@ -31,7 +31,7 @@ public class MinIOService implements IMinIOService {
     private MinioClient minioClient;
     private MinIOProperties minIOProperties;
 
-    public MinIOService(MinIOProperties minIOPropertiesArg) throws InvalidPortException,
+    public MinIOService(final MinIOProperties minIOPropertiesArg) throws InvalidPortException,
             InvalidEndpointException, IOException,
             XmlPullParserException, NoSuchAlgorithmException,
             RegionConflictException, InvalidKeyException,
@@ -145,7 +145,7 @@ public class MinIOService implements IMinIOService {
      * removes file from minio-server.
      * @param dateiID
      */
-    public void deleteFile(long dateiID) {
+    public void deleteFile(final long dateiID) {
         try {
             minioClient.removeObject(minIOProperties.getBucketname(), Long.toString(dateiID));
         } catch (Exception e) {

@@ -1,5 +1,6 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
 import io.minio.errors.InternalException;
@@ -28,6 +29,7 @@ import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SuppressFBWarnings(value = "HARD_CODE_PASSWORD", justification = "It's only for testing purposes")
 @ExtendWith(MockitoExtension.class)
 public class MinIOServiceTest {
     private static final String ACCESS_KEY = "admin";
@@ -42,7 +44,13 @@ public class MinIOServiceTest {
     private static MinIOService minIOService;
 
     @BeforeAll
-    static void setUp() throws IOException, InvalidKeyException, NoSuchAlgorithmException, XmlPullParserException, InvalidPortException, InvalidResponseException, ErrorResponseException, InternalException, NoResponseException, InvalidBucketNameException, InsufficientDataException, InvalidEndpointException, RegionConflictException {
+    static void setUp() throws IOException, InvalidKeyException,
+            NoSuchAlgorithmException, XmlPullParserException,
+            InvalidPortException, InvalidResponseException,
+            ErrorResponseException, InternalException,
+            NoResponseException, InvalidBucketNameException,
+            InsufficientDataException, InvalidEndpointException,
+            RegionConflictException {
         minioServer = new GenericContainer("minio/minio")
                 .withEnv("MINIO_ACCESS_KEY", ACCESS_KEY)
                 .withEnv("MINIO_SECRET_KEY", SECRET_KEY)

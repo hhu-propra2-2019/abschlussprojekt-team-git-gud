@@ -12,7 +12,7 @@ public interface IMinIOService {
 
     InputStream getObject(Long id) throws DownloadException;
 
-    boolean upload(final MultipartFile file, final String fileName);
+    boolean upload(MultipartFile file, String fileName);
 
     void deleteFile(long dateiID);
 }

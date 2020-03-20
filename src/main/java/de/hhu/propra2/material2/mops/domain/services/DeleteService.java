@@ -13,24 +13,34 @@ public class DeleteService {
     private final MinIOService minIOService;
     private final ModelService modelService;
 
-    public DeleteService(final Repository repositoryArg, final MinIOService minIOServiceArg, final ModelService modelServiceArg) {
+    /**
+     * Constructor for DeleteService.
+     * @param repositoryArg
+     * @param minIOServiceArg
+     * @param modelServiceArg
+     */
+    public DeleteService(final Repository repositoryArg,
+                         final MinIOService minIOServiceArg,
+                         final ModelService modelServiceArg) {
         this.repository = repositoryArg;
         this.minIOService = minIOServiceArg;
         this.modelService = modelServiceArg;
     }
 
+    /**
+     * method to delete from repository and from data storage (MinIO) in two steps.
+     * @param dateiID
+     * @throws SQLException
+     */
     @Transactional
-    public void dateiLoeschen(long dateiID) throws SQLException {
+    public void dateiLoeschen(final long dateiID) throws SQLException {
         repository.deleteDateiByDateiId(dateiID);
         minIOService.deleteFile(dateiID);
     }
 
-    public void deleteUser(long userID) {
+    public void deleteUser(final long userID) {
         //TODO
         //beim synchronisieren mit der Gruppenbildung
         //repository.deleteUserByUserDTO();
     }
-
-
-
 }

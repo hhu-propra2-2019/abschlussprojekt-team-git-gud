@@ -47,6 +47,9 @@ public class MaterialController {
     @Autowired
     private MinioDownloadService minioDownloadService;
 
+    private String errorMessage;
+    private String successMessage;
+
     /**
      * start routing.
      *
@@ -123,6 +126,9 @@ public class MaterialController {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
         model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
+        model.addAttribute("error", errorMessage);
+        model.addAttribute("success", successMessage);
+        resetMessages();
         return "upload";
     }
 
@@ -185,5 +191,15 @@ public class MaterialController {
         } catch (IOException | DownloadException ex) {
             throw new RuntimeException("IOError writing file to output stream");
         }
+    }
+
+    private void setMessages(final String pErrorMessage, final String pSuccessMessage) {
+        this.errorMessage = pErrorMessage;
+        this.successMessage = pSuccessMessage;
+    }
+
+    private void resetMessages() {
+        this.errorMessage = null;
+        this.successMessage = null;
     }
 }

@@ -22,6 +22,14 @@
         <form method="post" enctype="multipart/form-data">
             <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
 
+            <div id="error-message" th:classappend="${error != null} ? 'alert alert-warning'" th:text="${error}">
+                Some error message
+            </div>
+
+            <div id="success-message" th:classappend="${success != null} ? 'alert alert-success'" th:text="${success}">
+                Jeah, it works!
+            </div>
+
 
             <div>
                 <label for="SelectGroup">Gruppenauswahl </label>

@@ -137,6 +137,19 @@ public class MaterialController {
     }
 
     /**
+     * update routing.
+     * @param token
+     * @param model
+     * @return
+     */
+    @GetMapping("/update")
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
+    public String update(final KeycloakAuthenticationToken token, final Model model) {
+        model.addAttribute("account", modelService.getAccountFromKeycloak(token));
+        return "update";
+    }
+
+    /**
      * route to logout.
      *
      * @param request logout request

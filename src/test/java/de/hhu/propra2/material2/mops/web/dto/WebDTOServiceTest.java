@@ -3,10 +3,15 @@ package de.hhu.propra2.material2.mops.web.dto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.mashape.unirest.http.exceptions.UnirestException;
+import netscape.javascript.JSObject;
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -60,10 +65,10 @@ public class WebDTOServiceTest {
     }
 
     @Test
-    public void methodGeneratesTheRightObject() {
-        UpdatedGroupRequestMapper updatedGroupRequestMapper =
-                webDTOService.loadUpdatedGroupRequestMapperromGroupManagementAPI(1, "localhost:8080/yolo");
-
-        assertThat(1, is(1));
+    public void methodGeneratesTheRightObject() throws UnirestException, JsonProcessingException {
+        JSONObject test = webDTOService.loadUpdatedGroupRequestMapperromGroupManagementAPI();
+        System.out.println(test.toString());
+        System.out.println(jsonFile.toString());
+        assertThat("Erzeugte JSON entspricht nicht der erwarteten JSON",test.toString().equals(jsonFile.toString()) );
     }
 }

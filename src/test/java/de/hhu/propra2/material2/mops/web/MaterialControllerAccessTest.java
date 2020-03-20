@@ -160,7 +160,7 @@ public class MaterialControllerAccessTest {
     @WithMockKeycloackAuth(name = "Bruce W.", roles = "studentin")
     void testFileDownloadStudentUser() throws Exception {
         String myString = "hello";
-        InputStream inputStream = new ByteArrayInputStream( myString.getBytes() );
+        InputStream inputStream = new ByteArrayInputStream(myString.getBytes());
         when(minioDownloadService.getObject(any())).thenReturn(inputStream);
 
         mvc.perform(get("/files"))
@@ -209,7 +209,7 @@ public class MaterialControllerAccessTest {
     @WithMockKeycloackAuth(name = "Donald T.", roles = "orga")
     void testFileDownloadOrgaUser() throws Exception {
         String myString = "hello";
-        InputStream inputStream = new ByteArrayInputStream( myString.getBytes() );
+        InputStream inputStream = new ByteArrayInputStream(myString.getBytes());
         when(minioDownloadService.getObject(any())).thenReturn(inputStream);
 
         mvc.perform(get("/files"))
@@ -258,7 +258,7 @@ public class MaterialControllerAccessTest {
     @WithMockKeycloackAuth(name = "James B.", roles = "actuator")
     void testFileDownloadActuatorUser() throws Exception {
         String myString = "hello";
-        InputStream inputStream = new ByteArrayInputStream( myString.getBytes() );
+        InputStream inputStream = new ByteArrayInputStream(myString.getBytes());
         when(minioDownloadService.getObject(any())).thenReturn(inputStream);
 
         mvc.perform(get("/files"))

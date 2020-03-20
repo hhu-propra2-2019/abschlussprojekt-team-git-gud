@@ -41,12 +41,14 @@ public class MaterialControllerModelTest {
     @MockBean
     private MinioDownloadService minioDownloadService;
 
+    /**init for the tests.
+     *
+     */
     @BeforeEach
-    void init()
-    {
+    void init() {
         List<Gruppe> gruppen = new ArrayList<>();
-        gruppen.add(new Gruppe(1,"ProPra", null));
-        gruppen.add(new Gruppe(2,"RDB", null));
+        gruppen.add(new Gruppe(1, "ProPra", null));
+        gruppen.add(new Gruppe(2, "RDB", null));
         Set<String> tags = new HashSet<>();
         tags.add("Vorlesung");
         tags.add("Übung");
@@ -66,7 +68,7 @@ public class MaterialControllerModelTest {
     // Startseite Test
 
     @Test
-    void StartEmptyGroupTabsIfUnknownUser() throws Exception {
+    void startEmptyGroupTabsIfUnknownUser() throws Exception {
         mvc.perform(get("/"));
         verify(modelService, never()).getAlleGruppenByUser(any());
 
@@ -74,7 +76,7 @@ public class MaterialControllerModelTest {
 
     @Test
     @WithMockKeycloackAuth(name = "BennyGoodman", roles = "TESTER")
-    void StartTestGruppenTabsGetCreated() throws Exception {
+    void startTestGruppenTabsGetCreated() throws Exception {
         mvc.perform(get("/"))
                 .andExpect(content().string(containsString("ProPra")))
                 .andExpect(content().string(containsString("RDB")));
@@ -82,14 +84,14 @@ public class MaterialControllerModelTest {
     }
 
     @Test
-    void TestReturnStartUnknownUser() throws Exception {
+    void testReturnStartUnknownUser() throws Exception {
         mvc.perform(get("/"))
                 .andExpect(content().string(containsString("Wilkommen bei der Materialsammlung")));
     }
 
     @Test
     @WithMockKeycloackAuth(name = "BennyGoodman", roles = "TESTER")
-    void TestReturnStartLogedInUser() throws Exception {
+    void testReturnStartLogedInUser() throws Exception {
         mvc.perform(get("/"))
                 .andExpect(content().string(containsString("Wilkommen bei der Materialsammlung")));
     }
@@ -98,7 +100,7 @@ public class MaterialControllerModelTest {
 
     @Test
     @WithMockKeycloackAuth(name = "BennyGoodman", roles = "studentin")
-    void UploadTestTabsGetCreated() throws Exception {
+    void uploadTestTabsGetCreated() throws Exception {
         mvc.perform(get("/upload"))
                 .andExpect(content().string(containsString("ProPra")))
                 .andExpect(content().string(containsString("RDB")));
@@ -107,7 +109,7 @@ public class MaterialControllerModelTest {
 
     @Test
     @WithMockKeycloackAuth(name = "BennyGoodman", roles = "studentin")
-    void UploadTestTagsGetLoaded() throws Exception {
+    void uploadTestTagsGetLoaded() throws Exception {
         mvc.perform(get("/upload"));
         verify(modelService, times(1)).getAlleTagsByUser(any());
     }
@@ -123,7 +125,7 @@ public class MaterialControllerModelTest {
 
     @Test
     @WithMockKeycloackAuth(name = "studentin1", roles = "studentin")
-    void SucheTestGruppenTabsGetCreated() throws Exception {
+    void sucheTestGruppenTabsGetCreated() throws Exception {
         mvc.perform(get("/suche"))
                 .andExpect(content().string(containsString("ProPra")))
                 .andExpect(content().string(containsString("RDB")));
@@ -132,7 +134,7 @@ public class MaterialControllerModelTest {
 
     @Test
     @WithMockKeycloackAuth(name = "studentin3", roles = "studentin")
-    void SucheTestTagsGetLoaded() throws Exception {
+    void sucheTestTagsGetLoaded() throws Exception {
         mvc.perform(get("/suche"))
                 .andExpect(content().string(containsString("Vorlesung")))
                 .andExpect(content().string(containsString("Übung")));
@@ -141,7 +143,7 @@ public class MaterialControllerModelTest {
 
     @Test
     @WithMockKeycloackAuth(name = "studentin2", roles = "studentin")
-    void SucheTestDateiTypenGetLoaded() throws Exception {
+    void sucheTestDateiTypenGetLoaded() throws Exception {
         mvc.perform(get("/suche"))
                 .andExpect(content().string(containsString("JSON")))
                 .andExpect(content().string(containsString("XML")));
@@ -150,7 +152,7 @@ public class MaterialControllerModelTest {
 
     @Test
     @WithMockKeycloackAuth(name = "studentin1", roles = "studentin")
-    void SucheTestUploaderGetLoaded() throws Exception {
+    void sucheTestUploaderGetLoaded() throws Exception {
         mvc.perform(get("/suche"))
                 .andExpect(content().string(containsString("Chris")))
                 .andExpect(content().string(containsString("Christian")))
@@ -160,7 +162,7 @@ public class MaterialControllerModelTest {
 
     @Test
     @WithMockKeycloackAuth(name = "Max Mustermann", roles = "studentin")
-    void TestReturnSucheTemplate() throws Exception {
+    void testReturnSucheTemplate() throws Exception {
         mvc.perform(get("/suche"))
                 .andExpect(content().string(containsString("Suche")));
     }

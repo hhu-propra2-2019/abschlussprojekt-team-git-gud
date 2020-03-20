@@ -1,10 +1,14 @@
 package de.hhu.propra2.material2.mops.controller;
 
 import de.hhu.propra2.material2.mops.Exceptions.DownloadException;
+import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
 import de.hhu.propra2.material2.mops.domain.models.UploadForm;
 import de.hhu.propra2.material2.mops.domain.services.MinioDownloadService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
+import de.hhu.propra2.material2.mops.domain.services.UploadService;
+import de.hhu.propra2.material2.mops.security.Account;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.SQLException;
 
 /**
  * After the @RolesAllowed Annotation the Syle Code wants a space after
@@ -37,6 +42,8 @@ public class MaterialController {
 
     @Autowired
     private ModelService modelService;
+    @Autowired
+    private UploadService uploadService;
     @Autowired
     private MinioDownloadService minioDownloadService;
 
@@ -129,8 +136,22 @@ public class MaterialController {
     @PostMapping("/upload")
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public String upload(final KeycloakAuthenticationToken token, final Model model, final UploadForm upForm) {
+        Account uploader = modelService.getAccountFromKeycloak(token);
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
-        System.out.println(upForm);
+        model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
+        model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
+        model.addAttribute("error", errorMessage);
+        model.addAttribute("success", successMessage);
+        try {
+            uploadService.startUpload(upForm, uploader.getName());
+            setMessages(null, "Upload war erfolgreich!");
+        } catch (FileUploadException e) {
+            setMessages("Beim Upload gab es ein Problem", null);
+        } catch (SQLException e) {
+            setMessages("Beim Upload gab es ein Problem", null);
+        } catch (NoUploadPermissionException e) {
+            setMessages("Sie sind nicht berechtig in dieser Gruppe hochzuladen!", null);
+        }
         return "redirect:/upload";
     }
 

@@ -11,9 +11,10 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;
+import java.time.Duration;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 //https://spotbugs.readthedocs.io/en/stable/bugDescriptions.html
@@ -23,7 +24,7 @@ import java.util.List;
 public final class Repository {
     private Connection connection;
     private Environment env;
-    private HashMap<String, CachedUser> userCache;
+    private HashMap<Long, CachedGruppe> gruppeCache;
 
 
     /**
@@ -37,7 +38,7 @@ public final class Repository {
     @Autowired
     public Repository(final Environment envArg) {
         this.env = envArg;
-        userCache = new HashMap<String, CachedUser>();
+        gruppeCache = new HashMap<Long, CachedGruppe>();
         try {
             connection = DriverManager.getConnection("jdbc:mysql://localhost:23306/materialsammlung",
                     env.getProperty("spring.datasource.username"), env.getProperty("spring.datasource.password"));
@@ -50,31 +51,8 @@ public final class Repository {
         PUBLIC METHODS
      */
 
-    public UserDTO findUserByKeycloakname(final String keyCloakNameArg) throws SQLException {
-        UserDTO user = null;
-
-        PreparedStatement preparedStatement =
-                connection.prepareStatement("select * from User where key_cloak_name=?");
-        preparedStatement.setString(1, keyCloakNameArg);
-
-        ResultSet users = preparedStatement.executeQuery();
-
-        if (users.next()) {
-            user = new UserDTO(users.getLong("userID"),
-                    users.getString("vorname"),
-                    users.getString("nachname"),
-                    users.getString("key_cloak_name"),
-                    findAllGruppeByUserID(users.getLong("userID")));
-        }
-
-        preparedStatement.close();
-        users.close();
-
-        return user;
-    }
-
     /**
-     * Eager search for a user that loads
+     * Lazy (no File Loading) search for a user that loads
      * all his groups, rights and
      * files assigned to their group with
      * their tags.
@@ -83,8 +61,7 @@ public final class Repository {
      * @return
      * @throws SQLException
      */
-    @SuppressWarnings("checkstyle:MagicNumber")
-    public UserDTO findUserByKeycloaknameEager(final String keyCloakNameArg) throws SQLException {
+    public UserDTO findUserByKeycloakname(final String keyCloakNameArg) throws SQLException {
         UserDTO user = null;
 
         PreparedStatement preparedStatement =
@@ -244,6 +221,35 @@ public final class Repository {
         }
     }
 
+    @SuppressWarnings("checkstyle:MagicNumber")
+    public LinkedList<DateiDTO> findAllDateiByGruppeId(final long gruppeId) throws SQLException {
+        CachedGruppe cachedGruppe = gruppeCache.get(gruppeId);
+
+        if (cachedGruppe != null) {
+            Duration duration = Duration.between(cachedGruppe.getLastAccessTime(), LocalTime.now());
+            //10 Minutes timeout
+            if (duration.getSeconds() < 600) {
+                return cachedGruppe.getGruppeDTO().getDateien();
+            }
+        }
+
+        LinkedList<DateiDTO> dateien = new LinkedList<DateiDTO>();
+
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("select * from Datei where gruppeID=?");
+        preparedStatement.setString(1, "" + gruppeId);
+
+        ResultSet dateiResult = preparedStatement.executeQuery();
+        while (dateiResult.next()) {
+            dateien.add(findDateiById(dateiResult.getLong("dateiID")));
+        }
+
+        preparedStatement.close();
+        dateiResult.close();
+
+        return dateien;
+    }
+
     public void deleteDateiByDateiId(final long dateiId) throws SQLException {
         deleteTagRelationsByDateiId(dateiId);
 
@@ -264,8 +270,8 @@ public final class Repository {
         DATEI METHODS
      */
 
-    ArrayList<DateiDTO> findAllDateiByUploaderId(final long userId) throws SQLException {
-        ArrayList<DateiDTO> dateien = new ArrayList<DateiDTO>();
+    LinkedList<DateiDTO> findAllDateiByUploaderId(final long userId) throws SQLException {
+        LinkedList<DateiDTO> dateien = new LinkedList<DateiDTO>();
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select * from Datei where uploaderID=?");
@@ -284,7 +290,7 @@ public final class Repository {
     }
 
     void changeUploaderToDeletedForAllDateiByUploaderId(final long userId) throws SQLException {
-        ArrayList<DateiDTO> dateien = findAllDateiByUploaderId(userId);
+        LinkedList<DateiDTO> dateien = findAllDateiByUploaderId(userId);
 
         for (DateiDTO dateiDTO: dateien) {
             dateiDTO.setUploader(new UserDTO(-1, "User", "Deleted", "-", null));
@@ -336,24 +342,6 @@ public final class Repository {
         result.close();
 
         return doesItExist;
-    }
-
-    ArrayList<DateiDTO> findAllDateiByGruppeId(final long gruppeId) throws SQLException {
-        ArrayList<DateiDTO> dateien = new ArrayList<DateiDTO>();
-
-        PreparedStatement preparedStatement =
-                connection.prepareStatement("select * from Datei where gruppeID=?");
-        preparedStatement.setString(1, "" + gruppeId);
-
-        ResultSet dateiResult = preparedStatement.executeQuery();
-        while (dateiResult.next()) {
-            dateien.add(findDateiById(dateiResult.getLong("dateiID")));
-        }
-
-        preparedStatement.close();
-        dateiResult.close();
-
-        return dateien;
     }
 
     DateiDTO findDateiById(final long id) throws SQLException {
@@ -455,8 +443,8 @@ public final class Repository {
         return tag;
     }
 
-    ArrayList<TagDTO> findAllTagsbyDateiId(final long dateiId) throws SQLException {
-        ArrayList<TagDTO> tags = new ArrayList<TagDTO>();
+    LinkedList<TagDTO> findAllTagsbyDateiId(final long dateiId) throws SQLException {
+        LinkedList<TagDTO> tags = new LinkedList<TagDTO>();
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select * from Tagnutzung where dateiID=?");
@@ -566,7 +554,7 @@ public final class Repository {
             gruppe = new GruppeDTO(gruppeId,
                     gruppeResult.getString("titel"),
                     gruppeResult.getString("beschreibung"),
-                    new ArrayList<DateiDTO>());
+                    new LinkedList<DateiDTO>());
 
             for (DateiDTO datei : gruppe.getDateien()) {
                 datei.setGruppe(gruppe);
@@ -654,8 +642,32 @@ public final class Repository {
         USER METHODS
      */
 
-    ArrayList<UserDTO> findAllUserByGruppeId(final long gruppeId) throws SQLException {
-        ArrayList<UserDTO> users = new ArrayList<UserDTO>();
+    @SuppressWarnings("checkstyle:MagicNumber")
+    UserDTO findUserByKeycloaknameEager(final String keyCloakNameArg) throws SQLException {
+        UserDTO user = null;
+
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("select * from User where key_cloak_name=?");
+        preparedStatement.setString(1, keyCloakNameArg);
+
+        ResultSet users = preparedStatement.executeQuery();
+
+        if (users.next()) {
+            user = new UserDTO(users.getLong("userID"),
+                    users.getString("vorname"),
+                    users.getString("nachname"),
+                    users.getString("key_cloak_name"),
+                    findAllGruppeByUserID(users.getLong("userID")));
+        }
+
+        preparedStatement.close();
+        users.close();
+
+        return user;
+    }
+
+    LinkedList<UserDTO> findAllUserByGruppeId(final long gruppeId) throws SQLException {
+        LinkedList<UserDTO> users = new LinkedList<UserDTO>();
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select * from Gruppenbelegung where gruppeID=?");
@@ -740,12 +752,12 @@ public final class Repository {
         CACHING OF THE USER FOR FASTER LOADING
      */
     @Getter
-    private static class CachedUser {
-        private UserDTO userDTO;
+    private static class CachedGruppe {
+        private GruppeDTO gruppeDTO;
         private LocalTime lastAccessTime;
 
-        CachedUser(final UserDTO userDTOArg) {
-            userDTO = userDTOArg;
+        CachedGruppe(final GruppeDTO gruppeDTOArg) {
+            gruppeDTO = gruppeDTOArg;
             lastAccessTime = LocalTime.now();
         }
 
@@ -756,8 +768,8 @@ public final class Repository {
             }
 
             if (o.getClass() == this.getClass()) {
-                CachedUser cachedUser = (CachedUser) o;
-                return cachedUser.getUserDTO().getId() == this.userDTO.getId();
+                CachedGruppe cachedGruppe = (CachedGruppe) o;
+                return cachedGruppe.getGruppeDTO().getId() == this.gruppeDTO.getId();
             }
             return false;
         }

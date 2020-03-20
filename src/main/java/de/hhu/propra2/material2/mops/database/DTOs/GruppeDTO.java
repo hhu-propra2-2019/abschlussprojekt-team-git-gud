@@ -1,35 +1,45 @@
 package de.hhu.propra2.material2.mops.database.DTOs;
 
-import lombok.AccessLevel;
+import de.hhu.propra2.material2.mops.database.Repository;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 
-@Getter
-@Setter
+
 public final class GruppeDTO {
+    @Getter
     /**
      * Unique ID from database.
      */
     private final long id;
+    @Getter
     /**
      * Groups name from database.
      */
     private final String name;
+    @Getter
     /**
      * Groups description from database.
      */
     private final String description;
     /**
-     * List of related files from database.
+     * LinkedList of related files from database.
      */
-    @Getter(AccessLevel.PUBLIC)
-    private final List<DateiDTO> dateien;
+    @Setter
+    private LinkedList<DateiDTO> dateien;
+    /**
+     * Repository for lazy loading Files on demand only.
+     * Repository also has cache capabilities.
+     */
+    private final Repository repository;
 
     /**
-     * Standard AllArgsConstructor for import from database.
-     *  @param idArg
+     * Standard AllArgsConstructor for saving to database.
+     *
+     * @param idArg
      * @param nameArg
      * @param descriptionArg
      * @param dateiArgs
@@ -41,8 +51,54 @@ public final class GruppeDTO {
         this.id = idArg;
         this.name = nameArg;
         this.description = descriptionArg;
-        this.dateien = dateiArgs;
+        this.dateien = (LinkedList) dateiArgs;
+        this.repository = null;
     }
+
+    /**
+     * Standard AllArgsConstructor for importing to database.
+     *
+     * @param idArg
+     * @param nameArg
+     * @param descriptionArg
+     * @param dateiArgs
+     */
+    public GruppeDTO(final long idArg,
+                     final String nameArg,
+                     final String descriptionArg,
+                     final LinkedList<DateiDTO> dateiArgs,
+                     final Repository repositoryArg) {
+        this.id = idArg;
+        this.name = nameArg;
+        this.description = descriptionArg;
+        this.dateien = dateiArgs;
+        this.repository = repositoryArg;
+    }
+
+    /**
+     * Getter of a LinkedList of Datei for loading from repository.
+     * Repository caches Files as needed.
+     *
+     * @return
+     */
+    public LinkedList<DateiDTO> getDateien() {
+        if (!(dateien.isEmpty())) {
+            return dateien;
+        }
+
+        if (repository == null) {
+            return new LinkedList<DateiDTO>();
+        }
+
+        try {
+            dateien = repository.findAllDateiByGruppeId(id);
+            return dateien;
+        } catch (SQLException e) {
+            return dateien;
+        }
+    }
+
+
 
     @Override
     public boolean equals(final Object o) {

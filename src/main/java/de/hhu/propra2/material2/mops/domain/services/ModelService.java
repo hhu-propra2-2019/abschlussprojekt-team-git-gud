@@ -228,7 +228,7 @@ public final class ModelService implements IModelService {
         Account account = getAccountFromKeycloak(token);
 
         try {
-            return loadUser(repository.findUserByKeycloaknameEager(account.getName()));
+            return loadUser(repository.findUserByKeycloakname(account.getName()));
         } catch (SQLException e) {
             e.printStackTrace();
             return new User(-1L, "", "", "", new HashMap<>());

@@ -15,7 +15,7 @@ import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -32,9 +32,9 @@ public final class RepositoryTest {
     private GruppeDTO gruppe;
     private UserDTO user;
     private TagDTO tag;
-    private ArrayList<TagDTO> tags = new ArrayList<TagDTO>();
+    private LinkedList<TagDTO> tags = new LinkedList<TagDTO>();
     private DateiDTO datei;
-    private ArrayList<DateiDTO> dateien = new ArrayList<DateiDTO>();
+    private LinkedList<DateiDTO> dateien = new LinkedList<DateiDTO>();
     private HashMap<GruppeDTO, Boolean> berechtigung = new HashMap<GruppeDTO, Boolean>();
 
     @SuppressWarnings("checkstyle:magicnumber")
@@ -53,7 +53,7 @@ public final class RepositoryTest {
 
         datei = new DateiDTO("gaedata", user, tags, LocalDate.of(2020, 3, 01),
                 LocalDate.now(), 200, "gae", gruppe, "gae");
-        gruppe.getDateien().add(datei);
+        dateien.add(datei);
     }
 
     @BeforeEach
@@ -63,7 +63,7 @@ public final class RepositoryTest {
         datei.setId(repository.saveDatei(datei));
     }
 
-    private ArrayList<UserDTO> generateXUsersWithYGroupsWithZFilesWithATags(final int userCount,
+    private LinkedList<UserDTO> generateXUsersWithYGroupsWithZFilesWithATags(final int userCount,
                                                                             final int groupCountPerUser,
                                                                             final int fileCountPerGroup,
                                                                             final int tagCountPerFile) {
@@ -78,11 +78,11 @@ public final class RepositoryTest {
                 users[i].getBelegungUndRechte().put(gruppeDTO, true);
             }
         }
-        return new ArrayList<UserDTO>(Arrays.asList(users));
+        return new LinkedList<UserDTO>(Arrays.asList(users));
     }
 
-    private ArrayList<TagDTO> generateRandomTags(final int tagCount) {
-        ArrayList<TagDTO> tagDTOs = new ArrayList<TagDTO>();
+    private LinkedList<TagDTO> generateRandomTags(final int tagCount) {
+        LinkedList<TagDTO> tagDTOs = new LinkedList<TagDTO>();
         for (int i = 0; i < tagCount; i++) {
             tagDTOs.add(new TagDTO(UUID.randomUUID().toString()));
         }
@@ -90,7 +90,7 @@ public final class RepositoryTest {
     }
 
     @SuppressWarnings("checkstyle:MagicNumber")
-    private DateiDTO generateRandomDatei(final ArrayList<TagDTO> tagsArg, final GruppeDTO gruppeDTO) {
+    private DateiDTO generateRandomDatei(final LinkedList<TagDTO> tagsArg, final GruppeDTO gruppeDTO) {
         return new DateiDTO(UUID.randomUUID().toString(),
                 new UserDTO(-1, "User", "Deleted", "-", null),
                 tagsArg, LocalDate.now(), LocalDate.now(),
@@ -100,7 +100,7 @@ public final class RepositoryTest {
 
     private GruppeDTO generateRandomGruppe() {
         return new GruppeDTO(UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE,
-                " ", " ", new ArrayList<DateiDTO>());
+                " ", " ", new LinkedList<DateiDTO>());
     }
 
     private UserDTO generateRandomUser() {
@@ -133,7 +133,7 @@ public final class RepositoryTest {
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
     public void updateDateiTest() throws SQLException {
-        ArrayList<TagDTO> newTags = new ArrayList<TagDTO>();
+        LinkedList<TagDTO> newTags = new LinkedList<TagDTO>();
         TagDTO tag1 = new TagDTO("gae1");
         TagDTO tag2 = new TagDTO("gae2");
         DateiDTO newDatei;
@@ -149,7 +149,7 @@ public final class RepositoryTest {
         repository.saveDatei(newDatei);
 
         UserDTO userDTO = repository.findUserByKeycloaknameEager("gae");
-        List<TagDTO> tagDTOS = new ArrayList<>();
+        List<TagDTO> tagDTOS = new LinkedList<>();
         for (GruppeDTO gruppeDTO : userDTO.getBelegungUndRechte().keySet()) {
             tagDTOS = gruppeDTO.getDateien().get(0).getTagDTOs();
         }
@@ -170,7 +170,7 @@ public final class RepositoryTest {
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
     public void updateTwiceDateiTest() throws SQLException {
-        ArrayList<TagDTO> newTags = new ArrayList<TagDTO>();
+        LinkedList<TagDTO> newTags = new LinkedList<TagDTO>();
         TagDTO tag1 = new TagDTO("gae1");
         TagDTO tag2 = new TagDTO("gae2");
         TagDTO tag3 = new TagDTO("gae3");
@@ -193,7 +193,7 @@ public final class RepositoryTest {
         repository.saveDatei(newDatei);
 
         UserDTO userDTO = repository.findUserByKeycloaknameEager("gae");
-        List<TagDTO> tagDTOS = new ArrayList<>();
+        List<TagDTO> tagDTOS = new LinkedList<>();
         for (GruppeDTO gruppeDTO : userDTO.getBelegungUndRechte().keySet()) {
             tagDTOS = gruppeDTO.getDateien().get(0).getTagDTOs();
         }
@@ -269,7 +269,7 @@ public final class RepositoryTest {
     @Ignore
     @Test
     public void add1UsersWith20GroupsWith100FilesWith10TagsEachAndLoad() throws SQLException {
-        ArrayList<UserDTO> userDTOs =
+        LinkedList<UserDTO> userDTOs =
                 generateXUsersWithYGroupsWithZFilesWithATags(1, 20, 100, 10);
 
         LocalTime timeBeforeSave = LocalTime.now();
@@ -307,7 +307,7 @@ public final class RepositoryTest {
     @Ignore
     @Test
     public void add10UsersWith10GroupsWith50FilesWith20TagsEachAndLoad() throws SQLException {
-        ArrayList<UserDTO> userDTOs =
+        LinkedList<UserDTO> userDTOs =
                 generateXUsersWithYGroupsWithZFilesWithATags(10, 10, 50, 20);
 
         LocalTime timeBeforeSave = LocalTime.now();
@@ -347,7 +347,7 @@ public final class RepositoryTest {
     @Ignore
     @Test
     public void add1UsersWith20GroupsWith100FilesWith1TagsEachAndLoad() throws SQLException {
-        ArrayList<UserDTO> userDTOs =
+        LinkedList<UserDTO> userDTOs =
                 generateXUsersWithYGroupsWithZFilesWithATags(1, 20, 100, 1);
 
         LocalTime timeBeforeSave = LocalTime.now();
@@ -385,7 +385,7 @@ public final class RepositoryTest {
     @Ignore
     @Test
     public void load100FilesWith3TagsEach() throws SQLException {
-        ArrayList<UserDTO> userDTOs =
+        LinkedList<UserDTO> userDTOs =
                 generateXUsersWithYGroupsWithZFilesWithATags(1, 1, 500, 1);
 
         LocalTime timeBeforeSave = LocalTime.now();

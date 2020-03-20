@@ -87,6 +87,10 @@ public class UploadService implements IUploadService {
             throw new NoUploadPermissionException("User has no upload permission");
         }
 
+        if (upForm.getTimedUpload().equals("")) {
+            upForm.setTimedUpload(LocalDate.now().toString());
+        }
+
         dateiHochladen(upForm.getDatei(), upForm.getDateiname(), user, gruppe,
                 parseStringToDate(upForm.getTimedUpload()), convertSeperatedStringToList(upForm.getSelectedTags()),
                 upForm.getKategorie());

@@ -4,6 +4,7 @@ import com.c4_soft.springaddons.test.security.context.support.WithMockKeycloackA
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.services.MinioDownloadService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
+import de.hhu.propra2.material2.mops.domain.services.UploadService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
@@ -40,6 +41,9 @@ public class MaterialControllerModelTest {
 
     @MockBean
     private MinioDownloadService minioDownloadService;
+
+    @MockBean
+    private UploadService uploadService;
 
     /**init for the tests.
      *

@@ -3,6 +3,7 @@ package de.hhu.propra2.material2.mops.web;
 import com.c4_soft.springaddons.test.security.context.support.WithMockKeycloackAuth;
 import de.hhu.propra2.material2.mops.domain.services.MinioDownloadService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
+import de.hhu.propra2.material2.mops.domain.services.UploadService;
 import org.junit.jupiter.api.Test;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
@@ -35,6 +36,9 @@ public class MaterialControllerAccessTest {
 
     @MockBean
     private MinioDownloadService minioDownloadService;
+
+    @MockBean
+    private UploadService uploadService;
 
     //Unknown User Access tests
 
@@ -160,7 +164,7 @@ public class MaterialControllerAccessTest {
     @WithMockKeycloackAuth(name = "Bruce W.", roles = "studentin")
     void testFileDownloadStudentUser() throws Exception {
         String myString = "hello";
-        InputStream inputStream = new ByteArrayInputStream(myString.getBytes());
+        InputStream inputStream = new ByteArrayInputStream(new byte[1]);
         when(minioDownloadService.getObject(any())).thenReturn(inputStream);
 
         mvc.perform(get("/files"))
@@ -209,7 +213,7 @@ public class MaterialControllerAccessTest {
     @WithMockKeycloackAuth(name = "Donald T.", roles = "orga")
     void testFileDownloadOrgaUser() throws Exception {
         String myString = "hello";
-        InputStream inputStream = new ByteArrayInputStream(myString.getBytes());
+        InputStream inputStream = new ByteArrayInputStream(new byte[1]);
         when(minioDownloadService.getObject(any())).thenReturn(inputStream);
 
         mvc.perform(get("/files"))
@@ -258,7 +262,7 @@ public class MaterialControllerAccessTest {
     @WithMockKeycloackAuth(name = "James B.", roles = "actuator")
     void testFileDownloadActuatorUser() throws Exception {
         String myString = "hello";
-        InputStream inputStream = new ByteArrayInputStream(myString.getBytes());
+        InputStream inputStream = new ByteArrayInputStream(new byte[1]);
         when(minioDownloadService.getObject(any())).thenReturn(inputStream);
 
         mvc.perform(get("/files"))

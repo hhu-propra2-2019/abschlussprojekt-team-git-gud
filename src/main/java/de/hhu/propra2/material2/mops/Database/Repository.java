@@ -644,4 +644,47 @@ public final class Repository {
 
         return user;
     }
+
+
+    /*
+        TESTING METHOD
+     */
+    @SuppressWarnings("checkstyle:magicnumber")
+    void deleteAll() throws SQLException {
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("delete from Gruppenbelegung");
+        preparedStatement.execute();
+        preparedStatement.close();
+
+        preparedStatement =
+                connection.prepareStatement("delete from Tagnutzung");
+        preparedStatement.execute();
+        preparedStatement.close();
+
+        preparedStatement =
+                connection.prepareStatement("delete from Datei");
+        preparedStatement.execute();
+        preparedStatement.close();
+
+        preparedStatement =
+                connection.prepareStatement("delete from Gruppe");
+        preparedStatement.execute();
+        preparedStatement.close();
+
+        preparedStatement =
+                connection.prepareStatement("delete from User");
+        preparedStatement.execute();
+        preparedStatement.close();
+
+        preparedStatement =
+                connection.prepareStatement("insert ignore into User (userID, vorname, nachname, key_cloak_name)"
+                        + "values (?, ?, ?, ?)");
+        preparedStatement.setString(1, "" + -1);
+        preparedStatement.setString(2, "User");
+        preparedStatement.setString(3, "Deleted");
+        preparedStatement.setString(4, "-");
+        preparedStatement.execute();
+
+        preparedStatement.close();
+    }
 }

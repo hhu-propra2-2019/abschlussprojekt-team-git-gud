@@ -33,13 +33,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class MaterialControllerModelTest {
 
     @Autowired
-    MockMvc mvc;
+    private MockMvc mvc;
 
     @MockBean
-    ModelService modelService;
+    private ModelService modelService;
 
     @MockBean
-    MinioDownloadService minioDownloadService;
+    private MinioDownloadService minioDownloadService;
 
     @BeforeEach
     void init()

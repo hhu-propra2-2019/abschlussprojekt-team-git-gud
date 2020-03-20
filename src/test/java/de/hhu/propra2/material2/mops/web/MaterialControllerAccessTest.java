@@ -28,24 +28,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class MaterialControllerAccessTest {
 
     @Autowired
-    MockMvc mvc;
+    private MockMvc mvc;
 
     @MockBean
-    ModelService modelService;
+    private ModelService modelService;
 
     @MockBean
-    MinioDownloadService minioDownloadService;
+    private MinioDownloadService minioDownloadService;
 
     //Unknown User Access tests
 
     @Test
-    void testStart_UnknownUser() throws Exception {
+    void testStartUnknownUser() throws Exception {
         mvc.perform(get("/"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    void testSuche_UnknownUser() throws Exception {
+    void testSucheUnknownUser() throws Exception {
         mvc.perform(get("/suche"))
                 .andExpect(status().is3xxRedirection());
 
@@ -54,7 +54,7 @@ public class MaterialControllerAccessTest {
     }
 
     @Test
-    void testUpload_UnknownUser() throws Exception {
+    void testUploadUnknownUser() throws Exception {
         mvc.perform(get("/upload"))
                 .andExpect(status().is3xxRedirection());
 
@@ -63,13 +63,13 @@ public class MaterialControllerAccessTest {
     }
 
     @Test
-    void testDateisicht_UnknownUser() throws Exception {
+    void testDateisichtUnknownUser() throws Exception {
         mvc.perform(get("/dateiSicht"))
                 .andExpect(status().is3xxRedirection());
     }
 
     @Test
-    void testFileDownload_UnknownUser() throws Exception {
+    void testFileDownloadUnknownUser() throws Exception {
         mvc.perform(get("/files"))
                 .andExpect(status().is3xxRedirection());
     }
@@ -78,14 +78,14 @@ public class MaterialControllerAccessTest {
 
     @Test
     @WithMockKeycloackAuth(name = "BennyGoodman", roles = "TESTER")
-    void testStart_PublicUser() throws Exception {
+    void testStartPublicUser() throws Exception {
         mvc.perform(get("/"))
                 .andExpect(status().isOk());
     }
 
     @Test
     @WithMockKeycloackAuth(name = "Benny Goodman", roles = "TESTER")
-    void testSuche_PublicUser() throws Exception {
+    void testSuchePublicUser() throws Exception {
         mvc.perform(get("/suche"))
                 .andExpect(status().isForbidden());
 
@@ -95,7 +95,7 @@ public class MaterialControllerAccessTest {
 
     @Test
     @WithMockKeycloackAuth(name = "Benny Goodman", roles = "TESTER")
-    void testUpload_PublicUser() throws Exception {
+    void testUploadPublicUser() throws Exception {
         mvc.perform(get("/upload"))
                 .andExpect(status().isForbidden());
 
@@ -105,14 +105,14 @@ public class MaterialControllerAccessTest {
 
     @Test
     @WithMockKeycloackAuth(name = "Benny Goodman", roles = "TESTER")
-    void testDateisicht_PublicUser() throws Exception {
+    void testDateisichtPublicUser() throws Exception {
         mvc.perform(get("/dateiSicht"))
                 .andExpect(status().isForbidden());
     }
 
     @Test
     @WithMockKeycloackAuth(name = "Benny Goodman", roles = "TESTER")
-    void testFileDownload_PublicUser() throws Exception {
+    void testFileDownloadPublicUser() throws Exception {
         mvc.perform(get("/files"))
                 .andExpect(status().isForbidden());
     }
@@ -121,14 +121,14 @@ public class MaterialControllerAccessTest {
 
     @Test
     @WithMockKeycloackAuth(name = "Bruce W.", roles = "studentin")
-    void testStart_StudentUser() throws Exception {
+    void testStartStudentUser() throws Exception {
         mvc.perform(get("/"))
                 .andExpect(status().isOk());
     }
 
     @Test
     @WithMockKeycloackAuth(name = "Bruce W.", roles = "studentin")
-    void testSuche_StudentUser() throws Exception {
+    void testSucheStudentUser() throws Exception {
         mvc.perform(get("/suche"))
                 .andExpect(status().isOk());
 
@@ -139,7 +139,7 @@ public class MaterialControllerAccessTest {
 
     @Test
     @WithMockKeycloackAuth(name = "Bruce W.", roles = "studentin")
-    void testUpload_StudentUser() throws Exception {
+    void testUploadStudentUser() throws Exception {
         mvc.perform(get("/upload"))
                 .andExpect(status().isOk());
 
@@ -151,14 +151,14 @@ public class MaterialControllerAccessTest {
 
     @Test
     @WithMockKeycloackAuth(name = "Bruce W.", roles = "studentin")
-    void testDateisicht_StudentUser() throws Exception {
+    void testDateisichtStudentUser() throws Exception {
         mvc.perform(get("/dateiSicht"))
                 .andExpect(status().isOk());
     }
 
     @Test
     @WithMockKeycloackAuth(name = "Bruce W.", roles = "studentin")
-    void testFileDownload_StudentUser() throws Exception {
+    void testFileDownloadStudentUser() throws Exception {
         String myString = "hello";
         InputStream inputStream = new ByteArrayInputStream( myString.getBytes() );
         when(minioDownloadService.getObject(any())).thenReturn(inputStream);
@@ -171,14 +171,14 @@ public class MaterialControllerAccessTest {
 
     @Test
     @WithMockKeycloackAuth(name = "Donald T.", roles = "orga")
-    void testStart_OrgaUser() throws Exception {
+    void testStartOrgaUser() throws Exception {
         mvc.perform(get("/"))
                 .andExpect(status().isOk());
     }
 
     @Test
     @WithMockKeycloackAuth(name = "Donald T.", roles = "orga")
-    void testSuche_OrgaUser() throws Exception {
+    void testSucheOrgaUser() throws Exception {
         mvc.perform(get("/suche"))
                 .andExpect(status().isOk());
 
@@ -189,7 +189,7 @@ public class MaterialControllerAccessTest {
 
     @Test
     @WithMockKeycloackAuth(name = "Donald T.", roles = "orga")
-    void testUpload_OrgaUser() throws Exception {
+    void testUploadOrgaUser() throws Exception {
         mvc.perform(get("/upload"))
                 .andExpect(status().isOk());
 
@@ -200,14 +200,14 @@ public class MaterialControllerAccessTest {
 
     @Test
     @WithMockKeycloackAuth(name = "Donald T.", roles = "orga")
-    void testDateisicht_OrgaUser() throws Exception {
+    void testDateisichtOrgaUser() throws Exception {
         mvc.perform(get("/dateiSicht"))
                 .andExpect(status().isOk());
     }
 
     @Test
     @WithMockKeycloackAuth(name = "Donald T.", roles = "orga")
-    void testFileDownload_OrgaUser() throws Exception {
+    void testFileDownloadOrgaUser() throws Exception {
         String myString = "hello";
         InputStream inputStream = new ByteArrayInputStream( myString.getBytes() );
         when(minioDownloadService.getObject(any())).thenReturn(inputStream);
@@ -220,14 +220,14 @@ public class MaterialControllerAccessTest {
 
     @Test
     @WithMockKeycloackAuth(name = "James B.", roles = "actuator")
-    void testStart_ActuatorUser() throws Exception {
+    void testStartActuatorUser() throws Exception {
         mvc.perform(get("/"))
                 .andExpect(status().isOk());
     }
 
     @Test
     @WithMockKeycloackAuth(name = "James B.", roles = "actuator")
-    void testSuche_ActuatorUserUser() throws Exception {
+    void testSucheActuatorUserUser() throws Exception {
         mvc.perform(get("/suche"))
                 .andExpect(status().isOk());
 
@@ -238,7 +238,7 @@ public class MaterialControllerAccessTest {
 
     @Test
     @WithMockKeycloackAuth(name = "James B.", roles = "actuator")
-    void testUpload_ActuatorUser() throws Exception {
+    void testUploadActuatorUser() throws Exception {
         mvc.perform(get("/upload"))
                 .andExpect(status().isOk());
 
@@ -249,14 +249,14 @@ public class MaterialControllerAccessTest {
 
     @Test
     @WithMockKeycloackAuth(name = "James B.", roles = "actuator")
-    void testDateisicht_ActuatorUser() throws Exception {
+    void testDateisichtActuatorUser() throws Exception {
         mvc.perform(get("/dateiSicht"))
                 .andExpect(status().isOk());
     }
 
     @Test
     @WithMockKeycloackAuth(name = "James B.", roles = "actuator")
-    void testFileDownload_ActuatorUser() throws Exception {
+    void testFileDownloadActuatorUser() throws Exception {
         String myString = "hello";
         InputStream inputStream = new ByteArrayInputStream( myString.getBytes() );
         when(minioDownloadService.getObject(any())).thenReturn(inputStream);

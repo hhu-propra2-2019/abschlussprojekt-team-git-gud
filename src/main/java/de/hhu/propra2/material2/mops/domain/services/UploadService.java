@@ -78,7 +78,7 @@ public class UploadService implements IUploadService {
     @Override
     public void startUpload(final UploadForm upForm, final String uploader) throws NoUploadPermissionException,
             SQLException, FileUploadException {
-        UserDTO userDTO = repository.findUserByKeycloakname(uploader);
+        UserDTO userDTO = repository.findUserByKeycloaknameEager(uploader);
         User user = modelService.loadUser(userDTO);
 
         Gruppe gruppe = user.getGruppeById(upForm.getGruppenId());

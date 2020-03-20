@@ -10,13 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.time.Duration;
+import java.sql.*;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,6 +50,29 @@ public final class Repository {
         PUBLIC METHODS
      */
 
+    public UserDTO findUserByKeycloakname(final String keyCloakNameArg) throws SQLException {
+        UserDTO user = null;
+
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("select * from User where key_cloak_name=?");
+        preparedStatement.setString(1, keyCloakNameArg);
+
+        ResultSet users = preparedStatement.executeQuery();
+
+        if (users.next()) {
+            user = new UserDTO(users.getLong("userID"),
+                    users.getString("vorname"),
+                    users.getString("nachname"),
+                    users.getString("key_cloak_name"),
+                    findAllGruppeByUserID(users.getLong("userID")));
+        }
+
+        preparedStatement.close();
+        users.close();
+
+        return user;
+    }
+
     /**
      * Eager search for a user that loads
      * all his groups, rights and
@@ -67,13 +84,8 @@ public final class Repository {
      * @throws SQLException
      */
     @SuppressWarnings("checkstyle:MagicNumber")
-    public UserDTO findUserByKeycloakname(final String keyCloakNameArg) throws SQLException {
+    public UserDTO findUserByKeycloaknameEager(final String keyCloakNameArg) throws SQLException {
         UserDTO user = null;
-
-        if (userCache.get(keyCloakNameArg) != null) {
-            Duration timePassedSinceLastAccess = Duration.between(userCache.get(keyCloakNameArg).lastAccessTime,
-                    LocalTime.now());
-        }
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select * from User where key_cloak_name=?");
@@ -109,7 +121,7 @@ public final class Repository {
     public void saveUser(final UserDTO userDTO) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
-                        "insert ignore into User (userID, vorname, nachname, key_cloak_name)" + " values (?, ?, ?, ?)");
+                        "insert ignore into User (userID, vorname, nachname, key_cloak_name) values (?, ?, ?, ?)");
 
         preparedStatement.setLong(1, userDTO.getId());
         preparedStatement.setString(2, userDTO.getVorname());
@@ -531,7 +543,7 @@ public final class Repository {
         ResultSet gruppenResult = preparedStatement.executeQuery();
 
         while (gruppenResult.next()) {
-            gruppen.put(findGruppeByGruppeId(gruppenResult.getLong("gruppeID")),
+            gruppen.put(findGruppeByGruppeIdEager(gruppenResult.getLong("gruppeID")),
                     gruppenResult.getBoolean("upload_berechtigung"));
         }
 
@@ -541,7 +553,32 @@ public final class Repository {
         return gruppen;
     }
 
-    GruppeDTO findGruppeByGruppeId(final long gruppeId) throws SQLException {
+    GruppeDTO findGruppeByGruppeIdlazy(final long gruppeId) throws SQLException {
+        GruppeDTO gruppe = null;
+
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("select * from Gruppe where gruppeID=?");
+        preparedStatement.setString(1, "" + gruppeId);
+
+        ResultSet gruppeResult = preparedStatement.executeQuery();
+
+        if (gruppeResult.next()) {
+            gruppe = new GruppeDTO(gruppeId,
+                    gruppeResult.getString("titel"),
+                    gruppeResult.getString("beschreibung"),
+                    new ArrayList<DateiDTO>());
+
+            for (DateiDTO datei : gruppe.getDateien()) {
+                datei.setGruppe(gruppe);
+            }
+        }
+        preparedStatement.close();
+        gruppeResult.close();
+
+        return gruppe;
+    }
+
+    GruppeDTO findGruppeByGruppeIdEager(final long gruppeId) throws SQLException {
         GruppeDTO gruppe = null;
 
         PreparedStatement preparedStatement =

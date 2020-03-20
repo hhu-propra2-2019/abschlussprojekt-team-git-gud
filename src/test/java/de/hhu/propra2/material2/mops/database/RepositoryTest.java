@@ -111,7 +111,7 @@ public final class RepositoryTest {
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
     public void loadUserTest() throws SQLException {
-        UserDTO userDTO = repository.findUserByKeycloakname("gae");
+        UserDTO userDTO = repository.findUserByKeycloaknameEager("gae");
 
         assertTrue(userDTO.getVorname().equals("Why are you gae?"));
         assertTrue(userDTO.getNachname().equals("You are gae"));
@@ -124,7 +124,7 @@ public final class RepositoryTest {
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
     public void loadGruppeTest() throws SQLException {
-        GruppeDTO gruppeDto = repository.findGruppeByGruppeId(99999999);
+        GruppeDTO gruppeDto = repository.findGruppeByGruppeIdEager(99999999);
 
         assertTrue(gruppeDto.getName().equals("gruppe"));
         assertTrue(gruppeDto.getDescription().equals("this is a description"));
@@ -148,7 +148,7 @@ public final class RepositoryTest {
 
         repository.saveDatei(newDatei);
 
-        UserDTO userDTO = repository.findUserByKeycloakname("gae");
+        UserDTO userDTO = repository.findUserByKeycloaknameEager("gae");
         List<TagDTO> tagDTOS = new ArrayList<>();
         for (GruppeDTO gruppeDTO : userDTO.getBelegungUndRechte().keySet()) {
             tagDTOS = gruppeDTO.getDateien().get(0).getTagDTOs();
@@ -192,7 +192,7 @@ public final class RepositoryTest {
         newDatei.setVeroeffentlichungsdatum(newVeroeffentlichungsDatum);
         repository.saveDatei(newDatei);
 
-        UserDTO userDTO = repository.findUserByKeycloakname("gae");
+        UserDTO userDTO = repository.findUserByKeycloaknameEager("gae");
         List<TagDTO> tagDTOS = new ArrayList<>();
         for (GruppeDTO gruppeDTO : userDTO.getBelegungUndRechte().keySet()) {
             tagDTOS = gruppeDTO.getDateien().get(0).getTagDTOs();
@@ -233,7 +233,7 @@ public final class RepositoryTest {
     public void deleteGruppeByGruppeIdTest() throws SQLException {
         repository.deleteGroupByGroupDTO(gruppe);
 
-        assertTrue(repository.findGruppeByGruppeId(gruppe.getId()) == null);
+        assertTrue(repository.findGruppeByGruppeIdEager(gruppe.getId()) == null);
         assertTrue(repository.findAllUserByGruppeId(gruppe.getId()).isEmpty());
         assertTrue(repository.findAllDateiByGruppeId(gruppe.getId()).isEmpty());
     }
@@ -260,7 +260,7 @@ public final class RepositoryTest {
     public void deleteGruppenbelegungByUserDTOandGruppeDTOTest() throws SQLException {
         repository.deleteUserGroupRelationByUserDTOAndGruppeDTO(user, gruppe);
 
-        UserDTO loadedUser = repository.findUserByKeycloakname(user.getKeycloakname());
+        UserDTO loadedUser = repository.findUserByKeycloaknameEager(user.getKeycloakname());
 
         assertTrue(loadedUser.getBelegungUndRechte().keySet().isEmpty());
     }
@@ -294,7 +294,7 @@ public final class RepositoryTest {
 
         timeBeforeSave = LocalTime.now();
         System.out.println(timeBeforeSave + " Loading Started!");
-        repository.findUserByKeycloakname(userDTOs.get(0).getKeycloakname());
+        repository.findUserByKeycloaknameEager(userDTOs.get(0).getKeycloakname());
 
         timeAfterEverything = LocalTime.now();
         duration = Duration.between(timeBeforeSave, timeAfterEverything);
@@ -333,7 +333,7 @@ public final class RepositoryTest {
         timeBeforeSave = LocalTime.now();
         System.out.println(timeBeforeSave + " Loading Started!");
         for (int userNumber = 0; userNumber < 10; userNumber++) {
-            repository.findUserByKeycloakname(userDTOs.get(userNumber).getKeycloakname());
+            repository.findUserByKeycloaknameEager(userDTOs.get(userNumber).getKeycloakname());
         }
 
         timeAfterEverything = LocalTime.now();
@@ -372,7 +372,7 @@ public final class RepositoryTest {
 
         timeBeforeSave = LocalTime.now();
         System.out.println(timeBeforeSave + " Loading Started!");
-        repository.findUserByKeycloakname(userDTOs.get(0).getKeycloakname());
+        repository.findUserByKeycloaknameEager(userDTOs.get(0).getKeycloakname());
 
         timeAfterEverything = LocalTime.now();
         duration = Duration.between(timeBeforeSave, timeAfterEverything);
@@ -419,5 +419,4 @@ public final class RepositoryTest {
         System.out.println();
         System.out.println("This took " + duration.getSeconds() + " seconds.");
     }
-
 }

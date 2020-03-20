@@ -81,7 +81,7 @@ public class UploadServiceTest {
         when(fileUploadServiceMock.upload(file, "1"))
                 .thenReturn(true);
 
-        uploadService.dateiHochladen(file, null, userMock, gruppeMock, date1303, tags);
+        uploadService.dateiHochladen(file, null, userMock, gruppeMock, date1303, tags, "Vorlesung");
 
         verify(fileUploadServiceMock, times(1)).upload(file, "1");
     }
@@ -90,7 +90,7 @@ public class UploadServiceTest {
     public void uploadFileWithoutNewFileName() throws Exception {
         when(fileUploadServiceMock.upload(file, "1"))
                 .thenReturn(true);
-        Datei datei = uploadService.dateiHochladen(file, null, userMock, gruppeMock, date1303, tags);
+        Datei datei = uploadService.dateiHochladen(file, null, userMock, gruppeMock, date1303, tags, "Vorlesung");
 
         assertThat(datei.getName(), comparesEqualTo("test.txt"));
         assertThat(datei.getUploader(), equalTo(userMock));
@@ -105,7 +105,7 @@ public class UploadServiceTest {
     public void uploadFileWithNewFileNameWithoutExtension() throws Exception {
         when(fileUploadServiceMock.upload(file, "1"))
                 .thenReturn(true);
-        Datei datei = uploadService.dateiHochladen(file, "Humbug", userMock, gruppeMock, date1303, tags);
+        Datei datei = uploadService.dateiHochladen(file, "Humbug", userMock, gruppeMock, date1303, tags, "Vorlesung");
 
         assertThat(datei.getName(), comparesEqualTo("Humbug.txt"));
         assertThat(datei.getUploader(), equalTo(userMock));
@@ -120,7 +120,7 @@ public class UploadServiceTest {
     public void uploadFileWithNewFileNameWithExtension() throws Exception {
         when(fileUploadServiceMock.upload(file, "1"))
                 .thenReturn(true);
-        Datei datei = uploadService.dateiHochladen(file, "Humbug.pdf", userMock, gruppeMock, date1303, tags);
+        Datei datei = uploadService.dateiHochladen(file, "Humbug.pdf", userMock, gruppeMock, date1303, tags, "Vorlesung");
 
         assertThat(datei.getName(), comparesEqualTo("Humbug.pdf"));
         assertThat(datei.getUploader(), equalTo(userMock));
@@ -139,7 +139,7 @@ public class UploadServiceTest {
         tags.add(tag2);
         tags.add(tag3);
 
-        Datei datei = uploadService.dateiHochladen(file, null, userMock, gruppeMock, date1303, tags);
+        Datei datei = uploadService.dateiHochladen(file, null, userMock, gruppeMock, date1303, tags, "Vorlesung");
 
         assertThat(datei.getTags().size(), equalTo(3));
         assertThat(datei.getTags(), contains(

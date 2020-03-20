@@ -1,10 +1,10 @@
-package de.hhu.propra2.material2.mops.Database;
+package de.hhu.propra2.material2.mops.database;
 
-import de.hhu.propra2.material2.mops.Database.DTOs.DateiDTO;
-import de.hhu.propra2.material2.mops.Database.DTOs.GruppeDTO;
-import de.hhu.propra2.material2.mops.Database.DTOs.TagDTO;
-import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
 import de.hhu.propra2.material2.mops.Material2Application;
+import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.TagDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.UserDTO;
 import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -256,7 +256,6 @@ public final class RepositoryTest {
         assertFalse(repository.doGroupRelationsExistByGruppeId(gruppeId));
     }
 
-
     @Test
     public void deleteGruppenbelegungByUserDTOandGruppeDTOTest() throws SQLException {
         repository.deleteUserGroupRelationByUserDTOAndGruppeDTO(user, gruppe);
@@ -265,7 +264,6 @@ public final class RepositoryTest {
 
         assertTrue(loadedUser.getBelegungUndRechte().keySet().isEmpty());
     }
-
 
     @SuppressWarnings("checkstyle:MagicNumber")
     @Ignore
@@ -304,7 +302,6 @@ public final class RepositoryTest {
         System.out.println();
         System.out.println("This took " + duration.getSeconds() + " seconds.");
     }
-
 
     @SuppressWarnings("checkstyle:MagicNumber")
     @Ignore
@@ -345,4 +342,82 @@ public final class RepositoryTest {
         System.out.println();
         System.out.println("This took " + duration.getSeconds() + " seconds.");
     }
+
+    @SuppressWarnings("checkstyle:MagicNumber")
+    @Ignore
+    @Test
+    public void add1UsersWith20GroupsWith100FilesWith1TagsEachAndLoad() throws SQLException {
+        ArrayList<UserDTO> userDTOs =
+                generateXUsersWithYGroupsWithZFilesWithATags(1, 20, 100, 1);
+
+        LocalTime timeBeforeSave = LocalTime.now();
+        System.out.println("Test started at: " + timeBeforeSave);
+
+        for (int userNumber = 0; userNumber < 1; userNumber++) {
+            repository.saveUser(userDTOs.get(userNumber));
+            for (GruppeDTO gruppeDTO : userDTOs.get(userNumber).getBelegungUndRechte().keySet()) {
+                for (DateiDTO dateiDTO : gruppeDTO.getDateien()) {
+                    repository.saveDatei(dateiDTO);
+                }
+            }
+            System.out.println(LocalTime.now() + " User #" + userNumber + " inserted!");
+        }
+
+        LocalTime timeAfterEverything = LocalTime.now();
+        Duration duration = Duration.between(timeBeforeSave, timeAfterEverything);
+
+        System.out.println(timeAfterEverything + " Everything saved!");
+        System.out.println();
+        System.out.println("This took " + duration.getSeconds() + " seconds.");
+
+        timeBeforeSave = LocalTime.now();
+        System.out.println(timeBeforeSave + " Loading Started!");
+        repository.findUserByKeycloakname(userDTOs.get(0).getKeycloakname());
+
+        timeAfterEverything = LocalTime.now();
+        duration = Duration.between(timeBeforeSave, timeAfterEverything);
+        System.out.println(timeAfterEverything + " Loading done!");
+        System.out.println();
+        System.out.println("This took " + duration.getSeconds() + " seconds.");
+    }
+
+    @SuppressWarnings("checkstyle:MagicNumber")
+    @Ignore
+    @Test
+    public void load100FilesWith3TagsEach() throws SQLException {
+        ArrayList<UserDTO> userDTOs =
+                generateXUsersWithYGroupsWithZFilesWithATags(1, 1, 500, 1);
+
+        LocalTime timeBeforeSave = LocalTime.now();
+        System.out.println("Test started at: " + timeBeforeSave);
+
+        for (int userNumber = 0; userNumber < 1; userNumber++) {
+            repository.saveUser(userDTOs.get(userNumber));
+            for (GruppeDTO gruppeDTO : userDTOs.get(userNumber).getBelegungUndRechte().keySet()) {
+                for (DateiDTO dateiDTO : gruppeDTO.getDateien()) {
+                    repository.saveDatei(dateiDTO);
+                }
+            }
+            System.out.println(LocalTime.now() + " User #" + userNumber + " inserted!");
+        }
+
+        LocalTime timeAfterEverything = LocalTime.now();
+        Duration duration = Duration.between(timeBeforeSave, timeAfterEverything);
+
+        System.out.println(timeAfterEverything + " Everything saved!");
+        System.out.println();
+        System.out.println("This took " + duration.getSeconds() + " seconds.");
+
+        timeBeforeSave = LocalTime.now();
+        System.out.println(timeBeforeSave + " Loading Started!");
+        repository.findAllDateiByGruppeId(
+                ((GruppeDTO) userDTOs.get(0).getBelegungUndRechte().keySet().toArray()[0]).getId());
+
+        timeAfterEverything = LocalTime.now();
+        duration = Duration.between(timeBeforeSave, timeAfterEverything);
+        System.out.println(timeAfterEverything + " Loading done!");
+        System.out.println();
+        System.out.println("This took " + duration.getSeconds() + " seconds.");
+    }
+
 }

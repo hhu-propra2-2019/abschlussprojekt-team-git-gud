@@ -1,4 +1,4 @@
-package de.hhu.propra2.material2.mops.Database.DTOs;
+package de.hhu.propra2.material2.mops.database.DTOs;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -44,22 +44,21 @@ public final class GruppeDTO {
         this.dateien = dateiArgs;
     }
 
-    @SuppressWarnings({"checkstyle:FinalParameters"})
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (o == null) {
             return false;
         }
 
         if (o.getClass() == this.getClass()) {
             GruppeDTO gruppeDTO = (GruppeDTO) o;
-            return gruppeDTO.hashCode() == this.hashCode();
+            return gruppeDTO.getId() == this.getId();
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return (int) id;
+        return 0;
     }
 }

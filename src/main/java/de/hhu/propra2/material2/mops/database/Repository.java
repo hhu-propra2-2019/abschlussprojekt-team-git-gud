@@ -1,10 +1,11 @@
-package de.hhu.propra2.material2.mops.Database;
+package de.hhu.propra2.material2.mops.database;
 
-import de.hhu.propra2.material2.mops.Database.DTOs.DateiDTO;
-import de.hhu.propra2.material2.mops.Database.DTOs.GruppeDTO;
-import de.hhu.propra2.material2.mops.Database.DTOs.TagDTO;
-import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.TagDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.UserDTO;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +29,7 @@ import java.util.List;
 public final class Repository {
     private Connection connection;
     private Environment env;
+    private HashMap<String, CachedUser> userCache;
 
 
     /**
@@ -39,6 +43,7 @@ public final class Repository {
     @Autowired
     public Repository(final Environment envArg) {
         this.env = envArg;
+        userCache = new HashMap<String, CachedUser>();
         try {
             connection = DriverManager.getConnection("jdbc:mysql://localhost:23306/materialsammlung",
                     env.getProperty("spring.datasource.username"), env.getProperty("spring.datasource.password"));
@@ -61,8 +66,14 @@ public final class Repository {
      * @return
      * @throws SQLException
      */
+    @SuppressWarnings("checkstyle:MagicNumber")
     public UserDTO findUserByKeycloakname(final String keyCloakNameArg) throws SQLException {
         UserDTO user = null;
+
+        if (userCache.get(keyCloakNameArg) != null) {
+            Duration timePassedSinceLastAccess = Duration.between(userCache.get(keyCloakNameArg).lastAccessTime,
+                    LocalTime.now());
+        }
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select * from User where key_cloak_name=?");
@@ -642,7 +653,6 @@ public final class Repository {
 
         preparedStatement.close();
         userResult.close();
-
         return user;
     }
 
@@ -688,4 +698,37 @@ public final class Repository {
 
         preparedStatement.close();
     }
+
+    /*
+        CACHING OF THE USER FOR FASTER LOADING
+     */
+    @Getter
+    private static class CachedUser {
+        private UserDTO userDTO;
+        private LocalTime lastAccessTime;
+
+        CachedUser(final UserDTO userDTOArg) {
+            userDTO = userDTOArg;
+            lastAccessTime = LocalTime.now();
+        }
+
+        @Override
+        public boolean equals(final Object o) {
+            if (o == null) {
+                return false;
+            }
+
+            if (o.getClass() == this.getClass()) {
+                CachedUser cachedUser = (CachedUser) o;
+                return cachedUser.getUserDTO().getId() == this.userDTO.getId();
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return 0;
+        }
+    }
+
 }

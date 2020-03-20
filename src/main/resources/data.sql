@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.18, for macos10.14 (x86_64)
 --
--- Host: 127.0.0.1    Database: materialsammlung
+-- Host: 127.0.0.1    database: materialsammlung
 -- ------------------------------------------------------
 -- Server version	5.7.29
 

@@ -60,7 +60,10 @@ dependencies {
     testImplementation 'com.tngtech.archunit:archunit-junit5:0.13.0'
     testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'
     testImplementation 'org.mockito:mockito-inline:2.13.0'
+    testImplementation 'com.c4-soft.springaddons:spring-security-test-keycloack-addons:1.2.0'
     implementation 'mops:styleguide:2.1.0'
+    implementation 'commons-io:commons-io:2.6'
+    testImplementation "org.testcontainers:testcontainers:1.13.0"
 }
 
 test {

@@ -240,4 +240,32 @@ public final class ModelService implements IModelService {
         user.getAllGruppen().forEach(gruppe -> alleDateien.addAll(gruppe.getDateien()));
         return alleDateien;
     }
+
+    public long saveDatei(final Datei datei, final Gruppe gruppe) throws SQLException {
+        if (datei == null || gruppe == null) {
+            throw new IllegalArgumentException();
+        }
+        // create GruppeDTO and UserDTO only with Id as parameter because Id is the only parameter which is necessary
+        // for saving the file
+        GruppeDTO groupDTO = new GruppeDTO(gruppe.getId(), null,
+                null, null);
+        UserDTO userDTO = new UserDTO(datei.getUploader().getId(), null, null,
+                null, null);
+
+        DateiDTO dateiDTO = new DateiDTO(datei.getName(), userDTO, tagsToTagDTOs(datei.getTags()),
+                datei.getUploaddatum(), datei.getVeroeffentlichungsdatum(), datei.getDateigroesse(),
+                datei.getDateityp(), groupDTO, datei.getKategorie());
+        return repository.saveDatei(dateiDTO);
+    }
+
+    private ArrayList<TagDTO> tagsToTagDTOs(final List<Tag> tags) {
+        ArrayList<TagDTO> tagDTOs = new ArrayList<>();
+        if (tags == null || tags.isEmpty()) {
+            return tagDTOs;
+        }
+        for (Tag tag : tags) {
+            tagDTOs.add(new TagDTO(tag.getText()));
+        }
+        return tagDTOs;
+    }
 }

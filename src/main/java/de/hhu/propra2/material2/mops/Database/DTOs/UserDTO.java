@@ -53,5 +53,4 @@ public class UserDTO {
         this.keycloakname = keycloaknameArg;
         this.belegungUndRechte = belegungUndRechteArg;
     }
-
 }

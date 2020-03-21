@@ -47,7 +47,7 @@ public class Datei {
      * File size.
      */
     @Getter
-    private final double dateigroesse;
+    private final long dateigroesse;
     /**
      * File type.
      */
@@ -91,7 +91,7 @@ public class Datei {
             final List<Tag> tagsArgs,
             final LocalDate uploaddatumArgs,
             final LocalDate veroeffentlichungsdatumArgs,
-            final double dateigroesseArgs,
+            final long dateigroesseArgs,
             final String dateitypArgs,
             final String kategorieArgs) {
         this.id = idArgs;

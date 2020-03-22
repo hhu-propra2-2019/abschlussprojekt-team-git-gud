@@ -244,7 +244,7 @@ public class MaterialController {
         UpdatedGroupRequestMapper sample = new UpdatedGroupRequestMapper(Arrays.asList(gruppenArray), 1);
         ObjectMapper mapper = new ObjectMapper();
         System.out.println(mapper.writeValueAsString(sample));
-        return "Hallo";
+        return mapper.writeValueAsString(sample);
     }
 
     private void setMessages(final String pErrorMessage, final String pSuccessMessage) {

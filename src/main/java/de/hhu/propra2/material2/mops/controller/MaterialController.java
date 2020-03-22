@@ -202,7 +202,7 @@ public class MaterialController {
     }
 
     /**
-     * @param 
+     * @param
      * @param
      * @return
      * @throws JsonProcessingException
@@ -244,7 +244,7 @@ public class MaterialController {
         UpdatedGroupRequestMapper sample = new UpdatedGroupRequestMapper(Arrays.asList(gruppenArray), 1);
         ObjectMapper mapper = new ObjectMapper();
         System.out.println(mapper.writeValueAsString(sample));
-        return mapper.writeValueAsString(sample);
+        return "Hallo";
     }
 
     private void setMessages(final String pErrorMessage, final String pSuccessMessage) {

@@ -10,14 +10,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 @ExtendWith(MockitoExtension.class)
@@ -61,14 +64,13 @@ public class WebDTOServiceTest {
         UpdatedGroupRequestMapper sample = new UpdatedGroupRequestMapper(Arrays.asList(gruppenArray), 1);
         ObjectMapper mapper = new ObjectMapper();
         jsonFile = mapper.writeValueAsString(sample);
-        this.webDTOService = new WebDTOService();
+
+        webDTOService = new WebDTOService();
     }
 
     @Test
-    public void methodGeneratesTheRightObject() throws UnirestException, JsonProcessingException {
-        JSONObject test = webDTOService.loadUpdatedGroupRequestMapperromGroupManagementAPI();
-        System.out.println(test.toString());
-        System.out.println(jsonFile.toString());
-        assertThat("Erzeugte JSON entspricht nicht der erwarteten JSON",test.toString().equals(jsonFile.toString()) );
+    public void methodGeneratesTheRightObject(){
+        ResponseEntity<String> test = webDTOService.loadUpdatedGroupRequestMapperromGroupManagementAPI();
+        assertThat(test.getStatusCode(), equalTo(HttpStatus.OK));
     }
 }

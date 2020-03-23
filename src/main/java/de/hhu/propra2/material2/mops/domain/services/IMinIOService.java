@@ -14,6 +14,6 @@ public interface IMinIOService {
 
     boolean upload(MultipartFile file, String fileName);
 
-    boolean deleteFile(long dateiID);
+    boolean deleteFile(String dateiID);
 }
 

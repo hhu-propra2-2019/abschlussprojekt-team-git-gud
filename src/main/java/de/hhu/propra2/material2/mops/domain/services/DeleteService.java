@@ -35,7 +35,7 @@ public class DeleteService {
     @Transactional
     public void dateiLoeschen(final long dateiID) throws SQLException {
         repository.deleteDateiByDateiId(dateiID);
-        minIOService.deleteFile(dateiID);
+        minIOService.deleteFile(Long.toString(dateiID));
     }
 
     public void deleteUser(final long userID) {

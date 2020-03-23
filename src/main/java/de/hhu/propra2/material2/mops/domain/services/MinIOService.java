@@ -145,9 +145,18 @@ public class MinIOService implements IMinIOService {
      * removes file from minio-server.
      * @param dateiID
      */
-    public boolean deleteFile(final long dateiID) {
+    public boolean deleteFile(final String dateiID) {
         try {
-            minioClient.removeObject(minIOProperties.getBucketname(), Long.toString(dateiID));
+            /*
+            MinIO Error-Generator: minioClient.getObject throws an ErrorResponseException:
+            NoSuchKey, when file not found
+           --> catch
+            */
+            minioClient.getObject(minIOProperties.getBucketname(), dateiID);
+            /*
+            actual delete, when no Exception thrown / object found
+             */
+            minioClient.removeObject(minIOProperties.getBucketname(), dateiID);
             return true;
         } catch (Exception e) {
             e.printStackTrace();

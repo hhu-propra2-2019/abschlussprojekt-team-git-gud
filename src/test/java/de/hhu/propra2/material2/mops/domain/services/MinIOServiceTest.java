@@ -2,6 +2,8 @@ package de.hhu.propra2.material2.mops.domain.services;
 
 import de.hhu.propra2.material2.mops.utils.TestContainerUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.nio.charset.StandardCharsets;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
@@ -22,8 +25,9 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 @ExtendWith(MockitoExtension.class)
 @Testcontainers
 public class MinIOServiceTest {
+
     @Container
-    private static GenericContainer minioServer = TestContainerUtil.getMinIOContainer();
+    public static GenericContainer minioServer = TestContainerUtil.getMinIOContainer();
 
     private static String minioServerUrl;
     private static MinIOService minIOService;
@@ -62,23 +66,35 @@ public class MinIOServiceTest {
 
     @Test
     public void deleteFile() {
-        String dateiIdAsString = "123";
+        String dateiIdAsString = "22";
         MultipartFile file = new MockMultipartFile("test.txt",
                 "test.txt",
                 "text/plain",
-                ("The first rule of Fight Club is: You do not talk about Fight Club."
-                        + "The second rule of Fight Club is: You do not talk about Fight Club.")
+                ("Hi")
                         .getBytes(StandardCharsets.UTF_8));
 
         assumeTrue(minIOService.upload(file, dateiIdAsString));
 
-        boolean result = minIOService.deleteFile(Long.parseLong(dateiIdAsString));
+        boolean result = minIOService.deleteFile(dateiIdAsString);
 
         assertTrue(result);
     }
+    @Test
+    public void deleteFileThatDoesntExist() {
+        String dateiIdAsString = "33";
+        MultipartFile file = new MockMultipartFile("test.txt",
+                "test.txt",
+                "text/plain",
+                ("i do not exist")
+                        .getBytes(StandardCharsets.UTF_8));
 
-    @AfterEach
-    public void cleanUp() {
-        minioServer.stop();
+        assumeTrue(minIOService.upload(file, dateiIdAsString));
+        assumeTrue(minIOService.deleteFile(dateiIdAsString));
+        
+        boolean result = minIOService.deleteFile(dateiIdAsString);
+
+        assertFalse(result);
     }
+
+
 }

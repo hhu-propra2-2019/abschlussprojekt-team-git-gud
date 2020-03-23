@@ -1,5 +1,13 @@
 package de.hhu.propra2.material2.mops.controller;
 
+import de.hhu.propra2.material2.mops.web.dto.UpdatedGroupRequestMapper;
+import de.hhu.propra2.material2.mops.web.dto.WebDTOService;
+import lombok.Getter;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -7,21 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class MaterialRestController {
 
-    /*
-     * beispiel für einen Rest-Controller aus der Keycloak-Demo
-     * Gegebenenfalls für Portfolio einrichten!
-     *
-     @GetMapping("specific-text/{some_id}")
-     @Secured("ROLE_keycloak_demo_api_user")
-     public List<Entry> generateTextWithId(KeycloakAuthenticationToken token, @PathVariable("some_id") Long id) {
-     Entry userEntry = new Entry("request was send by user:",token.getName(),"");
-     var generatedEntries = Entry.generate(10).stream()
-     .map(e -> new Entry("From Keycloak-Demo : " + id + " " + e.getAttribute1(),
-     "From Keycloak-Demo : " + id + " " + e.getAttribute2(),
-     "From Keycloak-Demo : " + id + " " + e.getAttribute3()))
-     .collect(Collectors.toList());
-     generatedEntries.add(0,userEntry);
-     return generatedEntries;
-     }
-     */
+    @Autowired
+    WebDTOService webDTOService;
+
+    @GetMapping("yolo")
+    public void getUpdate(){
+        String test = webDTOService.loadUpdatedGroupRequestMapperromGroupManagementAPI();
+        System.out.println(test);
+    }
+
 }

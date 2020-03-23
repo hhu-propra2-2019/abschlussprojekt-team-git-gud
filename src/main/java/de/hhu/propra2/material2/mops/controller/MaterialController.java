@@ -16,6 +16,7 @@ import de.hhu.propra2.material2.mops.domain.services.UploadService;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
@@ -243,9 +244,9 @@ public class MaterialController {
 
         UpdatedGroupRequestMapper sample = new UpdatedGroupRequestMapper(Arrays.asList(gruppenArray), 1);
         ObjectMapper mapper = new ObjectMapper();
-        System.out.println(mapper.writeValueAsString(sample));
         return mapper.writeValueAsString(sample);
     }
+
 
     private void setMessages(final String pErrorMessage, final String pSuccessMessage) {
         this.errorMessage = pErrorMessage;

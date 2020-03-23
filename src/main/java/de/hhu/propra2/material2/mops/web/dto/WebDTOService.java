@@ -10,7 +10,7 @@ public class WebDTOService {
     /**
      * @return
      */
-    public UpdatedGroupRequestMapper loadUpdatedGroupRequestMapperromGroupManagementAPI() {
+    public String loadUpdatedGroupRequestMapperromGroupManagementAPI() {
         /**
          KeycloakConfig config = new KeycloakConfig();
          RestTemplate serviceAccountRestTemplate = config.serviceAccountRestTemplate();
@@ -21,9 +21,7 @@ public class WebDTOService {
          **/
         RestTemplate restTemplate = new RestTemplate();
         String ressource = "http://localhost:8080/yolo";
-        UpdatedGroupRequestMapper response = restTemplate.getForObject(ressource, UpdatedGroupRequestMapper.class);
-        System.out.println(response);
-
+        String response = restTemplate.getForObject(ressource, String.class);
         return response;
     }
 }

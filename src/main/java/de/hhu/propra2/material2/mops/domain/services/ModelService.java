@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public final class ModelService implements IModelService {
 
+
     private final Repository repository;
     private final SuchService suchService;
     private Suche suche;
@@ -40,7 +41,7 @@ public final class ModelService implements IModelService {
         suchService = suchServiceArg;
     }
 
-    public Datei loadDatei(final DateiDTO dateiDTO) {
+    private Datei loadDatei(final DateiDTO dateiDTO) {
         List<Tag> tags = dateiDTO.getTagDTOs().stream()
                 .map(this::loadTag)
                 .collect(Collectors.toList());
@@ -141,7 +142,7 @@ public final class ModelService implements IModelService {
     public Set<String> getAlleUploaderByUser(final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);
         List<Gruppe> groups = user.getAllGruppen();
-        Set<String> uploader = new HashSet<>();
+        Set<String> uploader = new HashSet<String>();
         for (Gruppe gruppe : groups) {
             uploader.addAll(gruppe.getDateien()
                     .stream()
@@ -195,7 +196,7 @@ public final class ModelService implements IModelService {
     public Set<String> getAlleDateiTypenByUser(final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);
         List<Gruppe> groups = user.getAllGruppen();
-        Set<String> dateiTypen = new HashSet<>();
+        Set<String> dateiTypen = new HashSet<String>();
         for (Gruppe gruppe : groups) {
             dateiTypen.addAll(gruppe.getDateien()
                     .stream()
@@ -268,7 +269,7 @@ public final class ModelService implements IModelService {
 
         DateiDTO dateiDTO = new DateiDTO(datei.getName(), userDTO, tagsToTagDTOs(datei.getTags()),
                 datei.getUploaddatum(), datei.getVeroeffentlichungsdatum(), datei.getDateigroesse(),
-                datei.getDateityp(), gruppeDTO, null);
+                datei.getDateityp(), gruppeDTO, datei.getKategorie());
         return repository.saveDatei(dateiDTO);
     }
 

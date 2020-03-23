@@ -48,7 +48,6 @@ public class UpdateServiceTest {
     @BeforeEach
     public void setUp() throws SQLException {
         updateService = new UpdateService(modelServiceMock);
-        //when(modelServiceMock.saveDatei(any(), any())).thenReturn(1L);
 
         Datei datei = new Datei(1L, "test.txt", userMock, tags,
                 date1303, date1303, 2L, "txt", "kategorie");
@@ -67,7 +66,6 @@ public class UpdateServiceTest {
         ArgumentCaptor<Datei> dateiCaptor = ArgumentCaptor.forClass(Datei.class);
         verify(modelServiceMock, times(1)).saveDatei(dateiCaptor.capture(), anyLong());
 
-        //List<Datei> capturedDateien = dateiCaptor.getAllValues();
         Datei capturedDatei = dateiCaptor.getValue();
         assertThat(capturedDatei.getName(), comparesEqualTo("test.txt"));
         assertThat(capturedDatei.getUploader(), equalTo(userMock));

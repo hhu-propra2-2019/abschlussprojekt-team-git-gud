@@ -4,7 +4,7 @@ import de.hhu.propra2.material2.mops.Exceptions.DownloadException;
 import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
 import de.hhu.propra2.material2.mops.domain.models.UploadForm;
-import de.hhu.propra2.material2.mops.domain.services.MinioDownloadService;
+import de.hhu.propra2.material2.mops.domain.services.MinIOService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
 import de.hhu.propra2.material2.mops.domain.services.UploadService;
 import de.hhu.propra2.material2.mops.security.Account;
@@ -43,7 +43,7 @@ public class MaterialController {
     @Autowired
     private UploadService uploadService;
     @Autowired
-    private MinioDownloadService minioDownloadService;
+    private MinIOService minIOService;
 
     private String errorMessage;
     private String successMessage;
@@ -184,7 +184,7 @@ public class MaterialController {
             final HttpServletResponse response, final KeycloakAuthenticationToken token) {
         try {
             // get your file as InputStream
-            InputStream input = minioDownloadService.getObject(fileId);
+            InputStream input = minIOService.getObject(fileId);
             // copy it to response's OutputStream
             FileCopyUtils.copy(input, response.getOutputStream());
             response.flushBuffer();

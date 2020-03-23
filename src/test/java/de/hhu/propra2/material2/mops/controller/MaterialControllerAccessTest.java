@@ -2,7 +2,7 @@ package de.hhu.propra2.material2.mops.controller;
 
 import com.c4_soft.springaddons.test.security.context.support.WithMockKeycloackAuth;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
-import de.hhu.propra2.material2.mops.domain.services.MinioDownloadService;
+import de.hhu.propra2.material2.mops.domain.services.MinIOService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
 import de.hhu.propra2.material2.mops.domain.services.UploadService;
 import de.hhu.propra2.material2.mops.security.Account;
@@ -39,7 +39,7 @@ public class MaterialControllerAccessTest {
     private ModelService modelService;
 
     @MockBean
-    private MinioDownloadService minioDownloadService;
+    private MinIOService minIOService;
 
     @MockBean
     private UploadService uploadService;

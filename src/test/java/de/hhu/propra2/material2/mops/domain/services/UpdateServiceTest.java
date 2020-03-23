@@ -20,7 +20,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.comparesEqualTo;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -70,6 +73,28 @@ public class UpdateServiceTest {
         assertThat(capturedDatei.getName(), comparesEqualTo("test.txt"));
         assertThat(capturedDatei.getUploader(), equalTo(userMock));
         assertThat(capturedDatei.getTags(), empty());
+        assertThat(capturedDatei.getVeroeffentlichungsdatum(), nullValue());
+        assertThat(capturedDatei.getDateigroesse(), comparesEqualTo(2L));
+        assertThat(capturedDatei.getDateityp(), comparesEqualTo("txt"));
+    }
+
+    @Test
+    public void updateFileBySettingVeroeffentlichungsdatumAndTagsNotNull() throws Exception {
+        tags.add(tag1);
+        tags.add(tag2);
+        tags.add(tag3);
+        updateService.dateiUpdate(1L, 1L, null, tags);
+
+        ArgumentCaptor<Datei> dateiCaptor = ArgumentCaptor.forClass(Datei.class);
+        verify(modelServiceMock, times(1)).saveDatei(dateiCaptor.capture(), anyLong());
+
+        Datei capturedDatei = dateiCaptor.getValue();
+        assertThat(capturedDatei.getName(), comparesEqualTo("test.txt"));
+        assertThat(capturedDatei.getUploader(), equalTo(userMock));
+        assertThat(capturedDatei.getTags(), contains(
+                hasProperty("text", is("tag1")),
+                hasProperty("text", is("tag2")),
+                hasProperty("text", is("tag3"))));
         assertThat(capturedDatei.getVeroeffentlichungsdatum(), nullValue());
         assertThat(capturedDatei.getDateigroesse(), comparesEqualTo(2L));
         assertThat(capturedDatei.getDateityp(), comparesEqualTo("txt"));

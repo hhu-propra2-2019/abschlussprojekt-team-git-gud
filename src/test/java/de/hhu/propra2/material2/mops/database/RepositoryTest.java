@@ -5,6 +5,7 @@ import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.TagDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.UserDTO;
+import org.junit.AfterClass;
 import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -61,6 +62,11 @@ public final class RepositoryTest {
         repository.deleteAll();
         repository.saveUser(user);
         datei.setId(repository.saveDatei(datei));
+    }
+
+    @AfterClass
+    public void deleteAll() throws SQLException {
+        repository.deleteAll();
     }
 
     private LinkedList<UserDTO> generateXUsersWithYGroupsWithZFilesWithATags(final int userCount,

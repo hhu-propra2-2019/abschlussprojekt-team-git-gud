@@ -560,10 +560,6 @@ public final class Repository {
                     gruppeResult.getString("titel"),
                     gruppeResult.getString("beschreibung"),
                     new LinkedList<DateiDTO>());
-
-            for (DateiDTO datei : gruppe.getDateien()) {
-                datei.setGruppe(gruppe);
-            }
         }
         preparedStatement.close();
         gruppeResult.close();

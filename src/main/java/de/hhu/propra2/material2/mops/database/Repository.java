@@ -58,7 +58,7 @@ public final class Repository {
 
     /**
      * Lazy (no File Loading) search for a user that loads
-     * all his groups, rights and
+     * all his groups, rights but no
      * files assigned to their group with
      * their tags.
      *

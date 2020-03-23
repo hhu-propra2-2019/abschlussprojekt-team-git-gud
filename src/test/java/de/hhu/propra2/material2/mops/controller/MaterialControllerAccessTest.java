@@ -3,6 +3,7 @@ package de.hhu.propra2.material2.mops.controller;
 import com.c4_soft.springaddons.test.security.context.support.WithMockKeycloackAuth;
 import de.hhu.propra2.material2.mops.domain.services.MinioDownloadService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
+import de.hhu.propra2.material2.mops.domain.services.UpdateService;
 import de.hhu.propra2.material2.mops.domain.services.UploadService;
 import org.junit.jupiter.api.Test;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
@@ -33,6 +34,9 @@ public class MaterialControllerAccessTest {
 
     @MockBean
     private UploadService uploadService;
+
+    @MockBean
+    private UpdateService updateService;
 
     //Unknown User Access tests
 

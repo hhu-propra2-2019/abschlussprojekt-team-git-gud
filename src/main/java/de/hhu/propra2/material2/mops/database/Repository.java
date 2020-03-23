@@ -10,7 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.HashMap;
@@ -222,7 +227,7 @@ public final class Repository {
     }
 
     @SuppressWarnings("checkstyle:MagicNumber")
-    public LinkedList<DateiDTO> findAllDateiByGruppeId(final long gruppeId) throws SQLException {
+    public List<DateiDTO> findAllDateiByGruppeId(final long gruppeId) throws SQLException {
         CachedGruppe cachedGruppe = gruppeCache.get(gruppeId);
 
         if (cachedGruppe != null) {

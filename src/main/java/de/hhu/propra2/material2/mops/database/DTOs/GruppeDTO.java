@@ -29,7 +29,7 @@ public final class GruppeDTO {
      * LinkedList of related files from database.
      */
     @Setter
-    private LinkedList<DateiDTO> dateien;
+    private List<DateiDTO> dateien;
     /**
      * Repository for lazy loading Files on demand only.
      * Repository also has cache capabilities.
@@ -51,7 +51,7 @@ public final class GruppeDTO {
         this.id = idArg;
         this.name = nameArg;
         this.description = descriptionArg;
-        this.dateien = (LinkedList) dateiArgs;
+        this.dateien = dateiArgs;
         this.repository = null;
     }
 
@@ -81,7 +81,7 @@ public final class GruppeDTO {
      *
      * @return
      */
-    public LinkedList<DateiDTO> getDateien() {
+    public List<DateiDTO> getDateien() {
         if (!(dateien.isEmpty())) {
             return dateien;
         }

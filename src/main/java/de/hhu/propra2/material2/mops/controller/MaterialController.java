@@ -197,6 +197,9 @@ public class MaterialController {
      */
     @PostMapping("/update")
     @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
+    //TODO bereits vorhandene tags in html anzeigen
+    //TODO überprüfen, dass Zeit nicht leer ist
+    //TODO was tun, wenn Tags leer sind?
     public String update(final KeycloakAuthenticationToken token,
                          final Model model,
                          final UpdateForm updateForm,

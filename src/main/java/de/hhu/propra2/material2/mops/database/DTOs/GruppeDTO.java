@@ -56,7 +56,7 @@ public final class GruppeDTO {
     }
 
     /**
-     * Standard AllArgsConstructor for importing to database.
+     * Standard AllArgsConstructor for importing from database.
      *
      * @param idArg
      * @param nameArg

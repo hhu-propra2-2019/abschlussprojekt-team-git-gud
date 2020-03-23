@@ -31,7 +31,6 @@ public final class Repository {
     private Environment env;
     private HashMap<Long, CachedGruppe> gruppeCache;
 
-
     /**
      * Constructor that autowires
      * an Environment to load up
@@ -227,14 +226,14 @@ public final class Repository {
     }
 
     @SuppressWarnings("checkstyle:MagicNumber")
-    public List<DateiDTO> findAllDateiByGruppeId(final long gruppeId) throws SQLException {
+    public LinkedList<DateiDTO> findAllDateiByGruppeId(final long gruppeId) throws SQLException {
         CachedGruppe cachedGruppe = gruppeCache.get(gruppeId);
 
         if (cachedGruppe != null) {
             Duration duration = Duration.between(cachedGruppe.getLastAccessTime(), LocalTime.now());
             //10 Minutes timeout
             if (duration.getSeconds() < 600) {
-                return cachedGruppe.getGruppeDTO().getDateien();
+                return (LinkedList<DateiDTO>) cachedGruppe.getGruppeDTO().getDateien();
             }
         }
 
@@ -536,7 +535,7 @@ public final class Repository {
         ResultSet gruppenResult = preparedStatement.executeQuery();
 
         while (gruppenResult.next()) {
-            gruppen.put(findGruppeByGruppeIdEager(gruppenResult.getLong("gruppeID")),
+            gruppen.put(findGruppeByGruppeIdlazy(gruppenResult.getLong("gruppeID")),
                     gruppenResult.getBoolean("upload_berechtigung"));
         }
 
@@ -559,7 +558,7 @@ public final class Repository {
             gruppe = new GruppeDTO(gruppeId,
                     gruppeResult.getString("titel"),
                     gruppeResult.getString("beschreibung"),
-                    new LinkedList<DateiDTO>());
+                    new LinkedList<DateiDTO>(), this);
         }
         preparedStatement.close();
         gruppeResult.close();
@@ -580,7 +579,7 @@ public final class Repository {
             gruppe = new GruppeDTO(gruppeId,
                     gruppeResult.getString("titel"),
                     gruppeResult.getString("beschreibung"),
-                    findAllDateiByGruppeId(gruppeId));
+                    findAllDateiByGruppeId(gruppeId), this);
 
             for (DateiDTO datei : gruppe.getDateien()) {
                 datei.setGruppe(gruppe);
@@ -611,7 +610,6 @@ public final class Repository {
 
         preparedStatement.close();
     }
-
 
     boolean doGroupRelationsExistByUserId(final long userId) throws SQLException {
         PreparedStatement preparedStatement =

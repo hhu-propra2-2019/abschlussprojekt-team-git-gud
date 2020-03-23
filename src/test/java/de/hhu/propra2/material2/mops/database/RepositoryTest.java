@@ -5,9 +5,7 @@ import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.TagDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.UserDTO;
-import org.junit.AfterClass;
 import org.junit.Ignore;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,11 +14,7 @@ import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.LinkedList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -46,7 +40,7 @@ public final class RepositoryTest {
         tag = new TagDTO("gae");
         tags.add(tag);
 
-        gruppe = new GruppeDTO(99999999, "gruppe", "this is a description", dateien);
+        gruppe = new GruppeDTO(99999999, "gruppe", "this is a description", dateien, repositoryArg);
         berechtigung.put(gruppe, true);
 
         user = new UserDTO(999999, "Why are you gae?", "You are gae",
@@ -57,14 +51,14 @@ public final class RepositoryTest {
         dateien.add(datei);
     }
 
-    @BeforeEach
+    //@BeforeEach
     public void preparation() throws SQLException {
         repository.deleteAll();
         repository.saveUser(user);
         datei.setId(repository.saveDatei(datei));
     }
 
-    @AfterClass
+    //@AfterClass
     public void deleteAll() throws SQLException {
         repository.deleteAll();
     }
@@ -424,5 +418,38 @@ public final class RepositoryTest {
         System.out.println(timeAfterEverything + " Loading done!");
         System.out.println();
         System.out.println("This took " + duration.getSeconds() + " seconds.");
+    }
+
+    @SuppressWarnings("checkstyle:magicnumber")
+    @Test
+    public void load1UserWith1GroupWith1100FilesWith3Tags() throws SQLException {
+        LocalTime before = LocalTime.now();
+        System.out.println(before + " Time test for 1 User 1 Group 1100 Files 3 Tags... Start!");
+        UserDTO userDTO = repository.findUserByKeycloakname("_test_");
+        LocalTime after = LocalTime.now();
+
+        Duration timePassed = Duration.between(before, after);
+        System.out.println(after + "Time passed to load the user without files: "
+                + timePassed.getSeconds() + " seconds");
+
+        before = LocalTime.now();
+        System.out.println(before + " Loading (not cached) Files now...");
+        GruppeDTO gruppeDTO = ((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0]);
+        gruppeDTO.getDateien();
+        after = LocalTime.now();
+        timePassed = Duration.between(before, after);
+        System.out.println(after + " Time passed to load the users files (not cached): "
+                + timePassed.getSeconds() + " seconds.");
+
+        before = LocalTime.now();
+        System.out.println(before + " Loading cached Files now...");
+        LinkedList<DateiDTO> dateiDTOs = (LinkedList<DateiDTO>) gruppeDTO.getDateien();
+        after = LocalTime.now();
+        timePassed = Duration.between(before, after);
+        System.out.println(after + " Time passed to load the users cached files: "
+                + timePassed.getSeconds() + " seconds.");
+
+        assertTrue(dateiDTOs.size() == 1100);
+        System.out.println("Test complete!");
     }
 }

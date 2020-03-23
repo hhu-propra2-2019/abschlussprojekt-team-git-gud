@@ -138,7 +138,6 @@ public final class ModelService implements IModelService {
         return tags;
     }
 
-
     public Set<String> getAlleUploaderByUser(final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);
         List<Gruppe> groups = user.getAllGruppen();

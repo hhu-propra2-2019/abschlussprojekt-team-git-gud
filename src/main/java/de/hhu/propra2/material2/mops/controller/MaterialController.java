@@ -3,7 +3,9 @@ package de.hhu.propra2.material2.mops.controller;
 import de.hhu.propra2.material2.mops.Exceptions.DownloadException;
 import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
+import de.hhu.propra2.material2.mops.domain.models.UpdateForm;
 import de.hhu.propra2.material2.mops.domain.models.UploadForm;
+import de.hhu.propra2.material2.mops.domain.services.IUpdateService;
 import de.hhu.propra2.material2.mops.domain.services.MinioDownloadService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
 import de.hhu.propra2.material2.mops.domain.services.UploadService;
@@ -46,6 +48,8 @@ public class MaterialController {
     private UploadService uploadService;
     @Autowired
     private MinioDownloadService minioDownloadService;
+    @Autowired
+    private IUpdateService updateService;
 
     private String errorMessage;
     private String successMessage;
@@ -191,10 +195,11 @@ public class MaterialController {
     @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
     public String update(final KeycloakAuthenticationToken token,
                          final Model model,
-                         final UploadForm upForm,
+                         final UpdateForm upForm,
                          final Long gruppenId,
                          final Long dateiId) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
+        updateService.startUpdate(upForm, gruppenId, dateiId);
         return "redirect:/upload";
     }
 

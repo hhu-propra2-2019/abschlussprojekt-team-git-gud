@@ -202,8 +202,14 @@ public class MaterialController {
                          final UpdateForm updateForm,
                          final Long gruppenId,
                          final Long dateiId) {
+        Account user = modelService.getAccountFromKeycloak(token);
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
-        updateService.startUpdate(updateForm, gruppenId, dateiId);
+        try {
+            updateService.startUpdate(updateForm, user.getName(), gruppenId, dateiId);
+            setMessages(null, "Update erfolgreich.");
+        } catch (SQLException e) {
+            setMessages("Es gab ein Problem beim Update.", null);
+        }
         return "redirect:/upload";
     }
 

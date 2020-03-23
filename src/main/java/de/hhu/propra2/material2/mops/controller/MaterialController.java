@@ -178,7 +178,11 @@ public class MaterialController {
                          final Long gruppenId,
                          final Long dateiId) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
-        model.addAttribute("datei", modelService.getDateiByDateiId(dateiId));
+        try {
+            model.addAttribute("datei", modelService.findDateiById(dateiId));
+        } catch (SQLException e) {
+            setMessages("Die Datei konnte nicht geladen werden.", null);
+        }
         return "update";
     }
 
@@ -186,7 +190,7 @@ public class MaterialController {
      * update routing.
      * @param token injected keycloak token
      * @param model injected thymeleaf model
-     * @param upForm
+     * @param updateForm
      * @param gruppenId
      * @param dateiId
      * @return
@@ -195,11 +199,11 @@ public class MaterialController {
     @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
     public String update(final KeycloakAuthenticationToken token,
                          final Model model,
-                         final UpdateForm upForm,
+                         final UpdateForm updateForm,
                          final Long gruppenId,
                          final Long dateiId) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
-        updateService.startUpdate(upForm, gruppenId, dateiId);
+        updateService.startUpdate(updateForm, gruppenId, dateiId);
         return "redirect:/upload";
     }
 

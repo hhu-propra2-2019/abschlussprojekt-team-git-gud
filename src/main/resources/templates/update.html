@@ -20,19 +20,30 @@
     <div class="container">
 
         <form method="post" enctype="multipart/form-data">
+
+            <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
+
+            <div id="error-message" th:classappend="${error != null} ? 'alert alert-warning'" th:text="${error}">
+                Some error message
+            </div>
+
+            <div id="success-message" th:classappend="${success != null} ? 'alert alert-success'" th:text="${success}">
+                Jeah, it works!
+            </div>
+
             <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
 
             <div>
-                <p>Dateiname: <span th:text="${datei.getName()}">Dateiname</span> </p>
+                <p>Dateiname: <span th:text="${datei.getName()}">Dateiname</span></p>
             </div>
 
             <div>
-                <p>Uploader: <span th:text="${datei.getUploader().getNachname()}">Uploader</span> </p>
+                <p>Uploader: <span th:text="${datei.getUploader().getNachname()}">Uploader</span></p>
             </div>
 
             <div>
                 <label for="input-tags">Tags </label>
-                <input type="text" name="selectedTags"  id="input-tags">
+                <input type="text" name="selectedTags" id="input-tags">
             </div>
             <script src="../static/dist/tokenfield.min.js" th:src="@{dist/tokenfield.min.js}"></script>
             <script th:inline="javascript">
@@ -61,6 +72,7 @@
                     singleInput: true,
                     singleInputValue: 'name'
                 });
+
             </script>
             <!--  <div>
                   <label for="tagsIn">Tags </label>
@@ -78,7 +90,8 @@
             <div class="form-group">
                 <label for="timedDate">Getimete Veröffentlichung (optional)</label>
                 <div>
-                    <input type="date" value="" name="timedUpload"  id="timedDate" th:placeholder="${datei.getVeroeffentlichungsdatum()">
+                    <input type="date" value="" name="timedUpload" id="timedDate"
+                           th:placeholder="${datei.getVeroeffentlichungsdatum()">
                 </div>
             </div>
 

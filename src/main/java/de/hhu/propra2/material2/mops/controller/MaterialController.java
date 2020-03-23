@@ -17,7 +17,6 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import org.springframework.web.client.RestTemplate;
@@ -165,15 +164,15 @@ public class MaterialController {
     /**
      * update page.
      * @param token injected keycloak token
-     * @param model
+     * @param model injected thymeleaf model
      * @return
      */
-    @GetMapping("/update/{gruppenI}/{dateiId}")
+    @GetMapping("/update")
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
     public String update(final KeycloakAuthenticationToken token,
                          final Model model,
-                         @PathVariable final Long gruppenId,
-                         @PathVariable final Long dateiId) {
+                         final Long gruppenId,
+                         final Long dateiId) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         model.addAttribute("datei", modelService.getDateiByDateiId(dateiId));
         return "update";
@@ -182,21 +181,21 @@ public class MaterialController {
     /**
      * update routing.
      * @param token injected keycloak token
-     * @param model
+     * @param model injected thymeleaf model
      * @param upForm
      * @param gruppenId
      * @param dateiId
      * @return
      */
-    @PostMapping("/update/{gruppenId}/{dateiId}")
+    @PostMapping("/update")
     @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
     public String update(final KeycloakAuthenticationToken token,
                          final Model model,
                          final UploadForm upForm,
-                         @PathVariable final Long gruppenId,
-                         @PathVariable final Long dateiId) {
+                         final Long gruppenId,
+                         final Long dateiId) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
-        return String.format("redirect:/upload/%d/%d", gruppenId, dateiId);
+        return "redirect:/upload";
     }
 
     /**

@@ -3,6 +3,7 @@ package de.hhu.propra2.material2.mops.domain.models;
 import lombok.Getter;
 import lombok.Value;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,7 +48,7 @@ public class Datei {
      * File size.
      */
     @Getter
-    private final double dateigroesse;
+    private final long dateigroesse;
     /**
      * File type.
      */
@@ -91,7 +92,7 @@ public class Datei {
             final List<Tag> tagsArgs,
             final LocalDate uploaddatumArgs,
             final LocalDate veroeffentlichungsdatumArgs,
-            final double dateigroesseArgs,
+            final long dateigroesseArgs,
             final String dateitypArgs,
             final String kategorieArgs) {
         this.id = idArgs;
@@ -103,5 +104,21 @@ public class Datei {
         this.dateigroesse = dateigroesseArgs;
         this.dateityp = dateitypArgs;
         this.kategorie = kategorieArgs;
+    }
+
+    /**
+     * gives out the FileSize formet as a String with MB/GB etc.
+     * Quelle: https://www.javaguides.net/2018/07/how-to-get-file-size-in-bytes-kb-mb-gb.html
+     * @return
+     */
+    @SuppressWarnings("checkstyle:MagicNumber")
+    public String getDateigroesseFormated() {
+        if (dateigroesse <= 0) {
+            return "0";
+        }
+        final String[] units = new String[] {"B", "KB", "MB", "GB", "TB"};
+        int digitGroups = (int) (Math.log10(dateigroesse) / Math.log10(1024));
+        return new DecimalFormat("#,##0.#").format(dateigroesse / Math.pow(1024, digitGroups))
+                + " " + units[digitGroups];
     }
 }

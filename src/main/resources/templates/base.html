@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{mopslayout :: html(name='Name des Subsystems', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
+      th:replace="~{mopslayout :: html(name='Materialsammlung', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
 <head>
     <meta charset="utf-8">
-    <title>Name des Subsystems</title>
+    <title>Materialsammlung</title>
     <th:block th:fragment="headcontent">
         <!-- Links, Skripts, Styles hier einfügen! -->
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -34,7 +34,7 @@
                 </a>
             </li>
             <li th:each="gruppe : ${gruppen}"  >
-                <a th:href="@{/dateiSicht(gruppeId=${gruppe.getId()}, gruppeName=${gruppe.getName()})}" href="#" th:text="${gruppe.getName()}"></a>
+                <a th:href="@{/dateiSicht(gruppenId=${gruppe.getId()}, gruppeName=${gruppe.getName()})}" href="#" th:text="${gruppe.getName()}"></a>
             </li>
         </ul>
     </nav>

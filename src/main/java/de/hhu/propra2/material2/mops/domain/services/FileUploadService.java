@@ -1,6 +1,5 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
-
 import io.minio.MinioClient;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
@@ -13,7 +12,9 @@ import io.minio.errors.MinioException;
 import io.minio.errors.NoResponseException;
 import io.minio.errors.RegionConflictException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
@@ -22,13 +23,15 @@ import java.security.NoSuchAlgorithmException;
 
 @Slf4j
 @Service
+@EnableConfigurationProperties(MinIOProperties.class)
 public final class FileUploadService {
-
     /**
      * Static MinIO client to upload
      * and download files.
      */
     private MinioClient minioClient;
+
+    private MinIOProperties minIOProperties;
 
     /**
      * Used to upload Files to
@@ -48,7 +51,7 @@ public final class FileUploadService {
      * @throws ErrorResponseException
      * @throws RegionConflictException
      */
-    public FileUploadService() throws InvalidPortException,
+    public FileUploadService(final MinIOProperties minIOPropertiesArg) throws InvalidPortException,
             InvalidEndpointException,
             IOException, InvalidKeyException,
             NoSuchAlgorithmException, InsufficientDataException,
@@ -56,17 +59,13 @@ public final class FileUploadService {
             NoResponseException, InvalidBucketNameException,
             XmlPullParserException, ErrorResponseException,
             RegionConflictException {
+        this.minIOProperties = minIOPropertiesArg;
+        System.out.println(minIOProperties.getBucketname());
+        minioClient = new MinioClient(minIOProperties.getEndpoint(),
+                minIOProperties.getAccesskey(),
+                minIOProperties.getSecretkey());
 
-        minioClient = new MinioClient("http://localhost:23307/",
-                "minio",
-                "minio123");
-
-        if (minioClient.bucketExists("materialsammlung")) {
-            log.info("MinIO: Bucket 'materialsammlung' already exists.");
-        } else {
-            minioClient.makeBucket("materialsammlung");
-            log.info("MinIO: materialsammlung created");
-        }
+        createBucketIfNotExists(minIOProperties.getBucketname());
     }
 
     /**
@@ -85,7 +84,45 @@ public final class FileUploadService {
             throws MinioException, XmlPullParserException,
             NoSuchAlgorithmException,
             InvalidKeyException, IOException {
-        minioClient.putObject("materialsammlung", name, localFilePath, null,
+        minioClient.putObject(minIOProperties.getBucketname(), name, localFilePath, null,
                 null, null, null);
+    }
+
+    /**
+     * @param file The file to upload
+     * @return The object name
+     * @throws IOException
+     * @throws InvalidKeyException
+     * @throws NoSuchAlgorithmException
+     * @throws InsufficientDataException
+     * @throws InternalException
+     * @throws NoResponseException
+     * @throws InvalidBucketNameException
+     * @throws XmlPullParserException
+     * @throws ErrorResponseException
+     */
+    public boolean upload(final MultipartFile file, final String fileName) {
+        try {
+            createBucketIfNotExists(minIOProperties.getBucketname());
+            minioClient.putObject(minIOProperties.getBucketname(), fileName, file.getInputStream(),
+                    null, null, null, file.getContentType());
+            return true;
+        } catch (Exception e) {
+            log.info("Exception: " + e);
+            return false;
+        }
+    }
+
+    private void createBucketIfNotExists(final String bucket) throws IOException,
+            InvalidKeyException, NoSuchAlgorithmException, InsufficientDataException,
+            InvalidResponseException, InternalException, NoResponseException,
+            InvalidBucketNameException, XmlPullParserException, ErrorResponseException,
+            RegionConflictException {
+        if (minioClient.bucketExists(bucket)) {
+            log.info("MinIO: Bucket '" + bucket + "' already exists.");
+        } else {
+            minioClient.makeBucket(bucket);
+            log.info("MinIO: Bucket '" + bucket + "' created");
+        }
     }
 }

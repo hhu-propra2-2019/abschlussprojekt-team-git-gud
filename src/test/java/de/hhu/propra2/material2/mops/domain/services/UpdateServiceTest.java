@@ -1,5 +1,6 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
+import de.hhu.propra2.material2.mops.Database.Repository;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Tag;
 import de.hhu.propra2.material2.mops.domain.models.User;
@@ -39,6 +40,8 @@ public class UpdateServiceTest {
     private Tag tag3 = new Tag(3, "tag3");
     private List<Tag> tags = new ArrayList<>();
     @Mock
+    private Repository repositoryMock;
+    @Mock
     private ModelService modelServiceMock;
     @Mock
     private User userMock;
@@ -50,7 +53,7 @@ public class UpdateServiceTest {
      */
     @BeforeEach
     public void setUp() throws SQLException {
-        updateService = new UpdateService(modelServiceMock);
+        updateService = new UpdateService(repositoryMock, modelServiceMock);
 
         Datei datei = new Datei(1L, "test.txt", userMock, tags,
                 date1303, date1303, 2L, "txt", "kategorie");

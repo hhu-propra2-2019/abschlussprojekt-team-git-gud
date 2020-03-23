@@ -39,7 +39,7 @@ public class UpdateService implements IUpdateService {
      * @return A Datei object which represents the saved File
      */
     @Transactional
-    private Datei dateiUpdate(final Long dateiId, final Long gruppenId, final LocalDate veroeffentlichungsdatum,
+    public Datei dateiUpdate(final Long dateiId, final Long gruppenId, final LocalDate veroeffentlichungsdatum,
                              final List<Tag> tags) throws SQLException {
         Datei datei = modelService.findDateiById(dateiId);
         Datei changedDatei = new Datei(dateiId, datei.getName(), datei.getUploader(),

@@ -1,5 +1,6 @@
 package de.hhu.propra2.material2.mops.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import de.hhu.propra2.material2.mops.web.dto.UpdatedGroupRequestMapper;
 import de.hhu.propra2.material2.mops.web.dto.WebDTOService;
 import lombok.Getter;
@@ -18,10 +19,14 @@ public class MaterialRestController {
     @Autowired
     WebDTOService webDTOService;
 
-    @GetMapping("yolo")
-    public void getUpdate(){
-        String test = webDTOService.loadUpdatedGroupRequestMapperromGroupManagementAPI();
-        System.out.println(test);
+    @GetMapping("keyCloak")
+    public void getStringKeyCloak(){
+        String test = webDTOService.loadUpdateWrapperKeyCloakConfig();
+    }
+
+    @GetMapping("update")
+    public void getUpdate() throws JsonProcessingException {
+        UpdatedGroupRequestMapper test = webDTOService.loadUpdateWrapper();
     }
 
 }

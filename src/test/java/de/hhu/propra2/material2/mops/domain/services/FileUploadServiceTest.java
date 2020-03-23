@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Testcontainers
 public class FileUploadServiceTest {
     @Container
-    public static GenericContainer minioServer = TestContainerUtil.getMinIOContainer();
+    private static GenericContainer minioServer = TestContainerUtil.getMinIOContainer();
 
     private static String minioServerUrl;
     private static FileUploadService fileUploadService;

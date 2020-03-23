@@ -284,7 +284,7 @@ public final class ModelService implements IModelService {
         return tagDTOs;
     }
 
-    public Datei findDateiById(long dateiId) throws SQLException {
+    public Datei findDateiById(final long dateiId) throws SQLException {
         return loadDatei(repository.findDateiById(dateiId));
     }
 }

@@ -35,7 +35,7 @@
                                 <div class="d-inline" th:each="tag : ${datei.getTags()}">
                                     <span class="badge badge-primary" th:text="${tag.getText()}"></span>
                                 </div>
-                                <div class="list-inline text-muted">+
+                                <div class="list-inline text-muted">
                                     <span class="card d-inline" th:text="${datei.getDateityp()}"></span>
                                     <span class="card d-inline" th:text="${datei.getDateigroesseFormated()}"></span>
                                     <span class="card d-inline" th:text="${datei.getUploaddatum()}"></span>

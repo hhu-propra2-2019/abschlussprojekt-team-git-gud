@@ -1,10 +1,13 @@
 package de.hhu.propra2.material2.mops.controller;
 
 import com.c4_soft.springaddons.test.security.context.support.WithMockKeycloackAuth;
+import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.services.MinioDownloadService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
 import de.hhu.propra2.material2.mops.domain.services.UploadService;
+import de.hhu.propra2.material2.mops.security.Account;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
@@ -15,6 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -22,11 +26,14 @@ import java.util.Set;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @WebMvcTest
@@ -67,6 +74,8 @@ public class MaterialControllerModelTest {
         when(modelService.getAlleTagsByUser(any())).thenReturn(tags);
         when(modelService.getAlleUploaderByUser(any())).thenReturn(uploader);
         when(modelService.getAlleDateiTypenByUser(any())).thenReturn(dateiTypen);
+        when(modelService.getAccountFromKeycloak(any())).thenReturn(new Account("BennyGoodman", ".de",
+                "aaa", dateiTypen));
     }
 
     // Startseite Test
@@ -123,6 +132,56 @@ public class MaterialControllerModelTest {
     void testReturnUploadTemplate() throws Exception {
         mvc.perform(get("/upload"))
                 .andExpect(content().string(containsString("Upload")));
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "BennyGoodman", roles = "studentin")
+    void testUploadPostSuccessful() throws Exception {
+        mvc.perform(post("/upload")
+                .with(csrf()))
+                .andExpect(content()
+                        .string(containsString("Upload war erfolgreich!")));
+
+        verify(uploadService, times(1)).startUpload(any(), any());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "BennyGoodman", roles = "studentin")
+    void testUploadPostFileUploadException() throws Exception {
+        doThrow(new FileUploadException()).when(uploadService).startUpload(any(), any());
+
+        mvc.perform(post("/upload")
+                .with(csrf()))
+                .andExpect(content()
+                        .string(containsString("Beim Upload gab es ein Problem.")));
+
+        verify(uploadService, times(1)).startUpload(any(), any());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "BennyGoodman", roles = "studentin")
+    void testUploadPostSQLException() throws Exception {
+        doThrow(new SQLException()).when(uploadService).startUpload(any(), any());
+
+        mvc.perform(post("/upload")
+                .with(csrf()))
+                .andExpect(content()
+                        .string(containsString("Beim speichern in der Datenbank gab es einen Fehler.")));
+
+        verify(uploadService, times(1)).startUpload(any(), any());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "BennyGoodman", roles = "studentin")
+    void testUploadPostNoUploadPermissionException() throws Exception {
+        doThrow(new NoUploadPermissionException()).when(uploadService).startUpload(any(), any());
+
+        mvc.perform(post("/upload")
+                .with(csrf()))
+                .andExpect(content()
+                        .string(containsString("Sie sind nicht berechtig in dieser Gruppe hochzuladen!")));
+
+        verify(uploadService, times(1)).startUpload(any(), any());
     }
 
     //Suche Test

@@ -5,7 +5,6 @@ import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
 import de.hhu.propra2.material2.mops.domain.models.UpdateForm;
 import de.hhu.propra2.material2.mops.domain.models.UploadForm;
-import de.hhu.propra2.material2.mops.domain.services.IUpdateService;
 import de.hhu.propra2.material2.mops.domain.services.MinioDownloadService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
 import de.hhu.propra2.material2.mops.domain.services.UpdateService;
@@ -161,7 +160,7 @@ public class MaterialController {
         } catch (SQLException e) {
             setMessages("Beim Upload gab es ein Problem", null);
         } catch (NoUploadPermissionException e) {
-            setMessages("Sie sind nicht berechtig in dieser Gruppe hochzuladen!", null);
+            setMessages("Sie sind nicht berechtigt in dieser Gruppe hochzuladen!", null);
         }
         return "redirect:/upload";
     }
@@ -210,6 +209,8 @@ public class MaterialController {
             setMessages(null, "Update erfolgreich.");
         } catch (SQLException e) {
             setMessages("Es gab ein Problem beim Update.", null);
+        } catch (NoUploadPermissionException e) {
+            setMessages("Sie sind nicht berechtigt diese Datei zu verändern.", null);
         }
         return "redirect:/upload";
     }

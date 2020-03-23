@@ -1,6 +1,6 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
-import de.hhu.propra2.material2.mops.Database.Repository;
+import de.hhu.propra2.material2.mops.database.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

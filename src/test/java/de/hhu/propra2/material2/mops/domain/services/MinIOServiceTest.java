@@ -2,9 +2,6 @@ package de.hhu.propra2.material2.mops.domain.services;
 
 import de.hhu.propra2.material2.mops.utils.TestContainerUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +24,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 public class MinIOServiceTest {
 
     @Container
-    public static GenericContainer minioServer = TestContainerUtil.getMinIOContainer();
+    private static GenericContainer minioServer = TestContainerUtil.getMinIOContainer();
 
     private static String minioServerUrl;
     private static MinIOService minIOService;
@@ -79,6 +76,7 @@ public class MinIOServiceTest {
 
         assertTrue(result);
     }
+
     @Test
     public void deleteFileThatDoesntExist() {
         String dateiIdAsString = "33";
@@ -90,7 +88,7 @@ public class MinIOServiceTest {
 
         assumeTrue(minIOService.upload(file, dateiIdAsString));
         assumeTrue(minIOService.deleteFile(dateiIdAsString));
-        
+
         boolean result = minIOService.deleteFile(dateiIdAsString);
 
         assertFalse(result);

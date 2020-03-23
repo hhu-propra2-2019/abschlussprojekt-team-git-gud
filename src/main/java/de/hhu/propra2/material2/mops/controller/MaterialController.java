@@ -8,6 +8,7 @@ import de.hhu.propra2.material2.mops.domain.models.UploadForm;
 import de.hhu.propra2.material2.mops.domain.services.IUpdateService;
 import de.hhu.propra2.material2.mops.domain.services.MinioDownloadService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
+import de.hhu.propra2.material2.mops.domain.services.UpdateService;
 import de.hhu.propra2.material2.mops.domain.services.UploadService;
 import de.hhu.propra2.material2.mops.security.Account;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -49,7 +50,7 @@ public class MaterialController {
     @Autowired
     private MinioDownloadService minioDownloadService;
     @Autowired
-    private IUpdateService updateService;
+    private UpdateService updateService;
 
     private String errorMessage;
     private String successMessage;

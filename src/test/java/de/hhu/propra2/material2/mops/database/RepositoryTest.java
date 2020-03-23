@@ -13,9 +13,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 

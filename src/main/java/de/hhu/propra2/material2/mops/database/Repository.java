@@ -225,6 +225,34 @@ public final class Repository {
         }
     }
 
+    public DateiDTO findDateiById(final long id) throws SQLException {
+        DateiDTO datei = null;
+
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("select * from Datei where dateiID=?");
+        preparedStatement.setString(1, "" + id);
+
+        ResultSet dateiResult = preparedStatement.executeQuery();
+
+        if (dateiResult.next()) {
+            datei = new DateiDTO(dateiResult.getLong("dateiID"),
+                    dateiResult.getString("name"),
+                    findUserByIdLAZY(dateiResult.getLong("uploaderID")),
+                    findAllTagsbyDateiId(id),
+                    dateiResult.getDate("upload_datum").toLocalDate(),
+                    dateiResult.getDate("veroeffentlichungs_datum").toLocalDate(),
+                    dateiResult.getLong("datei_groesse"),
+                    dateiResult.getString("datei_typ"),
+                    null,
+                    dateiResult.getString("kategorie"));
+        }
+
+        preparedStatement.close();
+        dateiResult.close();
+
+        return datei;
+    }
+
     @SuppressWarnings("checkstyle:MagicNumber")
     public LinkedList<DateiDTO> findAllDateiByGruppeId(final long gruppeId) throws SQLException {
         CachedGruppe cachedGruppe = gruppeCache.get(gruppeId);
@@ -296,7 +324,7 @@ public final class Repository {
     void changeUploaderToDeletedForAllDateiByUploaderId(final long userId) throws SQLException {
         LinkedList<DateiDTO> dateien = findAllDateiByUploaderId(userId);
 
-        for (DateiDTO dateiDTO: dateien) {
+        for (DateiDTO dateiDTO : dateien) {
             dateiDTO.setUploader(new UserDTO(-1, "User", "Deleted", "-", null));
             updateDatei(dateiDTO, dateiDTO.getId());
         }
@@ -346,34 +374,6 @@ public final class Repository {
         result.close();
 
         return doesItExist;
-    }
-
-    DateiDTO findDateiById(final long id) throws SQLException {
-        DateiDTO datei = null;
-
-        PreparedStatement preparedStatement =
-                connection.prepareStatement("select * from Datei where dateiID=?");
-        preparedStatement.setString(1, "" + id);
-
-        ResultSet dateiResult = preparedStatement.executeQuery();
-
-        if (dateiResult.next()) {
-            datei = new DateiDTO(dateiResult.getLong("dateiID"),
-                    dateiResult.getString("name"),
-                    findUserByIdLAZY(dateiResult.getLong("uploaderID")),
-                    findAllTagsbyDateiId(id),
-                    dateiResult.getDate("upload_datum").toLocalDate(),
-                    dateiResult.getDate("veroeffentlichungs_datum").toLocalDate(),
-                    dateiResult.getLong("datei_groesse"),
-                    dateiResult.getString("datei_typ"),
-                    null,
-                    dateiResult.getString("kategorie"));
-        }
-
-        preparedStatement.close();
-        dateiResult.close();
-
-        return datei;
     }
 
     /*
@@ -467,7 +467,6 @@ public final class Repository {
     }
 
 
-
     void deleteTagRelationsByDateiId(final long dateiId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement("delete from Tagnutzung where dateiID=?");
@@ -478,7 +477,7 @@ public final class Repository {
         preparedStatement.close();
     }
 
-   boolean doTagsExistByDateiId(final long dateiId) throws SQLException {
+    boolean doTagsExistByDateiId(final long dateiId) throws SQLException {
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select tagID from Tagnutzung where dateiID=?");

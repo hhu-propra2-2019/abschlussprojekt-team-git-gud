@@ -5,16 +5,13 @@ import de.hhu.propra2.material2.mops.Database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.Database.DTOs.TagDTO;
 import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
 import de.hhu.propra2.material2.mops.Material2Application;
-import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.sql.SQLException;
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -266,7 +263,7 @@ public final class RepositoryTest {
         assertTrue(loadedUser.getBelegungUndRechte().keySet().isEmpty());
     }
 
-
+    /*
     @SuppressWarnings("checkstyle:MagicNumber")
     @Ignore
     @Test
@@ -345,4 +342,5 @@ public final class RepositoryTest {
         System.out.println();
         System.out.println("This took " + duration.getSeconds() + " seconds.");
     }
+     */
 }

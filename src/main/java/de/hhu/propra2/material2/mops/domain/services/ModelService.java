@@ -249,12 +249,27 @@ public final class ModelService implements IModelService {
         // for saving the file
         GruppeDTO groupDTO = new GruppeDTO(gruppe.getId(), null,
                 null, null);
+        return saveDatei(datei, groupDTO);
+    }
+
+    public long saveDatei(final Datei datei, final long gruppenId) throws SQLException {
+        if (datei == null) {
+            throw new IllegalArgumentException();
+        }
+        // create GruppeDTO and UserDTO only with Id as parameter because Id is the only parameter which is necessary
+        // for saving the file
+        GruppeDTO groupDTO = new GruppeDTO(gruppenId, null,
+                null, null);
+        return saveDatei(datei, groupDTO);
+    }
+
+    private long saveDatei(final Datei datei, final GruppeDTO gruppeDTO) throws SQLException {
         UserDTO userDTO = new UserDTO(datei.getUploader().getId(), null, null,
                 null, null);
 
         DateiDTO dateiDTO = new DateiDTO(datei.getName(), userDTO, tagsToTagDTOs(datei.getTags()),
                 datei.getUploaddatum(), datei.getVeroeffentlichungsdatum(), datei.getDateigroesse(),
-                datei.getDateityp(), groupDTO, datei.getKategorie());
+                datei.getDateityp(), gruppeDTO, datei.getKategorie());
         return repository.saveDatei(dateiDTO);
     }
 
@@ -267,5 +282,9 @@ public final class ModelService implements IModelService {
             tagDTOs.add(new TagDTO(tag.getText()));
         }
         return tagDTOs;
+    }
+
+    public Datei findDateiById(final long dateiId) throws SQLException {
+        return loadDatei(repository.findDateiById(dateiId));
     }
 }

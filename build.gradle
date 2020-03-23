@@ -62,7 +62,13 @@ dependencies {
     testImplementation 'com.c4-soft.springaddons:spring-security-test-keycloack-addons:1.2.0'
     implementation 'mops:styleguide:2.1.0'
     implementation 'commons-io:commons-io:2.6'
+
+    def junitJupiterVersion = '5.4.2'
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
     testImplementation "org.testcontainers:testcontainers:1.13.0"
+    testImplementation "org.testcontainers:junit-jupiter:1.13.0"
 }
 
 test {

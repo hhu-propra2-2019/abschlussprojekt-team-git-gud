@@ -16,9 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-
 import org.springframework.web.bind.annotation.PostMapping;
-
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.security.RolesAllowed;
@@ -74,6 +72,8 @@ public class MaterialController {
     public String sicht(final KeycloakAuthenticationToken token, final Model model, final Long gruppenId) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
+        model.addAttribute("kategorien", modelService.getKategorienByGruppe(gruppenId, token));
+        model.addAttribute("dateien", modelService.getAlleDateienByGruppe(gruppenId, token));
         return "dateiSicht";
     }
 
@@ -128,7 +128,6 @@ public class MaterialController {
         model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
         model.addAttribute("error", errorMessage);
         model.addAttribute("success", successMessage);
-        resetMessages();
         return "upload";
     }
 
@@ -146,19 +145,20 @@ public class MaterialController {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
         model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
-        model.addAttribute("error", errorMessage);
-        model.addAttribute("success", successMessage);
         try {
             uploadService.startUpload(upForm, uploader.getName());
             setMessages(null, "Upload war erfolgreich!");
         } catch (FileUploadException e) {
-            setMessages("Beim Upload gab es ein Problem", null);
+            setMessages("Beim Upload gab es ein Problem.", null);
         } catch (SQLException e) {
-            setMessages("Beim Upload gab es ein Problem", null);
+            setMessages("Beim speichern in der Datenbank gab es einen Fehler.", null);
         } catch (NoUploadPermissionException e) {
             setMessages("Sie sind nicht berechtig in dieser Gruppe hochzuladen!", null);
         }
-        return "redirect:/upload";
+        model.addAttribute("error", errorMessage);
+        model.addAttribute("success", successMessage);
+        resetMessages();
+        return "upload";
     }
 
     /**

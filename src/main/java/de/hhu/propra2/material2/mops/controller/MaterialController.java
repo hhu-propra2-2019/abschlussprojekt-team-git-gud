@@ -72,6 +72,8 @@ public class MaterialController {
     public String sicht(final KeycloakAuthenticationToken token, final Model model, final Long gruppenId) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
+        model.addAttribute("kategorien", modelService.getKategorienByGruppe(gruppenId, token));
+        model.addAttribute("dateien", modelService.getAlleDateienByGruppe(gruppenId, token));
         return "dateiSicht";
     }
 

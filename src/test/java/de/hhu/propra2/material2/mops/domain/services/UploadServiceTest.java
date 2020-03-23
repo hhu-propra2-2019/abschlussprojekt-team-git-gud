@@ -43,7 +43,7 @@ public class UploadServiceTest {
     @Mock
     private Repository repositoryMock;
     @Mock
-    private FileUploadService fileUploadServiceMock;
+    private MinIOService minIOServiceMock;
     @Mock
     private ModelService modelServiceMock;
     @Mock
@@ -61,7 +61,7 @@ public class UploadServiceTest {
         Calendar calender = Calendar.getInstance();
         calender.set(2020, Calendar.MARCH, 13);
 
-        uploadService = new UploadService(repositoryMock, modelServiceMock, fileUploadServiceMock);
+        uploadService = new UploadService(repositoryMock, modelServiceMock, minIOServiceMock);
         when(modelServiceMock.saveDatei(any(), any())).thenReturn(1L);
 
         file = new MockMultipartFile("test.txt",
@@ -78,18 +78,18 @@ public class UploadServiceTest {
 
     @Test
     public void uploadFileProveFileUploadServiceUploadCall() throws Exception {
-        when(fileUploadServiceMock.upload(file, "1"))
+        when(minIOServiceMock.upload(file, "1"))
                 .thenReturn(true);
 
         uploadService.dateiHochladen(file, null, userMock, gruppeMock, date1303, tags,
                 "Vorlesung");
 
-        verify(fileUploadServiceMock, times(1)).upload(file, "1");
+        verify(minIOServiceMock, times(1)).upload(file, "1");
     }
 
     @Test
     public void uploadFileWithoutNewFileName() throws Exception {
-        when(fileUploadServiceMock.upload(file, "1"))
+        when(minIOServiceMock.upload(file, "1"))
                 .thenReturn(true);
         Datei datei = uploadService.dateiHochladen(file, null, userMock, gruppeMock, date1303, tags,
                 "Vorlesung");
@@ -105,7 +105,7 @@ public class UploadServiceTest {
 
     @Test
     public void uploadFileWithNewFileNameWithoutExtension() throws Exception {
-        when(fileUploadServiceMock.upload(file, "1"))
+        when(minIOServiceMock.upload(file, "1"))
                 .thenReturn(true);
         Datei datei = uploadService.dateiHochladen(file, "Humbug", userMock, gruppeMock, date1303, tags,
                 "Vorlesung");
@@ -121,7 +121,7 @@ public class UploadServiceTest {
 
     @Test
     public void uploadFileWithNewFileNameWithExtension() throws Exception {
-        when(fileUploadServiceMock.upload(file, "1"))
+        when(minIOServiceMock.upload(file, "1"))
                 .thenReturn(true);
         Datei datei = uploadService.dateiHochladen(file, "Humbug.pdf", userMock, gruppeMock, date1303, tags,
                 "Vorlesung");
@@ -137,7 +137,7 @@ public class UploadServiceTest {
 
     @Test
     public void uploadFileWithTags() throws Exception {
-        when(fileUploadServiceMock.upload(file, "1"))
+        when(minIOServiceMock.upload(file, "1"))
                 .thenReturn(true);
         tags.add(tag1);
         tags.add(tag2);

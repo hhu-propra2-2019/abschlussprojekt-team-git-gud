@@ -1,4 +1,4 @@
-package de.hhu.propra2.material2.mops.web;
+package de.hhu.propra2.material2.mops.controller;
 
 import com.c4_soft.springaddons.test.security.context.support.WithMockKeycloackAuth;
 import de.hhu.propra2.material2.mops.domain.services.MinioDownloadService;
@@ -13,15 +13,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.web.servlet.MockMvc;
 
-
-
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
-@ComponentScan(basePackageClasses = { KeycloakSecurityComponents.class, KeycloakSpringBootConfigResolver.class })
+@ComponentScan(basePackageClasses = {KeycloakSecurityComponents.class, KeycloakSpringBootConfigResolver.class})
 public class MaterialControllerAccessTest {
 
     @Autowired

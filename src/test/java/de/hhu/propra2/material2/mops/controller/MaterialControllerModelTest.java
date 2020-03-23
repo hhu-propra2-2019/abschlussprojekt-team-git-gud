@@ -1,4 +1,4 @@
-package de.hhu.propra2.material2.mops.web;
+package de.hhu.propra2.material2.mops.controller;
 
 import com.c4_soft.springaddons.test.security.context.support.WithMockKeycloackAuth;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @WebMvcTest
-@ComponentScan(basePackageClasses = { KeycloakSecurityComponents.class, KeycloakSpringBootConfigResolver.class })
+@ComponentScan(basePackageClasses = {KeycloakSecurityComponents.class, KeycloakSpringBootConfigResolver.class})
 public class MaterialControllerModelTest {
 
     @Autowired
@@ -45,8 +45,8 @@ public class MaterialControllerModelTest {
     @MockBean
     private UploadService uploadService;
 
-    /**init for the tests.
-     *
+    /**
+     * init for the tests.
      */
     @BeforeEach
     void init() {

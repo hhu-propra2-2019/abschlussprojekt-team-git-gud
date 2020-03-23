@@ -90,8 +90,7 @@
             <div class="form-group">
                 <label for="timedDate">Getimete Veröffentlichung (optional)</label>
                 <div>
-                    <input type="date" value="" name="timedUpload" id="timedDate"
-                           th:placeholder="${datei.getVeroeffentlichungsdatum()">
+                    <input type="date" th:value="${datei.getVeroeffentlichungsdatum()}" name="timedUpload" id="timedDate">
                 </div>
             </div>
 

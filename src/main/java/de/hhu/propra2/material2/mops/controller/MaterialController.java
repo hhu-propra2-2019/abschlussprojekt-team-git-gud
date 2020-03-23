@@ -1,10 +1,14 @@
 package de.hhu.propra2.material2.mops.controller;
 
 import de.hhu.propra2.material2.mops.Exceptions.DownloadException;
+import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
 import de.hhu.propra2.material2.mops.domain.models.UploadForm;
 import de.hhu.propra2.material2.mops.domain.services.MinIOService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
+import de.hhu.propra2.material2.mops.domain.services.UploadService;
+import de.hhu.propra2.material2.mops.security.Account;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.SQLException;
 
 /**
  * After the @RolesAllowed Annotation the Syle Code wants a space after
@@ -38,7 +43,12 @@ public class MaterialController {
     @Autowired
     private ModelService modelService;
     @Autowired
+    private UploadService uploadService;
+    @Autowired
     private MinIOService minIOService;
+
+    private String errorMessage;
+    private String successMessage;
 
     /**
      * start routing.
@@ -60,7 +70,7 @@ public class MaterialController {
      * @return String
      */
     @GetMapping("/dateiSicht")
-    @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public String sicht(final KeycloakAuthenticationToken token, final Model model, final Long gruppenId) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
@@ -73,7 +83,7 @@ public class MaterialController {
      * @return String
      */
     @GetMapping("/suche")
-    @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public String vorSuche(final KeycloakAuthenticationToken token, final Model model) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
@@ -89,7 +99,7 @@ public class MaterialController {
      * @return String
      */
     @PostMapping("/suche")
-    @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public String suchen(
             final KeycloakAuthenticationToken token, final Model model, final @ModelAttribute Suche suchen,
             final String search) {
@@ -111,13 +121,14 @@ public class MaterialController {
      * @return String
      */
     @GetMapping("/upload")
-    @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public String upload(final KeycloakAuthenticationToken token, final Model model) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
         model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
-        model.addAttribute("uploader", modelService.getAlleUploaderByUser(token));
-        model.addAttribute("dateitypen", modelService.getAlleDateiTypenByUser(token));
+        model.addAttribute("error", errorMessage);
+        model.addAttribute("success", successMessage);
+        resetMessages();
         return "upload";
     }
 
@@ -129,10 +140,24 @@ public class MaterialController {
      * @return upload routing
      */
     @PostMapping("/upload")
-    @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public String upload(final KeycloakAuthenticationToken token, final Model model, final UploadForm upForm) {
+        Account uploader = modelService.getAccountFromKeycloak(token);
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
-        System.out.println(upForm);
+        model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
+        model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
+        model.addAttribute("error", errorMessage);
+        model.addAttribute("success", successMessage);
+        try {
+            uploadService.startUpload(upForm, uploader.getName());
+            setMessages(null, "Upload war erfolgreich!");
+        } catch (FileUploadException e) {
+            setMessages("Beim Upload gab es ein Problem", null);
+        } catch (SQLException e) {
+            setMessages("Beim Upload gab es ein Problem", null);
+        } catch (NoUploadPermissionException e) {
+            setMessages("Sie sind nicht berechtig in dieser Gruppe hochzuladen!", null);
+        }
         return "redirect:/upload";
     }
 
@@ -153,9 +178,10 @@ public class MaterialController {
      *
      */
     @GetMapping("/files")
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public void getFile(
             final Long fileId,
-            final HttpServletResponse response) {
+            final HttpServletResponse response, final KeycloakAuthenticationToken token) {
         try {
             // get your file as InputStream
             InputStream input = minIOService.getObject(fileId);
@@ -165,5 +191,15 @@ public class MaterialController {
         } catch (IOException | DownloadException ex) {
             throw new RuntimeException("IOError writing file to output stream");
         }
+    }
+
+    private void setMessages(final String pErrorMessage, final String pSuccessMessage) {
+        this.errorMessage = pErrorMessage;
+        this.successMessage = pSuccessMessage;
+    }
+
+    private void resetMessages() {
+        this.errorMessage = null;
+        this.successMessage = null;
     }
 }

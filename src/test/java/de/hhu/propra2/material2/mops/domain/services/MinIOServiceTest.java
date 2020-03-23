@@ -1,78 +1,43 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
+import de.hhu.propra2.material2.mops.utils.TestContainerUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.minio.errors.ErrorResponseException;
-import io.minio.errors.InsufficientDataException;
-import io.minio.errors.InternalException;
-import io.minio.errors.InvalidBucketNameException;
-import io.minio.errors.InvalidEndpointException;
-import io.minio.errors.InvalidPortException;
-import io.minio.errors.InvalidResponseException;
-import io.minio.errors.NoResponseException;
-import io.minio.errors.RegionConflictException;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
-import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.wait.strategy.HttpWaitStrategy;
-import org.xmlpull.v1.XmlPullParserException;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 @SuppressFBWarnings(value = "HARD_CODE_PASSWORD", justification = "It's only for testing purposes")
 @ExtendWith(MockitoExtension.class)
+@Testcontainers
 public class MinIOServiceTest {
-    private static final String ACCESS_KEY = "admin";
-    private static final String SECRET_KEY = "12345678";
-    private static final String TEST_BUCKET_NAME = "testbucket";
-    private static int MINIO_PORT = 9000;
-    private static final int STARTUP_TIMEOUT = 10;
+    @Container
+    private static GenericContainer minioServer = TestContainerUtil.getMinIOContainer();
 
-    private static GenericContainer minioServer;
     private static String minioServerUrl;
-
     private static MinIOService minIOService;
 
-    @BeforeEach
-    void setUp() throws IOException, InvalidKeyException,
-            NoSuchAlgorithmException, XmlPullParserException,
-            InvalidPortException, InvalidResponseException,
-            ErrorResponseException, InternalException,
-            NoResponseException, InvalidBucketNameException,
-            InsufficientDataException, InvalidEndpointException,
-            RegionConflictException {
-        minioServer = new GenericContainer("minio/minio")
-                .withEnv("MINIO_ACCESS_KEY", ACCESS_KEY)
-                .withEnv("MINIO_SECRET_KEY", SECRET_KEY)
-                .withCommand("server /data")
-                .withExposedPorts(MINIO_PORT)
-                .waitingFor(new HttpWaitStrategy()
-                        .forPath("/minio/health/ready")
-                        .forPort(MINIO_PORT)
-                        .withStartupTimeout(Duration.ofSeconds(STARTUP_TIMEOUT)));
-        minioServer.start();
-
-        Integer mappedPort = minioServer.getFirstMappedPort();
-        Testcontainers.exposeHostPorts(mappedPort);
-        minioServerUrl = String.format("http://%s:%s", minioServer.getContainerIpAddress(), mappedPort);
+    @BeforeAll
+    static void setUp() throws Exception {
+        minioServerUrl = String.format("http://%s:%s", minioServer.getContainerIpAddress(),
+                minioServer.getFirstMappedPort());
 
         MinIOProperties minIOProperties = new MinIOProperties();
         minIOProperties.setEndpoint(minioServerUrl);
-        minIOProperties.setAccesskey(ACCESS_KEY);
-        minIOProperties.setSecretkey(SECRET_KEY);
-        minIOProperties.setBucketname(TEST_BUCKET_NAME);
+        minIOProperties.setAccesskey(TestContainerUtil.MINIO_ACCESS_KEY);
+        minIOProperties.setSecretkey(TestContainerUtil.MINIO_SECRET_KEY);
+        minIOProperties.setBucketname(TestContainerUtil.MINIO_TEST_BUCKET_NAME);
 
         minIOService = new MinIOService(minIOProperties);
     }

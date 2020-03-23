@@ -263,7 +263,7 @@ public final class Repository {
     void changeUploaderToDeletedForAllDateiByUploaderId(final long userId) throws SQLException {
         ArrayList<DateiDTO> dateien = findAllDateiByUploaderId(userId);
 
-        for (DateiDTO dateiDTO: dateien) {
+        for (DateiDTO dateiDTO : dateien) {
             dateiDTO.setUploader(new UserDTO(-1, "User", "Deleted", "-", null));
             updateDatei(dateiDTO, dateiDTO.getId());
         }
@@ -333,7 +333,7 @@ public final class Repository {
         return dateien;
     }
 
-    DateiDTO findDateiById(final long id) throws SQLException {
+    public DateiDTO findDateiById(final long id) throws SQLException {
         DateiDTO datei = null;
 
         PreparedStatement preparedStatement =
@@ -452,7 +452,6 @@ public final class Repository {
     }
 
 
-
     void deleteTagRelationsByDateiId(final long dateiId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement("delete from Tagnutzung where dateiID=?");
@@ -463,7 +462,7 @@ public final class Repository {
         preparedStatement.close();
     }
 
-   boolean doTagsExistByDateiId(final long dateiId) throws SQLException {
+    boolean doTagsExistByDateiId(final long dateiId) throws SQLException {
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select tagID from Tagnutzung where dateiID=?");
@@ -647,4 +646,45 @@ public final class Repository {
     }
 
 
+    /*
+        TESTING METHOD
+     */
+    @SuppressWarnings("checkstyle:magicnumber")
+    void deleteAll() throws SQLException {
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("delete from Gruppenbelegung");
+        preparedStatement.execute();
+        preparedStatement.close();
+
+        preparedStatement =
+                connection.prepareStatement("delete from Tagnutzung");
+        preparedStatement.execute();
+        preparedStatement.close();
+
+        preparedStatement =
+                connection.prepareStatement("delete from Datei");
+        preparedStatement.execute();
+        preparedStatement.close();
+
+        preparedStatement =
+                connection.prepareStatement("delete from Gruppe");
+        preparedStatement.execute();
+        preparedStatement.close();
+
+        preparedStatement =
+                connection.prepareStatement("delete from User");
+        preparedStatement.execute();
+        preparedStatement.close();
+
+        preparedStatement =
+                connection.prepareStatement("insert ignore into User (userID, vorname, nachname, key_cloak_name)"
+                        + "values (?, ?, ?, ?)");
+        preparedStatement.setString(1, "" + -1);
+        preparedStatement.setString(2, "User");
+        preparedStatement.setString(3, "Deleted");
+        preparedStatement.setString(4, "-");
+        preparedStatement.execute();
+
+        preparedStatement.close();
+    }
 }

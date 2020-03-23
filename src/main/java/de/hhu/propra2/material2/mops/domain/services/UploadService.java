@@ -51,17 +51,17 @@ public class UploadService implements IUploadService {
                                 final User user,
                                 final Gruppe gruppe,
                                 final LocalDate veroeffentlichungsdatum,
-                                final List<Tag> tags) throws FileUploadException, SQLException {
-        String fileName = Strings.isNullOrEmpty(newFileName) ? file.getName() : newFileName;
+                                final List<Tag> tags,
+                                final String kategorie) throws FileUploadException, SQLException {
+        String fileName = Strings.isNullOrEmpty(newFileName) ? file.getOriginalFilename() : newFileName;
         String fileExtension = FilenameUtils.getExtension(fileName);
         //if the newFileName does not have an extension use the original file extension
         if (Strings.isNullOrEmpty(fileExtension)) {
             fileExtension = FilenameUtils.getExtension(file.getOriginalFilename());
             fileName += "." + fileExtension;
         }
-
         Datei datei = new Datei(1, fileName, user, tags,
-                LocalDate.now(), veroeffentlichungsdatum, file.getSize(), fileExtension, null);
+                LocalDate.now(), veroeffentlichungsdatum, file.getSize(), fileExtension, kategorie);
         long dateiId = modelService.saveDatei(datei, gruppe);
 
         if (!minIOService.upload(file, String.valueOf(dateiId))) {
@@ -87,8 +87,13 @@ public class UploadService implements IUploadService {
             throw new NoUploadPermissionException("User has no upload permission");
         }
 
+        if (upForm.getTimedUpload().equals("")) {
+            upForm.setTimedUpload(LocalDate.now().toString());
+        }
+
         dateiHochladen(upForm.getDatei(), upForm.getDateiname(), user, gruppe,
-                parseStringToDate(upForm.getTimedUpload()), convertSeperatedStringToList(upForm.getSelectedTags()));
+                parseStringToDate(upForm.getTimedUpload()), convertSeperatedStringToList(upForm.getSelectedTags()),
+                upForm.getKategorie());
     }
 
     private ArrayList<Tag> convertSeperatedStringToList(final String tagStrings) {

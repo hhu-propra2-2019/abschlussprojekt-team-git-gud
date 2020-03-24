@@ -11,45 +11,55 @@
 </head>
 
 <body>
-    <div id="content" th:fragment="mycontent">
-        <h1 class="display-2" th:text="${gruppeName}">
-            ProPra
-        </h1>
-        <p class="text-lg-left">
-            Hier könnte ihre Gruppenbeschreibung stehen.
-        </p>
-        <div class="accordion" id="dataCategorys">
-            <div class="card" th:each="kategorie, iter : ${kategorien}">
-                <div class="card-header" id="${kategorie}">
-                    <h2 class="mb-0">
-                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
-                                th:data-target="'#collapseOne' + ${iter.index}"
-                                aria-expanded="false" aria-controls="collapseOne" th:text="${kategorie}">
-                        </button>
-                    </h2>
-                </div>
-                <div th:id="'collapseOne' + ${iter.index}" class="collapse" aria-labelledby="${kategorie}" data-parent="#dataCategorys">
-                    <div class="card-body p-0 pb-2 m-0" th:each="datei : ${dateien}" th:if="${datei.getKategorie().equals(kategorie)}">
-                        <div class="card">
-                            <h6 class="card-title h5">
-                                <div class="d-inline" th:each="tag : ${datei.getTags()}">
-                                    <span class="badge badge-primary" th:text="${tag.getText()}"></span>
-                                </div>
-                                <div class="list-inline text-muted">
-                                    <span class="card d-inline" th:text="${datei.getDateityp()}"></span>
-                                    <span class="card d-inline" th:text="${datei.getDateigroesseFormated()}"></span>
-                                    <span class="card d-inline" th:text="${datei.getUploaddatum()}"></span>
-                                    <span class="card d-inline" th:text="${datei.getUploader().getName()}">
+<div id="content" th:fragment="mycontent">
+    <h1 class="display-2" th:text="${gruppeName}">
+        ProPra
+    </h1>
+    <p class="text-lg-left">
+        Hier könnte ihre Gruppenbeschreibung stehen.
+    </p>
+    <div class="accordion" id="dataCategorys">
+        <div class="card" th:each="kategorie, iter : ${kategorien}">
+            <div class="card-header" id="${kategorie}">
+                <h2 class="mb-0">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                            th:data-target="'#collapseOne' + ${iter.index}"
+                            aria-expanded="false" aria-controls="collapseOne" th:text="${kategorie}">
+                    </button>
+                </h2>
+            </div>
+            <div th:id="'collapseOne' + ${iter.index}" class="collapse" aria-labelledby="${kategorie}"
+                 data-parent="#dataCategorys">
+                <div class="card-body p-0 pb-2 m-0" th:each="datei : ${dateien}"
+                     th:if="${datei.getKategorie().equals(kategorie)}">
+                    <div class="card">
+                        <h6 class="card-title h5">
+                            <div class="d-inline" th:each="tag : ${datei.getTags()}">
+                                <span class="badge badge-primary" th:text="${tag.getText()}"></span>
+                            </div>
+                            <div class="list-inline text-muted">
+                                <span class="card d-inline" th:text="${datei.getDateityp()}"></span>
+                                <span class="card d-inline" th:text="${datei.getDateigroesseFormated()}"></span>
+                                <span class="card d-inline" th:text="${datei.getUploaddatum()}"></span>
+                                <span class="card d-inline" th:text="${datei.getUploader().getName()}">
                                     </span>
-                                </div>
-                            </h6>
-                            <p class="card-text h2 pb-3" th:text="${datei.getName()}"></p>
+                            </div>
+                        </h6>
+                        <div class="list-inline">
+                            <span class="card-text h2 pb-3" th:text="${datei.getName()}"></span>
+                            <a class="btn btn-primary" role="button"
+                               th:href="@{/update(fileId=${datei.getId()}, gruppenID=${gruppenAuswahl})}"
+                               href="#">EDIT</a>
+                            <a class="btn btn-primary" role="button" th:href="@{/files(fileId=${datei.getId()})}"
+                               href="#">DOWNLOAD</a>
                         </div>
+
                     </div>
                 </div>
             </div>
-
         </div>
+
     </div>
+</div>
 </body>
 </html>

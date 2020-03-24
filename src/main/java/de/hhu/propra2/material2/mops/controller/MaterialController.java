@@ -17,6 +17,7 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.security.RolesAllowed;
@@ -32,6 +33,7 @@ import java.sql.SQLException;
  * satisfy both conditions and have to disable one
  */
 @Controller
+@RequestMapping("/material2")
 @SuppressWarnings("checkstyle:ParenPad")
 public class MaterialController {
 

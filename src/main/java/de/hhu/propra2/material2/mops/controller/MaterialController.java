@@ -180,6 +180,7 @@ public class MaterialController {
                          final Long gruppenId,
                          final Long dateiId) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
+        model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
         try {
             model.addAttribute("datei", modelService.findDateiById(dateiId));
         } catch (SQLException e) {
@@ -209,6 +210,7 @@ public class MaterialController {
                          final Long dateiId) {
         Account user = modelService.getAccountFromKeycloak(token);
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
+        model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
         try {
             updateService.startUpdate(updateForm, user.getName(), gruppenId, dateiId);
             setMessages(null, "Update erfolgreich.");

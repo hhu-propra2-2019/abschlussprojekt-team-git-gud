@@ -71,6 +71,7 @@ public class MaterialControllerModelTest {
         dateiTypen.add("XML");
         dateiTypen.add("JSON");
         when(modelService.getAlleGruppenByUser(any())).thenReturn(gruppen);
+        when(modelService.getAlleUploadGruppenByUser(any())).thenReturn(gruppen);
         when(modelService.getAlleTagsByUser(any())).thenReturn(tags);
         when(modelService.getAlleUploaderByUser(any())).thenReturn(uploader);
         when(modelService.getAlleDateiTypenByUser(any())).thenReturn(dateiTypen);
@@ -117,7 +118,7 @@ public class MaterialControllerModelTest {
         mvc.perform(get("/upload"))
                 .andExpect(content().string(containsString("ProPra")))
                 .andExpect(content().string(containsString("RDB")));
-        verify(modelService, times(1)).getAlleGruppenByUser(any());
+        verify(modelService, times(1)).getAlleUploadGruppenByUser(any());
     }
 
     @Test

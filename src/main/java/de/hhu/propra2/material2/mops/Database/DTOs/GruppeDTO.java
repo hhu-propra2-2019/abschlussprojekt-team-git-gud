@@ -12,7 +12,7 @@ public final class GruppeDTO {
     /**
      * Unique ID from database.
      */
-    private final long id;
+    private final String id;
     /**
      * Groups name from database.
      */
@@ -34,7 +34,7 @@ public final class GruppeDTO {
      * @param descriptionArg
      * @param dateiArgs
      */
-    public GruppeDTO(final long idArg,
+    public GruppeDTO(final String idArg,
                      final String nameArg,
                      final String descriptionArg,
                      final List<DateiDTO> dateiArgs) {

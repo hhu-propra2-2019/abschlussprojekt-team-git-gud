@@ -53,4 +53,20 @@ public class UserDTO {
         this.keycloakname = keycloaknameArg;
         this.belegungUndRechte = belegungUndRechteArg;
     }
+
+    /**
+     * @param vornameArg
+     * @param nachnameArg
+     * @param keycloaknameArg
+     * @param belegungUndRechteArg
+     */
+    public UserDTO(final  String vornameArg,
+                   final String nachnameArg,
+                   final String keycloaknameArg,
+                   final HashMap<GruppeDTO, Boolean> belegungUndRechteArg) {
+        this.vorname = vornameArg;
+        this.nachname = nachnameArg;
+        this.keycloakname = keycloaknameArg;
+        this.belegungUndRechte = belegungUndRechteArg;
+    }
 }

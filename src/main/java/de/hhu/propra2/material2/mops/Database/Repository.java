@@ -605,7 +605,7 @@ public final class Repository {
         USER METHODS
      */
 
-    ArrayList<UserDTO> findAllUserByGruppeId(final long gruppeId) throws SQLException {
+    public ArrayList<UserDTO> findAllUserByGruppeId(final long gruppeId) throws SQLException {
         ArrayList<UserDTO> users = new ArrayList<UserDTO>();
 
         PreparedStatement preparedStatement =

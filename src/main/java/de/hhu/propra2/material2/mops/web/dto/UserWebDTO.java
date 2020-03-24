@@ -10,8 +10,8 @@ import java.io.Serializable;
 @Setter
 @Getter
 public class UserWebDTO implements Serializable {
-    public String email;
-    public String familyname;
-    public String givenname;
-    public String id;
+    private String email;
+    private String familyname;
+    private String givenname;
+    private String id;
 }

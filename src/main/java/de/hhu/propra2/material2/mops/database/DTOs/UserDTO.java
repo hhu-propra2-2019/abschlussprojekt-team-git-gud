@@ -1,4 +1,4 @@
-package de.hhu.propra2.material2.mops.Database.DTOs;
+package de.hhu.propra2.material2.mops.database.DTOs;
 
 import lombok.Data;
 import java.util.HashMap;
@@ -34,7 +34,7 @@ public class UserDTO {
     private final HashMap<GruppeDTO, Boolean> belegungUndRechte;
 
     /**
-     * Standard AllArgsConstructor for import from the Database.
+     * Standard AllArgsConstructor for import from the database.
      *
      * @param idArg
      * @param vornameArg

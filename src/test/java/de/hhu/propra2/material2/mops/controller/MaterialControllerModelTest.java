@@ -88,6 +88,7 @@ public class MaterialControllerModelTest {
                 realTags, LocalDate.of(2020, 03, 01), LocalDate.now(), 895973L,
                 "PDF", "Vorlesung"));
         when(modelService.getAlleGruppenByUser(any())).thenReturn(gruppen);
+        when(modelService.getAlleUploadGruppenByUser(any())).thenReturn(gruppen);
         when(modelService.getAlleTagsByUser(any())).thenReturn(tags);
         when(modelService.getAlleUploaderByUser(any())).thenReturn(uploader);
         when(modelService.getAlleDateiTypenByUser(any())).thenReturn(dateiTypen);
@@ -136,7 +137,7 @@ public class MaterialControllerModelTest {
         mvc.perform(get("/upload"))
                 .andExpect(content().string(containsString("ProPra")))
                 .andExpect(content().string(containsString("RDB")));
-        verify(modelService, times(1)).getAlleGruppenByUser(any());
+        verify(modelService, times(1)).getAlleUploadGruppenByUser(any());
     }
 
     @Test

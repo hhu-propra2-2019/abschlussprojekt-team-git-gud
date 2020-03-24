@@ -13,6 +13,8 @@ public interface IModelService {
 
     List<Gruppe> getAlleGruppenByUser(KeycloakAuthenticationToken token);
 
+    List<Gruppe> getAlleUploadGruppenByUser(KeycloakAuthenticationToken token);
+
     List<Datei> getAlleDateienByGruppe(Long gruppeId, KeycloakAuthenticationToken token);
 
     Set<String> getAlleTagsByUser(KeycloakAuthenticationToken token);

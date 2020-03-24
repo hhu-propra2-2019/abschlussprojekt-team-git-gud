@@ -6,7 +6,7 @@ import lombok.Data;
 public class Suche {
     private final String vonDatum;
     private final String bisDatum;
-    private final String[] tags;
+    private final String tags;
     private final String[] dateiTyp;
     private final String[] uploader;
     private final String sortierKriterium;
@@ -20,7 +20,12 @@ public class Suche {
     }
 
     public final String[] getTags() {
-        return tags == null ? null : tags.clone();
+        return toArray(tags);
+    }
+
+    private String[] toArray(final String input) {
+        String[] result  = input.split("\\s*,\\s*");
+        return result;
     }
 
     public final String[] getUploader() {
@@ -29,7 +34,7 @@ public class Suche {
     @SuppressWarnings("checkstyle:HiddenField")
     public Suche(final String vonDatum,
                  final String bisDatum,
-                 final String[] tags,
+                 final String tags,
                  final String[] dateiTyp,
                  final String[] uploader,
                  final String sortierKriterium,
@@ -39,7 +44,7 @@ public class Suche {
         this.dateiTyp = dateiTyp == null ? null : dateiTyp.clone();
         this.vonDatum = vonDatum;
         this.bisDatum = bisDatum;
-        this.tags = tags == null ? null : tags.clone();
+        this.tags = tags;
         this.uploader = uploader == null ? null : uploader.clone();
         this.sortierKriterium = sortierKriterium;
         this.gruppenId = gruppenId;

@@ -20,7 +20,6 @@ import java.util.List;
 import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 @SpringBootTest(classes = Material2Application.class)
 public final class RepositoryTest {
 
@@ -66,7 +65,7 @@ public final class RepositoryTest {
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
     public void loadUserTest() throws SQLException {
-        UserDTO userDTO = repository.findUserByKeycloaknameEager("gae");
+        UserDTO userDTO = repository.findUserByKeycloakname("gae");
 
         assertTrue(userDTO.getVorname().equals("Why are you gae?"));
         assertTrue(userDTO.getNachname().equals("You are gae"));
@@ -79,7 +78,7 @@ public final class RepositoryTest {
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
     public void loadGruppeTest() throws SQLException {
-        GruppeDTO gruppeDto = repository.findGruppeByGruppeIdEager(99999999);
+        GruppeDTO gruppeDto = repository.findGruppeByGruppeId(gruppe.getId());
 
         assertTrue(gruppeDto.getName().equals("gruppe"));
         assertTrue(gruppeDto.getDescription().equals("this is a description"));
@@ -103,7 +102,7 @@ public final class RepositoryTest {
 
         repository.saveDatei(newDatei);
 
-        UserDTO userDTO = repository.findUserByKeycloaknameEager("gae");
+        UserDTO userDTO = repository.findUserByKeycloakname("gae");
         List<TagDTO> tagDTOS = new LinkedList<>();
         for (GruppeDTO gruppeDTO : userDTO.getBelegungUndRechte().keySet()) {
             tagDTOS = gruppeDTO.getDateien().get(0).getTagDTOs();
@@ -137,7 +136,7 @@ public final class RepositoryTest {
         newDatei = new DateiDTO(datei.getId(), "gaedata",
                 user, newTags, LocalDate.now(), newVeroeffentlichungsDatum, 400, "fish", gruppe, "gaee");
 
-        repository.saveDatei(newDatei);
+        newDatei.setId(repository.saveDatei(newDatei));
         newTags.add(tag3);
         newDatei.setDateigroesse(500);
         newDatei.setDateityp("new");
@@ -145,9 +144,9 @@ public final class RepositoryTest {
         newDatei.setTagDTOs(newTags);
         newVeroeffentlichungsDatum = LocalDate.of(2020, 3, 11);
         newDatei.setVeroeffentlichungsdatum(newVeroeffentlichungsDatum);
-        repository.saveDatei(newDatei);
+        newDatei.setId(repository.saveDatei(newDatei));
 
-        UserDTO userDTO = repository.findUserByKeycloaknameEager("gae");
+        UserDTO userDTO = repository.findUserByKeycloakname("gae");
         List<TagDTO> tagDTOS = new LinkedList<>();
         for (GruppeDTO gruppeDTO : userDTO.getBelegungUndRechte().keySet()) {
             tagDTOS = gruppeDTO.getDateien().get(0).getTagDTOs();
@@ -188,9 +187,9 @@ public final class RepositoryTest {
     public void deleteGruppeByGruppeIdTest() throws SQLException {
         repository.deleteGroupByGroupDTO(gruppe);
 
-        assertTrue(repository.findGruppeByGruppeIdEager(gruppe.getId()) == null);
+        assertTrue(repository.findGruppeByGruppeId(gruppe.getId()) == null);
         assertTrue(repository.findAllUserByGruppeId(gruppe.getId()).isEmpty());
-        assertTrue(repository.findAllDateiByGruppeId(gruppe.getId()).isEmpty());
+        assertTrue(repository.findAllDateiByGruppeDTO(gruppe).isEmpty());
     }
 
     @Test
@@ -215,7 +214,7 @@ public final class RepositoryTest {
     public void deleteGruppenbelegungByUserDTOandGruppeDTOTest() throws SQLException {
         repository.deleteUserGroupRelationByUserDTOAndGruppeDTO(user, gruppe);
 
-        UserDTO loadedUser = repository.findUserByKeycloaknameEager(user.getKeycloakname());
+        UserDTO loadedUser = repository.findUserByKeycloakname(user.getKeycloakname());
 
         assertTrue(loadedUser.getBelegungUndRechte().keySet().isEmpty());
     }

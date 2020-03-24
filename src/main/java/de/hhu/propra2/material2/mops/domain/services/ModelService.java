@@ -1,10 +1,10 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
-import de.hhu.propra2.material2.mops.Database.DTOs.DateiDTO;
-import de.hhu.propra2.material2.mops.Database.DTOs.GruppeDTO;
-import de.hhu.propra2.material2.mops.Database.DTOs.TagDTO;
-import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
-import de.hhu.propra2.material2.mops.Database.Repository;
+import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.TagDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.UserDTO;
+import de.hhu.propra2.material2.mops.database.Repository;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
@@ -111,6 +111,11 @@ public final class ModelService implements IModelService {
         return user.getAllGruppen();
     }
 
+    public List<Gruppe> getAlleUploadGruppenByUser(final KeycloakAuthenticationToken token) {
+        User user = createUserByToken(token);
+        return user.getAllGruppenWithUploadrechten();
+    }
+
     public List<Datei> getAlleDateienByGruppe(final Long gruppeId,
                                               final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);
@@ -138,11 +143,10 @@ public final class ModelService implements IModelService {
         return tags;
     }
 
-
     public Set<String> getAlleUploaderByUser(final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);
         List<Gruppe> groups = user.getAllGruppen();
-        Set<String> uploader = new HashSet<String>();
+        Set<String> uploader = new HashSet<>();
         for (Gruppe gruppe : groups) {
             uploader.addAll(gruppe.getDateien()
                     .stream()
@@ -196,7 +200,7 @@ public final class ModelService implements IModelService {
     public Set<String> getAlleDateiTypenByUser(final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);
         List<Gruppe> groups = user.getAllGruppen();
-        Set<String> dateiTypen = new HashSet<String>();
+        Set<String> dateiTypen = new HashSet<>();
         for (Gruppe gruppe : groups) {
             dateiTypen.addAll(gruppe.getDateien()
                     .stream()
@@ -249,12 +253,27 @@ public final class ModelService implements IModelService {
         // for saving the file
         GruppeDTO groupDTO = new GruppeDTO(gruppe.getId(), null,
                 null, null);
+        return saveDatei(datei, groupDTO);
+    }
+
+    public long saveDatei(final Datei datei, final long gruppenId) throws SQLException {
+        if (datei == null) {
+            throw new IllegalArgumentException();
+        }
+        // create GruppeDTO and UserDTO only with Id as parameter because Id is the only parameter which is necessary
+        // for saving the file
+        GruppeDTO groupDTO = new GruppeDTO(gruppenId, null,
+                null, null);
+        return saveDatei(datei, groupDTO);
+    }
+
+    private long saveDatei(final Datei datei, final GruppeDTO gruppeDTO) throws SQLException {
         UserDTO userDTO = new UserDTO(datei.getUploader().getId(), null, null,
                 null, null);
 
         DateiDTO dateiDTO = new DateiDTO(datei.getName(), userDTO, tagsToTagDTOs(datei.getTags()),
                 datei.getUploaddatum(), datei.getVeroeffentlichungsdatum(), datei.getDateigroesse(),
-                datei.getDateityp(), groupDTO, datei.getKategorie());
+                datei.getDateityp(), gruppeDTO, datei.getKategorie());
         return repository.saveDatei(dateiDTO);
     }
 
@@ -267,5 +286,13 @@ public final class ModelService implements IModelService {
             tagDTOs.add(new TagDTO(tag.getText()));
         }
         return tagDTOs;
+    }
+
+    public Datei findDateiById(final long dateiId) throws SQLException {
+        return loadDatei(repository.findDateiById(dateiId));
+    }
+
+    public User findUserByKeycloakname(final String keycloakname) throws SQLException {
+        return loadUser(repository.findUserByKeycloakname(keycloakname));
     }
 }

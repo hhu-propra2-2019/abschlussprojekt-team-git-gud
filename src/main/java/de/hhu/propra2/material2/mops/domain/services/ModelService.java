@@ -111,6 +111,11 @@ public final class ModelService implements IModelService {
         return user.getAllGruppen();
     }
 
+    public List<Gruppe> getAlleUploadGruppenByUser(final KeycloakAuthenticationToken token) {
+        User user = createUserByToken(token);
+        return user.getAllGruppenWithUploadrechten();
+    }
+
     public List<Datei> getAlleDateienByGruppe(final Long gruppeId,
                                               final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);

@@ -1,5 +1,6 @@
 package de.hhu.propra2.material2.mops.web.dto;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.hhu.propra2.material2.mops.Material2Application;
@@ -36,6 +37,7 @@ public class WebDTOServiceTest {
 
     private String jsonExample;
     private BufferedReader bufferedReader;
+    private UpdatedGroupRequestMapper group;
 
     @BeforeEach
     private void setup() throws IOException {
@@ -43,16 +45,18 @@ public class WebDTOServiceTest {
         File file = new File("src/main/resources/example.json");
         bufferedReader = new BufferedReader(new FileReader(file));
         bufferedReader.lines().forEach(string -> jsonExample = jsonExample.concat(string));
-        System.out.println(jsonExample.trim());
+        ObjectMapper mapper =  new ObjectMapper();
+        group = mapper.readValue(file, UpdatedGroupRequestMapper.class);
     }
 
     @Test
-    public void methodGeneratesTheRightObject() {
+    public void testConversionOfUserP() {
         Mockito.when(serviceAccountRestTemplate.getForEntity("http://localhost:8080/gruppe2//api/updateGroups/0",
-                UpdatedGroupRequestMapper.class)).thenReturn(new ResponseEntity(jsonExample, HttpStatus.OK));
+                UpdatedGroupRequestMapper.class)).thenReturn(new ResponseEntity(group, HttpStatus.OK));
 
         UpdatedGroupRequestMapper updatedGroupRequestMapper = serviceAccountRestTemplate
                                 .getForEntity("http://localhost:8080/gruppe2//api/updateGroups/0", UpdatedGroupRequestMapper.class)
                                 .getBody();
+
     }
 }

@@ -1,13 +1,17 @@
 package de.hhu.propra2.material2.mops.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.Value;
 
-@Value
-public class UserWebDTO {
+import java.io.Serializable;
+
+@Setter
+@Getter
+public class UserWebDTO implements Serializable {
     public String email;
     public String familyname;
     public String givenname;
-    @JsonProperty("user_id")
-    public String userId;
+    public String id;
 }

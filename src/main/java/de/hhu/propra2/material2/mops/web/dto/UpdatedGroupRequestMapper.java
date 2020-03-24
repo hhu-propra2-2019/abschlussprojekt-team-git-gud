@@ -1,12 +1,16 @@
 package de.hhu.propra2.material2.mops.web.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.List;
 
-@Value
-public class UpdatedGroupRequestMapper {
-    private List<GroupWebDTO> groupList;
+
+@Setter
+@Getter
+public class UpdatedGroupRequestMapper implements Serializable {
     private int status;
+    private List<GroupWebDTO> groupList;
+
 }

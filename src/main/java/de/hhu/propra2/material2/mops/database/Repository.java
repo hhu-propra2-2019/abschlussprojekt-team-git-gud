@@ -5,19 +5,11 @@ import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.TagDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.UserDTO;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.time.Duration;
-import java.time.LocalTime;
+import java.sql.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,7 +21,7 @@ import java.util.List;
 public final class Repository {
     private Connection connection;
     private Environment env;
-    private HashMap<Long, CachedGruppe> gruppeCache;
+    private HashMap<Long, GruppeDTO> gruppeCache;
 
     /**
      * Constructor that autowires
@@ -42,7 +34,7 @@ public final class Repository {
     @Autowired
     public Repository(final Environment envArg) {
         this.env = envArg;
-        gruppeCache = new HashMap<Long, CachedGruppe>();
+        gruppeCache = new HashMap<Long, GruppeDTO>();
         try {
             connection = DriverManager.getConnection("jdbc:mysql://localhost:23306/materialsammlung",
                     env.getProperty("spring.datasource.username"), env.getProperty("spring.datasource.password"));
@@ -254,22 +246,22 @@ public final class Repository {
     }
 
     @SuppressWarnings("checkstyle:MagicNumber")
-    public LinkedList<DateiDTO> findAllDateiByGruppeId(final long gruppeId) throws SQLException {
-        CachedGruppe cachedGruppe = gruppeCache.get(gruppeId);
+    public LinkedList<DateiDTO> findAllDateiByGruppeDTO(final GruppeDTO gruppeDTO) throws SQLException {
+        GruppeDTO cachedGruppe = gruppeCache.get(gruppeDTO.getId());
 
         if (cachedGruppe != null) {
-            Duration duration = Duration.between(cachedGruppe.getLastAccessTime(), LocalTime.now());
-            //10 Minutes timeout
-            if (duration.getSeconds() < 600) {
-                return (LinkedList<DateiDTO>) cachedGruppe.getGruppeDTO().getDateien();
+            if (!(cachedGruppe.hasNoFiles())) {
+                return (LinkedList<DateiDTO>) cachedGruppe.getDateien();
             }
+        } else {
+            gruppeCache.put(gruppeDTO.getId(), gruppeDTO);
         }
 
         LinkedList<DateiDTO> dateien = new LinkedList<DateiDTO>();
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select * from Datei where gruppeID=?");
-        preparedStatement.setString(1, "" + gruppeId);
+        preparedStatement.setString(1, "" + gruppeDTO.getId());
 
         ResultSet dateiResult = preparedStatement.executeQuery();
         while (dateiResult.next()) {
@@ -360,6 +352,11 @@ public final class Repository {
     @SuppressWarnings("checkstyle:magicnumber")
     boolean dateiExists(final DateiDTO dateiDTO) throws SQLException {
         boolean doesItExist = false;
+
+        if (dateiDTO.getId() == -1) {
+            return false;
+        }
+
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
                         "select * from Datei where dateiID=?");
@@ -565,20 +562,20 @@ public final class Repository {
         return gruppe;
     }
 
-    GruppeDTO findGruppeByGruppeIdEager(final long gruppeId) throws SQLException {
+    GruppeDTO findGruppeByGruppeDTOEager(final GruppeDTO gruppeDTO) throws SQLException {
         GruppeDTO gruppe = null;
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select * from Gruppe where gruppeID=?");
-        preparedStatement.setString(1, "" + gruppeId);
+        preparedStatement.setString(1, "" + gruppeDTO);
 
         ResultSet gruppeResult = preparedStatement.executeQuery();
 
         if (gruppeResult.next()) {
-            gruppe = new GruppeDTO(gruppeId,
+            gruppe = new GruppeDTO(gruppeDTO.getId(),
                     gruppeResult.getString("titel"),
                     gruppeResult.getString("beschreibung"),
-                    findAllDateiByGruppeId(gruppeId), this);
+                    findAllDateiByGruppeDTO(gruppeDTO), this);
 
             for (DateiDTO datei : gruppe.getDateien()) {
                 datei.setGruppe(gruppe);
@@ -744,38 +741,6 @@ public final class Repository {
         preparedStatement.execute();
 
         preparedStatement.close();
-    }
-
-    /*
-        CACHING OF THE USER FOR FASTER LOADING
-     */
-    @Getter
-    private static class CachedGruppe {
-        private GruppeDTO gruppeDTO;
-        private LocalTime lastAccessTime;
-
-        CachedGruppe(final GruppeDTO gruppeDTOArg) {
-            gruppeDTO = gruppeDTOArg;
-            lastAccessTime = LocalTime.now();
-        }
-
-        @Override
-        public boolean equals(final Object o) {
-            if (o == null) {
-                return false;
-            }
-
-            if (o.getClass() == this.getClass()) {
-                CachedGruppe cachedGruppe = (CachedGruppe) o;
-                return cachedGruppe.getGruppeDTO().getId() == this.gruppeDTO.getId();
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            return 0;
-        }
     }
 
 }

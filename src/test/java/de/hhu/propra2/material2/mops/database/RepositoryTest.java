@@ -79,7 +79,7 @@ public final class RepositoryTest {
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
     public void loadGruppeTest() throws SQLException {
-        GruppeDTO gruppeDto = repository.findGruppeByGruppeIdEager(99999999);
+        GruppeDTO gruppeDto = repository.findGruppeByGruppeDTOEager(gruppe);
 
         assertTrue(gruppeDto.getName().equals("gruppe"));
         assertTrue(gruppeDto.getDescription().equals("this is a description"));
@@ -188,9 +188,9 @@ public final class RepositoryTest {
     public void deleteGruppeByGruppeIdTest() throws SQLException {
         repository.deleteGroupByGroupDTO(gruppe);
 
-        assertTrue(repository.findGruppeByGruppeIdEager(gruppe.getId()) == null);
+        assertTrue(repository.findGruppeByGruppeDTOEager(gruppe) == null);
         assertTrue(repository.findAllUserByGruppeId(gruppe.getId()).isEmpty());
-        assertTrue(repository.findAllDateiByGruppeId(gruppe.getId()).isEmpty());
+        assertTrue(repository.findAllDateiByGruppeDTO(gruppe).isEmpty());
     }
 
     @Test

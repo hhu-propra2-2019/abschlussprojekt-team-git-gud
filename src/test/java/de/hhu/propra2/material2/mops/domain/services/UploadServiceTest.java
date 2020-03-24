@@ -125,7 +125,8 @@ public class UploadServiceTest {
     }
 
     @Test
-    public void uploadFileWithNewFileNameWithoutExtension() throws FileUploadException, SQLException, NoUploadPermissionException {
+    public void uploadFileWithNewFileNameWithoutExtension() throws FileUploadException,
+            SQLException, NoUploadPermissionException {
         uploadForm.setDateiname("newName");
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
 
@@ -138,7 +139,8 @@ public class UploadServiceTest {
     }
 
     @Test
-    public void uploadFileWithNewFileNameWithExtension() throws FileUploadException, SQLException, NoUploadPermissionException {
+    public void uploadFileWithNewFileNameWithExtension() throws FileUploadException,
+            SQLException, NoUploadPermissionException {
         uploadForm.setDateiname("anotherNewName.txt");
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
 
@@ -190,7 +192,8 @@ public class UploadServiceTest {
     }
 
     @Test
-    public void uploadFileWithTagStringWithCommaAtTheEnd() throws FileUploadException, SQLException, NoUploadPermissionException {
+    public void uploadFileWithTagStringWithCommaAtTheEnd() throws FileUploadException,
+            SQLException, NoUploadPermissionException {
         uploadForm.setSelectedTags("tag1  , tag2,");
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
 

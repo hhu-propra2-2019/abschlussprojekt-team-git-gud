@@ -161,8 +161,9 @@ public final class Repository {
     public void deleteGroupByGroupDTO(final GruppeDTO gruppeDTO) throws SQLException {
         deleteUserGroupRelationByGroupId(gruppeDTO.getId());
 
+
         for (DateiDTO dateiDTO : gruppeDTO.getDateien()) {
-            deleteDateiByDateiId(dateiDTO.getId());
+            deleteDateiByDateiDTO(dateiDTO);
         }
 
         PreparedStatement preparedStatement =
@@ -215,9 +216,19 @@ public final class Repository {
             }
             preparedStatement.close();
             id.close();
+
+            if (gruppeCache.get(dateiDTO.getId()) != null) {
+                gruppeCache.get(dateiDTO.getGruppe().getId()).setDateien(new LinkedList<DateiDTO>());
+                gruppeCache.remove(dateiDTO.getGruppe().getId());
+            }
+
             return dateiId;
         } else {
             updateDatei(dateiDTO, dateiDTO.getId());
+            if (gruppeCache.get(dateiDTO.getId()) != null) {
+                gruppeCache.get(dateiDTO.getGruppe().getId()).setDateien(new LinkedList<DateiDTO>());
+                gruppeCache.remove(dateiDTO.getGruppe().getId());
+            }
             return dateiDTO.getId();
         }
     }
@@ -279,14 +290,19 @@ public final class Repository {
         return dateien;
     }
 
-    public void deleteDateiByDateiId(final long dateiId) throws SQLException {
-        deleteTagRelationsByDateiId(dateiId);
+    public void deleteDateiByDateiDTO(final DateiDTO dateiDTO) throws SQLException {
+        deleteTagRelationsByDateiId(dateiDTO.getId());
+
+        long gruppeId = dateiDTO.getGruppe().getId();
+
+        LinkedList<DateiDTO> dateien = (LinkedList<DateiDTO>) dateiDTO.getGruppe().getDateien();
+        dateien.remove(dateiDTO);
+        gruppeCache.remove(gruppeId);
+
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement("delete from Datei where dateiID=?");
-        preparedStatement.setLong(1, dateiId);
-
-        deleteTagRelationsByDateiId(dateiId);
+        preparedStatement.setLong(1, dateiDTO.getId());
 
         preparedStatement.execute();
 
@@ -536,7 +552,7 @@ public final class Repository {
         ResultSet gruppenResult = preparedStatement.executeQuery();
 
         while (gruppenResult.next()) {
-            gruppen.put(findGruppeByGruppeIdlazy(gruppenResult.getLong("gruppeID")),
+            gruppen.put(findGruppeByGruppeId(gruppenResult.getLong("gruppeID")),
                     gruppenResult.getBoolean("upload_berechtigung"));
         }
 
@@ -546,7 +562,7 @@ public final class Repository {
         return gruppen;
     }
 
-    GruppeDTO findGruppeByGruppeIdlazy(final long gruppeId) throws SQLException {
+    GruppeDTO findGruppeByGruppeId(final long gruppeId) throws SQLException {
         GruppeDTO gruppe = null;
 
         PreparedStatement preparedStatement =

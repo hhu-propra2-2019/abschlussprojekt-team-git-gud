@@ -132,4 +132,22 @@ public final class DateiDTO {
         this.dateityp = dateitypArg;
         this.kategorie = kategorieArg;
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == null) {
+            return false;
+        }
+
+        if (o.getClass() == this.getClass()) {
+            DateiDTO date = (DateiDTO) o;
+            return date.getId() == this.getId();
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
 }

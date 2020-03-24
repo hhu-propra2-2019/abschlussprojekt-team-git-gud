@@ -99,7 +99,7 @@ public class MaterialController {
      * @return String
      */
     @PostMapping("/suche")
-    @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
+    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public String suchen(
             final KeycloakAuthenticationToken token, final Model model, final @ModelAttribute Suche suchen,
             final String search) {

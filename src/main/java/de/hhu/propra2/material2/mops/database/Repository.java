@@ -217,7 +217,7 @@ public final class Repository {
             preparedStatement.close();
             id.close();
 
-            if (gruppeCache.get(dateiDTO.getId()) != null) {
+            if (gruppeCache.get(dateiDTO.getGruppe().getId()) != null) {
                 gruppeCache.get(dateiDTO.getGruppe().getId()).setDateien(new LinkedList<DateiDTO>());
                 gruppeCache.remove(dateiDTO.getGruppe().getId());
             }
@@ -225,7 +225,7 @@ public final class Repository {
             return dateiId;
         } else {
             updateDatei(dateiDTO, dateiDTO.getId());
-            if (gruppeCache.get(dateiDTO.getId()) != null) {
+            if (gruppeCache.get(dateiDTO.getGruppe().getId()) != null) {
                 gruppeCache.get(dateiDTO.getGruppe().getId()).setDateien(new LinkedList<DateiDTO>());
                 gruppeCache.remove(dateiDTO.getGruppe().getId());
             }

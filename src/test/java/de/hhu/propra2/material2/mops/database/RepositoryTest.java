@@ -62,7 +62,6 @@ public final class RepositoryTest {
         repository.deleteAll();
     }
 
-
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
     public void loadUserTest() throws SQLException {

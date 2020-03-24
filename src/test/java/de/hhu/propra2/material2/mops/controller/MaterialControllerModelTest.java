@@ -2,7 +2,10 @@ package de.hhu.propra2.material2.mops.controller;
 
 import com.c4_soft.springaddons.test.security.context.support.WithMockKeycloackAuth;
 import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
+import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
+import de.hhu.propra2.material2.mops.domain.models.Tag;
+import de.hhu.propra2.material2.mops.domain.models.User;
 import de.hhu.propra2.material2.mops.domain.services.MinIOService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
 import de.hhu.propra2.material2.mops.domain.services.UploadService;
@@ -19,7 +22,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -70,12 +75,25 @@ public class MaterialControllerModelTest {
         Set<String> dateiTypen = new HashSet<>();
         dateiTypen.add("XML");
         dateiTypen.add("JSON");
+        Set<String> kategorien = new HashSet<>();
+        kategorien.add("Übung");
+        kategorien.add("Vorlesung");
+        User Jens = new User(1L, "Jens", "Bälchenbude",
+                "orga", new HashMap<>());
+        List<Tag> realTags = new ArrayList<>();
+        realTags.add(new Tag(1L, "Klausurrelevant"));
+        List<Datei> dateien = new ArrayList<>();
+        dateien.add(new Datei(1L, "Vorlesung1", Jens,
+                realTags, LocalDate.of(2020,03,01), LocalDate.now(),895973L,
+                "PDF", "Vorlesung"));
         when(modelService.getAlleGruppenByUser(any())).thenReturn(gruppen);
         when(modelService.getAlleTagsByUser(any())).thenReturn(tags);
         when(modelService.getAlleUploaderByUser(any())).thenReturn(uploader);
         when(modelService.getAlleDateiTypenByUser(any())).thenReturn(dateiTypen);
         when(modelService.getAccountFromKeycloak(any())).thenReturn(new Account("BennyGoodman", ".de",
                 "aaa", dateiTypen));
+        when(modelService.getKategorienByGruppe(any(), any())).thenReturn(kategorien);
+        when(modelService.getAlleDateienByGruppe(any(), any())).thenReturn(dateien);
     }
 
     // Startseite Test
@@ -228,5 +246,65 @@ public class MaterialControllerModelTest {
     void testReturnSucheTemplate() throws Exception {
         mvc.perform(get("/suche"))
                 .andExpect(content().string(containsString("Suche")));
+    }
+
+    //Dateisicht test
+
+    @Test
+    @WithMockKeycloackAuth(name = "studentin1", roles = "studentin")
+    void DateiSichtGruppenTabsGetCreated() throws Exception {
+        mvc.perform(get("/dateiSicht?gruppenId=1"))
+                .andExpect(content().string(containsString("ProPra")))
+                .andExpect(content().string(containsString("RDB")));
+        verify(modelService, times(1)).getAlleGruppenByUser(any());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "studentin3", roles = "studentin")
+    void DateiSichtKategorienGetLoaded() throws Exception {
+        mvc.perform(get("/dateiSicht?gruppenId=1"))
+                .andExpect(content().string(containsString("Übung")))
+                .andExpect(content().string(containsString("Vorlesung")));
+        verify(modelService, times(1)).getKategorienByGruppe(any(), any());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "studentin3", roles = "studentin")
+    void DateiSichtTagsGetLoaded() throws Exception {
+        mvc.perform(get("/dateiSicht?gruppenId=1"))
+                .andExpect(content().string(containsString("Vorlesung")));
+        verify(modelService, times(1)).getAlleDateienByGruppe(any(), any());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "studentin3", roles = "studentin")
+    void DateiSichtUploaderGetsLoaded() throws Exception {
+        mvc.perform(get("/dateiSicht?gruppenId=1"))
+                .andExpect(content().string(containsString("Jens Bälchenbude")));
+        verify(modelService, times(1)).getAlleDateienByGruppe(any(), any());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "studentin3", roles = "studentin")
+    void DateiSichtDateiTypGetsLoaded() throws Exception {
+        mvc.perform(get("/dateiSicht?gruppenId=1"))
+                .andExpect(content().string(containsString("PDF")));
+        verify(modelService, times(1)).getAlleDateienByGruppe(any(), any());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "studentin3", roles = "studentin")
+    void DateiSichtUploadDatumTypGetsLoaded() throws Exception {
+        mvc.perform(get("/dateiSicht?gruppenId=1"))
+                .andExpect(content().string(containsString("2020-03-01")));
+        verify(modelService, times(1)).getAlleDateienByGruppe(any(), any());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "studentin3", roles = "studentin")
+    void DateiSichtDateiGrößeTypGetsLoaded() throws Exception {
+        mvc.perform(get("/dateiSicht?gruppenId=1"))
+                .andExpect(content().string(containsString("875 KB")));
+        verify(modelService, times(1)).getAlleDateienByGruppe(any(), any());
     }
 }

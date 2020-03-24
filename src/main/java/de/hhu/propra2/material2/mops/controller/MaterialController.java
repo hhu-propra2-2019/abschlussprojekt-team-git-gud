@@ -100,7 +100,7 @@ public class MaterialController {
      * @return String
      */
     @PostMapping("/suche")
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public String suchen(
             final KeycloakAuthenticationToken token, final Model model, final @ModelAttribute Suche suchen,
             final String search) {
@@ -125,7 +125,7 @@ public class MaterialController {
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public String upload(final KeycloakAuthenticationToken token, final Model model) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
-        model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
+        model.addAttribute("gruppen", modelService.getAlleUploadGruppenByUser(token));
         model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
         model.addAttribute("error", errorMessage);
         model.addAttribute("success", successMessage);
@@ -144,7 +144,7 @@ public class MaterialController {
     public String upload(final KeycloakAuthenticationToken token, final Model model, final UploadForm upForm) {
         Account uploader = modelService.getAccountFromKeycloak(token);
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
-        model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
+        model.addAttribute("gruppen", modelService.getAlleUploadGruppenByUser(token));
         model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
         try {
             uploadService.startUpload(upForm, uploader.getName());

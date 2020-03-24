@@ -1,4 +1,4 @@
-package de.hhu.propra2.material2.mops.Database.DTOs;
+package de.hhu.propra2.material2.mops.database.DTOs;
 
 import lombok.Getter;
 import lombok.Setter;

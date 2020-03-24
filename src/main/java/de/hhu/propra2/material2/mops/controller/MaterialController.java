@@ -74,6 +74,7 @@ public class MaterialController {
         model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
         model.addAttribute("kategorien", modelService.getKategorienByGruppe(gruppenId, token));
         model.addAttribute("dateien", modelService.getAlleDateienByGruppe(gruppenId, token));
+        model.addAttribute("gruppenAuswahl", gruppenId);
         return "dateiSicht";
     }
 

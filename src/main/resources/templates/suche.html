@@ -65,11 +65,11 @@
                     <div class="form-inline">
                         <label for="FromDate"> Von</label>
                         <div class="form-check">
-                            <input type="date" value="" id="FromDate" name="vonDatum">
+                            <input type="date" value="" id="FromDate" th:value="${suche?.getVonDatum()}" name="vonDatum">
                         </div>
                         <label for="UntilDate"> Bis</label>
                         <div class="form-check">
-                            <input type="date" value="" id="UntilDate" name ="bisDatum">
+                            <input type="date" value="" id="UntilDate" th:value="${suche?.getBisDatum()}" name ="bisDatum">
                         </div>
                     </div>
             </div>

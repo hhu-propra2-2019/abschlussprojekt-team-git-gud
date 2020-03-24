@@ -31,7 +31,8 @@
 
             <div class="form-group">
                 <label for="dataname">Dateiname</label>
-                <input type="text" class="form-control" id="dataname" placeholder="Eingabe" name="dateiName">
+                <input type="text" class="form-control" id="dataname" placeholder="Eingabe" th:value="${suche?.getDateiName()}"
+                       name="dateiName">
             </div>
 
             <div class="form-group list-inline">

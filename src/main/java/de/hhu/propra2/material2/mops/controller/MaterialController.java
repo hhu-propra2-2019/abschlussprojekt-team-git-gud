@@ -169,7 +169,9 @@ public class MaterialController {
      * update page.
      * @param token injected keycloak token
      * @param model injected thymeleaf model
-     * @return
+     * @param gruppenId id of the group where the file is saved
+     * @param dateiId id of the file
+     * @return update page
      */
     @GetMapping("/update")
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
@@ -190,13 +192,13 @@ public class MaterialController {
      * update routing.
      * @param token injected keycloak token
      * @param model injected thymeleaf model
-     * @param updateForm
-     * @param gruppenId
-     * @param dateiId
-     * @return
+     * @param updateForm form for update
+     * @param gruppenId id of the group where the file is saved
+     * @param dateiId id of the file
+     * @return update page
      */
     @PostMapping("/update")
-    @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
     //TODO bereits vorhandene tags in html anzeigen
     //TODO überprüfen, dass Zeit nicht leer ist
     //TODO was tun, wenn Tags leer sind?
@@ -215,7 +217,7 @@ public class MaterialController {
         } catch (NoUploadPermissionException e) {
             setMessages("Sie sind nicht berechtigt diese Datei zu verändern.", null);
         }
-        return "redirect:/upload";
+        return "redirect:/update";
     }
 
     /**

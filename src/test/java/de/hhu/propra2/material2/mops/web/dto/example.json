@@ -1,0 +1,25 @@
+{
+  "status": 5,
+  "groupList": [
+    {
+      "members": [
+        {
+          "id": "orga",
+          "givenname": "orga",
+          "familyname": "orga",
+          "email": "blorga@orga.org"
+        }
+      ],
+      "roles": {
+        "orga": "ADMIN"
+      },
+      "id": "8c15f614-fe04-4ac4-a2d7-d13e62ba8597",
+      "title": "sdsad",
+      "description": "sadsad",
+      "userMaximum": 2,
+      "type": "SIMPLE",
+      "visibility": "PUBLIC",
+      "parent": null
+    }
+  ]
+}

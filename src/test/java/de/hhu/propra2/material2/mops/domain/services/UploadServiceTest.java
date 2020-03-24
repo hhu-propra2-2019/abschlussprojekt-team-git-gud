@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Calendar;
+import java.time.Month;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -265,6 +265,6 @@ public class UploadServiceTest {
         ArgumentCaptor<Datei> dateiCaptor = ArgumentCaptor.forClass(Datei.class);
         verify(modelServiceMock, times(1)).saveDatei(dateiCaptor.capture(), eq(gruppeMock));
         Datei capturedDatei = dateiCaptor.getValue();
-        assertThat(capturedDatei.getVeroeffentlichungsdatum(), is(LocalDate.of(2020, Calendar.MARCH, 13)));
+        assertThat(capturedDatei.getVeroeffentlichungsdatum(), is(LocalDate.of(2020, Month.MARCH.getValue(), 13)));
     }
 }

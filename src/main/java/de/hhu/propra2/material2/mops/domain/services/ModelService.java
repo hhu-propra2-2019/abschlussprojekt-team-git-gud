@@ -146,7 +146,7 @@ public final class ModelService implements IModelService {
     public Set<String> getAlleUploaderByUser(final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);
         List<Gruppe> groups = user.getAllGruppen();
-        Set<String> uploader = new HashSet<String>();
+        Set<String> uploader = new HashSet<>();
         for (Gruppe gruppe : groups) {
             uploader.addAll(gruppe.getDateien()
                     .stream()
@@ -200,7 +200,7 @@ public final class ModelService implements IModelService {
     public Set<String> getAlleDateiTypenByUser(final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);
         List<Gruppe> groups = user.getAllGruppen();
-        Set<String> dateiTypen = new HashSet<String>();
+        Set<String> dateiTypen = new HashSet<>();
         for (Gruppe gruppe : groups) {
             dateiTypen.addAll(gruppe.getDateien()
                     .stream()
@@ -290,5 +290,9 @@ public final class ModelService implements IModelService {
 
     public Datei findDateiById(final long dateiId) throws SQLException {
         return loadDatei(repository.findDateiById(dateiId));
+    }
+
+    public User findUserByKeycloakname(final String keycloakname) throws SQLException {
+        return loadUser(repository.findUserByKeycloakname(keycloakname));
     }
 }

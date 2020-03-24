@@ -185,6 +185,8 @@ public class MaterialController {
             model.addAttribute("datei", modelService.findDateiById(dateiId));
         } catch (SQLException e) {
             setMessages("Die Datei konnte nicht geladen werden.", null);
+        } catch (NullPointerException e) {
+            setMessages("Die Datei konnte nicht geladen werden.", null);
         }
         return "update";
     }
@@ -203,6 +205,7 @@ public class MaterialController {
     //TODO bereits vorhandene tags in html anzeigen
     //TODO überprüfen, dass Zeit nicht leer ist
     //TODO was tun, wenn Tags leer sind?
+    //TODO Success/Errormessage anzeigen
     public String update(final KeycloakAuthenticationToken token,
                          final Model model,
                          final UpdateForm updateForm,
@@ -219,7 +222,8 @@ public class MaterialController {
         } catch (NoUploadPermissionException e) {
             setMessages("Sie sind nicht berechtigt diese Datei zu verändern.", null);
         }
-        return "redirect:/update";
+        String string = "redirect:/update?gruppenId=%d&dateiId=%d";
+        return String.format(string, gruppenId, dateiId);
     }
 
     /**

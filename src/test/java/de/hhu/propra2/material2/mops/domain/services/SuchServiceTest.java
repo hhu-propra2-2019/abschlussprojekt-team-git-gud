@@ -84,7 +84,7 @@ public class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "",
-                null,
+                "",
                 null,
                 null,
                 null,
@@ -103,7 +103,7 @@ public class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "",
-                null,
+                "",
                 null,
                 null,
                 null,
@@ -126,7 +126,7 @@ public class SuchServiceTest {
         Suche suche = new Suche(
                 "2020-02-20",
                 "",
-                null,
+                "",
                 null,
                 null,
                 null,
@@ -147,7 +147,7 @@ public class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "2020-02-20",
-                null,
+                "",
                 null,
                 null,
                 null,
@@ -165,7 +165,7 @@ public class SuchServiceTest {
 
     @Test
     public void einNichtVergebenerTagFilter() {
-        String[] tags = {"NichtVergebenerTag"};
+        String tags = "NichtVergebenerTag";
         Suche suche = new Suche(
                 "",
                 "",
@@ -185,7 +185,7 @@ public class SuchServiceTest {
 
     @Test
     public void einVergebenerTagFilter() {
-        String[] tags = {"Vorlesung"};
+        String tags = "Vorlesung";
         Suche suche = new Suche(
                 "",
                 "",
@@ -207,7 +207,7 @@ public class SuchServiceTest {
 
     @Test
     public void mehrereVergebeneTagsFilter() {
-        String[] tags = {"Relevant", "Irgendwas"};
+        String tags = "Relevant, Irgendwas";
         Suche suche = new Suche(
                 "",
                 "",
@@ -230,7 +230,7 @@ public class SuchServiceTest {
 
     @Test
     public void mehrereVergebeneTagsVerschiedeneDateienFilter() {
-        String[] tags = {"Relevant", "Irgendwas", "Vorlesung"};
+        String tags = "Relevant, Irgendwas, Vorlesung";
         Suche suche = new Suche(
                 "",
                 "",
@@ -251,7 +251,7 @@ public class SuchServiceTest {
 
     @Test
     public void vergebeneUndNichtVergebeneTagsFilter() {
-        String[] tags = {"Relevant", "Haus"};
+        String tags = "Relevant, Haus";
         Suche suche = new Suche(
                 "",
                 "",
@@ -275,7 +275,7 @@ public class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "",
-                null,
+                "",
                 dateiTypen,
                 null,
                 null,
@@ -295,7 +295,7 @@ public class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "",
-                null,
+                "",
                 dateiTypen,
                 null,
                 null,
@@ -317,7 +317,7 @@ public class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "",
-                null,
+                "",
                 dateiTypen,
                 null,
                 null,
@@ -341,7 +341,7 @@ public class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "",
-                null,
+                "",
                 null,
                 uploader,
                 null,
@@ -361,7 +361,7 @@ public class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "",
-                null,
+                "",
                 null,
                 uploader,
                 null,
@@ -383,7 +383,7 @@ public class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "",
-                null,
+                "",
                 null,
                 uploader,
                 null,
@@ -407,7 +407,7 @@ public class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "",
-                null,
+                "",
                 null,
                 null,
                 "name",
@@ -431,7 +431,7 @@ public class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "",
-                null,
+                "",
                 null,
                 null,
                 "name",
@@ -455,7 +455,7 @@ public class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "",
-                null,
+                "",
                 null,
                 null,
                 "Dateityp",
@@ -483,7 +483,7 @@ public class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "",
-                null,
+                "",
                 null,
                 null,
                 "Dateityp",
@@ -511,7 +511,7 @@ public class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "",
-                null,
+                "",
                 null,
                 null,
                 "Uploader",
@@ -539,7 +539,7 @@ public class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "",
-                null,
+                "",
                 null,
                 null,
                 "Uploader",
@@ -567,7 +567,7 @@ public class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "",
-                null,
+                "",
                 null,
                 null,
                 "Datum",
@@ -595,7 +595,7 @@ public class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "",
-                null,
+                "",
                 null,
                 null,
                 "Datum",

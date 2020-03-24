@@ -119,6 +119,6 @@ public final class GruppeDTO {
     }
 
     public boolean hasNoFiles() {
-        return dateien.isEmpty() || dateien == null;
+        return dateien.isEmpty();
     }
 }

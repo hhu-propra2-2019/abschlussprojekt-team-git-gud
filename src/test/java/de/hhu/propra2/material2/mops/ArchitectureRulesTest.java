@@ -7,7 +7,7 @@ import com.tngtech.archunit.lang.ArchRule;
 import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
 
 @AnalyzeClasses(packagesOf = Material2Application.class)
-public class ArchitectureRulesTest {
+class ArchitectureRulesTest {
 
     @ArchTest
     private static ArchRule layerDependenciesAreRespected =

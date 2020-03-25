@@ -18,59 +18,60 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @SpringBootTest(classes = Material2Application.class)
-public final class RepositoryTest {
+final class RepositoryTest {
 
-    private Repository repository;
-    private GruppeDTO gruppe;
-    private UserDTO user;
-    private TagDTO tag;
-    private LinkedList<TagDTO> tags = new LinkedList<TagDTO>();
-    private DateiDTO datei;
-    private LinkedList<DateiDTO> dateien = new LinkedList<DateiDTO>();
-    private HashMap<GruppeDTO, Boolean> berechtigung = new HashMap<GruppeDTO, Boolean>();
+    private final Repository repository;
+    private final GruppeDTO gruppe;
+    private final UserDTO user;
+    private final DateiDTO datei;
 
     @SuppressWarnings("checkstyle:magicnumber")
     @Autowired
-    public RepositoryTest(final Repository repositoryArg) {
+    RepositoryTest(final Repository repositoryArg) {
         repository = repositoryArg;
 
-        tag = new TagDTO("gae");
+        TagDTO tag = new TagDTO("gae");
+        LinkedList<TagDTO> tags = new LinkedList<>();
         tags.add(tag);
 
+        LinkedList<DateiDTO> dateien = new LinkedList<>();
         gruppe = new GruppeDTO(99999999, "gruppe", "this is a description", dateien, repositoryArg);
+        HashMap<GruppeDTO, Boolean> berechtigung = new HashMap<>();
         berechtigung.put(gruppe, true);
 
         user = new UserDTO(999999, "Why are you gae?", "You are gae",
                 "gae", berechtigung);
 
-        datei = new DateiDTO("gaedata", user, tags, LocalDate.of(2020, 3, 01),
+        datei = new DateiDTO("gaedata", user, tags, LocalDate.of(2020, 3, 1),
                 LocalDate.now(), 200, "gae", gruppe, "gae");
         dateien.add(datei);
     }
 
     @BeforeEach
-    public void preparation() throws SQLException {
+    void preparation() throws SQLException {
         repository.saveUser(user);
         datei.setId(repository.saveDatei(datei));
     }
 
     @AfterEach
-    public void deleteAll() throws SQLException {
+    void deleteAll() throws SQLException {
         repository.deleteAll();
     }
 
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
-    public void loadUserTest() throws SQLException {
+    void loadUserTest() throws SQLException {
         UserDTO userDTO = repository.findUserByKeycloaknameEager("gae");
 
-        assertTrue(userDTO.getVorname().equals("Why are you gae?"));
-        assertTrue(userDTO.getNachname().equals("You are gae"));
-        assertTrue(userDTO.getId() == 999999);
+        assertEquals("Why are you gae?", userDTO.getVorname());
+        assertEquals("You are gae", userDTO.getNachname());
+        assertEquals(999999, userDTO.getId());
         for (GruppeDTO gruppeDTO : userDTO.getBelegungUndRechte().keySet()) {
             assertTrue(userDTO.getBelegungUndRechte().get(gruppeDTO));
         }
@@ -78,17 +79,17 @@ public final class RepositoryTest {
 
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
-    public void loadGruppeTest() throws SQLException {
+    void loadGruppeTest() throws SQLException {
         GruppeDTO gruppeDto = repository.findGruppeByGruppeIdEager(99999999);
 
-        assertTrue(gruppeDto.getName().equals("gruppe"));
-        assertTrue(gruppeDto.getDescription().equals("this is a description"));
+        assertEquals("gruppe", gruppeDto.getName());
+        assertEquals("this is a description", gruppeDto.getDescription());
     }
 
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
-    public void updateDateiTest() throws SQLException {
-        LinkedList<TagDTO> newTags = new LinkedList<TagDTO>();
+    void updateDateiTest() throws SQLException {
+        LinkedList<TagDTO> newTags = new LinkedList<>();
         TagDTO tag1 = new TagDTO("gae1");
         TagDTO tag2 = new TagDTO("gae2");
         DateiDTO newDatei;
@@ -109,23 +110,23 @@ public final class RepositoryTest {
             tagDTOS = gruppeDTO.getDateien().get(0).getTagDTOs();
         }
 
-        assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
-                .getDateien().get(0).getDateigroesse() == 400);
-        assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
-                .getDateien().get(0).getDateityp().equals("gae"));
-        assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
-                .getDateien().get(0).getKategorie().equals("gaee"));
+        assertEquals(400, ((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
+                .getDateien().get(0).getDateigroesse());
+        assertEquals("gae", ((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
+                .getDateien().get(0).getDateityp());
+        assertEquals("gaee", ((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
+                .getDateien().get(0).getKategorie());
 
-        assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
-                .getDateien().get(0).getVeroeffentlichungsdatum().equals(newVeroeffentlichungsDatum));
-        assertTrue(tagDTOS.get(0).getText().equals("gae1"));
-        assertTrue(tagDTOS.get(1).getText().equals("gae2"));
+        assertEquals(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
+                .getDateien().get(0).getVeroeffentlichungsdatum(), newVeroeffentlichungsDatum);
+        assertEquals("gae1", tagDTOS.get(0).getText());
+        assertEquals("gae2", tagDTOS.get(1).getText());
     }
 
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
-    public void updateTwiceDateiTest() throws SQLException {
-        LinkedList<TagDTO> newTags = new LinkedList<TagDTO>();
+    void updateTwiceDateiTest() throws SQLException {
+        LinkedList<TagDTO> newTags = new LinkedList<>();
         TagDTO tag1 = new TagDTO("gae1");
         TagDTO tag2 = new TagDTO("gae2");
         TagDTO tag3 = new TagDTO("gae3");
@@ -153,22 +154,22 @@ public final class RepositoryTest {
             tagDTOS = gruppeDTO.getDateien().get(0).getTagDTOs();
         }
 
-        assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
-                .getDateien().get(0).getDateigroesse() == 500);
-        assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
-                .getDateien().get(0).getDateityp().equals("gae"));
-        assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
-                .getDateien().get(0).getKategorie().equals("new"));
-        assertTrue(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
-                .getDateien().get(0).getVeroeffentlichungsdatum().equals(newVeroeffentlichungsDatum));
-        assertTrue(tagDTOS.get(0).getText().equals("gae1"));
-        assertTrue(tagDTOS.get(1).getText().equals("gae2"));
-        assertTrue(tagDTOS.get(2).getText().equals("gae3"));
+        assertEquals(500, ((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
+                .getDateien().get(0).getDateigroesse());
+        assertEquals("gae", ((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
+                .getDateien().get(0).getDateityp());
+        assertEquals("new", ((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
+                .getDateien().get(0).getKategorie());
+        assertEquals(((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0])
+                .getDateien().get(0).getVeroeffentlichungsdatum(), newVeroeffentlichungsDatum);
+        assertEquals("gae1", tagDTOS.get(0).getText());
+        assertEquals("gae2", tagDTOS.get(1).getText());
+        assertEquals("gae3", tagDTOS.get(2).getText());
     }
 
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
-    public void deleteTagnutzungByDateiTest() throws SQLException {
+    void deleteTagnutzungByDateiTest() throws SQLException {
 
         repository.deleteTagRelationsByDateiId(datei.getId());
         assertFalse(repository.doTagsExistByDateiId(datei.getId()));
@@ -176,25 +177,25 @@ public final class RepositoryTest {
     }
 
     @Test
-    public void deleteUserByIdTest() throws SQLException {
+    void deleteUserByIdTest() throws SQLException {
         repository.deleteUserByUserDTO(user);
 
         UserDTO shouldBeNull = repository.findUserByIdLAZY(user.getId());
 
-        assertTrue(shouldBeNull == null);
+        assertNull(shouldBeNull);
     }
 
     @Test
-    public void deleteGruppeByGruppeIdTest() throws SQLException {
+    void deleteGruppeByGruppeIdTest() throws SQLException {
         repository.deleteGroupByGroupDTO(gruppe);
 
-        assertTrue(repository.findGruppeByGruppeIdEager(gruppe.getId()) == null);
+        assertNull(repository.findGruppeByGruppeIdEager(gruppe.getId()));
         assertTrue(repository.findAllUserByGruppeId(gruppe.getId()).isEmpty());
         assertTrue(repository.findAllDateiByGruppeId(gruppe.getId()).isEmpty());
     }
 
     @Test
-    public void deleteGruppenbelegungByUserTest() throws SQLException {
+    void deleteGruppenbelegungByUserTest() throws SQLException {
         long userId = user.getId();
 
         repository.deleteUserGroupRelationByUserId(userId);
@@ -203,7 +204,7 @@ public final class RepositoryTest {
     }
 
     @Test
-    public void deleteGruppenbelegungByGruppeTest() throws SQLException {
+    void deleteGruppenbelegungByGruppeTest() throws SQLException {
         long gruppeId = gruppe.getId();
 
         repository.deleteUserGroupRelationByGroupId(gruppeId);
@@ -212,7 +213,7 @@ public final class RepositoryTest {
     }
 
     @Test
-    public void deleteGruppenbelegungByUserDTOandGruppeDTOTest() throws SQLException {
+    void deleteGruppenbelegungByUserDTOandGruppeDTOTest() throws SQLException {
         repository.deleteUserGroupRelationByUserDTOAndGruppeDTO(user, gruppe);
 
         UserDTO loadedUser = repository.findUserByKeycloaknameEager(user.getKeycloakname());

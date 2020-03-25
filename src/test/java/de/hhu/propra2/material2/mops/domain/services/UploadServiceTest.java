@@ -33,8 +33,8 @@ import static org.mockito.Mockito.when;
 
 @SuppressWarnings("checkstyle:magicnumber")
 @ExtendWith(MockitoExtension.class)
-public class UploadServiceTest {
-    private static LocalDate date1303 = LocalDate.of(2020, Calendar.MARCH, 13);
+class UploadServiceTest {
+    private static final LocalDate DATE_1303 = LocalDate.of(2020, Calendar.MARCH, 13);
 
     private Tag tag1 = new Tag(1, "tag1");
     private Tag tag2 = new Tag(2, "tag2");
@@ -57,7 +57,7 @@ public class UploadServiceTest {
      * setUP: SetUp needed for each test.
      */
     @BeforeEach
-    public void setUp() throws SQLException {
+    void setUp() throws SQLException {
         Calendar calender = Calendar.getInstance();
         calender.set(2020, Calendar.MARCH, 13);
 
@@ -77,73 +77,73 @@ public class UploadServiceTest {
     }
 
     @Test
-    public void uploadFileProveFileUploadServiceUploadCall() throws Exception {
+    void uploadFileProveFileUploadServiceUploadCall() throws Exception {
         when(minIOServiceMock.upload(file, "1"))
                 .thenReturn(true);
 
-        uploadService.dateiHochladen(file, null, userMock, gruppeMock, date1303, tags,
+        uploadService.dateiHochladen(file, null, userMock, gruppeMock, DATE_1303, tags,
                 "Vorlesung");
 
         verify(minIOServiceMock, times(1)).upload(file, "1");
     }
 
     @Test
-    public void uploadFileWithoutNewFileName() throws Exception {
+    void uploadFileWithoutNewFileName() throws Exception {
         when(minIOServiceMock.upload(file, "1"))
                 .thenReturn(true);
-        Datei datei = uploadService.dateiHochladen(file, null, userMock, gruppeMock, date1303, tags,
+        Datei datei = uploadService.dateiHochladen(file, null, userMock, gruppeMock, DATE_1303, tags,
                 "Vorlesung");
 
         assertThat(datei.getName(), comparesEqualTo("test.txt"));
         assertThat(datei.getUploader(), equalTo(userMock));
         assertThat(datei.getTags(), equalTo(tags));
-        assertThat(datei.getVeroeffentlichungsdatum(), equalTo(date1303));
+        assertThat(datei.getVeroeffentlichungsdatum(), equalTo(DATE_1303));
         assertThat(datei.getDateigroesse(), comparesEqualTo(72L));
         assertThat(datei.getDateityp(), comparesEqualTo("txt"));
         verify(modelServiceMock, times(1)).saveDatei(datei, gruppeMock);
     }
 
     @Test
-    public void uploadFileWithNewFileNameWithoutExtension() throws Exception {
+    void uploadFileWithNewFileNameWithoutExtension() throws Exception {
         when(minIOServiceMock.upload(file, "1"))
                 .thenReturn(true);
-        Datei datei = uploadService.dateiHochladen(file, "Humbug", userMock, gruppeMock, date1303, tags,
+        Datei datei = uploadService.dateiHochladen(file, "Humbug", userMock, gruppeMock, DATE_1303, tags,
                 "Vorlesung");
 
         assertThat(datei.getName(), comparesEqualTo("Humbug.txt"));
         assertThat(datei.getUploader(), equalTo(userMock));
         assertThat(datei.getTags(), equalTo(tags));
-        assertThat(datei.getVeroeffentlichungsdatum(), equalTo(date1303));
+        assertThat(datei.getVeroeffentlichungsdatum(), equalTo(DATE_1303));
         assertThat(datei.getDateigroesse(), comparesEqualTo(72L));
         assertThat(datei.getDateityp(), comparesEqualTo("txt"));
         verify(modelServiceMock, times(1)).saveDatei(datei, gruppeMock);
     }
 
     @Test
-    public void uploadFileWithNewFileNameWithExtension() throws Exception {
+    void uploadFileWithNewFileNameWithExtension() throws Exception {
         when(minIOServiceMock.upload(file, "1"))
                 .thenReturn(true);
-        Datei datei = uploadService.dateiHochladen(file, "Humbug.pdf", userMock, gruppeMock, date1303, tags,
+        Datei datei = uploadService.dateiHochladen(file, "Humbug.pdf", userMock, gruppeMock, DATE_1303, tags,
                 "Vorlesung");
 
         assertThat(datei.getName(), comparesEqualTo("Humbug.pdf"));
         assertThat(datei.getUploader(), equalTo(userMock));
         assertThat(datei.getTags(), equalTo(tags));
-        assertThat(datei.getVeroeffentlichungsdatum(), equalTo(date1303));
+        assertThat(datei.getVeroeffentlichungsdatum(), equalTo(DATE_1303));
         assertThat(datei.getDateigroesse(), comparesEqualTo(72L));
         assertThat(datei.getDateityp(), comparesEqualTo("pdf"));
         verify(modelServiceMock, times(1)).saveDatei(datei, gruppeMock);
     }
 
     @Test
-    public void uploadFileWithTags() throws Exception {
+    void uploadFileWithTags() throws Exception {
         when(minIOServiceMock.upload(file, "1"))
                 .thenReturn(true);
         tags.add(tag1);
         tags.add(tag2);
         tags.add(tag3);
 
-        Datei datei = uploadService.dateiHochladen(file, null, userMock, gruppeMock, date1303, tags,
+        Datei datei = uploadService.dateiHochladen(file, null, userMock, gruppeMock, DATE_1303, tags,
                 "Vorlesung");
 
         assertThat(datei.getTags().size(), equalTo(3));

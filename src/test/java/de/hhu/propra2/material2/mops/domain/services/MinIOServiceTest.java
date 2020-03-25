@@ -21,21 +21,20 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 @SuppressFBWarnings(value = "HARD_CODE_PASSWORD", justification = "It's only for testing purposes")
 @ExtendWith(MockitoExtension.class)
 @Testcontainers
-public class MinIOServiceTest {
+class MinIOServiceTest {
 
     @Container
-    private static GenericContainer minioServer = TestContainerUtil.getMinIOContainer();
+    private static final GenericContainer MINIO_SERVER = TestContainerUtil.getMinIOContainer();
 
-    private static String minioServerUrl;
     private static MinIOService minIOService;
 
     @BeforeAll
     static void setUp() throws Exception {
-        minioServerUrl = String.format("http://%s:%s", minioServer.getContainerIpAddress(),
-                minioServer.getFirstMappedPort());
+        String minIOServerUrl = String.format("http://%s:%s", MINIO_SERVER.getContainerIpAddress(),
+                MINIO_SERVER.getFirstMappedPort());
 
         MinIOProperties minIOProperties = new MinIOProperties();
-        minIOProperties.setEndpoint(minioServerUrl);
+        minIOProperties.setEndpoint(minIOServerUrl);
         minIOProperties.setAccesskey(TestContainerUtil.MINIO_ACCESS_KEY);
         minIOProperties.setSecretkey(TestContainerUtil.MINIO_SECRET_KEY);
         minIOProperties.setBucketname(TestContainerUtil.MINIO_TEST_BUCKET_NAME);
@@ -47,7 +46,7 @@ public class MinIOServiceTest {
      * test generic upload method with generic file.
      */
     @Test
-    public void uploadFile() {
+    void uploadFile() {
         String dateiIdAsString = "123";
         MultipartFile file = new MockMultipartFile("test.txt",
                 "test.txt",
@@ -62,7 +61,7 @@ public class MinIOServiceTest {
     }
 
     @Test
-    public void deleteFile() {
+    void deleteFile() {
         String dateiIdAsString = "22";
         MultipartFile file = new MockMultipartFile("test.txt",
                 "test.txt",
@@ -78,7 +77,7 @@ public class MinIOServiceTest {
     }
 
     @Test
-    public void deleteFileThatDoesntExist() {
+    void deleteFileThatDoesntExist() {
         String dateiIdAsString = "33";
         MultipartFile file = new MockMultipartFile("test.txt",
                 "test.txt",

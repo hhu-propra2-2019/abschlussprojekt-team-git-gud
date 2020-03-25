@@ -38,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest
 @ComponentScan(basePackageClasses = {KeycloakSecurityComponents.class, KeycloakSpringBootConfigResolver.class})
-public class MaterialControllerModelTest {
+class MaterialControllerModelTest {
 
     @Autowired
     private MockMvc mvc;

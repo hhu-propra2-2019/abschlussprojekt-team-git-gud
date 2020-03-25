@@ -19,15 +19,15 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(classes = Material2Application.class)
-public final class RepositoryPerformanceTest {
+final class RepositoryPerformanceTest {
 
     private final Repository repository;
 
     @Autowired
-    public RepositoryPerformanceTest(final Repository repositoryArg) {
+    RepositoryPerformanceTest(final Repository repositoryArg) {
         repository = repositoryArg;
     }
 
@@ -48,11 +48,11 @@ public final class RepositoryPerformanceTest {
                 users[i].getBelegungUndRechte().put(gruppeDTO, true);
             }
         }
-        return new LinkedList<UserDTO>(Arrays.asList(users));
+        return new LinkedList<>(Arrays.asList(users));
     }
 
     private LinkedList<TagDTO> generateRandomTags(final int tagCount) {
-        LinkedList<TagDTO> tagDTOs = new LinkedList<TagDTO>();
+        LinkedList<TagDTO> tagDTOs = new LinkedList<>();
         for (int i = 0; i < tagCount; i++) {
             tagDTOs.add(new TagDTO(UUID.randomUUID().toString()));
         }
@@ -70,18 +70,18 @@ public final class RepositoryPerformanceTest {
 
     private GruppeDTO generateRandomGruppe() {
         return new GruppeDTO(UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE,
-                " ", " ", new LinkedList<DateiDTO>());
+                " ", " ", new LinkedList<>());
     }
 
     private UserDTO generateRandomUser() {
         return new UserDTO(UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE,
-                " ", " ", UUID.randomUUID().toString(), new HashMap<GruppeDTO, Boolean>());
+                " ", " ", UUID.randomUUID().toString(), new HashMap<>());
     }
 
     @SuppressWarnings("checkstyle:MagicNumber")
     @Ignore
     @Test
-    public void add1UsersWith20GroupsWith100FilesWith10TagsEachAndLoad() throws SQLException {
+    void add1UsersWith20GroupsWith100FilesWith10TagsEachAndLoad() throws SQLException {
         LinkedList<UserDTO> userDTOs =
                 generateXUsersWithYGroupsWithZFilesWithATags(1, 20, 100, 10);
 
@@ -119,7 +119,7 @@ public final class RepositoryPerformanceTest {
     @SuppressWarnings("checkstyle:MagicNumber")
     @Ignore
     @Test
-    public void add10UsersWith10GroupsWith50FilesWith20TagsEachAndLoad() throws SQLException {
+    void add10UsersWith10GroupsWith50FilesWith20TagsEachAndLoad() throws SQLException {
         LinkedList<UserDTO> userDTOs =
                 generateXUsersWithYGroupsWithZFilesWithATags(10, 10, 50, 20);
 
@@ -159,7 +159,7 @@ public final class RepositoryPerformanceTest {
     @SuppressWarnings("checkstyle:MagicNumber")
     @Ignore
     @Test
-    public void add1UsersWith20GroupsWith100FilesWith1TagsEachAndLoad() throws SQLException {
+    void add1UsersWith20GroupsWith100FilesWith1TagsEachAndLoad() throws SQLException {
         LinkedList<UserDTO> userDTOs =
                 generateXUsersWithYGroupsWithZFilesWithATags(1, 20, 100, 1);
 
@@ -197,7 +197,7 @@ public final class RepositoryPerformanceTest {
     @SuppressWarnings("checkstyle:MagicNumber")
     @Ignore
     @Test
-    public void load100FilesWith3TagsEach() throws SQLException {
+    void load100FilesWith3TagsEach() throws SQLException {
         LinkedList<UserDTO> userDTOs =
                 generateXUsersWithYGroupsWithZFilesWithATags(1, 1, 500, 1);
 
@@ -235,7 +235,7 @@ public final class RepositoryPerformanceTest {
 
     @SuppressWarnings("checkstyle:magicnumber")
     @Test
-    public void load1UserWith1GroupWith1100FilesWith3Tags() throws SQLException {
+    void load1UserWith1GroupWith1100FilesWith3Tags() throws SQLException {
         LocalTime before = LocalTime.now();
         System.out.println(before + " Time test for 1 User 1 Group 1100 Files 3 Tags... Start!");
         UserDTO userDTO = repository.findUserByKeycloakname("_test_");
@@ -262,7 +262,7 @@ public final class RepositoryPerformanceTest {
         System.out.println(after + " Time passed to load the users cached files: "
                 + timePassed.getSeconds() + " seconds.");
 
-        assertTrue(dateiDTOs.size() == 1100);
+        assertEquals(1100, dateiDTOs.size());
         System.out.println("Test complete!");
     }
 }

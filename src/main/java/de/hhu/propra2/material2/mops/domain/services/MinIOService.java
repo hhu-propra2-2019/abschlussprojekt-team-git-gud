@@ -29,7 +29,7 @@ import java.security.NoSuchAlgorithmException;
 public class MinIOService implements IMinIOService {
 
     private MinioClient minioClient;
-    private MinIOProperties minIOProperties;
+    private final MinIOProperties minIOProperties;
 
     public MinIOService(final MinIOProperties minIOPropertiesArg) throws InvalidPortException,
             InvalidEndpointException, IOException,
@@ -119,15 +119,6 @@ public class MinIOService implements IMinIOService {
     /**
      * @param file The file to upload
      * @return successrate of uploading
-     * @throws IOException
-     * @throws InvalidKeyException
-     * @throws NoSuchAlgorithmException
-     * @throws InsufficientDataException
-     * @throws InternalException
-     * @throws NoResponseException
-     * @throws InvalidBucketNameException
-     * @throws XmlPullParserException
-     * @throws ErrorResponseException
      */
     public boolean upload(final MultipartFile file, final String fileName) {
         try {

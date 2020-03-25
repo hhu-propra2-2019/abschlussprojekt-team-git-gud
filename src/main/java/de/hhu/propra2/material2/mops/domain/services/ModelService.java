@@ -61,7 +61,7 @@ public final class ModelService implements IModelService {
         return new Tag(tagDTO.getId(), tagDTO.getText());
     }
 
-    public User loadUser(final UserDTO userDTO) {
+    User loadUser(final UserDTO userDTO) {
 
         if (userDTO == null) {
             return new User(-1L, "", "", "", new HashMap<>());
@@ -141,7 +141,7 @@ public final class ModelService implements IModelService {
     public Set<String> getAlleUploaderByUser(final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);
         List<Gruppe> groups = user.getAllGruppen();
-        Set<String> uploader = new HashSet<String>();
+        Set<String> uploader = new HashSet<>();
         for (Gruppe gruppe : groups) {
             uploader.addAll(gruppe.getDateien()
                     .stream()
@@ -195,7 +195,7 @@ public final class ModelService implements IModelService {
     public Set<String> getAlleDateiTypenByUser(final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);
         List<Gruppe> groups = user.getAllGruppen();
-        Set<String> dateiTypen = new HashSet<String>();
+        Set<String> dateiTypen = new HashSet<>();
         for (Gruppe gruppe : groups) {
             dateiTypen.addAll(gruppe.getDateien()
                     .stream()
@@ -251,7 +251,7 @@ public final class ModelService implements IModelService {
         return saveDatei(datei, groupDTO);
     }
 
-    public long saveDatei(final Datei datei, final long gruppenId) throws SQLException {
+    public void saveDatei(final Datei datei, final long gruppenId) throws SQLException {
         if (datei == null) {
             throw new IllegalArgumentException();
         }
@@ -259,7 +259,7 @@ public final class ModelService implements IModelService {
         // for saving the file
         GruppeDTO groupDTO = new GruppeDTO(gruppenId, null,
                 null, null);
-        return saveDatei(datei, groupDTO);
+        saveDatei(datei, groupDTO);
     }
 
     private long saveDatei(final Datei datei, final GruppeDTO gruppeDTO) throws SQLException {

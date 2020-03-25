@@ -116,7 +116,7 @@ public final class ModelService implements IModelService {
         return user.getAllGruppenWithUploadrechten();
     }
 
-    public List<Datei> getAlleDateienByGruppe(final Long gruppeId,
+    public List<Datei> getAlleDateienByGruppe(final String gruppeId,
                                               final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);
         return user.getGruppeById(gruppeId).getDateien();
@@ -133,7 +133,7 @@ public final class ModelService implements IModelService {
         return tags;
     }
 
-    public Set<String> getAlleTagsByGruppe(final Long gruppeId,
+    public Set<String> getAlleTagsByGruppe(final String gruppeId,
                                            final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);
         List<Datei> dateienListe = user.getGruppeById(gruppeId).getDateien();
@@ -156,7 +156,7 @@ public final class ModelService implements IModelService {
         return uploader;
     }
 
-    public Set<String> getAlleUploaderByGruppe(final Long gruppeId,
+    public Set<String> getAlleUploaderByGruppe(final String gruppeId,
                                                final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);
         return user.getGruppeById(gruppeId).getDateien()
@@ -186,7 +186,7 @@ public final class ModelService implements IModelService {
         return kategorien;
     }
 
-    public Set<String> getKategorienByGruppe(final Long gruppeId, final KeycloakAuthenticationToken token) {
+    public Set<String> getKategorienByGruppe(final String gruppeId, final KeycloakAuthenticationToken token) {
         List<Datei> dateien = getAlleDateienByGruppe(gruppeId, token);
         Set<String> kategorien = new HashSet<>();
         dateien.forEach(datei -> kategorien.add(datei.getKategorie()));
@@ -210,7 +210,7 @@ public final class ModelService implements IModelService {
         return dateiTypen;
     }
 
-    public Set<String> getAlleDateiTypenByGruppe(final Long gruppeId,
+    public Set<String> getAlleDateiTypenByGruppe(final String gruppeId,
                                                  final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);
         return user.getGruppeById(gruppeId).getDateien()
@@ -256,7 +256,7 @@ public final class ModelService implements IModelService {
         return saveDatei(datei, groupDTO);
     }
 
-    public long saveDatei(final Datei datei, final long gruppenId) throws SQLException {
+    public long saveDatei(final Datei datei, final String gruppenId) throws SQLException {
         if (datei == null) {
             throw new IllegalArgumentException();
         }

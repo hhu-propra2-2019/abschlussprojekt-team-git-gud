@@ -9,7 +9,7 @@ public class Gruppe {
     /**
      * Unique ID from database.
      */
-    private long id;
+    private String id;
     /**
      * Groups name.
      */

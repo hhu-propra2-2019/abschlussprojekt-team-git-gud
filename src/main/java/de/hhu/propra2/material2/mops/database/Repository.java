@@ -26,7 +26,7 @@ import java.util.List;
 public final class Repository {
     private Connection connection;
     private Environment env;
-    private HashMap<Long, GruppeDTO> gruppeCache;
+    private HashMap<String, GruppeDTO> gruppeCache;
 
     /**
      * Constructor that autowires
@@ -39,7 +39,7 @@ public final class Repository {
     @Autowired
     public Repository(final Environment envArg) {
         this.env = envArg;
-        gruppeCache = new HashMap<Long, GruppeDTO>();
+        gruppeCache = new HashMap<String, GruppeDTO>();
         try {
             connection = DriverManager.getConnection("jdbc:mysql://localhost:23306/materialsammlung",
                     env.getProperty("spring.datasource.username"), env.getProperty("spring.datasource.password"));
@@ -144,7 +144,7 @@ public final class Repository {
                                                              final GruppeDTO gruppeDTO) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement("delete from Gruppenbelegung where gruppeID=? and userID=?");
-        preparedStatement.setLong(1, gruppeDTO.getId());
+        preparedStatement.setString(1, gruppeDTO.getId());
         preparedStatement.setLong(2, userDTO.getId());
 
         preparedStatement.execute();
@@ -169,7 +169,7 @@ public final class Repository {
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement("delete from Gruppe where gruppeID=?");
-        preparedStatement.setLong(1, gruppeDTO.getId());
+        preparedStatement.setString(1, gruppeDTO.getId());
 
         preparedStatement.execute();
         preparedStatement.close();
@@ -202,7 +202,7 @@ public final class Repository {
                     java.util.Calendar.getInstance());
             preparedStatement.setLong(5, dateiDTO.getDateigroesse());
             preparedStatement.setString(6, dateiDTO.getDateityp());
-            preparedStatement.setLong(7, dateiDTO.getGruppe().getId());
+            preparedStatement.setString(7, dateiDTO.getGruppe().getId());
             preparedStatement.setString(8, dateiDTO.getKategorie());
 
             List<TagDTO> tags = dateiDTO.getTagDTOs();
@@ -294,7 +294,7 @@ public final class Repository {
     public void deleteDateiByDateiDTO(final DateiDTO dateiDTO) throws SQLException {
         deleteTagRelationsByDateiId(dateiDTO.getId());
 
-        long gruppeId = dateiDTO.getGruppe().getId();
+        String gruppeId = dateiDTO.getGruppe().getId();
 
         LinkedList<DateiDTO> dateien = (LinkedList<DateiDTO>) dateiDTO.getGruppe().getDateien();
         dateien.remove(dateiDTO);
@@ -519,7 +519,7 @@ public final class Repository {
                 connection.prepareStatement(
                         "insert ignore into Gruppe (gruppeID, titel, beschreibung)" + " values (?, ?, ?)");
 
-        preparedStatement.setLong(1, gruppeDTO.getId());
+        preparedStatement.setString(1, gruppeDTO.getId());
         preparedStatement.setString(2, gruppeDTO.getName());
         preparedStatement.setString(3, gruppeDTO.getDescription());
         preparedStatement.execute();
@@ -529,14 +529,14 @@ public final class Repository {
 
     @SuppressWarnings("checkstyle:magicnumber")
     void saveGruppenbelegung(final long userId,
-                             final long gruppeId, final boolean berechtigung) throws SQLException {
+                             final String gruppeId, final boolean berechtigung) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
                         "insert ignore into Gruppenbelegung (upload_berechtigung,"
                                 + "gruppeID, userID)" + " values (?, ?, ?)");
 
         preparedStatement.setBoolean(1, berechtigung);
-        preparedStatement.setLong(2, gruppeId);
+        preparedStatement.setString(2, gruppeId);
         preparedStatement.setLong(3, userId);
         preparedStatement.execute();
 
@@ -552,7 +552,7 @@ public final class Repository {
         ResultSet gruppenResult = preparedStatement.executeQuery();
 
         while (gruppenResult.next()) {
-            gruppen.put(findGruppeByGruppeId(gruppenResult.getLong("gruppeID")),
+            gruppen.put(findGruppeByGruppeId(gruppenResult.getString("gruppeID")),
                     gruppenResult.getBoolean("upload_berechtigung"));
         }
 
@@ -562,7 +562,7 @@ public final class Repository {
         return gruppen;
     }
 
-    GruppeDTO findGruppeByGruppeId(final long gruppeId) throws SQLException {
+    GruppeDTO findGruppeByGruppeId(final String gruppeId) throws SQLException {
         GruppeDTO gruppe = null;
 
         PreparedStatement preparedStatement =
@@ -608,10 +608,10 @@ public final class Repository {
         return gruppe;
     }
 
-    void deleteUserGroupRelationByGroupId(final long gruppeId) throws SQLException {
+    void deleteUserGroupRelationByGroupId(final String gruppeId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement("delete from Gruppenbelegung where gruppeID=?");
-        preparedStatement.setLong(1, gruppeId);
+        preparedStatement.setString(1, gruppeId);
 
         preparedStatement.execute();
 
@@ -641,10 +641,10 @@ public final class Repository {
         return doesExist;
     }
 
-    boolean doGroupRelationsExistByGruppeId(final long gruppeId) throws SQLException {
+    boolean doGroupRelationsExistByGruppeId(final String gruppeId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select userID from Gruppenbelegung where gruppeID=?");
-        preparedStatement.setLong(1, gruppeId);
+        preparedStatement.setString(1, gruppeId);
 
         ResultSet result = preparedStatement.executeQuery();
         boolean doesExist = result.next();
@@ -682,7 +682,7 @@ public final class Repository {
         return user;
     }
 
-    LinkedList<UserDTO> findAllUserByGruppeId(final long gruppeId) throws SQLException {
+    LinkedList<UserDTO> findAllUserByGruppeId(final String gruppeId) throws SQLException {
         LinkedList<UserDTO> users = new LinkedList<UserDTO>();
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select * from Gruppenbelegung where gruppeID=?");

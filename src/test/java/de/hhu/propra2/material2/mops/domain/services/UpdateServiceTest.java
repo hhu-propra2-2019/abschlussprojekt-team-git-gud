@@ -25,6 +25,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -64,10 +65,11 @@ public class UpdateServiceTest {
 
     @Test
     public void updateFileBySettingVeroeffentlichungsdatumAndTagsNull() throws Exception {
-        updateService.dateiUpdate(1L, 1L, null, null);
+        updateService.dateiUpdate(1L, "1", null, null);
+
 
         ArgumentCaptor<Datei> dateiCaptor = ArgumentCaptor.forClass(Datei.class);
-        verify(modelServiceMock, times(1)).saveDatei(dateiCaptor.capture(), anyLong());
+        verify(modelServiceMock, times(1)).saveDatei(dateiCaptor.capture(), anyString());
 
         Datei capturedDatei = dateiCaptor.getValue();
         assertThat(capturedDatei.getName(), comparesEqualTo("test.txt"));
@@ -83,10 +85,10 @@ public class UpdateServiceTest {
         tags.add(tag1);
         tags.add(tag2);
         tags.add(tag3);
-        updateService.dateiUpdate(1L, 1L, null, tags);
+        updateService.dateiUpdate(1L, "1", null, tags);
 
         ArgumentCaptor<Datei> dateiCaptor = ArgumentCaptor.forClass(Datei.class);
-        verify(modelServiceMock, times(1)).saveDatei(dateiCaptor.capture(), anyLong());
+        verify(modelServiceMock, times(1)).saveDatei(dateiCaptor.capture(), anyString());
 
         Datei capturedDatei = dateiCaptor.getValue();
         assertThat(capturedDatei.getName(), comparesEqualTo("test.txt"));

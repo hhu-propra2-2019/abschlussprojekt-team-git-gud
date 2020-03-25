@@ -1,10 +1,10 @@
 package de.hhu.propra2.material2.mops.web.dto;
 
 
-import de.hhu.propra2.material2.mops.Database.DTOs.DateiDTO;
-import de.hhu.propra2.material2.mops.Database.DTOs.GruppeDTO;
-import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
-import de.hhu.propra2.material2.mops.Database.Repository;
+import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.UserDTO;
+import de.hhu.propra2.material2.mops.database.Repository;
 import org.bouncycastle.jcajce.provider.digest.SHA3;
 import org.springframework.stereotype.Service;
 
@@ -119,7 +119,7 @@ public class WebDTOService {
 
 
     private GruppeDTO loadGruppe(final GroupWebDTO groupWeb) {
-        long id = generateIdFromUUId(groupWeb.getId());
+        String id = groupWeb.getId();
         List<DateiDTO> dateien = new ArrayList<>();
         return new GruppeDTO(id, groupWeb.getTitle(), groupWeb.getDescription(), dateien);
     }

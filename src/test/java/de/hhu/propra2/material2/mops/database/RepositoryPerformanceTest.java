@@ -5,7 +5,6 @@ import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.TagDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.UserDTO;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -236,7 +235,6 @@ final class RepositoryPerformanceTest {
     }
 
     @SuppressWarnings("checkstyle:magicnumber")
-    @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_EXCEPTION", "DLS_DEAD_LOCAL_STORE"})
     @Test
     void load1UserWith1GroupWith1100FilesWith3Tags() throws SQLException {
         LocalTime before = LocalTime.now();
@@ -245,20 +243,13 @@ final class RepositoryPerformanceTest {
         LocalTime after = LocalTime.now();
         UserDTO userDTO2 = repository.findUserByKeycloakname("_test_");
 
-        UserDTO deleted = repository.findUserByIdLAZY(-1);
-        long id = deleted.getId();
         Duration timePassed = Duration.between(before, after);
         System.out.println(after + "Time passed to load the user without files: "
                 + timePassed.getSeconds() + " seconds");
 
         before = LocalTime.now();
         System.out.println(before + " Loading (not cached) Files now...");
-        GruppeDTO gruppeDTO = null;
-        try {
-            gruppeDTO = ((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0]);
-        } catch (NullPointerException e) {
-            System.out.println(userDTO.toString());
-        }
+        GruppeDTO gruppeDTO = ((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0]);
 
         LinkedList<DateiDTO> dateiDTOs = (LinkedList<DateiDTO>) gruppeDTO.getDateien();
         after = LocalTime.now();

@@ -13,9 +13,12 @@ import de.hhu.propra2.material2.mops.security.Account;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,8 +26,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.sql.SQLException;
 
@@ -159,6 +161,7 @@ public class MaterialController {
         } catch (NoUploadPermissionException e) {
             setMessages("Sie sind nicht berechtig in dieser Gruppe hochzuladen!", null);
         }
+
         model.addAttribute("error", errorMessage);
         model.addAttribute("success", successMessage);
         resetMessages();
@@ -183,18 +186,16 @@ public class MaterialController {
      */
     @GetMapping("/files")
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
-    public void getFile(
-            final Long fileId,
-            final HttpServletResponse response, final KeycloakAuthenticationToken token) {
-        try {
-            // get your file as InputStream
-            InputStream input = minIOService.getObject(fileId);
-            // copy it to response's OutputStream
-            FileCopyUtils.copy(input, response.getOutputStream());
-            response.flushBuffer();
-        } catch (IOException | DownloadException ex) {
-            throw new RuntimeException("IOError writing file to output stream");
-        }
+    public ResponseEntity<InputStreamResource> getFile(final Long fileId,
+                                                       final KeycloakAuthenticationToken token)
+            throws DownloadException, SQLException {
+        InputStream input = new BufferedInputStream(minIOService.getObject(fileId));
+        Datei file = modelService.findDateiById(fileId);
+        return ResponseEntity.ok()
+                .header("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""))
+                .contentLength(file.getDateigroesse())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(new InputStreamResource(input));
     }
 
     private void setMessages(final String pErrorMessage, final String pSuccessMessage) {

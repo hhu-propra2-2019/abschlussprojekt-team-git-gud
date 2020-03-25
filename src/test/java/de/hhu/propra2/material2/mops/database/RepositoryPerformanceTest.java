@@ -69,7 +69,7 @@ public final class RepositoryPerformanceTest {
     }
 
     private GruppeDTO generateRandomGruppe() {
-        return new GruppeDTO(UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE,
+        return new GruppeDTO(UUID.randomUUID().toString(),
                 " ", " ", new LinkedList<DateiDTO>());
     }
 

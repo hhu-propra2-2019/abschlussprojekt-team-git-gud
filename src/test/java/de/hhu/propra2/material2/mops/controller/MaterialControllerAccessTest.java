@@ -50,8 +50,8 @@ public class MaterialControllerAccessTest {
     @BeforeEach
     void init() {
         List<Gruppe> gruppen = new ArrayList<>();
-        gruppen.add(new Gruppe(1, "ProPra", null));
-        gruppen.add(new Gruppe(2, "RDB", null));
+        gruppen.add(new Gruppe("1", "ProPra", null));
+        gruppen.add(new Gruppe("2", "RDB", null));
         Set<String> tags = new HashSet<>();
         tags.add("Vorlesung");
         tags.add("Übung");

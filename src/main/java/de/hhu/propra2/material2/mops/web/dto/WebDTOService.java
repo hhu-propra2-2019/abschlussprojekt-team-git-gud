@@ -122,7 +122,7 @@ public class WebDTOService {
 
 
     private GruppeDTO loadGruppe(final GroupWebDTO groupWeb) {
-        long id = generateIdFromUUId(groupWeb.getId());
+        String id = groupWeb.getId();
         List<DateiDTO> dateien = new ArrayList<>();
         return new GruppeDTO(id, groupWeb.getTitle(), groupWeb.getDescription(), dateien);
     }

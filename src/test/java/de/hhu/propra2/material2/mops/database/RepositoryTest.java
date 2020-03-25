@@ -40,7 +40,7 @@ public final class RepositoryTest {
         tag = new TagDTO("gae");
         tags.add(tag);
 
-        gruppe = new GruppeDTO(99999999, "gruppe", "this is a description", dateien, repositoryArg);
+        gruppe = new GruppeDTO("99999999", "gruppe", "this is a description", dateien, repositoryArg);
         berechtigung.put(gruppe, true);
 
         user = new UserDTO(999999, "Why are you gae?", "You are gae",
@@ -203,7 +203,7 @@ public final class RepositoryTest {
 
     @Test
     public void deleteGruppenbelegungByGruppeTest() throws SQLException {
-        long gruppeId = gruppe.getId();
+        String gruppeId = gruppe.getId();
 
         repository.deleteUserGroupRelationByGroupId(gruppeId);
 

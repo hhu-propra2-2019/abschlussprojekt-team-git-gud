@@ -59,8 +59,8 @@ public class ModelServiceTest {
 
     @Test
     public void convertGroupHashMapTwoGroups() {
-        when(gruppeDTOMock1.getId()).thenReturn(1L);
-        when(gruppeDTOMock2.getId()).thenReturn(2L);
+        when(gruppeDTOMock1.getId()).thenReturn("1");
+        when(gruppeDTOMock2.getId()).thenReturn("2");
 
         HashMap<GruppeDTO, Boolean> belegungUndRechte = new HashMap<>();
         belegungUndRechte.put(gruppeDTOMock1, true);
@@ -86,7 +86,7 @@ public class ModelServiceTest {
                 "Merkel",
                 "AngelaKCName",
                 belegungUndRechte);
-        GruppeDTO gruppeDTO = new GruppeDTO(1L, " drei-Datei-Gruppe", "", new LinkedList<>());
+        GruppeDTO gruppeDTO = new GruppeDTO("1", " drei-Datei-Gruppe", "", new LinkedList<>());
 
         List<Datei> result = modelService.dateienDerGruppe(gruppeDTO);
 
@@ -107,7 +107,7 @@ public class ModelServiceTest {
         when(dateiDTOMock1.getUploader()).thenReturn(angelaDTO);
 
         List<DateiDTO> dateien = Collections.singletonList(dateiDTOMock1);
-        GruppeDTO gruppeDTO = new GruppeDTO(1L, "eine Datei-Gruppe", "", dateien);
+        GruppeDTO gruppeDTO = new GruppeDTO("1", "eine Datei-Gruppe", "", dateien);
 
         List<Datei> result = modelService.dateienDerGruppe(gruppeDTO);
 
@@ -130,7 +130,7 @@ public class ModelServiceTest {
         when(dateiDTOMock3.getUploader()).thenReturn(angelaDTO);
 
         List<DateiDTO> dateien = Arrays.asList(dateiDTOMock1, dateiDTOMock2, dateiDTOMock3);
-        GruppeDTO gruppeDTO = new GruppeDTO(1L, " drei-Datei-Gruppe", "", dateien);
+        GruppeDTO gruppeDTO = new GruppeDTO("1", " drei-Datei-Gruppe", "", dateien);
 
         List<Datei> result = modelService.dateienDerGruppe(gruppeDTO);
 

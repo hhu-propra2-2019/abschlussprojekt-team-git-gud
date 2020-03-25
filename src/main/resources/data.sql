@@ -30,7 +30,7 @@ CREATE TABLE `Datei` (
   `veroeffentlichungs_datum` date NOT NULL,
   `datei_groesse` bigint(20) NOT NULL,
   `datei_typ` text NOT NULL,
-  `gruppeID` bigint(20) NOT NULL,
+  `gruppeID` varchar(36) NOT NULL,
   `kategorie` varchar(100) NOT NULL,
   PRIMARY KEY (`dateiID`),
   KEY `uploaderID` (`uploaderID`),
@@ -58,7 +58,7 @@ DROP TABLE IF EXISTS `Gruppe`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Gruppe` (
-  `gruppeID` bigint(20) NOT NULL,
+  `gruppeID` varchar(36) NOT NULL,
   `titel` text NOT NULL,
   `beschreibung` text,
   PRIMARY KEY (`gruppeID`)
@@ -84,7 +84,7 @@ DROP TABLE IF EXISTS `Gruppenbelegung`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Gruppenbelegung` (
   `upload_berechtigung` tinyint(1) NOT NULL,
-  `gruppeID` bigint(20) NOT NULL,
+  `gruppeID` varchar(36) NOT NULL,
   `userID` bigint(20) NOT NULL,
   KEY `gruppeID` (`gruppeID`),
   KEY `userID` (`userID`),

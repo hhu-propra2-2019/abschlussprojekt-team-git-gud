@@ -66,12 +66,12 @@ public class UploadServiceTest {
                         .getBytes(StandardCharsets.UTF_8));
 
         uploadForm = new UploadForm();
-        uploadForm.setGruppenId(1L);
+        uploadForm.setGruppenId("1");
         uploadForm.setDatei(file);
 
         when(modelServiceMock.findUserByKeycloakname(any())).thenReturn(userMock);
         when(userMock.hasUploadPermission(any())).thenReturn(true);
-        when(userMock.getGruppeById(1L)).thenReturn(gruppeMock);
+        when(userMock.getGruppeById("1")).thenReturn(gruppeMock);
     }
 
     @Test

@@ -27,7 +27,7 @@ public class UpdateService {
      * @return A Datei object which represents the saved File
      */
     @Transactional
-    public Datei dateiUpdate(final Long dateiId, final Long gruppenId, final LocalDate veroeffentlichungsdatum,
+    public Datei dateiUpdate(final Long dateiId, final String gruppenId, final LocalDate veroeffentlichungsdatum,
                              final List<Tag> tags) throws SQLException {
         Datei datei = modelService.findDateiById(dateiId);
         Datei changedDatei = new Datei(dateiId, datei.getName(), datei.getUploader(),

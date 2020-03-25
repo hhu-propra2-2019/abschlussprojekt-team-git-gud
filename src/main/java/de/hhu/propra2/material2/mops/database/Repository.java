@@ -5,8 +5,11 @@ import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.TagDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.UserDTO;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
@@ -25,6 +28,7 @@ import java.util.List;
 @Component
 public final class Repository {
     private Connection connection;
+    @Getter(AccessLevel.PACKAGE) //for Testing
     private HashMap<Long, GruppeDTO> gruppeCache;
 
     /**
@@ -55,6 +59,7 @@ public final class Repository {
      * all his groups, rights but no
      * files assigned to their group with
      * their tags.
+     * Returns null if no user found.
      *
      * @param keyCloakNameArg
      * @return
@@ -86,6 +91,8 @@ public final class Repository {
     /**
      * Saves a User with all his groups
      * and rights.
+     * Resets and reassigns all User - Group Relations.
+     *
      * To be used for syncronization
      * with gruppenbildung.
      *
@@ -116,16 +123,17 @@ public final class Repository {
     }
 
     /**
-     * Deletes User by ID.
+     * Deletes User by UserDTO.
      * To be used for synchronization
-     * with gruppenbildung.
+     * with Gruppenbildung. Also removes all its
+     * Group - User relations before deleting the user.
+     * Extra step: changes all its uploaded files uploaderID
+     * to the userID of the placeholder for deletedUsers.
      *
      * @param userDTO
      * @throws SQLException
      */
     public void deleteUserByUserDTO(final UserDTO userDTO) throws SQLException {
-        deleteUserGroupRelationByUserId(userDTO.getId());
-
         PreparedStatement preparedStatement =
                 connection.prepareStatement("delete from User where userID=?");
         preparedStatement.setLong(1, userDTO.getId());
@@ -137,6 +145,14 @@ public final class Repository {
         preparedStatement.close();
     }
 
+    /**
+     * Removes Group - User Relation by UserDTO and GruppeDTO.
+     * Nothing special just another statement call.
+     *
+     * @param userDTO
+     * @param gruppeDTO
+     * @throws SQLException
+     */
     public void deleteUserGroupRelationByUserDTOAndGruppeDTO(final UserDTO userDTO,
                                                              final GruppeDTO gruppeDTO) throws SQLException {
         PreparedStatement preparedStatement =
@@ -172,9 +188,17 @@ public final class Repository {
     }
 
     /**
-     * Saves a file with all its tags
+     * Saves or updates a file with all its tags
      * by dateiDTO and
      * returns its generated ID.
+     *
+     * First it checks if the file already exists in
+     * the database. If so it calls the update function which only
+     * updates the existing files meta data.
+     * If it does not exist it saves the File with its
+     * tags, which also updates tag - datei relations.
+     *
+     * Removes its group from the cache either way.
      *
      * @param dateiDTO
      * @throws SQLException
@@ -230,6 +254,14 @@ public final class Repository {
         }
     }
 
+    /**
+     * Searches for DateiDTO by its ID. Nothing special. Just an SQL query.
+     * Returns null if no file found.
+     *
+     * @param id
+     * @return
+     * @throws SQLException
+     */
     public DateiDTO findDateiById(final long id) throws SQLException {
         DateiDTO datei = null;
 
@@ -248,7 +280,7 @@ public final class Repository {
                     dateiResult.getDate("veroeffentlichungs_datum").toLocalDate(),
                     dateiResult.getLong("datei_groesse"),
                     dateiResult.getString("datei_typ"),
-                    null,
+                    findGruppeByGruppeId(dateiResult.getLong("gruppeID")),
                     dateiResult.getString("kategorie"));
         }
 
@@ -258,6 +290,18 @@ public final class Repository {
         return datei;
     }
 
+    /**
+     * Returns a LinkedList of DateiDTO by GruppeDTO.
+     * Checks the cache first for the GruppeDTO and
+     * proceeds with looking for the DateiDTOs if
+     * no valid entry can be found in the cache.
+     *
+     * Returns empty LinkedList if no files found.
+     *
+     * @param gruppeDTO
+     * @return
+     * @throws SQLException
+     */
     @SuppressWarnings("checkstyle:MagicNumber")
     public LinkedList<DateiDTO> findAllDateiByGruppeDTO(final GruppeDTO gruppeDTO) throws SQLException {
         GruppeDTO cachedGruppe = gruppeCache.get(gruppeDTO.getId());
@@ -287,6 +331,14 @@ public final class Repository {
         return dateien;
     }
 
+    /**
+     * Deletes Datei by its DTO.
+     * Removes it's tag relations on the way and
+     * removes its own group from the cache.
+     *
+     * @param dateiDTO
+     * @throws SQLException
+     */
     public void deleteDateiByDateiDTO(final DateiDTO dateiDTO) throws SQLException {
         deleteTagRelationsByDateiId(dateiDTO.getId());
 
@@ -718,6 +770,10 @@ public final class Repository {
         return user;
     }
 
+    @Scheduled(cron = " 0 0 0 * * *") //Clears Cache at midnight on everyday of the year
+    void clearCache() {
+        gruppeCache.clear();
+    }
 
     /*
         TESTING METHOD

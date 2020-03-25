@@ -63,6 +63,8 @@ class MaterialControllerAccessTest {
         dateiTypen.add("XML");
         dateiTypen.add("JSON");
         when(modelService.getAlleGruppenByUser(any())).thenReturn(gruppen);
+        when(modelService.getGruppeByUserAndGroupID(any(), any())).thenReturn(new Gruppe(2,
+                "RDB", null));
         when(modelService.getAlleTagsByUser(any())).thenReturn(tags);
         when(modelService.getAlleUploaderByUser(any())).thenReturn(uploader);
         when(modelService.getAlleDateiTypenByUser(any())).thenReturn(dateiTypen);

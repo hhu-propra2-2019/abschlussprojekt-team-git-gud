@@ -79,6 +79,10 @@ public final class GruppeDTO {
      * Getter of a LinkedList of Datei for loading from repository.
      * Repository caches Files as needed.
      *
+     * Returns dateien if dateien is not empty, repository is empty or
+     * the database throws an error. Saves a LinkedList from
+     * the database if dateien is empty and saves it locally.
+     *
      * @return
      */
     public List<DateiDTO> getDateien() {
@@ -87,7 +91,7 @@ public final class GruppeDTO {
         }
 
         if (repository == null) {
-            return new LinkedList<>();
+            return dateien;
         }
 
         try {
@@ -98,8 +102,11 @@ public final class GruppeDTO {
         }
     }
 
-
-
+    /**
+     * Custom equals function for HashMaps etc.
+     * @param o
+     * @return
+     */
     @Override
     public boolean equals(final Object o) {
         if (o == null) {
@@ -113,11 +120,19 @@ public final class GruppeDTO {
         return false;
     }
 
+    /**
+     * Function that only exists to make checkstyle happy.
+     * @return
+     */
     @Override
     public int hashCode() {
         return 0;
     }
 
+    /**
+     * Function checks if dateien is empty.
+     * @return
+     */
     public boolean hasNoFiles() {
         return dateien.isEmpty();
     }

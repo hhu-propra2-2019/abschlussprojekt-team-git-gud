@@ -19,8 +19,9 @@
         <div class="container">
             <form action="" method="post" id="abschicken" name="auswahl" >
                 <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
+
                 <div class="form-group">
-                    <label for="SelectGroup">Gruppenauswahl</label>
+                    <label class="form-row" for="SelectGroup">Gruppenauswahl</label>
                     <select class="form-control"
                             id="SelectGroup" name="gruppenId">
                         <option value="0">Alle</option>
@@ -43,7 +44,7 @@
                 </div>
                 <script src="../static/dist/tokenfield.min.js" th:src="@{dist/tokenfield.min.js}"></script>
                 <script th:inline="javascript">
-                    var student = [];
+                    var suggestions = [];
                     var tagTexts = /*[[${tags}]]*/ [];
 
                     for (count = 0; count < tagTexts.length; count++)
@@ -52,12 +53,12 @@
                             id: count,
                             name: tagTexts[count]
                         };
-                        student.push(obj);
+                        suggestions.push(obj);
                     }
 
                     var jp = new Tokenfield({
                         el: document.querySelector('#Tag'),
-                        items: student,
+                        items: suggestions,
                         newItems: true,
                         addItemOnBlur: true,
                         filterSetItems: false,
@@ -68,6 +69,18 @@
                         singleInput: true,
                         singleInputValue: 'name'
                     });
+                    var tags = [];
+                    var selectedTags = /*[[${selectedTags}]]*/ [];
+
+                    for (count = 0; count < selectedTags.length; count++)
+                    {
+                        var obj = {
+                            id: count,
+                            name: selectedTags[count]
+                        };
+                        tags.push(obj);
+                    }
+                    jp.setItems(tags);
                 </script>
 
                 <div class="form-group list-inline">
@@ -124,8 +137,8 @@
             </form>
         </div>
 
-        <div th:unless="${dateien == null}" th:align="left">
-            <h1 class="text-left mt-4 mb-4" >
+        <div th:unless="${dateien.isEmpty()}" th:align="left">
+            <h1 class="text-left mt-4 mb-4">
                 Ergebnisse
             </h1>
             <div th:if="${isSortedByKategorie}">

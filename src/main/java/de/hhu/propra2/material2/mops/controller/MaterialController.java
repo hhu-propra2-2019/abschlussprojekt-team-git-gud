@@ -118,13 +118,11 @@ public class MaterialController {
             return "redirect:/suche";
         }
         modelService.suchen(suchen);
-        List<Datei> dateien = modelService.getSuchergebnisse(token);
+        List<Datei> suchErgebnisse = modelService.getSuchergebnisse(token);
         model.addAttribute("isSortedByKategorie", modelService.isSortedByKategorie());
-        Boolean sortedByKategorie = modelService.isSortedByKategorie();
-
-        model.addAttribute("dateien", modelService.getSuchergebnisse(token));
-        Set<String> kategorienFromSuche = modelService.getKategorienFromSuche(dateien);
-        model.addAttribute("kategorien", modelService.getKategorienFromSuche(modelService.getSuchergebnisse(token)));
+        model.addAttribute("dateien", suchErgebnisse);
+        model.addAttribute("kategorien", modelService.getKategorienFromSuche(suchErgebnisse));
+        model.addAttribute("selectedTags", Set.of(suchen.getTags()));
         return "suche";
     }
 

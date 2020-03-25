@@ -271,7 +271,7 @@ public final class ModelService implements IModelService {
         UserDTO userDTO = new UserDTO(datei.getUploader().getId(), null, null,
                 null, null);
 
-        DateiDTO dateiDTO = new DateiDTO(datei.getName(), userDTO, tagsToTagDTOs(datei.getTags()),
+        DateiDTO dateiDTO = new DateiDTO(datei.getId(), datei.getName(), userDTO, tagsToTagDTOs(datei.getTags()),
                 datei.getUploaddatum(), datei.getVeroeffentlichungsdatum(), datei.getDateigroesse(),
                 datei.getDateityp(), gruppeDTO, datei.getKategorie());
         return repository.saveDatei(dateiDTO);

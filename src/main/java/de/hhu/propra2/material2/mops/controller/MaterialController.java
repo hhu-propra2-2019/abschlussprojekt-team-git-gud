@@ -2,6 +2,8 @@ package de.hhu.propra2.material2.mops.controller;
 
 import de.hhu.propra2.material2.mops.Exceptions.DownloadException;
 import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
+import de.hhu.propra2.material2.mops.domain.models.Datei;
+import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
 import de.hhu.propra2.material2.mops.domain.models.UploadForm;
 import de.hhu.propra2.material2.mops.domain.services.MinIOService;
@@ -74,7 +76,8 @@ public class MaterialController {
         model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
         model.addAttribute("kategorien", modelService.getKategorienByGruppe(gruppenId, token));
         model.addAttribute("dateien", modelService.getAlleDateienByGruppe(gruppenId, token));
-        model.addAttribute("gruppenAuswahl", gruppenId);
+        Gruppe gruppenAuswahl = modelService.getGruppeByUserAndGroupID(gruppenId, token);
+        model.addAttribute("gruppenAuswahl", gruppenAuswahl);
         return "dateiSicht";
     }
 

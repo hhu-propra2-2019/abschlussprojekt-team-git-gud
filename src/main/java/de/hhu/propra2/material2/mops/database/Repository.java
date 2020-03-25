@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
@@ -725,6 +726,7 @@ public final class Repository {
         return user;
     }
 
+    @Scheduled(cron = " 0 0 0 * * *") //Clears Cache at midnight on everyday of the year
     void clearCache() {
         gruppeCache.clear();
     }

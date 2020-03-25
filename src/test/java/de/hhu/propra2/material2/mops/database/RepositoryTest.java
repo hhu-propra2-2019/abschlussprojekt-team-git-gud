@@ -230,13 +230,20 @@ public final class RepositoryTest {
         gruppeDTO.getDateien().add(dateiDTO);
         user.getBelegungUndRechte().put(gruppeDTO, true);
         repository.saveUser(user);
-        repository.saveDatei(dateiDTO);
 
         UserDTO userDTO = repository.findUserByKeycloakname(user.getKeycloakname());
+
+        GruppeDTO gruppeDTOForAddingDatei = ((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0]);
+        gruppeDTOForAddingDatei.getDateien();
+        boolean cachedBeforeAddingNewDatei = cache.get(gruppeDTOForAddingDatei.getId()) != null;
+
+        repository.saveDatei(dateiDTO);
+        boolean cachedAfterAddingDatei = cache.get(gruppeDTOForAddingDatei.getId()) != null;
+
+
         GruppeDTO[] gruppeDTOs = new GruppeDTO[2];
         gruppeDTOs[0] = (GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0];
         gruppeDTOs[1] = (GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[1];
-        boolean gruppe1HasNoFilesYet = gruppeDTOs[0].hasNoFiles();
         boolean gruppe2HasNoFilesYet = gruppeDTOs[1].hasNoFiles();
 
         gruppeDTOs[0].getDateien();
@@ -250,7 +257,8 @@ public final class RepositoryTest {
         repository.deleteGroupByGroupDTO(gruppeDTOs[0]);
         boolean isG1InCacheAfterDeletion = cache.get(gruppeDTOs[0].getId()) != null;
 
-        assertTrue(gruppe1HasNoFilesYet);
+        assertTrue(cachedBeforeAddingNewDatei);
+        assertTrue(cachedAfterAddingDatei);
         assertTrue(gruppe2HasNoFilesYet);
         assertTrue(isGruppe1InCacheNow);
         assertTrue(isGruppe2InCacheNow);

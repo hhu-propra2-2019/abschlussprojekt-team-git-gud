@@ -207,6 +207,7 @@ public class MaterialController {
     //TODO überprüfen, dass Zeit nicht leer ist
     //TODO was tun, wenn Tags leer sind?
     //TODO Success/Errormessage anzeigen
+    //TODO editierte Datei wird dupliziert
     public String update(final KeycloakAuthenticationToken token,
                          final Model model,
                          final UpdateForm updateForm,
@@ -223,8 +224,8 @@ public class MaterialController {
         } catch (NoUploadPermissionException e) {
             setMessages("Sie sind nicht berechtigt diese Datei zu verändern.", null);
         }
-        String string = "redirect:/update?gruppenId=%d&dateiId=%d";
-        return String.format(string, gruppenId, dateiId);
+        String string = "redirect:/dateiSicht?gruppenId=%d";
+        return String.format(string, gruppenId);
     }
 
     /**

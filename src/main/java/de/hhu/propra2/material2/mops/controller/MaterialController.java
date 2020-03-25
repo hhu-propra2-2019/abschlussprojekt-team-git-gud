@@ -2,6 +2,7 @@ package de.hhu.propra2.material2.mops.controller;
 
 import de.hhu.propra2.material2.mops.Exceptions.DownloadException;
 import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
+import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
 import de.hhu.propra2.material2.mops.domain.models.UploadForm;
 import de.hhu.propra2.material2.mops.domain.services.MinioDownloadService;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.annotation.SessionScope;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +27,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Set;
 
 /**
  * After the @RolesAllowed Annotation the Syle Code wants a space after
@@ -32,6 +36,7 @@ import java.sql.SQLException;
  * satisfy both conditions and have to disable one
  */
 @Controller
+@SessionScope
 @SuppressWarnings("checkstyle:ParenPad")
 public class MaterialController {
 
@@ -112,6 +117,14 @@ public class MaterialController {
         if (search == null) {
             return "redirect:/suche";
         }
+        modelService.suchen(suchen);
+        List<Datei> dateien = modelService.getSuchergebnisse(token);
+        model.addAttribute("isSortedByKategorie", modelService.isSortedByKategorie());
+        Boolean sortedByKategorie = modelService.isSortedByKategorie();
+
+        model.addAttribute("dateien", modelService.getSuchergebnisse(token));
+        Set<String> kategorienFromSuche = modelService.getKategorienFromSuche(dateien);
+        model.addAttribute("kategorien", modelService.getKategorienFromSuche(modelService.getSuchergebnisse(token)));
         return "suche";
     }
 

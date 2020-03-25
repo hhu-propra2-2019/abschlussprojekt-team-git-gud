@@ -2,6 +2,7 @@ package de.hhu.propra2.material2.mops.domain.services;
 
 import de.hhu.propra2.material2.mops.utils.TestContainerUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.junit.Rule;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +24,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 @Testcontainers
 class MinIOServiceTest {
 
+    @Rule
     @Container
     private static final GenericContainer MINIO_SERVER = TestContainerUtil.getMinIOContainer();
 

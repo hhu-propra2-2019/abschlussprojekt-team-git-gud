@@ -248,7 +248,14 @@ final class RepositoryPerformanceTest {
 
         before = LocalTime.now();
         System.out.println(before + " Loading (not cached) Files now...");
-        GruppeDTO gruppeDTO = ((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0]);
+        GruppeDTO gruppeDTO = null;
+        try {
+            gruppeDTO = ((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0]);
+        }
+        catch (NullPointerException e) {
+            System.out.println(userDTO.toString());
+        }
+
         LinkedList<DateiDTO> dateiDTOs = (LinkedList<DateiDTO>) gruppeDTO.getDateien();
         after = LocalTime.now();
         timePassed = Duration.between(before, after);

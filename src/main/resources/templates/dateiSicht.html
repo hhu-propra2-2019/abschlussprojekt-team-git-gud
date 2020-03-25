@@ -48,7 +48,7 @@
                         <div class="list-inline">
                             <span class="card-text h2 pb-3" th:text="${datei.getName()}"></span>
                             <a class="btn btn-primary" role="button"
-                               th:href="@{/update(fileId=${datei.getId()}, gruppenID=${gruppenAuswahl})}"
+                               th:href="@{/update(dateiId=${datei.getId()}, gruppenId=${gruppenAuswahl})}"
                                href="#">EDIT</a>
                             <a class="btn btn-primary" role="button" th:href="@{/files(fileId=${datei.getId()})}"
                                href="#">DOWNLOAD</a>

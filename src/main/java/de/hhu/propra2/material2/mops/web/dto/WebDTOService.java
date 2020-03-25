@@ -1,10 +1,10 @@
 package de.hhu.propra2.material2.mops.web.dto;
 
 
-import de.hhu.propra2.material2.mops.Database.DTOs.DateiDTO;
-import de.hhu.propra2.material2.mops.Database.DTOs.GruppeDTO;
-import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
-import de.hhu.propra2.material2.mops.Database.Repository;
+import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.UserDTO;
+import de.hhu.propra2.material2.mops.database.Repository;
 import org.bouncycastle.jcajce.provider.digest.SHA3;
 import org.springframework.stereotype.Service;
 
@@ -53,7 +53,7 @@ public class WebDTOService {
         addNewGroups(updatedUserList);
     }
 
-    private void deleteOldGroupUserRelations(GruppeDTO gruppe) {
+    private void deleteOldGroupUserRelations(final GruppeDTO gruppe) {
 
     }
 
@@ -64,7 +64,7 @@ public class WebDTOService {
         return false;
     }
 
-    private void addNewGroups(final List<UserDTO> updated) throws SQLException {
+    private HashMap<String, UserDTO> addNewGroups(final List<UserDTO> updated) throws SQLException {
         /**
          *Here the users from the Database will be saved
          **/
@@ -92,13 +92,14 @@ public class WebDTOService {
                 }
             }
         }
+        return databaseUser;
     }
 
     private List<String> generateGroupIdList(final HashMap<GruppeDTO, Boolean> gruppen) {
         return gruppen.keySet().stream().map(GruppeDTO::getId).collect(Collectors.toList());
     }
 
-    private void deleteGroups(final List<GroupWebDTO> groupList) throws SQLException {
+    private List<GroupWebDTO> deleteGroups(final List<GroupWebDTO> groupList) throws SQLException {
         for (GroupWebDTO gruppe : groupList) {
             if (gruppe.getMembers() == null
                     && gruppe.getDescription() == null
@@ -109,8 +110,10 @@ public class WebDTOService {
                     && gruppe.getVisibility() == null
                     && gruppe.getUserMaximum() == 0) {
                 repository.deleteGroupByGroupDTO(loadGruppe(gruppe));
+                groupList.remove(gruppe);
             }
         }
+        return groupList;
     }
 
     private UserDTO loadUser(final UserWebDTO userWeb, final HashMap<GruppeDTO, Boolean> gruppen) {
@@ -129,5 +132,45 @@ public class WebDTOService {
         SHA3.DigestSHA3 digestSHA3 = new SHA3.Digest512();
         byte[] digest = digestSHA3.digest(uuid.getBytes());
         return (long) Arrays.hashCode(digest);
+    }
+
+    /**
+     * Can be called from Controller to save the changes from update into the Database
+     * @param update
+     * @throws SQLException
+     */
+    public void startUpdate(final UpdatedGroupRequestMapper update) throws SQLException {
+        /**
+         * delete deprecated groups
+         **/
+        List<GroupWebDTO> gruppen;
+        gruppen = deleteGroups(update.getGroupList());
+        /**
+         * create the map of the users that are in the update
+         */
+        Map<String, UserWebDTO> users = new HashMap<>(); //
+        /**
+         *  Map userIds to a map which maps groupIds to upload Permission
+         */
+        Map<String, HashMap<String, Boolean>> belegung = new HashMap<>();
+        /**
+         * These Users will be saved back into the Database
+         */
+        Map<String, UserDTO> saveInDB = new HashMap<>();
+
+        for (GroupWebDTO groupWeb : gruppen) {
+            for (UserWebDTO userWeb : groupWeb.getMembers()) {
+                if (!users.containsKey(userWeb.getId())) {
+                    users.put(userWeb.getId(), userWeb);
+                }
+                if (!belegung.containsKey(userWeb.getId())) {
+                    belegung.put(userWeb.getId(), new HashMap<>());
+                }
+                belegung.get(userWeb.getId()).put(groupWeb.getId(),
+                        getBerechtigung(groupWeb.getRoles().get(userWeb.getId())));
+            }
+        }
+
+
     }
 }

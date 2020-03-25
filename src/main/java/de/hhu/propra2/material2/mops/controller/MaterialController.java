@@ -63,6 +63,9 @@ public class MaterialController {
             model.addAttribute("account", modelService.getAccountFromKeycloak(token));
             model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
         }
+        model.addAttribute("error", errorMessage);
+        model.addAttribute("success", successMessage);
+        resetMessages();
         return "start";
     }
 
@@ -134,6 +137,7 @@ public class MaterialController {
         model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
         model.addAttribute("error", errorMessage);
         model.addAttribute("success", successMessage);
+        resetMessages();
         return "upload";
     }
 
@@ -184,7 +188,7 @@ public class MaterialController {
     /**
      *
      */
-    @GetMapping("/files")
+    @GetMapping(value = "/files")
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public ResponseEntity<InputStreamResource> getFile(final Long fileId,
                                                        final KeycloakAuthenticationToken token)
@@ -206,5 +210,29 @@ public class MaterialController {
     private void resetMessages() {
         this.errorMessage = null;
         this.successMessage = null;
+    }
+
+    /**
+     * exception handler for a download error.
+     *
+     * @param e exception
+     * @return redirect to home page with a error message
+     */
+    @ExceptionHandler(DownloadException.class)
+    String handleDonwloadException(final DownloadException e) {
+        setMessages("Beim Download gab es ein Problem.", null);
+        return "redirect:/";
+    }
+
+    /**
+     * exception handler for a sql error.
+     *
+     * @param e exception
+     * @return redirect to home page with a error message
+     */
+    @ExceptionHandler(SQLException.class)
+    String handleSQLException(final SQLException e) {
+        setMessages("Beim zugriff auf die Datenbank gab es ein Problem.", null);
+        return "redirect:/";
     }
 }

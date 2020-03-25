@@ -235,7 +235,7 @@ final class RepositoryPerformanceTest {
     }
 
     @SuppressWarnings("checkstyle:magicnumber")
-    @SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_EXCEPTION")
+    @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_EXCEPTION", "DLS_DEAD_LOCAL_STORE"})
     @Test
     void load1UserWith1GroupWith1100FilesWith3Tags() throws SQLException {
         LocalTime before = LocalTime.now();

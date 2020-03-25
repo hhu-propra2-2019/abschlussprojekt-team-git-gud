@@ -22,7 +22,8 @@ import java.util.LinkedList;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-@Sql("src/main/resources/data.sql")
+
+@Sql("/data.sql")
 @SpringBootTest(classes = Material2Application.class)
 final class RepositoryPerformanceTest {
 

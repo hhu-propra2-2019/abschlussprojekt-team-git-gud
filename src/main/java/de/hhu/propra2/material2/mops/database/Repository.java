@@ -5,6 +5,8 @@ import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.TagDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.UserDTO;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -26,6 +28,7 @@ import java.util.List;
 public final class Repository {
     private Connection connection;
     private Environment env;
+    @Getter(AccessLevel.PACKAGE) //for Testing
     private HashMap<Long, GruppeDTO> gruppeCache;
 
     /**
@@ -56,7 +59,8 @@ public final class Repository {
      * Lazy (no File Loading) search for a user that loads
      * all his groups, rights but no
      * files assigned to their group with
-     * their tags.
+     * their tags. Resets group-user relations assigns them again.
+     * Returns null if no user found.
      *
      * @param keyCloakNameArg
      * @return
@@ -251,7 +255,7 @@ public final class Repository {
                     dateiResult.getDate("veroeffentlichungs_datum").toLocalDate(),
                     dateiResult.getLong("datei_groesse"),
                     dateiResult.getString("datei_typ"),
-                    null,
+                    findGruppeByGruppeId(dateiResult.getLong("gruppeID")),
                     dateiResult.getString("kategorie"));
         }
 
@@ -721,6 +725,9 @@ public final class Repository {
         return user;
     }
 
+    void clearCache() {
+        gruppeCache.clear();
+    }
 
     /*
         TESTING METHOD

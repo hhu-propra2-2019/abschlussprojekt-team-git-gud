@@ -87,7 +87,7 @@ public final class GruppeDTO {
         }
 
         if (repository == null) {
-            return new LinkedList<DateiDTO>();
+            return dateien;
         }
 
         try {
@@ -97,8 +97,6 @@ public final class GruppeDTO {
             return dateien;
         }
     }
-
-
 
     @Override
     public boolean equals(final Object o) {

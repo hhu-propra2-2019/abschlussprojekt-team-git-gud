@@ -218,4 +218,44 @@ public final class RepositoryTest {
 
         assertTrue(loadedUser.getBelegungUndRechte().keySet().isEmpty());
     }
+
+    @SuppressWarnings("checkstyle:magicnumber")
+    @Test
+    void loadUserWith2GroupsAndCheckCaching() throws SQLException {
+        repository.clearCache();
+        HashMap cache = repository.getGruppeCache();
+        GruppeDTO gruppeDTO = new GruppeDTO(-100, "gruppee", "gruppeeee", new LinkedList<>());
+        DateiDTO dateiDTO = new DateiDTO("apple", user, datei.getTagDTOs(), LocalDate.now(),
+                LocalDate.now(), 200, "pdf", gruppeDTO, "vl");
+        gruppeDTO.getDateien().add(dateiDTO);
+        user.getBelegungUndRechte().put(gruppeDTO, true);
+        repository.saveUser(user);
+        repository.saveDatei(dateiDTO);
+
+        UserDTO userDTO = repository.findUserByKeycloakname(user.getKeycloakname());
+        GruppeDTO[] gruppeDTOs = new GruppeDTO[2];
+        gruppeDTOs[0] = (GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0];
+        gruppeDTOs[1] = (GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[1];
+        boolean gruppe1HasNoFilesYet = gruppeDTOs[0].hasNoFiles();
+        boolean gruppe2HasNoFilesYet = gruppeDTOs[1].hasNoFiles();
+
+        gruppeDTOs[0].getDateien();
+        boolean isGruppe1InCacheNow = cache.get(gruppeDTOs[0].getId()) != null;
+        LinkedList g2Dateien = (LinkedList) gruppeDTOs[1].getDateien();
+        boolean isGruppe2InCacheNow = cache.get(gruppeDTOs[1].getId()) != null;
+
+        repository.deleteDateiByDateiDTO((DateiDTO) g2Dateien.get(0));
+        boolean isG2InCacheAfterFileDeletion = cache.get(gruppeDTOs[1].getId()) != null;
+
+        repository.deleteGroupByGroupDTO(gruppeDTOs[0]);
+        boolean isG1InCacheAfterDeletion = cache.get(gruppeDTOs[0].getId()) != null;
+
+        assertTrue(gruppe1HasNoFilesYet);
+        assertTrue(gruppe2HasNoFilesYet);
+        assertTrue(isGruppe1InCacheNow);
+        assertTrue(isGruppe2InCacheNow);
+        assertFalse(isG2InCacheAfterFileDeletion);
+        assertFalse(isG1InCacheAfterDeletion);
+        user.getBelegungUndRechte().remove(gruppeDTO);
+    }
 }

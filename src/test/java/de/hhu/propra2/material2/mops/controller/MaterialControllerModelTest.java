@@ -88,6 +88,8 @@ public class MaterialControllerModelTest {
                 realTags, LocalDate.of(2020, 03, 01), LocalDate.now(), 895973L,
                 "PDF", "Vorlesung"));
         when(modelService.getAlleGruppenByUser(any())).thenReturn(gruppen);
+        when(modelService.getGruppeByUserAndGroupID(any(), any())).thenReturn(new Gruppe(2,
+                "RDB", null));
         when(modelService.getAlleUploadGruppenByUser(any())).thenReturn(gruppen);
         when(modelService.getAlleTagsByUser(any())).thenReturn(tags);
         when(modelService.getAlleUploaderByUser(any())).thenReturn(uploader);

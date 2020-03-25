@@ -44,6 +44,19 @@ public class User {
     }
 
     /**
+     * returns the groups the student participates in as a List
+     */
+    public List<Gruppe> getAllGruppenWithUploadrechten() {
+        List<Gruppe> berechtigteGruppen = new ArrayList<>();
+        for (HashMap.Entry<Gruppe, Boolean> entry : belegungUndRechte.entrySet()) {
+            if (entry.getValue()) {
+                berechtigteGruppen.add(entry.getKey());
+            }
+        }
+        return berechtigteGruppen;
+    }
+
+    /**
      * returns group by GroupId
      *
      * @param gruppenId
@@ -68,5 +81,13 @@ public class User {
             return false;
         }
         return belegungUndRechte.get(gruppe);
+    }
+
+    /**
+     * returns the full name with name and surname
+     * @return String
+     */
+    public String getName() {
+        return vorname + " " + nachname;
     }
 }

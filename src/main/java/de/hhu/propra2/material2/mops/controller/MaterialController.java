@@ -5,7 +5,7 @@ import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
 import de.hhu.propra2.material2.mops.domain.models.UpdateForm;
 import de.hhu.propra2.material2.mops.domain.models.UploadForm;
-import de.hhu.propra2.material2.mops.domain.services.MinioDownloadService;
+import de.hhu.propra2.material2.mops.domain.services.MinIOService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
 import de.hhu.propra2.material2.mops.domain.services.UpdateService;
 import de.hhu.propra2.material2.mops.domain.services.UploadService;
@@ -18,9 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-
 import org.springframework.web.bind.annotation.PostMapping;
-
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.security.RolesAllowed;
@@ -47,9 +45,9 @@ public class MaterialController {
     @Autowired
     private UploadService uploadService;
     @Autowired
-    private MinioDownloadService minioDownloadService;
-    @Autowired
     private UpdateService updateService;
+    @Autowired
+    private MinIOService minIOService;
 
     private String errorMessage;
     private String successMessage;
@@ -78,6 +76,9 @@ public class MaterialController {
     public String sicht(final KeycloakAuthenticationToken token, final Model model, final Long gruppenId) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
+        model.addAttribute("kategorien", modelService.getKategorienByGruppe(gruppenId, token));
+        model.addAttribute("dateien", modelService.getAlleDateienByGruppe(gruppenId, token));
+        model.addAttribute("gruppenAuswahl", gruppenId);
         return "dateiSicht";
     }
 
@@ -128,11 +129,10 @@ public class MaterialController {
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public String upload(final KeycloakAuthenticationToken token, final Model model) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
-        model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
+        model.addAttribute("gruppen", modelService.getAlleUploadGruppenByUser(token));
         model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
         model.addAttribute("error", errorMessage);
         model.addAttribute("success", successMessage);
-        resetMessages();
         return "upload";
     }
 
@@ -148,21 +148,22 @@ public class MaterialController {
     public String upload(final KeycloakAuthenticationToken token, final Model model, final UploadForm upForm) {
         Account uploader = modelService.getAccountFromKeycloak(token);
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
-        model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
+        model.addAttribute("gruppen", modelService.getAlleUploadGruppenByUser(token));
         model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
-        model.addAttribute("error", errorMessage);
-        model.addAttribute("success", successMessage);
         try {
             uploadService.startUpload(upForm, uploader.getName());
             setMessages(null, "Upload war erfolgreich!");
         } catch (FileUploadException e) {
-            setMessages("Beim Upload gab es ein Problem", null);
+            setMessages("Beim Upload gab es ein Problem.", null);
         } catch (SQLException e) {
-            setMessages("Beim Upload gab es ein Problem", null);
+            setMessages("Beim speichern in der Datenbank gab es einen Fehler.", null);
         } catch (NoUploadPermissionException e) {
             setMessages("Sie sind nicht berechtigt in dieser Gruppe hochzuladen!", null);
         }
-        return "redirect:/upload";
+        model.addAttribute("error", errorMessage);
+        model.addAttribute("success", successMessage);
+        resetMessages();
+        return "upload";
     }
 
     /**
@@ -249,7 +250,7 @@ public class MaterialController {
             final HttpServletResponse response, final KeycloakAuthenticationToken token) {
         try {
             // get your file as InputStream
-            InputStream input = minioDownloadService.getObject(fileId);
+            InputStream input = minIOService.getObject(fileId);
             // copy it to response's OutputStream
             FileCopyUtils.copy(input, response.getOutputStream());
             response.flushBuffer();

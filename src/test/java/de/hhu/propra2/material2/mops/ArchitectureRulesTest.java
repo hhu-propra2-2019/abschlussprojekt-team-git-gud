@@ -12,8 +12,8 @@ public class ArchitectureRulesTest {
     @ArchTest
     private static ArchRule layerDependenciesAreRespected =
             layeredArchitecture()
-                    .layer("Database")
-                    .definedBy("..Database..")
+                    .layer("database")
+                    .definedBy("..database..")
                     .layer("businessLogic")
                     .definedBy("..domain..")
                     .layer("gui")
@@ -22,6 +22,6 @@ public class ArchitectureRulesTest {
                     .mayNotBeAccessedByAnyLayer()
                     .whereLayer("businessLogic")
                     .mayOnlyBeAccessedByLayers("gui")
-                    .whereLayer("Database")
+                    .whereLayer("database")
                     .mayOnlyBeAccessedByLayers("businessLogic");
 }

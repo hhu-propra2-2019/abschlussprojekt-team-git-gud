@@ -1,9 +1,9 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
-import de.hhu.propra2.material2.mops.Database.DTOs.DateiDTO;
-import de.hhu.propra2.material2.mops.Database.DTOs.GruppeDTO;
-import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
-import de.hhu.propra2.material2.mops.Database.Repository;
+import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.UserDTO;
+import de.hhu.propra2.material2.mops.database.Repository;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import org.junit.jupiter.api.BeforeEach;

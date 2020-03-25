@@ -1,29 +1,24 @@
-package de.hhu.propra2.material2.mops.Database;
+package de.hhu.propra2.material2.mops.database;
 
-import de.hhu.propra2.material2.mops.Database.DTOs.DateiDTO;
-import de.hhu.propra2.material2.mops.Database.DTOs.GruppeDTO;
-import de.hhu.propra2.material2.mops.Database.DTOs.TagDTO;
-import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
 import de.hhu.propra2.material2.mops.Material2Application;
-import org.junit.Ignore;
+import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.TagDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.UserDTO;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.sql.SQLException;
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 
 @SpringBootTest(classes = Material2Application.class)
 public final class RepositoryTest {
@@ -32,9 +27,9 @@ public final class RepositoryTest {
     private GruppeDTO gruppe;
     private UserDTO user;
     private TagDTO tag;
-    private ArrayList<TagDTO> tags = new ArrayList<TagDTO>();
+    private LinkedList<TagDTO> tags = new LinkedList<TagDTO>();
     private DateiDTO datei;
-    private ArrayList<DateiDTO> dateien = new ArrayList<DateiDTO>();
+    private LinkedList<DateiDTO> dateien = new LinkedList<DateiDTO>();
     private HashMap<GruppeDTO, Boolean> berechtigung = new HashMap<GruppeDTO, Boolean>();
 
     @SuppressWarnings("checkstyle:magicnumber")
@@ -45,7 +40,7 @@ public final class RepositoryTest {
         tag = new TagDTO("gae");
         tags.add(tag);
 
-        gruppe = new GruppeDTO(99999999, "gruppe", "this is a description", dateien);
+        gruppe = new GruppeDTO(99999999, "gruppe", "this is a description", dateien, repositoryArg);
         berechtigung.put(gruppe, true);
 
         user = new UserDTO(999999, "Why are you gae?", "You are gae",
@@ -53,59 +48,18 @@ public final class RepositoryTest {
 
         datei = new DateiDTO("gaedata", user, tags, LocalDate.of(2020, 3, 01),
                 LocalDate.now(), 200, "gae", gruppe, "gae");
-        gruppe.getDateien().add(datei);
+        dateien.add(datei);
     }
 
     @BeforeEach
     public void preparation() throws SQLException {
-        repository.deleteAll();
         repository.saveUser(user);
         datei.setId(repository.saveDatei(datei));
     }
 
-    private ArrayList<UserDTO> generateXUsersWithYGroupsWithZFilesWithATags(final int userCount,
-                                                                            final int groupCountPerUser,
-                                                                            final int fileCountPerGroup,
-                                                                            final int tagCountPerFile) {
-        UserDTO[] users = new UserDTO[userCount];
-        for (int i = 0; i < userCount; i++) {
-            users[i] = generateRandomUser();
-            for (int j = 0; j < groupCountPerUser; j++) {
-                GruppeDTO gruppeDTO = generateRandomGruppe();
-                for (int k = 0; k < fileCountPerGroup; k++) {
-                    gruppeDTO.getDateien().add(generateRandomDatei(generateRandomTags(tagCountPerFile), gruppeDTO));
-                }
-                users[i].getBelegungUndRechte().put(gruppeDTO, true);
-            }
-        }
-        return new ArrayList<UserDTO>(Arrays.asList(users));
-    }
-
-    private ArrayList<TagDTO> generateRandomTags(final int tagCount) {
-        ArrayList<TagDTO> tagDTOs = new ArrayList<TagDTO>();
-        for (int i = 0; i < tagCount; i++) {
-            tagDTOs.add(new TagDTO(UUID.randomUUID().toString()));
-        }
-        return tagDTOs;
-    }
-
-    @SuppressWarnings("checkstyle:MagicNumber")
-    private DateiDTO generateRandomDatei(final ArrayList<TagDTO> tagsArg, final GruppeDTO gruppeDTO) {
-        return new DateiDTO(UUID.randomUUID().toString(),
-                new UserDTO(-1, "User", "Deleted", "-", null),
-                tagsArg, LocalDate.now(), LocalDate.now(),
-                200, UUID.randomUUID().toString(),
-                gruppeDTO, UUID.randomUUID().toString());
-    }
-
-    private GruppeDTO generateRandomGruppe() {
-        return new GruppeDTO(UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE,
-                " ", " ", new ArrayList<DateiDTO>());
-    }
-
-    private UserDTO generateRandomUser() {
-        return new UserDTO(UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE,
-                " ", " ", UUID.randomUUID().toString(), new HashMap<GruppeDTO, Boolean>());
+    @AfterEach
+    public void deleteAll() throws SQLException {
+        repository.deleteAll();
     }
 
     @Test
@@ -124,7 +78,7 @@ public final class RepositoryTest {
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
     public void loadGruppeTest() throws SQLException {
-        GruppeDTO gruppeDto = repository.findGruppeByGruppeId(99999999);
+        GruppeDTO gruppeDto = repository.findGruppeByGruppeId(gruppe.getId());
 
         assertTrue(gruppeDto.getName().equals("gruppe"));
         assertTrue(gruppeDto.getDescription().equals("this is a description"));
@@ -133,7 +87,7 @@ public final class RepositoryTest {
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
     public void updateDateiTest() throws SQLException {
-        ArrayList<TagDTO> newTags = new ArrayList<TagDTO>();
+        LinkedList<TagDTO> newTags = new LinkedList<TagDTO>();
         TagDTO tag1 = new TagDTO("gae1");
         TagDTO tag2 = new TagDTO("gae2");
         DateiDTO newDatei;
@@ -149,7 +103,7 @@ public final class RepositoryTest {
         repository.saveDatei(newDatei);
 
         UserDTO userDTO = repository.findUserByKeycloakname("gae");
-        List<TagDTO> tagDTOS = new ArrayList<>();
+        List<TagDTO> tagDTOS = new LinkedList<>();
         for (GruppeDTO gruppeDTO : userDTO.getBelegungUndRechte().keySet()) {
             tagDTOS = gruppeDTO.getDateien().get(0).getTagDTOs();
         }
@@ -170,7 +124,7 @@ public final class RepositoryTest {
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
     public void updateTwiceDateiTest() throws SQLException {
-        ArrayList<TagDTO> newTags = new ArrayList<TagDTO>();
+        LinkedList<TagDTO> newTags = new LinkedList<TagDTO>();
         TagDTO tag1 = new TagDTO("gae1");
         TagDTO tag2 = new TagDTO("gae2");
         TagDTO tag3 = new TagDTO("gae3");
@@ -182,7 +136,7 @@ public final class RepositoryTest {
         newDatei = new DateiDTO(datei.getId(), "gaedata",
                 user, newTags, LocalDate.now(), newVeroeffentlichungsDatum, 400, "fish", gruppe, "gaee");
 
-        repository.saveDatei(newDatei);
+        newDatei.setId(repository.saveDatei(newDatei));
         newTags.add(tag3);
         newDatei.setDateigroesse(500);
         newDatei.setDateityp("new");
@@ -190,10 +144,10 @@ public final class RepositoryTest {
         newDatei.setTagDTOs(newTags);
         newVeroeffentlichungsDatum = LocalDate.of(2020, 3, 11);
         newDatei.setVeroeffentlichungsdatum(newVeroeffentlichungsDatum);
-        repository.saveDatei(newDatei);
+        newDatei.setId(repository.saveDatei(newDatei));
 
         UserDTO userDTO = repository.findUserByKeycloakname("gae");
-        List<TagDTO> tagDTOS = new ArrayList<>();
+        List<TagDTO> tagDTOS = new LinkedList<>();
         for (GruppeDTO gruppeDTO : userDTO.getBelegungUndRechte().keySet()) {
             tagDTOS = gruppeDTO.getDateien().get(0).getTagDTOs();
         }
@@ -235,7 +189,7 @@ public final class RepositoryTest {
 
         assertTrue(repository.findGruppeByGruppeId(gruppe.getId()) == null);
         assertTrue(repository.findAllUserByGruppeId(gruppe.getId()).isEmpty());
-        assertTrue(repository.findAllDateiByGruppeId(gruppe.getId()).isEmpty());
+        assertTrue(repository.findAllDateiByGruppeDTO(gruppe).isEmpty());
     }
 
     @Test
@@ -256,7 +210,6 @@ public final class RepositoryTest {
         assertFalse(repository.doGroupRelationsExistByGruppeId(gruppeId));
     }
 
-
     @Test
     public void deleteGruppenbelegungByUserDTOandGruppeDTOTest() throws SQLException {
         repository.deleteUserGroupRelationByUserDTOAndGruppeDTO(user, gruppe);
@@ -264,85 +217,5 @@ public final class RepositoryTest {
         UserDTO loadedUser = repository.findUserByKeycloakname(user.getKeycloakname());
 
         assertTrue(loadedUser.getBelegungUndRechte().keySet().isEmpty());
-    }
-
-
-    @SuppressWarnings("checkstyle:MagicNumber")
-    @Ignore
-    @Test
-    public void add1UsersWith20GroupsWith100FilesWith10TagsEachAndLoad() throws SQLException {
-        ArrayList<UserDTO> userDTOs =
-                generateXUsersWithYGroupsWithZFilesWithATags(1, 20, 100, 10);
-
-        LocalTime timeBeforeSave = LocalTime.now();
-        System.out.println("Test started at: " + timeBeforeSave);
-
-        for (int userNumber = 0; userNumber < 1; userNumber++) {
-            repository.saveUser(userDTOs.get(userNumber));
-            for (GruppeDTO gruppeDTO : userDTOs.get(userNumber).getBelegungUndRechte().keySet()) {
-                for (DateiDTO dateiDTO: gruppeDTO.getDateien()) {
-                    repository.saveDatei(dateiDTO);
-                }
-            }
-            System.out.println(LocalTime.now() + " User #" + userNumber + " inserted!");
-        }
-
-        LocalTime timeAfterEverything = LocalTime.now();
-        Duration duration = Duration.between(timeBeforeSave, timeAfterEverything);
-
-        System.out.println(timeAfterEverything + " Everything saved!");
-        System.out.println();
-        System.out.println("This took " + duration.getSeconds() + " seconds.");
-
-        timeBeforeSave = LocalTime.now();
-        System.out.println(timeBeforeSave + " Loading Started!");
-        repository.findUserByKeycloakname(userDTOs.get(0).getKeycloakname());
-
-        timeAfterEverything = LocalTime.now();
-        duration = Duration.between(timeBeforeSave, timeAfterEverything);
-        System.out.println(timeAfterEverything + " Loading done!");
-        System.out.println();
-        System.out.println("This took " + duration.getSeconds() + " seconds.");
-    }
-
-
-    @SuppressWarnings("checkstyle:MagicNumber")
-    @Ignore
-    @Test
-    public void add10UsersWith10GroupsWith50FilesWith20TagsEachAndLoad() throws SQLException {
-        ArrayList<UserDTO> userDTOs =
-                generateXUsersWithYGroupsWithZFilesWithATags(10, 10, 50, 20);
-
-        LocalTime timeBeforeSave = LocalTime.now();
-        System.out.println("Test started at: " + timeBeforeSave);
-
-        for (int userNumber = 0; userNumber < 10; userNumber++) {
-            repository.saveUser(userDTOs.get(userNumber));
-            for (GruppeDTO gruppeDTO : userDTOs.get(userNumber).getBelegungUndRechte().keySet()) {
-                for (DateiDTO dateiDTO: gruppeDTO.getDateien()) {
-                    repository.saveDatei(dateiDTO);
-                }
-            }
-            System.out.println(LocalTime.now() + " User #" + userNumber + " inserted!");
-        }
-
-        LocalTime timeAfterEverything = LocalTime.now();
-        Duration duration = Duration.between(timeBeforeSave, timeAfterEverything);
-
-        System.out.println(timeAfterEverything + " Everything saved!");
-        System.out.println();
-        System.out.println("This took " + duration.getSeconds() + " seconds.");
-
-        timeBeforeSave = LocalTime.now();
-        System.out.println(timeBeforeSave + " Loading Started!");
-        for (int userNumber = 0; userNumber < 10; userNumber++) {
-            repository.findUserByKeycloakname(userDTOs.get(userNumber).getKeycloakname());
-        }
-
-        timeAfterEverything = LocalTime.now();
-        duration = Duration.between(timeBeforeSave, timeAfterEverything);
-        System.out.println(timeAfterEverything + " Loading done!");
-        System.out.println();
-        System.out.println("This took " + duration.getSeconds() + " seconds.");
     }
 }

@@ -5,7 +5,6 @@ import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.TagDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.UserDTO;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -16,8 +15,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.Duration;
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,7 +25,7 @@ import java.util.List;
 @Component
 public final class Repository {
     private Connection connection;
-    private final HashMap<Long, CachedGruppe> gruppeCache;
+    private HashMap<Long, GruppeDTO> gruppeCache;
 
     /**
      * Constructor that autowires
@@ -163,7 +160,7 @@ public final class Repository {
         deleteUserGroupRelationByGroupId(gruppeDTO.getId());
 
         for (DateiDTO dateiDTO : gruppeDTO.getDateien()) {
-            deleteDateiByDateiId(dateiDTO.getId());
+            deleteDateiByDateiDTO(dateiDTO);
         }
 
         PreparedStatement preparedStatement =
@@ -216,9 +213,19 @@ public final class Repository {
             }
             preparedStatement.close();
             id.close();
+
+            if (gruppeCache.get(dateiDTO.getGruppe().getId()) != null) {
+                gruppeCache.get(dateiDTO.getGruppe().getId()).setDateien(new LinkedList<DateiDTO>());
+                gruppeCache.remove(dateiDTO.getGruppe().getId());
+            }
+
             return dateiId;
         } else {
             updateDatei(dateiDTO, dateiDTO.getId());
+            if (gruppeCache.get(dateiDTO.getGruppe().getId()) != null) {
+                gruppeCache.get(dateiDTO.getGruppe().getId()).setDateien(new LinkedList<DateiDTO>());
+                gruppeCache.remove(dateiDTO.getGruppe().getId());
+            }
             return dateiDTO.getId();
         }
     }
@@ -252,22 +259,22 @@ public final class Repository {
     }
 
     @SuppressWarnings("checkstyle:MagicNumber")
-    public LinkedList<DateiDTO> findAllDateiByGruppeId(final long gruppeId) throws SQLException {
-        CachedGruppe cachedGruppe = gruppeCache.get(gruppeId);
+    public LinkedList<DateiDTO> findAllDateiByGruppeDTO(final GruppeDTO gruppeDTO) throws SQLException {
+        GruppeDTO cachedGruppe = gruppeCache.get(gruppeDTO.getId());
 
         if (cachedGruppe != null) {
-            Duration duration = Duration.between(cachedGruppe.getLastAccessTime(), LocalTime.now());
-            //10 Minutes timeout
-            if (duration.getSeconds() < 600) {
-                return (LinkedList<DateiDTO>) cachedGruppe.getGruppeDTO().getDateien();
+            if (!(cachedGruppe.hasNoFiles())) {
+                return (LinkedList<DateiDTO>) cachedGruppe.getDateien();
             }
+        } else {
+            gruppeCache.put(gruppeDTO.getId(), gruppeDTO);
         }
 
         LinkedList<DateiDTO> dateien = new LinkedList<>();
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select * from Datei where gruppeID=?");
-        preparedStatement.setString(1, "" + gruppeId);
+        preparedStatement.setString(1, "" + gruppeDTO.getId());
 
         ResultSet dateiResult = preparedStatement.executeQuery();
         while (dateiResult.next()) {
@@ -280,14 +287,19 @@ public final class Repository {
         return dateien;
     }
 
-    public void deleteDateiByDateiId(final long dateiId) throws SQLException {
-        deleteTagRelationsByDateiId(dateiId);
+    public void deleteDateiByDateiDTO(final DateiDTO dateiDTO) throws SQLException {
+        deleteTagRelationsByDateiId(dateiDTO.getId());
+
+        long gruppeId = dateiDTO.getGruppe().getId();
+
+        LinkedList<DateiDTO> dateien = (LinkedList<DateiDTO>) dateiDTO.getGruppe().getDateien();
+        dateien.remove(dateiDTO);
+        gruppeCache.remove(gruppeId);
+
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement("delete from Datei where dateiID=?");
-        preparedStatement.setLong(1, dateiId);
-
-        deleteTagRelationsByDateiId(dateiId);
+        preparedStatement.setLong(1, dateiDTO.getId());
 
         preparedStatement.execute();
 
@@ -356,8 +368,13 @@ public final class Repository {
     }
 
     @SuppressWarnings("checkstyle:magicnumber")
-    private boolean dateiExists(final DateiDTO dateiDTO) throws SQLException {
+    boolean dateiExists(final DateiDTO dateiDTO) throws SQLException {
         boolean doesItExist;
+
+        if (dateiDTO.getId() == -1) {
+            return false;
+        }
+
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
                         "select * from Datei where dateiID=?");
@@ -410,14 +427,15 @@ public final class Repository {
     }
 
     private long getTagIdByTagname(final String tagName) throws SQLException {
+        long tagId = -1;
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select tagID from Tags where tag_name=?");
         preparedStatement.setString(1, tagName);
 
         ResultSet idResult = preparedStatement.executeQuery();
-        idResult.next();
-
-        long tagId = idResult.getLong("tagID");
+        if (idResult.next()) {
+            tagId = idResult.getLong("tagID");
+        }
 
         preparedStatement.close();
         idResult.close();
@@ -531,7 +549,7 @@ public final class Repository {
         ResultSet gruppenResult = preparedStatement.executeQuery();
 
         while (gruppenResult.next()) {
-            gruppen.put(findGruppeByGruppeIdlazy(gruppenResult.getLong("gruppeID")),
+            gruppen.put(findGruppeByGruppeId(gruppenResult.getLong("gruppeID")),
                     gruppenResult.getBoolean("upload_berechtigung"));
         }
 
@@ -541,7 +559,7 @@ public final class Repository {
         return gruppen;
     }
 
-    private GruppeDTO findGruppeByGruppeIdlazy(final long gruppeId) throws SQLException {
+    GruppeDTO findGruppeByGruppeId(final long gruppeId) throws SQLException {
         GruppeDTO gruppe = null;
 
         PreparedStatement preparedStatement =
@@ -562,20 +580,20 @@ public final class Repository {
         return gruppe;
     }
 
-    GruppeDTO findGruppeByGruppeIdEager(final long gruppeId) throws SQLException {
+    GruppeDTO findGruppeByGruppeDTOEager(final GruppeDTO gruppeDTO) throws SQLException {
         GruppeDTO gruppe = null;
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select * from Gruppe where gruppeID=?");
-        preparedStatement.setString(1, "" + gruppeId);
+        preparedStatement.setString(1, "" + gruppeDTO);
 
         ResultSet gruppeResult = preparedStatement.executeQuery();
 
         if (gruppeResult.next()) {
-            gruppe = new GruppeDTO(gruppeId,
+            gruppe = new GruppeDTO(gruppeDTO.getId(),
                     gruppeResult.getString("titel"),
                     gruppeResult.getString("beschreibung"),
-                    findAllDateiByGruppeId(gruppeId), this);
+                    findAllDateiByGruppeDTO(gruppeDTO), this);
 
             for (DateiDTO datei : gruppe.getDateien()) {
                 datei.setGruppe(gruppe);
@@ -742,37 +760,4 @@ public final class Repository {
 
         preparedStatement.close();
     }
-
-    /*
-        CACHING OF THE USER FOR FASTER LOADING
-     */
-    @Getter
-    private static class CachedGruppe {
-        private final GruppeDTO gruppeDTO;
-        private final LocalTime lastAccessTime;
-
-        CachedGruppe(final GruppeDTO gruppeDTOArg) {
-            gruppeDTO = gruppeDTOArg;
-            lastAccessTime = LocalTime.now();
-        }
-
-        @Override
-        public boolean equals(final Object o) {
-            if (o == null) {
-                return false;
-            }
-
-            if (o.getClass() == this.getClass()) {
-                CachedGruppe cachedGruppe = (CachedGruppe) o;
-                return cachedGruppe.getGruppeDTO().getId() == this.gruppeDTO.getId();
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            return 0;
-        }
-    }
-
 }

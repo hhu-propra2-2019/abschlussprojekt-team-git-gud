@@ -61,7 +61,7 @@ public final class ModelService implements IModelService {
         return new Tag(tagDTO.getId(), tagDTO.getText());
     }
 
-    User loadUser(final UserDTO userDTO) {
+    private User loadUser(final UserDTO userDTO) {
 
         if (userDTO == null) {
             return new User(-1L, "", "", "", new HashMap<>());
@@ -109,6 +109,11 @@ public final class ModelService implements IModelService {
     public List<Gruppe> getAlleGruppenByUser(final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);
         return user.getAllGruppen();
+    }
+
+    public List<Gruppe> getAlleUploadGruppenByUser(final KeycloakAuthenticationToken token) {
+        User user = createUserByToken(token);
+        return user.getAllGruppenWithUploadrechten();
     }
 
     public List<Datei> getAlleDateienByGruppe(final Long gruppeId,
@@ -285,5 +290,9 @@ public final class ModelService implements IModelService {
 
     public Datei findDateiById(final long dateiId) throws SQLException {
         return loadDatei(repository.findDateiById(dateiId));
+    }
+
+    public User findUserByKeycloakname(final String keycloakname) throws SQLException {
+        return loadUser(repository.findUserByKeycloakname(keycloakname));
     }
 }

@@ -5,7 +5,7 @@ import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.TagDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.UserDTO;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -79,7 +79,7 @@ final class RepositoryPerformanceTest {
     }
 
     @SuppressWarnings("checkstyle:MagicNumber")
-    @Ignore
+    @Disabled
     @Test
     void add1UsersWith20GroupsWith100FilesWith10TagsEachAndLoad() throws SQLException {
         LinkedList<UserDTO> userDTOs =
@@ -117,7 +117,7 @@ final class RepositoryPerformanceTest {
     }
 
     @SuppressWarnings("checkstyle:MagicNumber")
-    @Ignore
+    @Disabled
     @Test
     void add10UsersWith10GroupsWith50FilesWith20TagsEachAndLoad() throws SQLException {
         LinkedList<UserDTO> userDTOs =
@@ -157,7 +157,7 @@ final class RepositoryPerformanceTest {
     }
 
     @SuppressWarnings("checkstyle:MagicNumber")
-    @Ignore
+    @Disabled
     @Test
     void add1UsersWith20GroupsWith100FilesWith1TagsEachAndLoad() throws SQLException {
         LinkedList<UserDTO> userDTOs =
@@ -195,7 +195,7 @@ final class RepositoryPerformanceTest {
     }
 
     @SuppressWarnings("checkstyle:MagicNumber")
-    @Ignore
+    @Disabled
     @Test
     void load100FilesWith3TagsEach() throws SQLException {
         LinkedList<UserDTO> userDTOs =
@@ -223,8 +223,8 @@ final class RepositoryPerformanceTest {
 
         timeBeforeSave = LocalTime.now();
         System.out.println(timeBeforeSave + " Loading Started!");
-        repository.findAllDateiByGruppeId(
-                ((GruppeDTO) userDTOs.get(0).getBelegungUndRechte().keySet().toArray()[0]).getId());
+        repository.findAllDateiByGruppeDTO(
+                ((GruppeDTO) userDTOs.get(0).getBelegungUndRechte().keySet().toArray()[0]));
 
         timeAfterEverything = LocalTime.now();
         duration = Duration.between(timeBeforeSave, timeAfterEverything);
@@ -240,6 +240,7 @@ final class RepositoryPerformanceTest {
         System.out.println(before + " Time test for 1 User 1 Group 1100 Files 3 Tags... Start!");
         UserDTO userDTO = repository.findUserByKeycloakname("_test_");
         LocalTime after = LocalTime.now();
+        UserDTO userDTO2 = repository.findUserByKeycloakname("_test_");
 
         Duration timePassed = Duration.between(before, after);
         System.out.println(after + "Time passed to load the user without files: "
@@ -248,21 +249,32 @@ final class RepositoryPerformanceTest {
         before = LocalTime.now();
         System.out.println(before + " Loading (not cached) Files now...");
         GruppeDTO gruppeDTO = ((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0]);
-        gruppeDTO.getDateien();
+        LinkedList<DateiDTO> dateiDTOs = (LinkedList<DateiDTO>) gruppeDTO.getDateien();
         after = LocalTime.now();
         timePassed = Duration.between(before, after);
         System.out.println(after + " Time passed to load the users files (not cached): "
                 + timePassed.getSeconds() + " seconds.");
 
         before = LocalTime.now();
-        System.out.println(before + " Loading cached Files now...");
-        LinkedList<DateiDTO> dateiDTOs = (LinkedList<DateiDTO>) gruppeDTO.getDateien();
+        System.out.println(before + " Loading cached (in Repository) Files now...");
+        GruppeDTO gruppeDTO2 = ((GruppeDTO) userDTO2.getBelegungUndRechte().keySet().toArray()[0]);
+        LinkedList<DateiDTO> dateiDTOs2 = (LinkedList<DateiDTO>) gruppeDTO2.getDateien();
         after = LocalTime.now();
         timePassed = Duration.between(before, after);
-        System.out.println(after + " Time passed to load the users cached files: "
+        System.out.println(after + " Time passed to load the users cached (in Repository) files: "
+                + timePassed.getSeconds() + " seconds.");
+
+        before = LocalTime.now();
+        System.out.println(before + " Loading saved (in GroupDTO) Files now...");
+        LinkedList<DateiDTO> dateiDTOs3 = (LinkedList<DateiDTO>) gruppeDTO.getDateien();
+        after = LocalTime.now();
+        timePassed = Duration.between(before, after);
+        System.out.println(after + " Time passed to load the users saved (in GroupDTO) files: "
                 + timePassed.getSeconds() + " seconds.");
 
         assertEquals(1100, dateiDTOs.size());
+        assertEquals(1100, dateiDTOs2.size());
+        assertEquals(1100, dateiDTOs3.size());
         System.out.println("Test complete!");
     }
 }

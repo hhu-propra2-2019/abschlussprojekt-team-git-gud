@@ -91,7 +91,7 @@ public final class GruppeDTO {
         }
 
         try {
-            dateien = repository.findAllDateiByGruppeId(id);
+            dateien = repository.findAllDateiByGruppeDTO(this);
             return dateien;
         } catch (SQLException e) {
             return dateien;
@@ -116,5 +116,9 @@ public final class GruppeDTO {
     @Override
     public int hashCode() {
         return 0;
+    }
+
+    public boolean hasNoFiles() {
+        return dateien.isEmpty();
     }
 }

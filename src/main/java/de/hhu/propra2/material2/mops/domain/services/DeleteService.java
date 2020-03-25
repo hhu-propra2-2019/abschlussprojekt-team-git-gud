@@ -1,5 +1,6 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
+import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
 import de.hhu.propra2.material2.mops.database.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,12 +26,12 @@ public class DeleteService {
 
     /**
      * method to delete from repository and from data storage (MinIO) in two steps.
-     * @param dateiID
+     * @param dateiDTO
      * @throws SQLException
      */
     @Transactional
-    public void dateiLoeschen(final long dateiID) throws SQLException {
-        repository.deleteDateiByDateiId(dateiID);
-        minIOService.deleteFile(Long.toString(dateiID));
+    public void dateiLoeschen(final DateiDTO dateiDTO) throws SQLException {
+        repository.deleteDateiByDateiDTO(dateiDTO);
+        minIOService.deleteFile(Long.toString(dateiDTO.getId()));
     }
 }

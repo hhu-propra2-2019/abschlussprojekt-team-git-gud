@@ -20,6 +20,9 @@ public class Suche {
     }
 
     public final String[] getTags() {
+        if (tags.equals("")) {
+            return null;
+        }
         return toArray(tags);
     }
 

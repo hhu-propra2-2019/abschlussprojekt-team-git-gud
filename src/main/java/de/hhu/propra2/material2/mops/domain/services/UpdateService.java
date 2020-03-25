@@ -74,7 +74,11 @@ public class UpdateService implements IUpdateService {
         Gruppe gruppe = user.getGruppeById(gruppenId);
 
         if (!user.hasUploadPermission(gruppe)) {
-            throw new NoUploadPermissionException("User has no upload permission");
+            throw new NoUploadPermissionException("User has no update permission");
+        }
+
+        if (gruppe.getDateiById(dateiId) == null) {
+            throw new NoUploadPermissionException("User has no update permission.");
         }
 
         dateiUpdate(dateiId,

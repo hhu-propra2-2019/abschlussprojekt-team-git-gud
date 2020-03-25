@@ -251,8 +251,7 @@ final class RepositoryPerformanceTest {
         GruppeDTO gruppeDTO = null;
         try {
             gruppeDTO = ((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0]);
-        }
-        catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             System.out.println(userDTO.toString());
         }
 

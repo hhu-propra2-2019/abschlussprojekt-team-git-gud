@@ -244,6 +244,8 @@ final class RepositoryPerformanceTest {
         LocalTime after = LocalTime.now();
         UserDTO userDTO2 = repository.findUserByKeycloakname("_test_");
 
+        UserDTO deleted = repository.findUserByIdLAZY(-1);
+        long id = deleted.getId();
         Duration timePassed = Duration.between(before, after);
         System.out.println(after + "Time passed to load the user without files: "
                 + timePassed.getSeconds() + " seconds");

@@ -2,6 +2,7 @@ package de.hhu.propra2.material2.mops.controller;
 
 import de.hhu.propra2.material2.mops.Exceptions.DownloadException;
 import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
+import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
 import de.hhu.propra2.material2.mops.domain.models.UpdateForm;
 import de.hhu.propra2.material2.mops.domain.models.UploadForm;
@@ -171,10 +172,11 @@ public class MaterialController {
 
     /**
      * update page.
-     * @param token injected keycloak token
-     * @param model injected thymeleaf model
+     *
+     * @param token     injected keycloak token
+     * @param model     injected thymeleaf model
      * @param gruppenId id of the group where the file is saved
-     * @param dateiId id of the file
+     * @param dateiId   id of the file
      * @return update page
      */
     @GetMapping("/update")
@@ -183,10 +185,19 @@ public class MaterialController {
                          final Model model,
                          final Long gruppenId,
                          final Long dateiId) {
+        Account userAccount = modelService.getAccountFromKeycloak(token);
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
         try {
-            model.addAttribute("datei", modelService.findDateiById(dateiId));
+            Datei datei = modelService.getDateiById(dateiId);
+            if (!updateService.hasAccessPermissionForUpdate(userAccount.getName(), gruppenId, datei.getId())) {
+                setMessages("Sie haben keine Zugriffsberechtigung.", null);
+                model.addAttribute("error", errorMessage);
+                model.addAttribute("success", successMessage);
+                String url = "redirect:/dateiSicht?gruppenId=%d";
+                return String.format(url, gruppenId);
+            }
+            model.addAttribute("datei", datei);
         } catch (SQLException | NullPointerException e) {
             setMessages("Die Datei konnte nicht geladen werden.", null);
             model.addAttribute("error", errorMessage);
@@ -199,11 +210,12 @@ public class MaterialController {
 
     /**
      * update routing.
-     * @param token injected keycloak token
-     * @param model injected thymeleaf model
+     *
+     * @param token      injected keycloak token
+     * @param model      injected thymeleaf model
      * @param updateForm form for update
-     * @param gruppenId id of the group where the file is saved
-     * @param dateiId id of the file
+     * @param gruppenId  id of the group where the file is saved
+     * @param dateiId    id of the file
      * @return update page
      */
     @PostMapping("/update")
@@ -215,11 +227,11 @@ public class MaterialController {
                          final UpdateForm updateForm,
                          final Long gruppenId,
                          final Long dateiId) {
-        Account user = modelService.getAccountFromKeycloak(token);
-        model.addAttribute("account", modelService.getAccountFromKeycloak(token));
+        Account userAccount = modelService.getAccountFromKeycloak(token);
+        model.addAttribute("account", userAccount);
         model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
         try {
-            updateService.startUpdate(updateForm, user.getName(), gruppenId, dateiId);
+            updateService.startUpdate(updateForm, userAccount.getName(), gruppenId, dateiId);
             setMessages(null, "Edit erfolgreich.");
         } catch (SQLException e) {
             setMessages("Es gab ein Problem beim Update.", null);

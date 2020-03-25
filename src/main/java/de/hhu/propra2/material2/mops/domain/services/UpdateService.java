@@ -40,7 +40,7 @@ public class UpdateService implements IUpdateService {
      */
     public Datei dateiUpdate(final Long dateiId, final Long gruppenId, final LocalDate veroeffentlichungsdatum,
                              final List<Tag> tags) throws SQLException {
-        Datei datei = modelService.findDateiById(dateiId);
+        Datei datei = modelService.getDateiById(dateiId);
         Datei changedDatei = new Datei(dateiId, datei.getName(), datei.getUploader(),
                 tags == null ? new ArrayList<>() : tags,
                 datei.getUploaddatum(), veroeffentlichungsdatum, datei.getDateigroesse(),
@@ -53,12 +53,13 @@ public class UpdateService implements IUpdateService {
 
     /**
      * for Update of file.
-     * @param upForm Update Form
+     *
+     * @param upForm           Update Form
      * @param keycloakUserName KeycloakName of the User
-     * @param gruppenId Id of the group where the file is saved
-     * @param dateiId The id of the file
-     * @throws SQLException
-     * @throws NoUploadPermissionException
+     * @param gruppenId        Id of the group where the file is saved
+     * @param dateiId          The id of the file
+     * @throws SQLException    if user cannot be found
+     * @throws NoUploadPermissionException if user has no update/access permission
      */
     @Override
     @Transactional
@@ -77,14 +78,33 @@ public class UpdateService implements IUpdateService {
             throw new NoUploadPermissionException("User has no update permission");
         }
 
-        if (gruppe.getDateiById(dateiId) == null) {
-            throw new NoUploadPermissionException("User has no update permission.");
+        if (!user.hasFileAccessPermission(gruppenId, dateiId)) {
+            throw new NoUploadPermissionException("User has no access permission.");
         }
 
         dateiUpdate(dateiId,
                 gruppenId,
                 parseStringToDate(upForm.getTimedUpload()),
                 convertSeperatedStringToList(upForm.getSelectedTags()));
+    }
+
+    /**
+     * checks if user has access to given file in given group.
+     *
+     * @param keycloakUserName the keycloakName of the user
+     * @param gruppenId        id of the group
+     * @param dateiId          id of the file
+     * @return true if user has access to the file and the group, false if not
+     * @throws SQLException if user cannot be found in DB
+     */
+    public boolean hasAccessPermissionForUpdate(final String keycloakUserName,
+                                                final Long gruppenId,
+                                                final Long dateiId) throws SQLException {
+
+        UserDTO userDTO = repository.findUserByKeycloakname(keycloakUserName);
+        User user = modelService.loadUser(userDTO);
+
+        return user.hasFileAccessPermission(gruppenId, dateiId);
     }
 
     private ArrayList<Tag> convertSeperatedStringToList(final String tagStrings) {

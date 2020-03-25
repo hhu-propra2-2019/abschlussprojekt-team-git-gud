@@ -57,7 +57,7 @@ public class UpdateServiceTest {
 
         Datei datei = new Datei(1L, "test.txt", userMock, tags,
                 date1303, date1303, 2L, "txt", "kategorie");
-        when(modelServiceMock.findDateiById(1L)).thenReturn(datei);
+        when(modelServiceMock.getDateiById(1L)).thenReturn(datei);
 
         tag1 = new Tag(1, "tag1");
         tag2 = new Tag(2, "tag2");

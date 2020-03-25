@@ -218,4 +218,9 @@ public final class RepositoryTest {
 
         assertTrue(loadedUser.getBelegungUndRechte().keySet().isEmpty());
     }
+    @Test
+    public void retrieveKeyAllKeyCloakNamesOfMembersOfAGroup() throws SQLException {
+        List<String> result = repository.getUsersByGruppenId("99999999");
+        assertTrue(result.contains("gae"));
+    }
 }

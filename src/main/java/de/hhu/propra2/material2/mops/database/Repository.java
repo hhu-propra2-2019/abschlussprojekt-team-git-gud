@@ -1,5 +1,6 @@
 package de.hhu.propra2.material2.mops.database;
 
+import afu.org.checkerframework.checker.igj.qual.I;
 import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.TagDTO;
@@ -15,6 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -761,6 +763,32 @@ public final class Repository {
         preparedStatement.execute();
 
         preparedStatement.close();
+    }
+
+    public List<String> getUsersByGruppenId(final String gruppenId) throws SQLException {
+        List<String> result = new ArrayList<>();
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("SELECT  userID FROM Gruppenbelegung WHERE gruppeID=?");
+        preparedStatement.setString(1, "" + gruppenId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (resultSet.next()) {
+            result.add(getKeyCloakNameByUserId(resultSet.getInt("userID")));
+        }
+        preparedStatement.close();
+        return result;
+    }
+
+    public String getKeyCloakNameByUserId(final long id) throws SQLException {
+        String name;
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("SELECT  key_cloak_name FROM User WHERE userID=?");
+        preparedStatement.setString(1, "" + id);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+        name = resultSet.getString("key_cloak_name");
+        preparedStatement.close();
+        return name;
     }
 
 }

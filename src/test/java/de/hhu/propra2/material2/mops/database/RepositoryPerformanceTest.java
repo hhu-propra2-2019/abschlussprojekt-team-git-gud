@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.sql.SQLException;
 import java.time.Duration;
@@ -21,7 +22,7 @@ import java.util.LinkedList;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
+@Sql("src/main/resources/data.sql")
 @SpringBootTest(classes = Material2Application.class)
 final class RepositoryPerformanceTest {
 
@@ -31,7 +32,6 @@ final class RepositoryPerformanceTest {
     RepositoryPerformanceTest(final Repository repositoryArg) {
         repository = repositoryArg;
     }
-
 
 
     private LinkedList<UserDTO> generateXUsersWithYGroupsWithZFilesWithATags(final int userCount,
@@ -92,7 +92,7 @@ final class RepositoryPerformanceTest {
         for (int userNumber = 0; userNumber < 1; userNumber++) {
             repository.saveUser(userDTOs.get(userNumber));
             for (GruppeDTO gruppeDTO : userDTOs.get(userNumber).getBelegungUndRechte().keySet()) {
-                for (DateiDTO dateiDTO: gruppeDTO.getDateien()) {
+                for (DateiDTO dateiDTO : gruppeDTO.getDateien()) {
                     repository.saveDatei(dateiDTO);
                 }
             }
@@ -130,7 +130,7 @@ final class RepositoryPerformanceTest {
         for (int userNumber = 0; userNumber < 10; userNumber++) {
             repository.saveUser(userDTOs.get(userNumber));
             for (GruppeDTO gruppeDTO : userDTOs.get(userNumber).getBelegungUndRechte().keySet()) {
-                for (DateiDTO dateiDTO: gruppeDTO.getDateien()) {
+                for (DateiDTO dateiDTO : gruppeDTO.getDateien()) {
                     repository.saveDatei(dateiDTO);
                 }
             }

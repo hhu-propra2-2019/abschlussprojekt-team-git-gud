@@ -10,20 +10,20 @@ import java.util.List;
 
 
 public final class GruppeDTO {
-    @Getter
     /**
      * Unique ID from database.
      */
-    private final long id;
     @Getter
+    private final long id;
     /**
      * Groups name from database.
      */
-    private final String name;
     @Getter
+    private final String name;
     /**
      * Groups description from database.
      */
+    @Getter
     private final String description;
     /**
      * LinkedList of related files from database.

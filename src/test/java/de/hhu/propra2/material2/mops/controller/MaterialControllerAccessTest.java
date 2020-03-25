@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest
 @ComponentScan(basePackageClasses = {KeycloakSecurityComponents.class, KeycloakSpringBootConfigResolver.class})
-public class MaterialControllerAccessTest {
+class MaterialControllerAccessTest {
 
     @Autowired
     private MockMvc mvc;

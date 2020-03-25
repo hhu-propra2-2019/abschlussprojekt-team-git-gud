@@ -28,7 +28,6 @@ import java.util.List;
 @Component
 public final class Repository {
     private Connection connection;
-    private Environment env;
     @Getter(AccessLevel.PACKAGE) //for Testing
     private HashMap<Long, GruppeDTO> gruppeCache;
 
@@ -42,11 +41,10 @@ public final class Repository {
      */
     @Autowired
     public Repository(final Environment envArg) {
-        this.env = envArg;
-        gruppeCache = new HashMap<Long, GruppeDTO>();
+        gruppeCache = new HashMap<>();
         try {
             connection = DriverManager.getConnection("jdbc:mysql://localhost:23306/materialsammlung",
-                    env.getProperty("spring.datasource.username"), env.getProperty("spring.datasource.password"));
+                    envArg.getProperty("spring.datasource.username"), envArg.getProperty("spring.datasource.password"));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -176,7 +174,6 @@ public final class Repository {
      */
     public void deleteGroupByGroupDTO(final GruppeDTO gruppeDTO) throws SQLException {
         deleteUserGroupRelationByGroupId(gruppeDTO.getId());
-
 
         for (DateiDTO dateiDTO : gruppeDTO.getDateien()) {
             deleteDateiByDateiDTO(dateiDTO);
@@ -317,7 +314,7 @@ public final class Repository {
             gruppeCache.put(gruppeDTO.getId(), gruppeDTO);
         }
 
-        LinkedList<DateiDTO> dateien = new LinkedList<DateiDTO>();
+        LinkedList<DateiDTO> dateien = new LinkedList<>();
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select * from Datei where gruppeID=?");
@@ -367,8 +364,8 @@ public final class Repository {
         DATEI METHODS
      */
 
-    LinkedList<DateiDTO> findAllDateiByUploaderId(final long userId) throws SQLException {
-        LinkedList<DateiDTO> dateien = new LinkedList<DateiDTO>();
+    private LinkedList<DateiDTO> findAllDateiByUploaderId(final long userId) throws SQLException {
+        LinkedList<DateiDTO> dateien = new LinkedList<>();
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select * from Datei where uploaderID=?");
@@ -386,7 +383,7 @@ public final class Repository {
         return dateien;
     }
 
-    void changeUploaderToDeletedForAllDateiByUploaderId(final long userId) throws SQLException {
+    private void changeUploaderToDeletedForAllDateiByUploaderId(final long userId) throws SQLException {
         LinkedList<DateiDTO> dateien = findAllDateiByUploaderId(userId);
 
         for (DateiDTO dateiDTO : dateien) {
@@ -397,7 +394,7 @@ public final class Repository {
     }
 
     @SuppressWarnings("checkstyle:magicnumber")
-    void updateDatei(final DateiDTO dateiDTO, final long dateiId) throws SQLException {
+    private void updateDatei(final DateiDTO dateiDTO, final long dateiId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
                         "update Datei set uploaderID=?, veroeffentlichungs_datum=?, datei_groesse=?, kategorie=?,"
@@ -424,7 +421,7 @@ public final class Repository {
 
     @SuppressWarnings("checkstyle:magicnumber")
     boolean dateiExists(final DateiDTO dateiDTO) throws SQLException {
-        boolean doesItExist = false;
+        boolean doesItExist;
 
         if (dateiDTO.getId() == -1) {
             return false;
@@ -450,7 +447,7 @@ public final class Repository {
         TAG METHODS
      */
 
-    void saveTagnutzung(final long dateiId, final long tagId) throws SQLException {
+    private void saveTagnutzung(final long dateiId, final long tagId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
                         "insert ignore into Tagnutzung (dateiID, tagID)" + " values (?, ?)");
@@ -462,7 +459,7 @@ public final class Repository {
         preparedStatement.close();
     }
 
-    void saveTag(final TagDTO tagDTO, final long dateiId) throws SQLException {
+    private void saveTag(final TagDTO tagDTO, final long dateiId) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
                         "insert ignore into Tags (tag_name)" + " values (?)", Statement.RETURN_GENERATED_KEYS);
@@ -481,16 +478,16 @@ public final class Repository {
         id.close();
     }
 
-    long getTagIdByTagname(final String tagName) throws SQLException {
+    private long getTagIdByTagname(final String tagName) throws SQLException {
         long tagId = -1;
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select tagID from Tags where tag_name=?");
         preparedStatement.setString(1, tagName);
 
         ResultSet idResult = preparedStatement.executeQuery();
-        idResult.next();
-
-        tagId = idResult.getLong("tagID");
+        if (idResult.next()) {
+            tagId = idResult.getLong("tagID");
+        }
 
         preparedStatement.close();
         idResult.close();
@@ -498,7 +495,7 @@ public final class Repository {
         return tagId;
     }
 
-    TagDTO findTagById(final long id) throws SQLException {
+    private TagDTO findTagById(final long id) throws SQLException {
         TagDTO tag = null;
 
         PreparedStatement preparedStatement =
@@ -517,8 +514,8 @@ public final class Repository {
         return tag;
     }
 
-    LinkedList<TagDTO> findAllTagsbyDateiId(final long dateiId) throws SQLException {
-        LinkedList<TagDTO> tags = new LinkedList<TagDTO>();
+    private LinkedList<TagDTO> findAllTagsbyDateiId(final long dateiId) throws SQLException {
+        LinkedList<TagDTO> tags = new LinkedList<>();
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select * from Tagnutzung where dateiID=?");
@@ -566,7 +563,7 @@ public final class Repository {
      */
 
     @SuppressWarnings("checkstyle:magicnumber")
-    void saveGruppe(final GruppeDTO gruppeDTO) throws SQLException {
+    private void saveGruppe(final GruppeDTO gruppeDTO) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
                         "insert ignore into Gruppe (gruppeID, titel, beschreibung)" + " values (?, ?, ?)");
@@ -580,8 +577,8 @@ public final class Repository {
     }
 
     @SuppressWarnings("checkstyle:magicnumber")
-    void saveGruppenbelegung(final long userId,
-                             final long gruppeId, final boolean berechtigung) throws SQLException {
+    private void saveGruppenbelegung(final long userId,
+                                     final long gruppeId, final boolean berechtigung) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
                         "insert ignore into Gruppenbelegung (upload_berechtigung,"
@@ -595,8 +592,8 @@ public final class Repository {
         preparedStatement.close();
     }
 
-    HashMap<GruppeDTO, Boolean> findAllGruppeByUserID(final long userId) throws SQLException {
-        HashMap<GruppeDTO, Boolean> gruppen = new HashMap<GruppeDTO, Boolean>();
+    private HashMap<GruppeDTO, Boolean> findAllGruppeByUserID(final long userId) throws SQLException {
+        HashMap<GruppeDTO, Boolean> gruppen = new HashMap<>();
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select * from Gruppenbelegung where userID=?");
@@ -627,7 +624,7 @@ public final class Repository {
             gruppe = new GruppeDTO(gruppeId,
                     gruppeResult.getString("titel"),
                     gruppeResult.getString("beschreibung"),
-                    new LinkedList<DateiDTO>(), this);
+                    new LinkedList<>(), this);
         }
         preparedStatement.close();
         gruppeResult.close();
@@ -735,7 +732,7 @@ public final class Repository {
     }
 
     LinkedList<UserDTO> findAllUserByGruppeId(final long gruppeId) throws SQLException {
-        LinkedList<UserDTO> users = new LinkedList<UserDTO>();
+        LinkedList<UserDTO> users = new LinkedList<>();
 
         PreparedStatement preparedStatement =
                 connection.prepareStatement("select * from Gruppenbelegung where gruppeID=?");
@@ -819,5 +816,4 @@ public final class Repository {
 
         preparedStatement.close();
     }
-
 }

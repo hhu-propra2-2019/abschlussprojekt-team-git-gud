@@ -133,7 +133,8 @@ public class MaterialController {
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public String upload(final KeycloakAuthenticationToken token, final Model model) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
-        model.addAttribute("gruppen", modelService.getAlleUploadGruppenByUser(token));
+        model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
+        model.addAttribute("gruppenUpload", modelService.getAlleUploadGruppenByUser(token));
         model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
         model.addAttribute("error", errorMessage);
         model.addAttribute("success", successMessage);
@@ -153,7 +154,8 @@ public class MaterialController {
     public String upload(final KeycloakAuthenticationToken token, final Model model, final UploadForm upForm) {
         Account uploader = modelService.getAccountFromKeycloak(token);
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
-        model.addAttribute("gruppen", modelService.getAlleUploadGruppenByUser(token));
+        model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
+        model.addAttribute("gruppenUpload", modelService.getAlleUploadGruppenByUser(token));
         model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
         try {
             uploadService.startUpload(upForm, uploader.getName());

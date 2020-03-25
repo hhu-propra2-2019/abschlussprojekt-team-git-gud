@@ -38,7 +38,6 @@ public class UpdateService implements IUpdateService {
      * @param tags                    The new tags for the file
      * @return A Datei object which represents the saved File
      */
-    @Transactional
     public Datei dateiUpdate(final Long dateiId, final Long gruppenId, final LocalDate veroeffentlichungsdatum,
                              final List<Tag> tags) throws SQLException {
         Datei datei = modelService.findDateiById(dateiId);
@@ -62,6 +61,7 @@ public class UpdateService implements IUpdateService {
      * @throws NoUploadPermissionException
      */
     @Override
+    @Transactional
     public void startUpdate(final UpdateForm upForm,
                             final String keycloakUserName,
                             final Long gruppenId,

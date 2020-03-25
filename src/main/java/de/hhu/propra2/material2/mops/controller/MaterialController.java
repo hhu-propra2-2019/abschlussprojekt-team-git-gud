@@ -79,6 +79,9 @@ public class MaterialController {
         model.addAttribute("kategorien", modelService.getKategorienByGruppe(gruppenId, token));
         model.addAttribute("dateien", modelService.getAlleDateienByGruppe(gruppenId, token));
         model.addAttribute("gruppenAuswahl", gruppenId);
+        model.addAttribute("error", errorMessage);
+        model.addAttribute("success", successMessage);
+        resetMessages();
         return "dateiSicht";
     }
 
@@ -184,10 +187,12 @@ public class MaterialController {
         model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
         try {
             model.addAttribute("datei", modelService.findDateiById(dateiId));
-        } catch (SQLException e) {
+        } catch (SQLException | NullPointerException e) {
             setMessages("Die Datei konnte nicht geladen werden.", null);
-        } catch (NullPointerException e) {
-            setMessages("Die Datei konnte nicht geladen werden.", null);
+            model.addAttribute("error", errorMessage);
+            model.addAttribute("success", successMessage);
+            String url = "redirect:/dateiSicht?gruppenId=%d";
+            return String.format(url, gruppenId);
         }
         return "update";
     }
@@ -204,10 +209,6 @@ public class MaterialController {
     @PostMapping("/update")
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
     //TODO bereits vorhandene tags in html anzeigen
-    //TODO überprüfen, dass Zeit nicht leer ist
-    //TODO was tun, wenn Tags leer sind?
-    //TODO Success/Errormessage anzeigen
-    //TODO editierte Datei wird dupliziert
     public String update(final KeycloakAuthenticationToken token,
                          final Model model,
                          final UpdateForm updateForm,
@@ -218,14 +219,16 @@ public class MaterialController {
         model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
         try {
             updateService.startUpdate(updateForm, user.getName(), gruppenId, dateiId);
-            setMessages(null, "Update erfolgreich.");
+            setMessages(null, "Edit erfolgreich.");
         } catch (SQLException e) {
             setMessages("Es gab ein Problem beim Update.", null);
         } catch (NoUploadPermissionException e) {
             setMessages("Sie sind nicht berechtigt diese Datei zu verändern.", null);
         }
-        String string = "redirect:/dateiSicht?gruppenId=%d";
-        return String.format(string, gruppenId);
+        model.addAttribute("error", errorMessage);
+        model.addAttribute("success", successMessage);
+        String url = "redirect:/dateiSicht?gruppenId=%d";
+        return String.format(url, gruppenId);
     }
 
     /**

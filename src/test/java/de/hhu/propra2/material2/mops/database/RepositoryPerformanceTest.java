@@ -34,7 +34,6 @@ public final class RepositoryPerformanceTest {
     }
 
 
-
     private LinkedList<UserDTO> generateXUsersWithYGroupsWithZFilesWithATags(final int userCount,
                                                                              final int groupCountPerUser,
                                                                              final int fileCountPerGroup,
@@ -93,7 +92,7 @@ public final class RepositoryPerformanceTest {
         for (int userNumber = 0; userNumber < 1; userNumber++) {
             repository.saveUser(userDTOs.get(userNumber));
             for (GruppeDTO gruppeDTO : userDTOs.get(userNumber).getBelegungUndRechte().keySet()) {
-                for (DateiDTO dateiDTO: gruppeDTO.getDateien()) {
+                for (DateiDTO dateiDTO : gruppeDTO.getDateien()) {
                     repository.saveDatei(dateiDTO);
                 }
             }
@@ -131,7 +130,7 @@ public final class RepositoryPerformanceTest {
         for (int userNumber = 0; userNumber < 10; userNumber++) {
             repository.saveUser(userDTOs.get(userNumber));
             for (GruppeDTO gruppeDTO : userDTOs.get(userNumber).getBelegungUndRechte().keySet()) {
-                for (DateiDTO dateiDTO: gruppeDTO.getDateien()) {
+                for (DateiDTO dateiDTO : gruppeDTO.getDateien()) {
                     repository.saveDatei(dateiDTO);
                 }
             }
@@ -236,6 +235,7 @@ public final class RepositoryPerformanceTest {
     }
 
     @SuppressWarnings("checkstyle:magicnumber")
+    @Disabled
     @Test
     public void load1UserWith1GroupWith1100FilesWith3Tags() throws SQLException {
         LocalTime before = LocalTime.now();

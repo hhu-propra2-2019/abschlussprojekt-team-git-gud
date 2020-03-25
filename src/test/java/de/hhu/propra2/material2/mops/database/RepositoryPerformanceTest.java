@@ -5,6 +5,7 @@ import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.TagDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.UserDTO;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -234,6 +235,7 @@ final class RepositoryPerformanceTest {
     }
 
     @SuppressWarnings("checkstyle:magicnumber")
+    @SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_EXCEPTION")
     @Test
     void load1UserWith1GroupWith1100FilesWith3Tags() throws SQLException {
         LocalTime before = LocalTime.now();

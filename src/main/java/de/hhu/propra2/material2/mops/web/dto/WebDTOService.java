@@ -43,10 +43,6 @@ public class WebDTOService {
          * Map userIds from update to groupWebDTO
          */
         Map<String, HashMap<String, Boolean>> belegungWeb = new HashMap<>();
-        /**
-         * Map userIds to UserDTOs These Users will be saved back into the Database
-         */
-        Map<UserWebDTO, HashMap<GruppeDTO, Boolean>> saveInDB = new HashMap<>();
 
         for (String key : gruppen.keySet()) {
             GroupWebDTO groupWeb = gruppen.get(key);

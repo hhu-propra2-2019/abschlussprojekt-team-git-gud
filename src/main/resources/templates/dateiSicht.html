@@ -18,18 +18,27 @@
     <p class="text-lg-left">
         Hier könnte ihre Gruppenbeschreibung stehen.
     </p>
+    <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
+
+    <div id="error-message" th:classappend="${error != null} ? 'alert alert-warning'" th:text="${error}">
+        Some error message
+    </div>
+
+    <div id="success-message" th:classappend="${success != null} ? 'alert alert-success'" th:text="${success}">
+        Jeah, it works!
+    </div>
     <div class="accordion" id="dataCategorys">
         <div class="card" th:each="kategorie, iter : ${kategorien}">
             <div class="card-header" id="${kategorie}">
                 <h2 class="mb-0">
-                    <button aria-controls="collapseOne" aria-expanded="false" class="btn btn-link collapsed"
-                            data-toggle="collapse"
-                            th:data-target="'#collapseOne' + ${iter.index}" th:text="${kategorie}" type="button">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                            th:data-target="'#collapseOne' + ${iter.index}"
+                            aria-expanded="false" aria-controls="collapseOne" th:text="${kategorie}">
                     </button>
                 </h2>
             </div>
-            <div aria-labelledby="${kategorie}" class="collapse" data-parent="#dataCategorys"
-                 th:id="'collapseOne' + ${iter.index}">
+            <div th:id="'collapseOne' + ${iter.index}" class="collapse" aria-labelledby="${kategorie}"
+                 data-parent="#dataCategorys">
                 <div class="card-body p-0 pb-2 m-0" th:each="datei : ${dateien}"
                      th:if="${datei.getKategorie().equals(kategorie)}">
                     <div class="card">
@@ -40,7 +49,7 @@
                             <div class="list-inline text-muted">
                                 <span class="card d-inline" th:text="${datei.getDateityp()}"></span>
                                 <span class="card d-inline" th:text="${datei.getDateigroesseFormated()}"></span>
-                                <span class="card d-inline" th:text="${datei.getUploaddatum()}"></span>
+                                <span class="card d-inline" th:text="${datei.getVeroeffentlichungsdatum()}"></span>
                                 <span class="card d-inline" th:text="${datei.getUploader().getName()}">
                                     </span>
                             </div>
@@ -49,7 +58,7 @@
                             <span class="card-text h2 pb-3" th:text="${datei.getName()}"></span>
                             <div class="btn-group" role="group" aria-label="Basic example">
                                 <a class="btn btn-info" role="button"
-                                   th:href="@{/material2/update(fileId=${datei.getId()}, gruppenID=${gruppenAuswahl.getId()})}"
+                                   th:href="@{/material2/update(dateiId=${datei.getId()}, gruppenId=${gruppenAuswahl.getId()})}"
                                    href="#">EDIT</a>
                                 <a class="btn btn-primary" role="button" th:href="@{/material2/files(fileId=${datei.getId()})}"
                                    href="#">DOWNLOAD</a>

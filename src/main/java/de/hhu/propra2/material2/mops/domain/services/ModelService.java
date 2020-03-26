@@ -239,6 +239,26 @@ public final class ModelService implements IModelService {
         }
     }
 
+    /**
+     * get datei by gruppenId, dateiId and UserToken
+     * @param gruppenId Id of the group
+     * @param dateiId Id of the file
+     * @param token KeycloakAuthenticationToken of the user
+     * @return Datei if file is found in the given group of the given user, null if not
+     */
+    public Datei getDateiById(final long gruppenId,
+                              final long dateiId,
+                              final KeycloakAuthenticationToken token) {
+        User user = createUserByToken(token);
+        Gruppe gruppe = user.getGruppeById(gruppenId);
+
+        if (gruppe.getId() == -1) {
+            return null;
+        }
+
+        return gruppe.getDateiById(dateiId);
+    }
+
     private List<Datei> getAlleDateienByUser(final User user) {
         List<Datei> alleDateien = new ArrayList<>();
         user.getAllGruppen().forEach(gruppe -> alleDateien.addAll(gruppe.getDateien()));
@@ -286,10 +306,6 @@ public final class ModelService implements IModelService {
             tagDTOs.add(new TagDTO(tag.getText()));
         }
         return tagDTOs;
-    }
-
-    public Datei getDateiById(final long dateiId) throws SQLException {
-        return loadDatei(repository.findDateiById(dateiId));
     }
 
     public User findUserByKeycloakname(final String keycloakname) throws SQLException {

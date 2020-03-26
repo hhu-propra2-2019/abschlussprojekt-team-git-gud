@@ -188,23 +188,15 @@ public class MaterialController {
         Account userAccount = modelService.getAccountFromKeycloak(token);
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
-        try {
-            Datei datei = modelService.getDateiById(dateiId);
-            if (!updateService.hasAccessPermissionForUpdate(userAccount.getName(), gruppenId, datei.getId())) {
-                setMessages("Sie haben keine Zugriffsberechtigung.", null);
-                model.addAttribute("error", errorMessage);
-                model.addAttribute("success", successMessage);
-                String url = "redirect:/dateiSicht?gruppenId=%d";
-                return String.format(url, gruppenId);
-            }
-            model.addAttribute("datei", datei);
-        } catch (SQLException | NullPointerException e) {
-            setMessages("Die Datei konnte nicht geladen werden.", null);
+        Datei datei = modelService.getDateiById(gruppenId, dateiId, token);
+        if (datei == null) {
+            setMessages("Sie haben keine Zugriffsberechtigung.", null);
             model.addAttribute("error", errorMessage);
             model.addAttribute("success", successMessage);
             String url = "redirect:/dateiSicht?gruppenId=%d";
             return String.format(url, gruppenId);
         }
+        model.addAttribute("datei", datei);
         return "update";
     }
 

@@ -91,25 +91,4 @@ public class User {
     public String getName() {
         return vorname + " " + nachname;
     }
-
-    /**
-     * checks if the file is in the given group of the user.
-     *
-     * @param gruppenId Id of the file
-     * @param dateiId   Id of the group
-     * @return true if user is in group and group has file, false if not
-     */
-    public boolean hasFileAccessPermission(final Long gruppenId, final Long dateiId) {
-
-        Gruppe gruppe = getGruppeById(gruppenId);
-        if (gruppe.getId() == -1) {
-            return false;
-        }
-
-        Datei datei = gruppe.getDateiById(dateiId);
-        if (datei == null) {
-            return false;
-        }
-        return true;
-    }
 }

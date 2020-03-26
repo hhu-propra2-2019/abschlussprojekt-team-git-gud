@@ -12,7 +12,7 @@
 
 <body>
 <div id="content" th:fragment="mycontent">
-    <h1 class="display-2" th:text="${gruppeName}">
+    <h1 class="display-2" th:text="${gruppenAuswahl.getName()}">
         ProPra
     </h1>
     <p class="text-lg-left">
@@ -54,13 +54,16 @@
                                     </span>
                             </div>
                         </h6>
-                        <div class="list-inline">
+                        <div class="list-inline" id="dateimain">
                             <span class="card-text h2 pb-3" th:text="${datei.getName()}"></span>
-                            <a class="btn btn-primary" role="button"
-                               th:href="@{/update(dateiId=${datei.getId()}, gruppenId=${gruppenAuswahl})}"
-                               href="#">EDIT</a>
-                            <a class="btn btn-primary" role="button" th:href="@{/files(fileId=${datei.getId()})}"
-                               href="#">DOWNLOAD</a>
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                <a class="btn btn-info" role="button"
+                                   th:href="@{/update(dateiId=${datei.getId()}, gruppenId=${gruppenAuswahl.getId()})}"
+                                   href="#">EDIT</a>
+                                <a class="btn btn-primary" role="button" th:href="@{/files(fileId=${datei.getId()})}"
+                                   href="#">DOWNLOAD</a>
+                            </div>
+
                         </div>
 
                     </div>

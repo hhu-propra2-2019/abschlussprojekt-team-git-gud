@@ -44,7 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest
 @ComponentScan(basePackageClasses = {KeycloakSecurityComponents.class, KeycloakSpringBootConfigResolver.class})
-public class MaterialControllerModelTest {
+class MaterialControllerModelTest {
 
     @Autowired
     private MockMvc mvc;
@@ -89,9 +89,11 @@ public class MaterialControllerModelTest {
         realTags.add(new Tag(1L, "Klausurrelevant"));
         List<Datei> dateien = new ArrayList<>();
         dateien.add(new Datei(1L, "Vorlesung1", jens,
-                realTags, LocalDate.now(), LocalDate.of(2020, 03, 01), 895973L,
+                realTags, LocalDate.now(), LocalDate.of(2020, 3, 1), 895973L,
                 "PDF", "Vorlesung"));
         when(modelService.getAlleGruppenByUser(any())).thenReturn(gruppen);
+        when(modelService.getGruppeByUserAndGroupID(any(), any())).thenReturn(new Gruppe(2,
+                "RDB", null));
         when(modelService.getAlleUploadGruppenByUser(any())).thenReturn(gruppen);
         when(modelService.getAlleTagsByUser(any())).thenReturn(tags);
         when(modelService.getAlleUploaderByUser(any())).thenReturn(uploader);

@@ -37,8 +37,8 @@ import static org.mockito.Mockito.when;
 
 @SuppressWarnings("checkstyle:magicnumber")
 @ExtendWith(MockitoExtension.class)
-public class UpdateServiceTest {
-    private static LocalDate date1303 = LocalDate.of(2020, Calendar.MARCH, 13);
+class UpdateServiceTest {
+    private static final LocalDate DATE_1303 = LocalDate.of(2020, Calendar.MARCH, 13);
 
     private Tag tag1 = new Tag(1, "tag1");
     private Tag tag2 = new Tag(2, "tag2");
@@ -62,11 +62,13 @@ public class UpdateServiceTest {
      * setUP: SetUp needed for each test.
      */
     @BeforeEach
-    public void setUp() throws SQLException {
+    void setUp() throws SQLException {
         updateService = new UpdateService(repositoryMock, modelServiceMock);
 
         Datei datei = new Datei(1L, "test.txt", userMock, tags,
-                date1303, date1303, 2L, "txt", "kategorie");
+                DATE_1303, DATE_1303, 2L, "txt", "kategorie");
+        when(modelServiceMock.findDateiById(1L)).thenReturn(datei);
+                DATE_1303, DATE_1303, 2L, "txt", "kategorie");
         Mockito.lenient().when(modelServiceMock.getDateiById(1L, 1L, tokenMock)).thenReturn(datei);
         Mockito.lenient().when(repositoryMock.findUserByKeycloakname(anyString())).thenReturn(null);
         when(modelServiceMock.loadUser(null)).thenReturn(userMock);
@@ -80,7 +82,7 @@ public class UpdateServiceTest {
     }
 
     @Test
-    public void updateFileBySettingVeroeffentlichungsdatumAndTagsNull() throws Exception {
+    void updateFileBySettingVeroeffentlichungsdatumAndTagsNull() throws Exception {
         when(userMock.hasUploadPermission(gruppenMock)).thenReturn(true);
         UpdateForm updateForm = new UpdateForm(null, null);
         updateService.startUpdate(updateForm, "", 1L, 1L);
@@ -98,7 +100,7 @@ public class UpdateServiceTest {
     }
 
     @Test
-    public void updateFileBySettingVeroeffentlichungsdatumAndTagsNotNull() throws Exception {
+    void updateFileBySettingVeroeffentlichungsdatumAndTagsNotNull() throws Exception {
         when(userMock.hasUploadPermission(gruppenMock)).thenReturn(true);
         String stringTags = tag1.getText() + ", " + tag2.getText() + ", " + tag3.getText();
         UpdateForm updateForm = new UpdateForm(stringTags, null);

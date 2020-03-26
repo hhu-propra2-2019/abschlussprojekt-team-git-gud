@@ -37,11 +37,12 @@ public class UpdateService implements IUpdateService {
      * @param datei                   The file which should be updated
      * @param gruppenId               The id of the group where the file is saved
      * @param veroeffentlichungsdatum The new date which controls the availability of the file.
+     *                                If null the file is direct available after upload.
      * @param tags                    The new tags for the file
      * @return A Datei object which represents the saved File
      * @throws SQLException
      */
-    private Datei dateiUpdate(final Datei datei, final Long gruppenId, final LocalDate veroeffentlichungsdatum,
+    private void dateiUpdate(final Datei datei, final Long gruppenId, final LocalDate veroeffentlichungsdatum,
                              final List<Tag> tags) throws SQLException {
         Datei changedDatei = new Datei(datei.getId(), datei.getName(), datei.getUploader(),
                 tags == null ? new ArrayList<>() : tags,
@@ -49,8 +50,6 @@ public class UpdateService implements IUpdateService {
                 datei.getDateityp(), datei.getKategorie());
 
         modelService.saveDatei(changedDatei, gruppenId);
-
-        return changedDatei;
     }
 
     /**

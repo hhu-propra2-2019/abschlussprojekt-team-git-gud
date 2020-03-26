@@ -36,10 +36,9 @@ public final class ModelService implements IModelService {
     /**
      * Constructor of ModelService.
      */
-    public ModelService(final Repository repositoryArg, final SuchService suchServiceArg, final Suche sucheArg) {
+    public ModelService(final Repository repositoryArg, final SuchService suchServiceArg) {
         repository = repositoryArg;
         suchService = suchServiceArg;
-        this.suche = sucheArg;
     }
 
     private Datei loadDatei(final DateiDTO dateiDTO) {
@@ -179,6 +178,9 @@ public final class ModelService implements IModelService {
 
     public Set<String> getKategorienFromSuche(final List<Datei> dateien) {
         Set<String> kategorien = new HashSet<>();
+        if (dateien == null) {
+            return kategorien;
+        }
         dateien.forEach(datei -> kategorien.add(datei.getKategorie()));
         return kategorien;
     }
@@ -287,5 +289,12 @@ public final class ModelService implements IModelService {
 
     public Datei findDateiById(final long dateiId) throws SQLException {
         return loadDatei(repository.findDateiById(dateiId));
+    }
+
+    public Set<String> getTagsAsSet(final String[] tags) {
+        if (tags == null) {
+            return null;
+        }
+        return Set.of(tags);
     }
 }

@@ -64,6 +64,8 @@ public class MaterialControllerAccessTest {
         dateiTypen.add("XML");
         dateiTypen.add("JSON");
         List<Datei> dateien = new ArrayList<>();
+        Set<String> kategorien = new HashSet<>();
+        Set<String> selectedTags = new HashSet<>();
         when(modelService.getAlleGruppenByUser(any())).thenReturn(gruppen);
         when(modelService.getAlleTagsByUser(any())).thenReturn(tags);
         when(modelService.getAlleUploaderByUser(any())).thenReturn(uploader);
@@ -72,8 +74,8 @@ public class MaterialControllerAccessTest {
                 "image", dateiTypen));
         when(modelService.getSuchergebnisse(any())).thenReturn(dateien);
         when(modelService.isSortedByKategorie()).thenReturn(true);
-        Set<String> kategorien = new HashSet<>();
         when(modelService.getKategorienFromSuche(any())).thenReturn(kategorien);
+        when(modelService.getTagsAsSet(any())).thenReturn(selectedTags);
     }
 
     //Unknown User Access tests
@@ -160,10 +162,6 @@ public class MaterialControllerAccessTest {
     void testSucheStudentUser() throws Exception {
         mvc.perform(get("/suche"))
                 .andExpect(status().isOk());
-
-        mvc.perform(post("/suche")
-                .with(csrf()).param("suche", ""))
-                .andExpect(status().is3xxRedirection());
     }
 
     @Test
@@ -199,10 +197,6 @@ public class MaterialControllerAccessTest {
     void testSucheOrgaUser() throws Exception {
         mvc.perform(get("/suche"))
                 .andExpect(status().isOk());
-
-        mvc.perform(post("/suche")
-                .with(csrf()).param("tags", ""))
-                .andExpect(status().is3xxRedirection());
     }
 
     @Test
@@ -237,10 +231,6 @@ public class MaterialControllerAccessTest {
     void testSucheActuatorUserUser() throws Exception {
         mvc.perform(get("/suche"))
                 .andExpect(status().isOk());
-
-        mvc.perform(post("/suche")
-                .with(csrf()).param("tags", ""))
-                .andExpect(status().is3xxRedirection());
     }
 
     @Test

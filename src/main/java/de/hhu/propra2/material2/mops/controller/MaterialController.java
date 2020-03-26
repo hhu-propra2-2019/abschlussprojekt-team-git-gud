@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Set;
 
 /**
  * After the @RolesAllowed Annotation the Syle Code wants a space after
@@ -121,9 +120,7 @@ public class MaterialController {
         model.addAttribute("isSortedByKategorie", modelService.isSortedByKategorie());
         model.addAttribute("dateien", suchErgebnisse);
         model.addAttribute("kategorien", modelService.getKategorienFromSuche(suchErgebnisse));
-        if (suchen.getTags() != null) {
-            model.addAttribute("selectedTags", Set.of(suchen.getTags()));
-        }
+        model.addAttribute("selectedTags", modelService.getTagsAsSet(suchen.getTags()));
         return "suche";
     }
 

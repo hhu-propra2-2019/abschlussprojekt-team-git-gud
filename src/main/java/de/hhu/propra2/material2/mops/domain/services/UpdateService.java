@@ -41,7 +41,7 @@ public class UpdateService implements IUpdateService {
      * @return A Datei object which represents the saved File
      * @throws SQLException
      */
-    public Datei dateiUpdate(final Datei datei, final Long gruppenId, final LocalDate veroeffentlichungsdatum,
+    private Datei dateiUpdate(final Datei datei, final Long gruppenId, final LocalDate veroeffentlichungsdatum,
                              final List<Tag> tags) throws SQLException {
         Datei changedDatei = new Datei(datei.getId(), datei.getName(), datei.getUploader(),
                 tags == null ? new ArrayList<>() : tags,
@@ -91,7 +91,9 @@ public class UpdateService implements IUpdateService {
     }
 
     private ArrayList<Tag> convertSeperatedStringToList(final String tagStrings) {
-        if (Strings.isNullOrEmpty(tagStrings.trim())) {
+        if (Strings.isNullOrEmpty(tagStrings)) {
+            return new ArrayList<>();
+        } else if (Strings.isNullOrEmpty(tagStrings.trim())) {
             return new ArrayList<>();
         }
         ArrayList<String> tagTexts = Arrays.stream(tagStrings.split(","))

@@ -110,7 +110,7 @@
                         suggestions.push(obj);
                     }
 
-                    var jp = new Tokenfield({
+                    var uploaderField = new Tokenfield({
                         el: document.querySelector('#Uploader'),
                         items: suggestions,
                         newItems: true,
@@ -124,7 +124,7 @@
                         singleInputValue: 'name'
                     });
                     var uploader = [];
-                    var selectedUploader = /*[[${selectedUploader}]]*/ [];
+                    var selectedUploader = /*[[${suche?.getUploader()}]]*/ [];
 
                     for (count = 0; count < selectedUploader.length; count++)
                     {
@@ -134,7 +134,7 @@
                         };
                         uploader.push(obj);
                     }
-                    jp.setItems(tags);
+                    uploaderField.setItems(uploader);
                 </script>
 
                 <div class="form-group">

@@ -20,16 +20,19 @@
     <div class="container">
 
         <form method="post" enctype="multipart/form-data">
-
             <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
 
             <div>
-                <p>Dateiname: <span th:text="${datei.getName()}">Dateiname</span></p>
+                <label for="dataname">Dateiname </label>
+                <input type="text" class="form-control" id="dataname" name="dateiname" th:value="${datei.getName()}"
+                       readonly>
             </div>
 
             <div>
-                <p>Uploader: <span th:text="${datei.getUploader().getNachname()}">Uploader</span></p>
-            </div>
+                <label for="uploader">Uploader </label>
+                <input type="text" class="form-control" id="uploader" name="uploader"
+                       th:value="${datei.getUploader().getName()}" readonly>
+                </div>
 
             <div>
                 <label for="input-tags">Tags </label>
@@ -76,18 +79,6 @@
                 tagField.setItems(tags);
 
             </script>
-            <!--  <div>
-                  <label for="tagsIn">Tags </label>
-                  <input type="text" class="form-control" id="tagsIn" name="selectedTags"  placeholder="Vorlesung, ">
-              </div>
-
-              <div class="form-group">
-                  <ul>
-                      <li th:each="tag : ${tags}">
-                          <span  th:text="${tag.text}">Vorlesung</span>
-                      </li>
-                  </ul>
-              </div> -->
 
             <div class="form-group">
                 <label for="timedDate">Getimete Veröffentlichung (optional)</label>

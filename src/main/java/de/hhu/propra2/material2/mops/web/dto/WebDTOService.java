@@ -25,7 +25,13 @@ public class WebDTOService {
     }
 
     /**
+     * <<<<<<< HEAD
+     * Method the Controller can call to put the changes from the update
+     * into the database
+     * =======
      * Can be called from Controller to save the changes from update into the Database
+     * <p>
+     * >>>>>>> f49a5de6b524f05b7a8df2bbb66393462986fbca
      *
      * @param update
      * @throws SQLException
@@ -59,13 +65,19 @@ public class WebDTOService {
         }
 
         List<String> groupsWithUpdate = getIdFromGroupsWithUpdates(update);
-        Map<String, HashMap<String, Boolean>> UpdatedAndSynchronizedUserGroupRelation = addNewGroups(usersWeb, belegungWeb, groupsWithUpdate);
-        saveUserInDatabase(gruppen, usersWeb, UpdatedAndSynchronizedUserGroupRelation);
+        Map<String, HashMap<String, Boolean>> updatedAndSynchronizedUserGroupRelation =
+                addNewGroups(usersWeb, belegungWeb, groupsWithUpdate);
+        saveUserInDatabase(gruppen, usersWeb, updatedAndSynchronizedUserGroupRelation);
     }
 
-    private void saveUserInDatabase(Map<String, GroupWebDTO> gruppen, Map<String, UserWebDTO> usersWeb, Map<String, HashMap<String, Boolean>> updatedAndSynchronizedUserGroupRelation) throws SQLException {
+    private void saveUserInDatabase(final Map<String, GroupWebDTO> gruppen,
+                                    final Map<String, UserWebDTO> usersWeb,
+                                    final Map<String, HashMap<String, Boolean>> updatedAndSynchronizedUserGroupRelation)
+            throws SQLException {
         for (String userId : usersWeb.keySet()) {
-            HashMap<GruppeDTO, Boolean> belegung = loadBelegung(gruppen, updatedAndSynchronizedUserGroupRelation, userId);
+            HashMap<GruppeDTO, Boolean> belegung = loadBelegung(gruppen,
+                    updatedAndSynchronizedUserGroupRelation,
+                    userId);
             repository.saveUser(loadUser(usersWeb.get(userId), belegung));
         }
     }
@@ -87,7 +99,8 @@ public class WebDTOService {
                                                                        HashMap<String, Boolean>> updatedBelegungen,
                                                                final List<String> updatedGroups) throws SQLException {
 
-        Map<String, HashMap<String, Boolean>> oldAndNewGroups = getGeneratedOldAndNewGroupsUnion(updatedUsers, updatedGroups);
+        Map<String, HashMap<String, Boolean>> oldAndNewGroups =
+                putUsersInGroups(updatedUsers, updatedGroups);
         return getUnionOfOldAndNewGroupsWithRights(updatedBelegungen, oldAndNewGroups);
     }
 
@@ -106,7 +119,9 @@ public class WebDTOService {
      * Check if in updatedBelegungen a user is in a group, which is not in oldAndNewGroups,
      * if so, add it
      */
-    private Map<String, HashMap<String, Boolean>> getUnionOfOldAndNewGroupsWithRights(Map<String, HashMap<String, Boolean>> updatedBelegungen, Map<String, HashMap<String, Boolean>> oldAndNewGroups) {
+    private Map<String, HashMap<String, Boolean>> getUnionOfOldAndNewGroupsWithRights(
+            final Map<String, HashMap<String, Boolean>> updatedBelegungen,
+            final Map<String, HashMap<String, Boolean>> oldAndNewGroups) {
         Set<String> userIdsForBelegungen = updatedBelegungen.keySet();
 
         for (String keyUserId : userIdsForBelegungen) {
@@ -124,7 +139,18 @@ public class WebDTOService {
         return oldAndNewGroups;
     }
 
-    private Map<String, HashMap<String, Boolean>> getGeneratedOldAndNewGroupsUnion(Map<String, UserWebDTO> updatedUsers, List<String> updatedGroups) throws SQLException {
+    /**
+     * returns a map where each user is in all groups in which he has to be
+     * after the update.
+     * That means he is in the groups he joined and is not in those he left.
+     * @param updatedUsers
+     * @param updatedGroups
+     * @return
+     * @throws SQLException
+     */
+    private Map<String, HashMap<String, Boolean>> putUsersInGroups(final Map<String, UserWebDTO> updatedUsers,
+                                                                   final List<String> updatedGroups)
+            throws SQLException {
         Map<String, HashMap<String, Boolean>> oldAndNewGroups = new HashMap<>();
 
         for (String userId : updatedUsers.keySet()) {
@@ -164,21 +190,22 @@ public class WebDTOService {
         return gruppen;
     }
 
-    private List<String> getIdFromGroupsWithUpdates(UpdatedGroupRequestMapper update) {
+    private List<String> getIdFromGroupsWithUpdates(final UpdatedGroupRequestMapper update) {
         return update.getGroupList()
                 .stream()
                 .map(GroupWebDTO::getId)
                 .collect(Collectors.toList());
     }
 
-    private List<String> getIdsFromUpdatedUsers(GroupWebDTO gruppeWeb) {
+    private List<String> getIdsFromUpdatedUsers(final GroupWebDTO gruppeWeb) {
         return gruppeWeb.getMembers().stream().map(UserWebDTO::getId).collect(Collectors.toList());
     }
 
     /**
      * Maps groupIds to the List of the Ids of their members
      */
-    private HashMap<String, List<String>> getUsersInAGroupDatabase(List<String> groupsWithUpdates) throws SQLException {
+    private HashMap<String, List<String>> getUsersInAGroupDatabase(final List<String> groupsWithUpdates)
+            throws SQLException {
         HashMap<String, List<String>> usersInAGroup = new HashMap<>();
         for (String groupId : groupsWithUpdates) {
             usersInAGroup.put(groupId, repository.getUsersByGruppenId(groupId));
@@ -193,7 +220,9 @@ public class WebDTOService {
         return false;
     }
 
-    private void deleteUserGroupRelationshipOfLeavingUser(HashMap<String, List<String>> usersInAGroup, GroupWebDTO gruppeWeb, List<String> updatedUsersInAGroup) throws SQLException {
+    private void deleteUserGroupRelationshipOfLeavingUser(final HashMap<String, List<String>> usersInAGroup,
+                                                          final GroupWebDTO gruppeWeb,
+                                                          final List<String> updatedUsersInAGroup) throws SQLException {
         List<String> usersPerGroup = usersInAGroup.get(gruppeWeb.getId());
         for (String userId : usersPerGroup) {
             if (!updatedUsersInAGroup.contains(userId)) {
@@ -215,13 +244,13 @@ public class WebDTOService {
         return new GruppeDTO(id, groupWeb.getTitle(), groupWeb.getDescription(), dateien);
     }
 
-    private HashMap<GruppeDTO, Boolean> loadBelegung(Map<String, GroupWebDTO> gruppen, Map<String, HashMap<String, Boolean>> updatedAndSynchronizedUserGroupRelation, String userId) {
+    private HashMap<GruppeDTO, Boolean> loadBelegung(final Map<String, GroupWebDTO> gruppen,
+                                                     final Map<String, HashMap<String, Boolean>> userBelegungMap,
+                                                     final String userId) {
         HashMap<GruppeDTO, Boolean> belegung = new HashMap<>();
-        for (String keyGroupId : updatedAndSynchronizedUserGroupRelation.get(userId).keySet()) {
-            belegung.put(loadGruppe(gruppen.get(keyGroupId)), updatedAndSynchronizedUserGroupRelation.get(userId).get(keyGroupId));
+        for (String keyGroupId : userBelegungMap.get(userId).keySet()) {
+            belegung.put(loadGruppe(gruppen.get(keyGroupId)), userBelegungMap.get(userId).get(keyGroupId));
         }
         return belegung;
     }
-
-
 }

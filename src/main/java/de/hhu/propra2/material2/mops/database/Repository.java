@@ -1,6 +1,5 @@
 package de.hhu.propra2.material2.mops.database;
 
-import afu.org.checkerframework.checker.igj.qual.I;
 import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.TagDTO;

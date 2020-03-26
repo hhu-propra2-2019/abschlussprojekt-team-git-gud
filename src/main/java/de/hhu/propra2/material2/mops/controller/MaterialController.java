@@ -1,7 +1,5 @@
 package de.hhu.propra2.material2.mops.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.hhu.propra2.material2.mops.Exceptions.DownloadException;
 import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
@@ -11,9 +9,6 @@ import de.hhu.propra2.material2.mops.domain.models.UploadForm;
 import de.hhu.propra2.material2.mops.domain.services.MinIOService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
 import de.hhu.propra2.material2.mops.security.Account;
-import de.hhu.propra2.material2.mops.web.dto.GroupWebDTO;
-import de.hhu.propra2.material2.mops.web.dto.UpdatedGroupRequestMapper;
-import de.hhu.propra2.material2.mops.web.dto.UserWebDTO;
 import de.hhu.propra2.material2.mops.domain.services.UploadService;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -33,9 +28,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.sql.SQLException;
 
 

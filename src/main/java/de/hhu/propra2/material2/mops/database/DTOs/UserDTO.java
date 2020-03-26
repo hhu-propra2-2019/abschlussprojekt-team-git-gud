@@ -72,18 +72,13 @@ public class UserDTO {
                    final String nachnameArg,
                    final String keycloaknameArg,
                    final HashMap<GruppeDTO, Boolean> belegungUndRechteArg) {
-<<<<<<< HEAD
-        this.id = 0;
-=======
+
         this.id = -1;
->>>>>>> master
         this.vorname = vornameArg;
         this.nachname = nachnameArg;
         this.keycloakname = keycloaknameArg;
         this.belegungUndRechte = belegungUndRechteArg;
     }
-<<<<<<< HEAD
-
     /**
      * @param idArg
      * @return
@@ -96,6 +91,5 @@ public class UserDTO {
                 .collect(Collectors.toList());
         return gruppe.get(0);
     }
-=======
->>>>>>> master
+
 }

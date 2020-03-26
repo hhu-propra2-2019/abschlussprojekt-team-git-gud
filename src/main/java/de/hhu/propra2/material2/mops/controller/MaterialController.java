@@ -1,6 +1,7 @@
 package de.hhu.propra2.material2.mops.controller;
 
 import de.hhu.propra2.material2.mops.Exceptions.DownloadException;
+import de.hhu.propra2.material2.mops.Exceptions.HasNoGroupToUploadException;
 import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
@@ -166,6 +167,8 @@ public class MaterialController {
             setMessages("Beim speichern in der Datenbank gab es einen Fehler.", null);
         } catch (NoUploadPermissionException e) {
             setMessages("Sie sind nicht berechtig in dieser Gruppe hochzuladen!", null);
+        } catch (HasNoGroupToUploadException e) {
+            setMessages("Sie haben keine Gruppe, auf die sie hochladen können!", null);
         }
 
         model.addAttribute("error", errorMessage);

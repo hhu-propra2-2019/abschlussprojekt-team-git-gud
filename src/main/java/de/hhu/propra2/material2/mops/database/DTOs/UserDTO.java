@@ -58,11 +58,8 @@ public class UserDTO {
     }
 
     /**
-<<<<<<< HEAD
-=======
      * Constructor for saving to the database.
      *
->>>>>>> master
      * @param vornameArg
      * @param nachnameArg
      * @param keycloaknameArg
@@ -79,6 +76,7 @@ public class UserDTO {
         this.keycloakname = keycloaknameArg;
         this.belegungUndRechte = belegungUndRechteArg;
     }
+
     /**
      * @param idArg
      * @return

@@ -53,7 +53,7 @@ public class WebDTOServiceTest {
         gruppeDTO1 = new GruppeDTO("1", null, null, null);
         gruppeDTO2 = new GruppeDTO("2", null, null, null);
 
-        userDTO1 = new UserDTO(null, null,null,"user1", new HashMap<>());
+        userDTO1 = new UserDTO( null,null,"user1", new HashMap<>());
     }
 
     /**

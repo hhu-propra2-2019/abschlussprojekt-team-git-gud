@@ -3,6 +3,7 @@ package de.hhu.propra2.material2.mops.controller;
 import de.hhu.propra2.material2.mops.Exceptions.DownloadException;
 import de.hhu.propra2.material2.mops.Exceptions.NoDeletePermissionException;
 import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
+import de.hhu.propra2.material2.mops.Exceptions.ObjectNotInMinioException;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
@@ -178,20 +179,29 @@ public class MaterialController {
         return "upload";
     }
 
-    @GetMapping("/doAway")
+    @GetMapping("/delete")
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public String upload(final KeycloakAuthenticationToken token, final Model model,
-                         final Long dateiId, final Long gruppenId) throws SQLException, NoDeletePermissionException {
+                         final Long dateiId, final Long gruppenId) throws NoDeletePermissionException {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
+
+        try {
+            deleteService.dateiLoeschenStarten(dateiId, token);
+            setMessages(null, "Upload war erfolgreich!");
+        } catch (SQLException e) {
+            setMessages("Es gab einen SQL Fehler.", null);
+        } catch (ObjectNotInMinioException e) {
+            setMessages("Das zu löschende Object liegt nicht in MinIO.", null);
+        }
 
         model.addAttribute("kategorien", modelService.getKategorienByGruppe(gruppenId, token));
         model.addAttribute("dateien", modelService.getAlleDateienByGruppe(gruppenId, token));
         Gruppe gruppenAuswahl = modelService.getGruppeByUserAndGroupID(gruppenId, token);
         model.addAttribute("gruppenAuswahl", gruppenAuswahl);
+        model.addAttribute("error", errorMessage);
+        model.addAttribute("success", successMessage);
         resetMessages();
-
-        deleteService.dateiLoeschenStarten(dateiId, token, gruppenId);
 
         return "dateiSicht";
     }
@@ -257,6 +267,19 @@ public class MaterialController {
     @ExceptionHandler(SQLException.class)
     String handleSQLException(final SQLException e) {
         setMessages("Beim zugriff auf die Datenbank gab es ein Problem.", null);
+        return "redirect:/";
+    }
+
+    /**
+     * exception handler for a sql error.
+     *
+     * @param e exception
+     * @return redirect to home page with a error message
+     */
+    @ExceptionHandler(NoDeletePermissionException.class)
+    String handleNoDeletePermissionException(final NoDeletePermissionException e) {
+        setMessages("Der Löschaufruf wurde verboten da sie keine Erlaubnis für diese Datei besitzen.",
+                null);
         return "redirect:/";
     }
 }

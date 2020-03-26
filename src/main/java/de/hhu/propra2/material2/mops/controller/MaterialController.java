@@ -10,9 +10,13 @@ import de.hhu.propra2.material2.mops.domain.services.MinIOService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
 import de.hhu.propra2.material2.mops.security.Account;
 import de.hhu.propra2.material2.mops.domain.services.UploadService;
+import de.hhu.propra2.material2.mops.web.dto.UpdatedGroupRequestMapper;
+import de.hhu.propra2.material2.mops.web.dto.WebDTOService;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +51,8 @@ public class MaterialController {
     private UploadService uploadService;
     @Autowired
     private MinIOService minIOService;
+    @Autowired
+    private WebDTOService webDTOService;
 
     private String errorMessage;
     private String successMessage;
@@ -201,6 +207,13 @@ public class MaterialController {
                 .contentLength(file.getDateigroesse())
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(new InputStreamResource(input));
+    }
+
+    @Scheduled(fixedRate = 5000)
+    public void updateGroups(int status) throws SQLException {
+        UpdatedGroupRequestMapper update = serviceAccountRestTemplate.getForEntity("http://localhost:8080/gruppe2//api/updateGroups/{status}",
+                UpdatedGroupRequestMapper.class, status).getBody();
+        webDTOService.updateDatabase(update);
     }
 
     private void setMessages(final String pErrorMessage, final String pSuccessMessage) {

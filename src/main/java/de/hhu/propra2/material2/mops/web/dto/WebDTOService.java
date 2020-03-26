@@ -5,12 +5,10 @@ import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.UserDTO;
 import de.hhu.propra2.material2.mops.database.Repository;
-import org.bouncycastle.jcajce.provider.digest.SHA3;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +24,16 @@ public class WebDTOService {
         this.repository = repositoryArg;
     }
 
+    /**
+     * Method the Controller can call to put the changes from the update
+     * into the database
+     * @param update
+     * @throws SQLException
+     */
+    public void startUpdate(final UpdatedGroupRequestMapper update) throws SQLException {
+        addNewUserGroupRelations(update);
+        updateLeavingUsers(update);
+    }
     private boolean getBerechtigung(final String rolle) {
         if ("ADMIN".equals(rolle)) {
             return true;
@@ -113,12 +121,14 @@ public class WebDTOService {
     }
 
     /**
-     * Can be called from Controller to save the changes from update into the Database
+     * Compares the Groups and the corresponding users which are in the update
+     * to those in our Database and saves those users in the Database with
+     * the updated relations
      *
      * @param update
      * @throws SQLException
      */
-    public void startUpdate(final UpdatedGroupRequestMapper update) throws SQLException {
+    public void addNewUserGroupRelations(final UpdatedGroupRequestMapper update) throws SQLException {
         /**
          * delete deprecated groups
          **/
@@ -150,7 +160,10 @@ public class WebDTOService {
                         getBerechtigung(groupWeb.getRoles().get(userWeb.getId())));
             }
         }
-        Set<String> groupsWithUpdate = update.getGroupList().stream().map(GroupWebDTO::getId).collect(Collectors.toSet());
+        Set<String> groupsWithUpdate = update
+                .getGroupList()
+                .stream()
+                .map(GroupWebDTO::getId).collect(Collectors.toSet());
         belegungWeb = addNewGroups(usersWeb, belegungWeb, groupsWithUpdate);
         for (String userId : usersWeb.keySet()) {
             HashMap<GruppeDTO, Boolean> belegungDTO = new HashMap<>();
@@ -161,6 +174,14 @@ public class WebDTOService {
         }
     }
 
+    /**
+     * Takes care of the users that left and therefore cannot be found in the update.
+     * Compares the Members of a group in athe update with those saved in the Database
+     * if in the update a user is not in a group, but in the database he is, he
+     * will be deleted from that group
+     * @param update
+     * @throws SQLException
+     */
     private void updateLeavingUsers(final UpdatedGroupRequestMapper update) throws SQLException {
         List<String> groupsWithUpdates = update.getGroupList()
                 .stream()
@@ -175,7 +196,11 @@ public class WebDTOService {
             usersInAGroup.put(groupId, repository.getUsersByGruppenId(groupId));
         }
         for (GroupWebDTO gruppeWeb : update.getGroupList()) {
-            List<String> memberNames = gruppeWeb.getMembers().stream().map(UserWebDTO::getId).collect(Collectors.toList());
+            List<String> memberNames = gruppeWeb
+                    .getMembers()
+                    .stream()
+                    .map(UserWebDTO::getId)
+                    .collect(Collectors.toList());
             for (String userId : usersInAGroup.get(gruppeWeb.getId())) {
                 if (!memberNames.contains(userId)) {
                     UserDTO userDTO = repository.findUserByKeycloakname(userId);

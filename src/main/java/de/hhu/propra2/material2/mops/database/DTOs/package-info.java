@@ -5,5 +5,5 @@
  *      - Tag
  *      - User.
  */
-package de.hhu.propra2.material2.mops.Database.DTOs;
+package de.hhu.propra2.material2.mops.database.DTOs;
 

@@ -1,10 +1,10 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
-import de.hhu.propra2.material2.mops.Database.DTOs.DateiDTO;
-import de.hhu.propra2.material2.mops.Database.DTOs.GruppeDTO;
-import de.hhu.propra2.material2.mops.Database.DTOs.TagDTO;
-import de.hhu.propra2.material2.mops.Database.DTOs.UserDTO;
-import de.hhu.propra2.material2.mops.Database.Repository;
+import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.TagDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.UserDTO;
+import de.hhu.propra2.material2.mops.database.Repository;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
@@ -61,7 +61,7 @@ public final class ModelService implements IModelService {
         return new Tag(tagDTO.getId(), tagDTO.getText());
     }
 
-    public User loadUser(final UserDTO userDTO) {
+    private User loadUser(final UserDTO userDTO) {
 
         if (userDTO == null) {
             return new User(-1L, "", "", "", new HashMap<>());
@@ -111,6 +111,17 @@ public final class ModelService implements IModelService {
         return user.getAllGruppen();
     }
 
+    public List<Gruppe> getAlleUploadGruppenByUser(final KeycloakAuthenticationToken token) {
+        User user = createUserByToken(token);
+        return user.getAllGruppenWithUploadrechten();
+    }
+
+    public Gruppe getGruppeByUserAndGroupID(final Long gruppeId,
+                                            final KeycloakAuthenticationToken token) {
+        User user = createUserByToken(token);
+        return user.getGruppeById(gruppeId);
+    }
+
     public List<Datei> getAlleDateienByGruppe(final Long gruppeId,
                                               final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);
@@ -138,11 +149,10 @@ public final class ModelService implements IModelService {
         return tags;
     }
 
-
     public Set<String> getAlleUploaderByUser(final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);
         List<Gruppe> groups = user.getAllGruppen();
-        Set<String> uploader = new HashSet<String>();
+        Set<String> uploader = new HashSet<>();
         for (Gruppe gruppe : groups) {
             uploader.addAll(gruppe.getDateien()
                     .stream()
@@ -199,7 +209,7 @@ public final class ModelService implements IModelService {
     public Set<String> getAlleDateiTypenByUser(final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);
         List<Gruppe> groups = user.getAllGruppen();
-        Set<String> dateiTypen = new HashSet<String>();
+        Set<String> dateiTypen = new HashSet<>();
         for (Gruppe gruppe : groups) {
             dateiTypen.addAll(gruppe.getDateien()
                     .stream()
@@ -238,6 +248,27 @@ public final class ModelService implements IModelService {
         }
     }
 
+    /**
+     * get datei by gruppenId, dateiId and UserToken
+     * @param dateiId Id of the file
+     * @param token KeycloakAuthenticationToken of the user
+     * @return Datei if file is found in the given group of the given user, null if not
+     */
+    public Datei getDateiById(final long dateiId,
+                              final KeycloakAuthenticationToken token) {
+        User user = createUserByToken(token);
+        List<Gruppe> gruppen = user.getAllGruppen();
+        for (Gruppe gruppe : gruppen) {
+            for (Datei datei: gruppe.getDateien()) {
+                if (datei.getId() == dateiId) {
+                    return datei;
+                }
+            }
+        }
+
+        return null;
+    }
+
     private List<Datei> getAlleDateienByUser(final User user) {
         List<Datei> alleDateien = new ArrayList<>();
         user.getAllGruppen().forEach(gruppe -> alleDateien.addAll(gruppe.getDateien()));
@@ -255,7 +286,7 @@ public final class ModelService implements IModelService {
         return saveDatei(datei, groupDTO);
     }
 
-    public long saveDatei(final Datei datei, final long gruppenId) throws SQLException {
+    public void saveDatei(final Datei datei, final long gruppenId) throws SQLException {
         if (datei == null) {
             throw new IllegalArgumentException();
         }
@@ -263,14 +294,14 @@ public final class ModelService implements IModelService {
         // for saving the file
         GruppeDTO groupDTO = new GruppeDTO(gruppenId, null,
                 null, null);
-        return saveDatei(datei, groupDTO);
+        saveDatei(datei, groupDTO);
     }
 
     private long saveDatei(final Datei datei, final GruppeDTO gruppeDTO) throws SQLException {
         UserDTO userDTO = new UserDTO(datei.getUploader().getId(), null, null,
                 null, null);
 
-        DateiDTO dateiDTO = new DateiDTO(datei.getName(), userDTO, tagsToTagDTOs(datei.getTags()),
+        DateiDTO dateiDTO = new DateiDTO(datei.getId(), datei.getName(), userDTO, tagsToTagDTOs(datei.getTags()),
                 datei.getUploaddatum(), datei.getVeroeffentlichungsdatum(), datei.getDateigroesse(),
                 datei.getDateityp(), gruppeDTO, datei.getKategorie());
         return repository.saveDatei(dateiDTO);
@@ -287,8 +318,8 @@ public final class ModelService implements IModelService {
         return tagDTOs;
     }
 
-    public Datei findDateiById(final long dateiId) throws SQLException {
-        return loadDatei(repository.findDateiById(dateiId));
+    public User findUserByKeycloakname(final String keycloakname) throws SQLException {
+        return loadUser(repository.findUserByKeycloakname(keycloakname));
     }
 
     public Set<String> getTagsAsSet(final String[] tags) {

@@ -14,35 +14,21 @@
 <body>
 <div id="content" th:fragment="mycontent">
     <h1 class="text-center">
-        Upload
+        Update
     </h1>
 
-    <div>
+    <div class="container">
+
         <form method="post" enctype="multipart/form-data">
+
             <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
 
-            <div id="error-message" th:classappend="${error != null} ? 'alert alert-warning'" th:text="${error}">
-                Some error message
-            </div>
-
-            <div id="success-message" th:classappend="${success != null} ? 'alert alert-success'" th:text="${success}">
-                Jeah, it works!
-            </div>
-
-
             <div>
-                <label for="SelectGroup">Gruppenauswahl </label>
-                <select class="form-control" id="SelectGroup" name="gruppenId">
-                    <option th:each="gruppe : ${gruppenUpload}"
-                            th:value="${gruppe.getId()}"
-                            th:text="${gruppe.getName()}">
-                    </option>
-                </select>
+                <p>Dateiname: <span th:text="${datei.getName()}">Dateiname</span></p>
             </div>
 
             <div>
-                <label for="dataname">Dateiname </label>
-                <input type="text" class="form-control" id="dataname" name="dateiname" placeholder="Eingabe">
+                <p>Uploader: <span th:text="${datei.getUploader().getNachname()}">Uploader</span></p>
             </div>
 
             <div>
@@ -54,7 +40,8 @@
                 var student = [];
                 var tagTexts = /*[[${tagText}]]*/ [];
 
-                for (count = 0; count < tagTexts.length; count++) {
+                for (count = 0; count < tagTexts.length; count++)
+                {
                     var obj = {
                         id: count,
                         name: tagTexts[count]
@@ -75,29 +62,30 @@
                     singleInput: true,
                     singleInputValue: 'name'
                 });
-            </script>
 
-            <div>
-                <label for="selectKategorie">Kategorie</label>
-                <select class="form-control" id="selectKategorie" name="kategorie">
-                    <option>Vorlesung</option>
-                    <option>Übung</option>
-                </select>
-            </div>
+            </script>
+            <!--  <div>
+                  <label for="tagsIn">Tags </label>
+                  <input type="text" class="form-control" id="tagsIn" name="selectedTags"  placeholder="Vorlesung, ">
+              </div>
+
+              <div class="form-group">
+                  <ul>
+                      <li th:each="tag : ${tags}">
+                          <span  th:text="${tag.text}">Vorlesung</span>
+                      </li>
+                  </ul>
+              </div> -->
 
             <div class="form-group">
                 <label for="timedDate">Getimete Veröffentlichung (optional)</label>
                 <div>
-                    <input type="date" value="" name="timedUpload" id="timedDate">
+                    <input type="date" th:value="${datei.getVeroeffentlichungsdatum()}" name="timedUpload" id="timedDate">
                 </div>
             </div>
 
             <div>
-                <input type="file" name="datei" required>
-            </div>
-
-            <div>
-                <input class="btn btn-primary" type="submit" name="hochladen" value="Hochladen">
+                <input class="btn btn-primary" type="submit" name="update" value="Bestätigen">
             </div>
         </form>
     </div>

@@ -7,13 +7,13 @@ import com.tngtech.archunit.lang.ArchRule;
 import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
 
 @AnalyzeClasses(packagesOf = Material2Application.class)
-public class ArchitectureRulesTest {
+class ArchitectureRulesTest {
 
     @ArchTest
     private static ArchRule layerDependenciesAreRespected =
             layeredArchitecture()
-                    .layer("Database")
-                    .definedBy("..Database..")
+                    .layer("database")
+                    .definedBy("..database..")
                     .layer("businessLogic")
                     .definedBy("..domain..")
                     .layer("gui")
@@ -22,6 +22,6 @@ public class ArchitectureRulesTest {
                     .mayNotBeAccessedByAnyLayer()
                     .whereLayer("businessLogic")
                     .mayOnlyBeAccessedByLayers("gui")
-                    .whereLayer("Database")
+                    .whereLayer("database")
                     .mayOnlyBeAccessedByLayers("businessLogic");
 }

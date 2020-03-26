@@ -1,13 +1,17 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
 import de.hhu.propra2.material2.mops.domain.models.Datei;
+import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Tag;
+import de.hhu.propra2.material2.mops.domain.models.UpdateForm;
 import de.hhu.propra2.material2.mops.domain.models.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.sql.SQLException;
@@ -25,14 +29,15 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SuppressWarnings("checkstyle:magicnumber")
 @ExtendWith(MockitoExtension.class)
-public class UpdateServiceTest {
-    private static LocalDate date1303 = LocalDate.of(2020, Calendar.MARCH, 13);
+class UpdateServiceTest {
+    private static final LocalDate DATE_1303 = LocalDate.of(2020, Calendar.MARCH, 13);
 
     private Tag tag1 = new Tag(1, "tag1");
     private Tag tag2 = new Tag(2, "tag2");
@@ -42,6 +47,11 @@ public class UpdateServiceTest {
     private ModelService modelServiceMock;
     @Mock
     private User userMock;
+    @Mock
+    private Gruppe gruppenMock;
+    @Mock
+    private KeycloakAuthenticationToken tokenMock;
+
 
     private UpdateService updateService;
 
@@ -49,12 +59,15 @@ public class UpdateServiceTest {
      * setUP: SetUp needed for each test.
      */
     @BeforeEach
-    public void setUp() throws SQLException {
+    void setUp() throws SQLException {
         updateService = new UpdateService(modelServiceMock);
 
         Datei datei = new Datei(1L, "test.txt", userMock, tags,
-                date1303, date1303, 2L, "txt", "kategorie");
-        when(modelServiceMock.findDateiById(1L)).thenReturn(datei);
+                DATE_1303, DATE_1303, 2L, "txt", "kategorie");
+        Mockito.lenient().when(modelServiceMock.getDateiById(1L, tokenMock)).thenReturn(datei);
+        when(modelServiceMock.findUserByKeycloakname(anyString())).thenReturn(userMock);
+        when(userMock.getGruppeById(1L)).thenReturn(gruppenMock);
+        when(gruppenMock.getDateiById(1L)).thenReturn(datei);
 
         tag1 = new Tag(1, "tag1");
         tag2 = new Tag(2, "tag2");
@@ -63,8 +76,10 @@ public class UpdateServiceTest {
     }
 
     @Test
-    public void updateFileBySettingVeroeffentlichungsdatumAndTagsNull() throws Exception {
-        updateService.dateiUpdate(1L, 1L, null, null);
+    void updateFileBySettingVeroeffentlichungsdatumAndTagsNull() throws Exception {
+        when(userMock.hasUploadPermission(gruppenMock)).thenReturn(true);
+        UpdateForm updateForm = new UpdateForm(null, null);
+        updateService.startUpdate(updateForm, "", 1L, 1L);
 
         ArgumentCaptor<Datei> dateiCaptor = ArgumentCaptor.forClass(Datei.class);
         verify(modelServiceMock, times(1)).saveDatei(dateiCaptor.capture(), anyLong());
@@ -79,11 +94,12 @@ public class UpdateServiceTest {
     }
 
     @Test
-    public void updateFileBySettingVeroeffentlichungsdatumAndTagsNotNull() throws Exception {
-        tags.add(tag1);
-        tags.add(tag2);
-        tags.add(tag3);
-        updateService.dateiUpdate(1L, 1L, null, tags);
+    void updateFileBySettingVeroeffentlichungsdatumAndTagsNotNull() throws Exception {
+        when(userMock.hasUploadPermission(gruppenMock)).thenReturn(true);
+        String stringTags = tag1.getText() + ", " + tag2.getText() + ", " + tag3.getText();
+        UpdateForm updateForm = new UpdateForm(stringTags, null);
+
+        updateService.startUpdate(updateForm, "", 1L, 1L);
 
         ArgumentCaptor<Datei> dateiCaptor = ArgumentCaptor.forClass(Datei.class);
         verify(modelServiceMock, times(1)).saveDatei(dateiCaptor.capture(), anyLong());

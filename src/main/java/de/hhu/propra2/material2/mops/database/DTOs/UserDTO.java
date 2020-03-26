@@ -1,6 +1,7 @@
-package de.hhu.propra2.material2.mops.Database.DTOs;
+package de.hhu.propra2.material2.mops.database.DTOs;
 
 import lombok.Data;
+
 import java.util.HashMap;
 
 
@@ -34,7 +35,7 @@ public class UserDTO {
     private final HashMap<GruppeDTO, Boolean> belegungUndRechte;
 
     /**
-     * Standard AllArgsConstructor for import from the Database.
+     * Standard AllArgsConstructor for import from the database.
      *
      * @param idArg
      * @param vornameArg
@@ -43,11 +44,30 @@ public class UserDTO {
      * @param belegungUndRechteArg
      */
     public UserDTO(final long idArg,
-                   final  String vornameArg,
+                   final String vornameArg,
                    final String nachnameArg,
                    final String keycloaknameArg,
                    final HashMap<GruppeDTO, Boolean> belegungUndRechteArg) {
         this.id = idArg;
+        this.vorname = vornameArg;
+        this.nachname = nachnameArg;
+        this.keycloakname = keycloaknameArg;
+        this.belegungUndRechte = belegungUndRechteArg;
+    }
+
+    /**
+     * Constructor for saving to the database.
+     *
+     * @param vornameArg
+     * @param nachnameArg
+     * @param keycloaknameArg
+     * @param belegungUndRechteArg
+     */
+    public UserDTO(final String vornameArg,
+                   final String nachnameArg,
+                   final String keycloaknameArg,
+                   final HashMap<GruppeDTO, Boolean> belegungUndRechteArg) {
+        this.id = -1;
         this.vorname = vornameArg;
         this.nachname = nachnameArg;
         this.keycloakname = keycloaknameArg;

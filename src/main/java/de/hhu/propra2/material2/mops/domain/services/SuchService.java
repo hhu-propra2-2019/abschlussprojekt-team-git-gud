@@ -126,29 +126,29 @@ public class SuchService {
     }
 
     private List<Datei> sortieren(final String sortierStyle, final String reihenfolge, final List<Datei> zuSortieren) {
-        /**
-         * Name
-         * Datum
-         * Dateityp
-         * Uploader
-         * Kategorie
-         * aufsteigend / absteigend
+        /*
+          Name
+          Datum
+          Dateityp
+          Uploader
+          Kategorie
+          aufsteigend / absteigend
          */
         List<Datei> sort = zuSortieren;
         if ("Name".equals(sortierStyle)) {
             sort.sort(new DateiNamenComparator());
         } else if ("Dateityp".equals(sortierStyle)) {
-            sort.sort(new DateiDateiTypComparator());
+            zuSortieren.sort(new DateiDateiTypComparator());
         } else if ("Uploader".equals(sortierStyle)) {
-            sort.sort(new DateiUploaderComparator());
+            zuSortieren.sort(new DateiUploaderComparator());
         } else if ("Datum".equals(sortierStyle)) {
-            sort.sort(new DateiDatumComparator());
+            zuSortieren.sort(new DateiDatumComparator());
         }
         if (reihenfolge != null) {
             if ("absteigend".equals(reihenfolge)) {
-                Collections.reverse(sort);
+                Collections.reverse(zuSortieren);
             }
         }
-        return sort;
+        return zuSortieren;
     }
 }

@@ -3,8 +3,9 @@ package de.hhu.propra2.material2.mops.controller;
 import com.c4_soft.springaddons.test.security.context.support.WithMockKeycloackAuth;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
-import de.hhu.propra2.material2.mops.domain.services.MinioDownloadService;
+import de.hhu.propra2.material2.mops.domain.services.MinIOService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
+import de.hhu.propra2.material2.mops.domain.services.UpdateService;
 import de.hhu.propra2.material2.mops.domain.services.UploadService;
 import de.hhu.propra2.material2.mops.security.Account;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest
 @ComponentScan(basePackageClasses = {KeycloakSecurityComponents.class, KeycloakSpringBootConfigResolver.class})
-public class MaterialControllerAccessTest {
+class MaterialControllerAccessTest {
 
     @Autowired
     private MockMvc mvc;
@@ -40,10 +41,13 @@ public class MaterialControllerAccessTest {
     private ModelService modelService;
 
     @MockBean
-    private MinioDownloadService minioDownloadService;
+    private MinIOService minIOService;
 
     @MockBean
     private UploadService uploadService;
+
+    @MockBean
+    private UpdateService updateService;
 
     /**
      * init for the tests.
@@ -67,6 +71,8 @@ public class MaterialControllerAccessTest {
         Set<String> kategorien = new HashSet<>();
         Set<String> selectedTags = new HashSet<>();
         when(modelService.getAlleGruppenByUser(any())).thenReturn(gruppen);
+        when(modelService.getGruppeByUserAndGroupID(any(), any())).thenReturn(new Gruppe(2,
+                "RDB", null));
         when(modelService.getAlleTagsByUser(any())).thenReturn(tags);
         when(modelService.getAlleUploaderByUser(any())).thenReturn(uploader);
         when(modelService.getAlleDateiTypenByUser(any())).thenReturn(dateiTypen);
@@ -77,6 +83,7 @@ public class MaterialControllerAccessTest {
         when(modelService.getKategorienFromSuche(any())).thenReturn(kategorien);
         when(modelService.getTagsAsSet(any())).thenReturn(selectedTags);
     }
+
 
     //Unknown User Access tests
 

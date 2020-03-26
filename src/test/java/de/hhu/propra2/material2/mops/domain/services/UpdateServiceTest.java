@@ -26,7 +26,6 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -38,6 +37,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class UpdateServiceTest {
     private static final LocalDate DATE_1303 = LocalDate.of(2020, Calendar.MARCH, 13);
+    private static final LocalDate DATE_1504 = LocalDate.of(2020, Calendar.APRIL, 15);
 
     private Tag tag1 = new Tag(1, "tag1");
     private Tag tag2 = new Tag(2, "tag2");
@@ -85,10 +85,11 @@ class UpdateServiceTest {
         verify(modelServiceMock, times(1)).saveDatei(dateiCaptor.capture(), anyLong());
 
         Datei capturedDatei = dateiCaptor.getValue();
+        LocalDate abc = capturedDatei.getVeroeffentlichungsdatum();
         assertThat(capturedDatei.getName(), comparesEqualTo("test.txt"));
         assertThat(capturedDatei.getUploader(), equalTo(userMock));
         assertThat(capturedDatei.getTags(), empty());
-        assertThat(capturedDatei.getVeroeffentlichungsdatum(), nullValue());
+        assertThat(abc, comparesEqualTo(DATE_1303));
         assertThat(capturedDatei.getDateigroesse(), comparesEqualTo(2L));
         assertThat(capturedDatei.getDateityp(), comparesEqualTo("txt"));
     }
@@ -97,7 +98,7 @@ class UpdateServiceTest {
     void updateFileBySettingVeroeffentlichungsdatumAndTagsNotNull() throws Exception {
         when(userMock.hasUploadPermission(gruppenMock)).thenReturn(true);
         String stringTags = tag1.getText() + ", " + tag2.getText() + ", " + tag3.getText();
-        UpdateForm updateForm = new UpdateForm(stringTags, null);
+        UpdateForm updateForm = new UpdateForm(stringTags, DATE_1504.toString());
 
         updateService.startUpdate(updateForm, "", 1L, 1L);
 
@@ -111,7 +112,7 @@ class UpdateServiceTest {
                 hasProperty("text", is("tag1")),
                 hasProperty("text", is("tag2")),
                 hasProperty("text", is("tag3"))));
-        assertThat(capturedDatei.getVeroeffentlichungsdatum(), nullValue());
+        assertThat(capturedDatei.getVeroeffentlichungsdatum(), comparesEqualTo(DATE_1504));
         assertThat(capturedDatei.getDateigroesse(), comparesEqualTo(2L));
         assertThat(capturedDatei.getDateityp(), comparesEqualTo("txt"));
     }

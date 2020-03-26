@@ -1,6 +1,7 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
 import de.hhu.propra2.material2.mops.Exceptions.DownloadException;
+import de.hhu.propra2.material2.mops.Exceptions.ObjectNotInMinioException;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,6 +15,6 @@ public interface IMinIOService {
 
     boolean upload(MultipartFile file, String fileName);
 
-    boolean deleteFile(String dateiID);
+    boolean deleteFile(String dateiID) throws ObjectNotInMinioException;
 }
 

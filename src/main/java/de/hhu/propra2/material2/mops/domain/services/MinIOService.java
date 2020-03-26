@@ -134,6 +134,7 @@ public class MinIOService implements IMinIOService {
 
     /**
      * removes file from minio-server.
+     *
      * @param dateiID
      */
     public boolean deleteFile(final String dateiID) {
@@ -150,7 +151,6 @@ public class MinIOService implements IMinIOService {
             minioClient.removeObject(minIOProperties.getBucketname(), dateiID);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }

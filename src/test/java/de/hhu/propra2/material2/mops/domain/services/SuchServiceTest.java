@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
@@ -93,9 +94,7 @@ public class SuchServiceTest {
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, new ArrayList<>());
-
-        final int expectedSizeOfList = 0;
-        assertThat(result.size(), is(expectedSizeOfList));
+        assertNull(result);
     }
 
     @Test
@@ -178,9 +177,7 @@ public class SuchServiceTest {
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, dateien);
-
-        final int expectedSizeOfList = 0;
-        assertThat(result.size(), is(expectedSizeOfList));
+        assertNull(result);
     }
 
     @Test
@@ -264,9 +261,7 @@ public class SuchServiceTest {
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, dateien);
-
-        final int expectedSizeOfList = 0;
-        assertThat(result.size(), is(expectedSizeOfList));
+        assertNull(result);
     }
 
     @Test
@@ -284,9 +279,7 @@ public class SuchServiceTest {
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, dateien);
-
-        final int expectedSizeOfList = 0;
-        assertThat(result.size(), is(expectedSizeOfList));
+        assertNull(result);
     }
 
     @Test
@@ -350,9 +343,7 @@ public class SuchServiceTest {
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, dateien);
-
-        final int expectedSizeOfList = 0;
-        assertThat(result.size(), is(expectedSizeOfList));
+        assertNull(result);
     }
 
     @Test

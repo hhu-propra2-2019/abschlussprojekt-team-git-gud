@@ -36,9 +36,10 @@ public final class ModelService implements IModelService {
     /**
      * Constructor of ModelService.
      */
-    public ModelService(final Repository repositoryArg, final SuchService suchServiceArg) {
+    public ModelService(final Repository repositoryArg, final SuchService suchServiceArg, final Suche sucheArg) {
         repository = repositoryArg;
         suchService = suchServiceArg;
+        this.suche = sucheArg;
     }
 
     private Datei loadDatei(final DateiDTO dateiDTO) {

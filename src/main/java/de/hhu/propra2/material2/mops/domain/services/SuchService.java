@@ -52,6 +52,9 @@ public class SuchService {
                     result);
         }
 
+        if (result.isEmpty()) {
+            return null;
+        }
         return result;
     }
 

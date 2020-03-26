@@ -1,6 +1,7 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
 import com.google.common.base.Strings;
+import de.hhu.propra2.material2.mops.Exceptions.HasNoGroupToUploadException;
 import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
@@ -63,10 +64,12 @@ public class UploadService implements IUploadService {
     @Override
     @Transactional
     public void startUpload(final UploadForm upForm, final String uploader) throws NoUploadPermissionException,
-            SQLException, FileUploadException {
+            SQLException, FileUploadException, HasNoGroupToUploadException {
         User user = modelService.findUserByKeycloakname(uploader);
+        if (upForm.getGruppenId() == null) {
+            throw new HasNoGroupToUploadException("User has no Group selected to which he can upload");
+        }
         Gruppe gruppe = user.getGruppeById(upForm.getGruppenId());
-
         if (!user.hasUploadPermission(gruppe)) {
             throw new NoUploadPermissionException("User has no upload permission");
         }

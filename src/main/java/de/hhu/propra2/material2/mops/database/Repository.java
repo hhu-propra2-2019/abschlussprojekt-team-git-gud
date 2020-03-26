@@ -578,6 +578,7 @@ public final class Repository {
     }
 
 
+    @SuppressWarnings("checkstyle:MagicNumber")
     private void saveGruppenbelegung(final long userId,
                                      final String gruppeId, final boolean berechtigung) throws SQLException {
         PreparedStatement preparedStatement =

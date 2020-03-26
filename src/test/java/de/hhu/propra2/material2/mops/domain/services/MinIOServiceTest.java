@@ -18,7 +18,6 @@ import java.nio.charset.StandardCharsets;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
-
 @SuppressFBWarnings(value = "HARD_CODE_PASSWORD", justification = "It's only for testing purposes")
 @ExtendWith(MockitoExtension.class)
 @Testcontainers

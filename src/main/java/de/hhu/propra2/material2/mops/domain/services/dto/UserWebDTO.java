@@ -1,4 +1,4 @@
-package de.hhu.propra2.material2.mops.web.dto;
+package de.hhu.propra2.material2.mops.domain.services.dto;
 
 import lombok.Getter;
 import lombok.Setter;

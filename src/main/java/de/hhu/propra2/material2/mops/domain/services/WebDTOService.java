@@ -1,10 +1,13 @@
-package de.hhu.propra2.material2.mops.web.dto;
+package de.hhu.propra2.material2.mops.domain.services;
 
 
 import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.UserDTO;
 import de.hhu.propra2.material2.mops.database.Repository;
+import de.hhu.propra2.material2.mops.domain.services.dto.GroupWebDTO;
+import de.hhu.propra2.material2.mops.domain.services.dto.UpdatedGroupRequestMapper;
+import de.hhu.propra2.material2.mops.domain.services.dto.UserWebDTO;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;

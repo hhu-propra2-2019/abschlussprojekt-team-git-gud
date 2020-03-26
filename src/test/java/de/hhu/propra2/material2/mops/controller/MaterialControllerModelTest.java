@@ -8,6 +8,7 @@ import de.hhu.propra2.material2.mops.domain.models.Tag;
 import de.hhu.propra2.material2.mops.domain.models.User;
 import de.hhu.propra2.material2.mops.domain.services.MinIOService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
+import de.hhu.propra2.material2.mops.domain.services.UpdateService;
 import de.hhu.propra2.material2.mops.domain.services.UploadService;
 import de.hhu.propra2.material2.mops.security.Account;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -57,6 +58,9 @@ class MaterialControllerModelTest {
     @MockBean
     private UploadService uploadService;
 
+    @MockBean
+    private UpdateService updateService;
+
     /**
      * init for the tests.
      */
@@ -85,7 +89,7 @@ class MaterialControllerModelTest {
         realTags.add(new Tag(1L, "Klausurrelevant"));
         List<Datei> dateien = new ArrayList<>();
         dateien.add(new Datei(1L, "Vorlesung1", jens,
-                realTags, LocalDate.of(2020, 3, 1), LocalDate.now(), 895973L,
+                realTags, LocalDate.now(), LocalDate.of(2020, 3, 1), 895973L,
                 "PDF", "Vorlesung"));
         when(modelService.getAlleGruppenByUser(any())).thenReturn(gruppen);
         when(modelService.getGruppeByUserAndGroupID(any(), any())).thenReturn(new Gruppe("2",
@@ -201,7 +205,7 @@ class MaterialControllerModelTest {
         mvc.perform(post("/upload")
                 .with(csrf()))
                 .andExpect(content()
-                        .string(containsString("Sie sind nicht berechtig in dieser Gruppe hochzuladen!")));
+                        .string(containsString("Sie sind nicht berechtigt in dieser Gruppe hochzuladen!")));
 
         verify(uploadService, times(1)).startUpload(any(), any());
     }

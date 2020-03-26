@@ -25,18 +25,19 @@ public class WebDTOService {
     }
 
     /**
-     * <<<<<<< HEAD
-     * Method the Controller can call to put the changes from the update
-     * into the database
-     * =======
-     * Can be called from Controller to save the changes from update into the Database
-     * <p>
-     * >>>>>>> f49a5de6b524f05b7a8df2bbb66393462986fbca
-     *
+     * Method the controller will call to update our database
+     * with the new Groups and users from the RestAPI
      * @param update
      * @throws SQLException
      */
-    public void startUpdate(final UpdatedGroupRequestMapper update) throws SQLException {
+    public void updateDatabase(final UpdatedGroupRequestMapper update) throws SQLException {
+        startUpdate(update);
+        updateLeavingUsers(update);
+    }
+
+
+    private Map<String, HashMap<String, Boolean>> startUpdate(final UpdatedGroupRequestMapper update)
+            throws SQLException {
         /**
          * delete deprecated groups
          **/
@@ -68,6 +69,7 @@ public class WebDTOService {
         Map<String, HashMap<String, Boolean>> updatedAndSynchronizedUserGroupRelation =
                 addNewGroups(usersWeb, belegungWeb, groupsWithUpdate);
         saveUserInDatabase(gruppen, usersWeb, updatedAndSynchronizedUserGroupRelation);
+        return updatedAndSynchronizedUserGroupRelation;
     }
 
     private void saveUserInDatabase(final Map<String, GroupWebDTO> gruppen,
@@ -143,6 +145,7 @@ public class WebDTOService {
      * returns a map where each user is in all groups in which he has to be
      * after the update.
      * That means he is in the groups he joined and is not in those he left.
+     *
      * @param updatedUsers
      * @param updatedGroups
      * @return

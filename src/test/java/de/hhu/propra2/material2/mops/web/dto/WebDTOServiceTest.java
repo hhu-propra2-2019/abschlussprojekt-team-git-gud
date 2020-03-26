@@ -19,6 +19,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static org.hamcrest.Matchers.is;
@@ -33,13 +35,15 @@ public class WebDTOServiceTest {
     private Repository repoMock;
     private GruppeDTO gruppeDTO1;
     private GruppeDTO gruppeDTO2;
+    private UserDTO userDTO0;
     private UserDTO userDTO1;
     private UserDTO userDTO2;
-    private UserDTO userDTO3;
 
     private String jsonExample;
     private BufferedReader bufferedReader;
     private UpdatedGroupRequestMapper group;
+
+    private WebDTOService service;
 
     @BeforeEach
     private void setup() throws IOException {
@@ -50,10 +54,14 @@ public class WebDTOServiceTest {
         ObjectMapper mapper = new ObjectMapper();
         group = mapper.readValue(file, UpdatedGroupRequestMapper.class);
 
+        service = new WebDTOService(repoMock);
+
         gruppeDTO1 = new GruppeDTO("1", null, null, null);
         gruppeDTO2 = new GruppeDTO("2", null, null, null);
 
-        userDTO1 = new UserDTO(null, null,null,"user1", new HashMap<>());
+        userDTO0 = new UserDTO(null, null, "user0", new HashMap<>());
+        userDTO1 = new UserDTO(null, null, "user1", new HashMap<>());
+        userDTO2 = new UserDTO(null, null, "user2", new HashMap<>());
     }
 
     /**
@@ -69,6 +77,14 @@ public class WebDTOServiceTest {
                 .getForEntity("http://localhost:8080/gruppe2//api/updateGroups/0", UpdatedGroupRequestMapper.class)
                 .getBody();
 
+    }
+
+    @Test
+    public void updateContainsNothingNothingIsChanged() throws SQLException {
+        UpdatedGroupRequestMapper update = new UpdatedGroupRequestMapper();
+        update.setGroupList(new ArrayList<>());
+
+        service.startUpdate(update);
     }
 
 }

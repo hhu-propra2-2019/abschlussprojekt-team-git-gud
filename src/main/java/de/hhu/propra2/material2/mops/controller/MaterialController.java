@@ -213,10 +213,8 @@ public class MaterialController {
     public void updateGroups(int status) throws SQLException {
         UpdatedGroupRequestMapper update = serviceAccountRestTemplate.getForEntity("http://localhost:8080/gruppe2//api/updateGroups/{status}",
                 UpdatedGroupRequestMapper.class, status).getBody();
-        webDTOService.startUpdate(update);
+        webDTOService.updateDatabase(update);
     }
-
-
 
     private void setMessages(final String pErrorMessage, final String pSuccessMessage) {
         this.errorMessage = pErrorMessage;

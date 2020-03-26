@@ -12,7 +12,7 @@ import de.hhu.propra2.material2.mops.domain.services.MinIOService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
 import de.hhu.propra2.material2.mops.domain.services.UpdateService;
 import de.hhu.propra2.material2.mops.domain.services.UploadService;
-import de.hhu.propra2.material2.mops.domain.services.dto.*;
+import de.hhu.propra2.material2.mops.domain.services.dto.UpdatedGroupRequestMapper;
 import de.hhu.propra2.material2.mops.security.Account;
 import de.hhu.propra2.material2.mops.domain.services.WebDTOService;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -58,6 +58,7 @@ public class MaterialController {
     @Autowired
     private WebDTOService webDTOService;
 
+    private final long updateRate = 5000;
     private String errorMessage;
     private String successMessage;
 
@@ -281,9 +282,15 @@ public class MaterialController {
                 .body(new InputStreamResource(input));
     }
 
-    @Scheduled(fixedRate = 5000)
-    public void updateGroups(int status) throws SQLException {
-        UpdatedGroupRequestMapper update = serviceAccountRestTemplate.getForEntity("http://localhost:8080/gruppe2//api/updateGroups/{status}",
+    /**
+     *
+     * @param status
+     * @throws SQLException
+     */
+    @Scheduled(fixedRate = updateRate)
+    public void updateGroups(final int status) throws SQLException {
+        UpdatedGroupRequestMapper update = serviceAccountRestTemplate.getForEntity(
+                "http://localhost:8080/gruppe2//api/updateGroups/{status}",
                 UpdatedGroupRequestMapper.class, status).getBody();
         webDTOService.updateDatabase(update);
     }

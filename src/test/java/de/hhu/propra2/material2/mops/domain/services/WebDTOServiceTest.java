@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.UserDTO;
 import de.hhu.propra2.material2.mops.database.Repository;
+import de.hhu.propra2.material2.mops.domain.services.dto.GroupWebDTO;
+import de.hhu.propra2.material2.mops.domain.services.dto.UserWebDTO;
 import de.hhu.propra2.material2.mops.domain.services.dto.UpdatedGroupRequestMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

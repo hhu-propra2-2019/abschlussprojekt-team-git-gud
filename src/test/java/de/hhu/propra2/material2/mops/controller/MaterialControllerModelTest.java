@@ -6,10 +6,7 @@ import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Tag;
 import de.hhu.propra2.material2.mops.domain.models.User;
-import de.hhu.propra2.material2.mops.domain.services.MinIOService;
-import de.hhu.propra2.material2.mops.domain.services.ModelService;
-import de.hhu.propra2.material2.mops.domain.services.UpdateService;
-import de.hhu.propra2.material2.mops.domain.services.UploadService;
+import de.hhu.propra2.material2.mops.domain.services.*;
 import de.hhu.propra2.material2.mops.security.Account;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,6 +57,9 @@ class MaterialControllerModelTest {
 
     @MockBean
     private UpdateService updateService;
+
+    @MockBean
+    private WebDTOService webDTOService;
 
     /**
      * init for the tests.

@@ -185,7 +185,6 @@ public class MaterialController {
                          final Model model,
                          final Long gruppenId,
                          final Long dateiId) {
-        Account userAccount = modelService.getAccountFromKeycloak(token);
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
         Datei datei = modelService.getDateiById(gruppenId, dateiId, token);
@@ -212,8 +211,6 @@ public class MaterialController {
      */
     @PostMapping("/update")
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
-    //TODO bereits vorhandene tags in html anzeigen
-    //TODO im Serice checken, dass die Person auch auf die Datei zugreifen darf!
     public String update(final KeycloakAuthenticationToken token,
                          final Model model,
                          final UpdateForm updateForm,

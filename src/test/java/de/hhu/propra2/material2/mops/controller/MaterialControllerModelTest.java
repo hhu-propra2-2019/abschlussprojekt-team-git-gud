@@ -89,7 +89,7 @@ public class MaterialControllerModelTest {
         realTags.add(new Tag(1L, "Klausurrelevant"));
         List<Datei> dateien = new ArrayList<>();
         dateien.add(new Datei(1L, "Vorlesung1", jens,
-                realTags, LocalDate.of(2020, 03, 01), LocalDate.now(), 895973L,
+                realTags, LocalDate.now(), LocalDate.of(2020, 03, 01), 895973L,
                 "PDF", "Vorlesung"));
         when(modelService.getAlleGruppenByUser(any())).thenReturn(gruppen);
         when(modelService.getAlleUploadGruppenByUser(any())).thenReturn(gruppen);
@@ -203,7 +203,7 @@ public class MaterialControllerModelTest {
         mvc.perform(post("/upload")
                 .with(csrf()))
                 .andExpect(content()
-                        .string(containsString("Sie sind nicht berechtig in dieser Gruppe hochzuladen!")));
+                        .string(containsString("Sie sind nicht berechtigt in dieser Gruppe hochzuladen!")));
 
         verify(uploadService, times(1)).startUpload(any(), any());
     }

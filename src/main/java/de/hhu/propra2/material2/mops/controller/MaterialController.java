@@ -12,7 +12,7 @@ import de.hhu.propra2.material2.mops.domain.services.MinIOService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
 import de.hhu.propra2.material2.mops.domain.services.UpdateService;
 import de.hhu.propra2.material2.mops.domain.services.UploadService;
-import de.hhu.propra2.material2.mops.domain.services.dto.UpdatedGroupRequestMapper;
+import de.hhu.propra2.material2.mops.domain.services.webdto.UpdatedGroupRequestMapper;
 import de.hhu.propra2.material2.mops.security.Account;
 import de.hhu.propra2.material2.mops.domain.services.WebDTOService;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;

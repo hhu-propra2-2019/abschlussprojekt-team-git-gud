@@ -17,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -36,8 +35,8 @@ import static org.mockito.Mockito.when;
 @SuppressWarnings("checkstyle:magicnumber")
 @ExtendWith(MockitoExtension.class)
 class UpdateServiceTest {
-    private static final LocalDate DATE_1303 = LocalDate.of(2020, Calendar.MARCH, 13);
-    private static final LocalDate DATE_1504 = LocalDate.of(2020, Calendar.APRIL, 15);
+    private static final LocalDate DATE_1303 = LocalDate.of(2020, 3, 13); //Calender.MARCH is broken!
+    private static final LocalDate DATE_1504 = LocalDate.of(2020, 4, 15); //Calender.APRIL is broken!
 
     private Tag tag1 = new Tag(1, "tag1");
     private Tag tag2 = new Tag(2, "tag2");

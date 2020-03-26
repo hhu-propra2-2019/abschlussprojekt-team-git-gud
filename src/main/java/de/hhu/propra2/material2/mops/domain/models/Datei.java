@@ -73,7 +73,7 @@ public class Datei {
     }
 
     /**
-     * @param tagsToCheckFor
+     * @param tagsToCheckFor Array of Strings
      * @return true if the file contains all the given tags
      */
     public boolean hatTags(final String[] tagsToCheckFor) {
@@ -109,7 +109,7 @@ public class Datei {
     /**
      * gives out the FileSize formet as a String with MB/GB etc.
      * Quelle: https://www.javaguides.net/2018/07/how-to-get-file-size-in-bytes-kb-mb-gb.html
-     * @return
+     * @return String of filesize
      */
     @SuppressWarnings("checkstyle:MagicNumber")
     public String getDateigroesseFormated() {

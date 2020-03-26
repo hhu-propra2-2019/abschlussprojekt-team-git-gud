@@ -61,7 +61,7 @@ public final class ModelService implements IModelService {
         return new Tag(tagDTO.getId(), tagDTO.getText());
     }
 
-    public User loadUser(final UserDTO userDTO) {
+    private User loadUser(final UserDTO userDTO) {
 
         if (userDTO == null) {
             return new User(-1L, "", "", "", new HashMap<>());
@@ -114,6 +114,12 @@ public final class ModelService implements IModelService {
     public List<Gruppe> getAlleUploadGruppenByUser(final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);
         return user.getAllGruppenWithUploadrechten();
+    }
+
+    public Gruppe getGruppeByUserAndGroupID(final String gruppeId,
+                                            final KeycloakAuthenticationToken token) {
+        User user = createUserByToken(token);
+        return user.getGruppeById(gruppeId);
     }
 
     public List<Datei> getAlleDateienByGruppe(final String gruppeId,
@@ -256,7 +262,7 @@ public final class ModelService implements IModelService {
         return saveDatei(datei, groupDTO);
     }
 
-    public long saveDatei(final Datei datei, final String gruppenId) throws SQLException {
+    public void saveDatei(final Datei datei, final String gruppenId) throws SQLException {
         if (datei == null) {
             throw new IllegalArgumentException();
         }
@@ -264,7 +270,7 @@ public final class ModelService implements IModelService {
         // for saving the file
         GruppeDTO groupDTO = new GruppeDTO(gruppenId, null,
                 null, null);
-        return saveDatei(datei, groupDTO);
+        saveDatei(datei, groupDTO);
     }
 
     private long saveDatei(final Datei datei, final GruppeDTO gruppeDTO) throws SQLException {

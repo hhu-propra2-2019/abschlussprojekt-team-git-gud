@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 
 @SuppressWarnings("checkstyle:magicnumber")
 @ExtendWith(MockitoExtension.class)
-public class ModelServiceTest {
+class ModelServiceTest {
 
     @Mock
     private Repository repoMock;
@@ -51,14 +51,15 @@ public class ModelServiceTest {
      */
     @BeforeEach
     @SuppressWarnings("checkstyle:magicnumber")
-    public void setUp() {
+    void setUp() {
         this.modelService = new ModelService(
                 repoMock,
                 suchServiceMock);
     }
 
     @Test
-    public void convertGroupHashMapTwoGroups() {
+
+    void convertGroupHashMapTwoGroups() {
         when(gruppeDTOMock1.getId()).thenReturn("1");
         when(gruppeDTOMock2.getId()).thenReturn("2");
 
@@ -77,7 +78,7 @@ public class ModelServiceTest {
     }
 
     @Test
-    public void dateienDerGruppeZeroFiles() {
+    void dateienDerGruppeZeroFiles() {
         HashMap<GruppeDTO, Boolean> belegungUndRechte = new HashMap<>();
         belegungUndRechte.put(gruppeDTOMock1, true);
         belegungUndRechte.put(gruppeDTOMock2, false);
@@ -94,7 +95,7 @@ public class ModelServiceTest {
     }
 
     @Test
-    public void dateienDerGruppeOneFile() {
+    void dateienDerGruppeOneFile() {
         HashMap<GruppeDTO, Boolean> belegungUndRechte = new HashMap<>();
         belegungUndRechte.put(gruppeDTOMock1, true);
         belegungUndRechte.put(gruppeDTOMock2, false);
@@ -115,7 +116,7 @@ public class ModelServiceTest {
     }
 
     @Test
-    public void dateienDerGruppeMultipleFiles() {
+    void dateienDerGruppeMultipleFiles() {
         HashMap<GruppeDTO, Boolean> belegungUndRechte = new HashMap<>();
         belegungUndRechte.put(gruppeDTOMock1, true);
         belegungUndRechte.put(gruppeDTOMock2, false);

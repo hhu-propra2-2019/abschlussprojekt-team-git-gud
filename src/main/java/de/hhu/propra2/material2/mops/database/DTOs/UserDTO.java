@@ -58,6 +58,11 @@ public class UserDTO {
     }
 
     /**
+<<<<<<< HEAD
+=======
+     * Constructor for saving to the database.
+     *
+>>>>>>> master
      * @param vornameArg
      * @param nachnameArg
      * @param keycloaknameArg
@@ -67,12 +72,17 @@ public class UserDTO {
                    final String nachnameArg,
                    final String keycloaknameArg,
                    final HashMap<GruppeDTO, Boolean> belegungUndRechteArg) {
+<<<<<<< HEAD
         this.id = 0;
+=======
+        this.id = -1;
+>>>>>>> master
         this.vorname = vornameArg;
         this.nachname = nachnameArg;
         this.keycloakname = keycloaknameArg;
         this.belegungUndRechte = belegungUndRechteArg;
     }
+<<<<<<< HEAD
 
     /**
      * @param idArg
@@ -86,4 +96,6 @@ public class UserDTO {
                 .collect(Collectors.toList());
         return gruppe.get(0);
     }
+=======
+>>>>>>> master
 }

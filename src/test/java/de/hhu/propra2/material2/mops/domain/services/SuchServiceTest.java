@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -24,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
-public class SuchServiceTest {
+class SuchServiceTest {
 
     @Mock
     private User uploaderMock1;
@@ -44,7 +45,7 @@ public class SuchServiceTest {
      */
     @BeforeEach
     @SuppressWarnings("checkstyle:magicnumber")
-    public void setUp() {
+    void setUp() {
         this.suchService = new SuchService();
 
         //Date for Datei
@@ -58,7 +59,7 @@ public class SuchServiceTest {
         Tag tag3 = new Tag(3, "Übung");
         Tag tag4 = new Tag(4, "Irgendwas");
         List<Tag> tags1 = new ArrayList<>(Arrays.asList(tag1, tag2, tag3, tag4));
-        List<Tag> tags2 = new ArrayList<>(Arrays.asList(tag1));
+        List<Tag> tags2 = new ArrayList<>(Collections.singletonList(tag1));
         List<Tag> tags3 = new ArrayList<>(Arrays.asList(tag2, tag4));
 
         //Uploader for Datei
@@ -80,7 +81,7 @@ public class SuchServiceTest {
 
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
-    public void keineDateien() {
+    void keineDateien() {
         Suche suche = new Suche(
                 "",
                 "",
@@ -99,7 +100,7 @@ public class SuchServiceTest {
     }
 
     @Test
-    public void keineFilter() {
+    void keineFilter() {
         Suche suche = new Suche(
                 "",
                 "",
@@ -122,7 +123,7 @@ public class SuchServiceTest {
     }
 
     @Test
-    public void vonDatumFilter() {
+    void vonDatumFilter() {
         Suche suche = new Suche(
                 "2020-02-20",
                 "",
@@ -143,7 +144,7 @@ public class SuchServiceTest {
     }
 
     @Test
-    public void bisDatumFilter() {
+    void bisDatumFilter() {
         Suche suche = new Suche(
                 "",
                 "2020-02-20",
@@ -164,7 +165,7 @@ public class SuchServiceTest {
     }
 
     @Test
-    public void einNichtVergebenerTagFilter() {
+    void einNichtVergebenerTagFilter() {
         String[] tags = {"NichtVergebenerTag"};
         Suche suche = new Suche(
                 "",
@@ -184,7 +185,7 @@ public class SuchServiceTest {
     }
 
     @Test
-    public void einVergebenerTagFilter() {
+    void einVergebenerTagFilter() {
         String[] tags = {"Vorlesung"};
         Suche suche = new Suche(
                 "",
@@ -206,7 +207,7 @@ public class SuchServiceTest {
     }
 
     @Test
-    public void mehrereVergebeneTagsFilter() {
+    void mehrereVergebeneTagsFilter() {
         String[] tags = {"Relevant", "Irgendwas"};
         Suche suche = new Suche(
                 "",
@@ -229,7 +230,7 @@ public class SuchServiceTest {
     }
 
     @Test
-    public void mehrereVergebeneTagsVerschiedeneDateienFilter() {
+    void mehrereVergebeneTagsVerschiedeneDateienFilter() {
         String[] tags = {"Relevant", "Irgendwas", "Vorlesung"};
         Suche suche = new Suche(
                 "",
@@ -250,7 +251,7 @@ public class SuchServiceTest {
     }
 
     @Test
-    public void vergebeneUndNichtVergebeneTagsFilter() {
+    void vergebeneUndNichtVergebeneTagsFilter() {
         String[] tags = {"Relevant", "Haus"};
         Suche suche = new Suche(
                 "",
@@ -270,7 +271,7 @@ public class SuchServiceTest {
     }
 
     @Test
-    public void nichtVergebenerDateiTypFilter() {
+    void nichtVergebenerDateiTypFilter() {
         String[] dateiTypen = {"docx"};
         Suche suche = new Suche(
                 "",
@@ -290,7 +291,7 @@ public class SuchServiceTest {
     }
 
     @Test
-    public void einDateiTypFilter() {
+    void einDateiTypFilter() {
         String[] dateiTypen = {"pdf"};
         Suche suche = new Suche(
                 "",
@@ -312,7 +313,7 @@ public class SuchServiceTest {
     }
 
     @Test
-    public void mehrereDateiTypenFilter() {
+    void mehrereDateiTypenFilter() {
         String[] dateiTypen = {"pdf", "jpg"};
         Suche suche = new Suche(
                 "",
@@ -336,7 +337,7 @@ public class SuchServiceTest {
     }
 
     @Test
-    public void nichtVorhandenerUploaderFilter() {
+    void nichtVorhandenerUploaderFilter() {
         String[] uploader = {"See"};
         Suche suche = new Suche(
                 "",
@@ -356,7 +357,7 @@ public class SuchServiceTest {
     }
 
     @Test
-    public void einVorhandenerUploaderFilter() {
+    void einVorhandenerUploaderFilter() {
         String[] uploader = {"Baum"};
         Suche suche = new Suche(
                 "",
@@ -378,7 +379,7 @@ public class SuchServiceTest {
     }
 
     @Test
-    public void mehrereUploaderFilter() {
+    void mehrereUploaderFilter() {
         String[] uploader = {"Baum", "Stein"};
         Suche suche = new Suche(
                 "",
@@ -403,7 +404,7 @@ public class SuchServiceTest {
 
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
-    public void sortierungDateiNameAufsteigend() {
+    void sortierungDateiNameAufsteigend() {
         Suche suche = new Suche(
                 "",
                 "",
@@ -427,7 +428,7 @@ public class SuchServiceTest {
 
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
-    public void sortierungDateiNameAbsteigend() {
+    void sortierungDateiNameAbsteigend() {
         Suche suche = new Suche(
                 "",
                 "",
@@ -451,7 +452,7 @@ public class SuchServiceTest {
 
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
-    public void sortierungDateiTypAufsteigend() {
+    void sortierungDateiTypAufsteigend() {
         Suche suche = new Suche(
                 "",
                 "",
@@ -479,7 +480,7 @@ public class SuchServiceTest {
 
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
-    public void sortierungDateiTypAbsteigend() {
+    void sortierungDateiTypAbsteigend() {
         Suche suche = new Suche(
                 "",
                 "",
@@ -507,7 +508,7 @@ public class SuchServiceTest {
 
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
-    public void sortierungUploaderAufsteigend() {
+    void sortierungUploaderAufsteigend() {
         Suche suche = new Suche(
                 "",
                 "",
@@ -535,7 +536,7 @@ public class SuchServiceTest {
 
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
-    public void sortierungUploaderAbsteigend() {
+    void sortierungUploaderAbsteigend() {
         Suche suche = new Suche(
                 "",
                 "",
@@ -563,7 +564,7 @@ public class SuchServiceTest {
 
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
-    public void sortierungDatumAufsteigend() {
+    void sortierungDatumAufsteigend() {
         Suche suche = new Suche(
                 "",
                 "",
@@ -591,7 +592,7 @@ public class SuchServiceTest {
 
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
-    public void sortierungDatumAbsteigend() {
+    void sortierungDatumAbsteigend() {
         Suche suche = new Suche(
                 "",
                 "",

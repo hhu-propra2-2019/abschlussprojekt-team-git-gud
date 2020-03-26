@@ -34,8 +34,7 @@ public class UpdateService implements IUpdateService {
      * @param veroeffentlichungsdatum The new date which controls the availability of the file.
      *                                If null the file is direct available after upload.
      * @param tags                    The new tags for the file
-     * @return A Datei object which represents the saved File
-     * @throws SQLException
+     * @throws SQLException           If file cannot be saved
      */
     private void dateiUpdate(final Datei datei, final Long gruppenId, final LocalDate veroeffentlichungsdatum,
                              final List<Tag> tags) throws SQLException {

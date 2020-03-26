@@ -26,22 +26,23 @@
         <!-- Navigation als ungeordnete Liste mit einfachen Links hier einfügen! -->
         <ul>
             <li>
-                <a th:href="@{/}">
+                <a th:href="@{/material2/}">
                     Startseite
                 </a>
             </li>
             <li>
-                <a th:href="@{/suche}">
+                <a th:href="@{/material2/suche}">
                     Suche
                 </a>
             </li>
             <li>
-                <a th:href="@{/upload}">
+                <a th:href="@{/material2/upload}">
                     Upload
                 </a>
             </li>
             <li th:each="gruppe : ${gruppen}">
-                <a th:href="@{/dateiSicht(gruppenId=${gruppe.getId()})}" href="#" th:text="${gruppe.getName()}"></a>
+                <a th:href="@{/material2/dateiSicht(gruppenId=${gruppe.getId()})}" href="#"
+                   th:text="${gruppe.getName()}"></a>
             </li>
         </ul>
     </nav>

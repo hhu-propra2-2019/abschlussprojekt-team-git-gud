@@ -136,7 +136,7 @@ public class MaterialController {
             model.addAttribute("suche", suchen);
             return "redirect:/suche";
         }
-        return "redirect:/suche";
+        return "redirect:/material2/suche";
     }
 
     /**
@@ -213,7 +213,7 @@ public class MaterialController {
             setMessages("Sie haben keine Zugriffsberechtigung.", null);
             model.addAttribute("error", errorMessage);
             model.addAttribute("success", successMessage);
-            String url = "redirect:/dateiSicht?gruppenId=%d";
+            String url = "redirect:/material2/dateiSicht?gruppenId=%d";
             return String.format(url, gruppenId);
         }
         model.addAttribute("datei", datei);
@@ -301,7 +301,7 @@ public class MaterialController {
     @GetMapping("/logout")
     public String logout(final HttpServletRequest request) throws Exception {
         request.logout();
-        return "redirect:/";
+        return "redirect:/material2/";
     }
 
     /**
@@ -340,7 +340,7 @@ public class MaterialController {
     @ExceptionHandler(DownloadException.class)
     String handleDonwloadException(final DownloadException e) {
         setMessages("Beim Download gab es ein Problem.", null);
-        return "redirect:/";
+        return "redirect:/material2/";
     }
 
     /**
@@ -352,7 +352,7 @@ public class MaterialController {
     @ExceptionHandler(SQLException.class)
     String handleSQLException(final SQLException e) {
         setMessages("Beim zugriff auf die Datenbank gab es ein Problem.", null);
-        return "redirect:/";
+        return "redirect:/material2/";
     }
 
     /**
@@ -365,6 +365,6 @@ public class MaterialController {
     String handleNoDeletePermissionException(final NoDeletePermissionException e) {
         setMessages("Der Löschaufruf wurde verboten da sie keine Erlaubnis für diese Datei besitzen.",
                 null);
-        return "redirect:/";
+        return "redirect:/material2/";
     }
 }

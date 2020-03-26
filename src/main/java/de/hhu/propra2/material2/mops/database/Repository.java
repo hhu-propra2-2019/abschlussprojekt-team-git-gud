@@ -176,7 +176,7 @@ public final class Repository {
         deleteUserGroupRelationByGroupId(gruppeDTO.getId());
 
         for (DateiDTO dateiDTO : gruppeDTO.getDateien()) {
-            deleteDateiByDateiDTO(dateiDTO, gruppeDTO);
+            deleteDateiByDateiDTO(dateiDTO);
         }
 
         PreparedStatement preparedStatement =
@@ -339,10 +339,10 @@ public final class Repository {
      * @param dateiDTO
      * @throws SQLException
      */
-    public void deleteDateiByDateiDTO(final DateiDTO dateiDTO, final GruppeDTO gruppeDTO) throws SQLException {
+    public void deleteDateiByDateiDTO(final DateiDTO dateiDTO) throws SQLException {
         deleteTagRelationsByDateiId(dateiDTO.getId());
 
-        long gruppeId = gruppeDTO.getId();
+        long gruppeId = dateiDTO.getGruppe().getId();
 
         LinkedList<DateiDTO> dateien = (LinkedList<DateiDTO>) dateiDTO.getGruppe().getDateien();
         dateien.remove(dateiDTO);

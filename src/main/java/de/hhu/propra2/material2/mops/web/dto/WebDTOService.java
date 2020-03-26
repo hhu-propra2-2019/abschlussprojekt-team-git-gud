@@ -27,16 +27,21 @@ public class WebDTOService {
     /**
      * Method the controller will call to update our database
      * with the new Groups and users from the RestAPI
+     *
      * @param update
      * @throws SQLException
      */
     public void updateDatabase(final UpdatedGroupRequestMapper update) throws SQLException {
-        startUpdate(update);
+        updateGroupUserRelations(update);
         updateLeavingUsers(update);
     }
 
-
-    private Map<String, HashMap<String, Boolean>> startUpdate(final UpdatedGroupRequestMapper update)
+    /**
+     * @param update
+     * @return
+     * @throws SQLException
+     */
+    public Map<String, HashMap<String, Boolean>> updateGroupUserRelations(final UpdatedGroupRequestMapper update)
             throws SQLException {
         /**
          * delete deprecated groups
@@ -106,14 +111,17 @@ public class WebDTOService {
         return getUnionOfOldAndNewGroupsWithRights(updatedBelegungen, oldAndNewGroups);
     }
 
-    private void updateLeavingUsers(final UpdatedGroupRequestMapper update) throws SQLException {
+    /**
+     * @param update
+     * @throws SQLException
+     */
+    public void updateLeavingUsers(final UpdatedGroupRequestMapper update) throws SQLException {
         List<String> groupsWithUpdates = getIdFromGroupsWithUpdates(update);
         List<GroupWebDTO> gruppenWeb = update.getGroupList();
         HashMap<String, List<String>> usersInAGroup = getUsersInAGroupDatabase(groupsWithUpdates);
-
+        HashMap<String, String> test = new HashMap<>();
         for (GroupWebDTO gruppeWeb : gruppenWeb) {
             List<String> updatedUsersInAGroup = getIdsFromUpdatedUsers(gruppeWeb);
-            deleteUserGroupRelationshipOfLeavingUser(usersInAGroup, gruppeWeb, updatedUsersInAGroup);
         }
     }
 
@@ -224,13 +232,14 @@ public class WebDTOService {
     }
 
     private void deleteUserGroupRelationshipOfLeavingUser(final HashMap<String, List<String>> usersInAGroup,
-                                                          final GroupWebDTO gruppeWeb,
-                                                          final List<String> updatedUsersInAGroup) throws SQLException {
-        List<String> usersPerGroup = usersInAGroup.get(gruppeWeb.getId());
-        for (String userId : usersPerGroup) {
+                                                                             final GroupWebDTO gruppeWeb,
+                                                                             final List<String> updatedUsersInAGroup)
+            throws SQLException {
+        List<String> usersOfGroupDatabase = usersInAGroup.get(gruppeWeb.getId());
+        for (String userId : usersOfGroupDatabase) {
             if (!updatedUsersInAGroup.contains(userId)) {
                 UserDTO userDTO = repository.findUserByKeycloakname(userId);
-                GruppeDTO gruppeDTO = userDTO.getGruppeById(userId);
+                GruppeDTO gruppeDTO = userDTO.getGruppeById(gruppeWeb.getId());
                 repository.deleteUserGroupRelationByUserDTOAndGruppeDTO(userDTO, gruppeDTO);
             }
         }
@@ -249,10 +258,17 @@ public class WebDTOService {
 
     private HashMap<GruppeDTO, Boolean> loadBelegung(final Map<String, GroupWebDTO> gruppen,
                                                      final Map<String, HashMap<String, Boolean>> userBelegungMap,
-                                                     final String userId) {
+                                                     final String userId) throws SQLException {
         HashMap<GruppeDTO, Boolean> belegung = new HashMap<>();
         for (String keyGroupId : userBelegungMap.get(userId).keySet()) {
-            belegung.put(loadGruppe(gruppen.get(keyGroupId)), userBelegungMap.get(userId).get(keyGroupId));
+            if (gruppen.keySet().contains(keyGroupId)) {
+                belegung.put(loadGruppe(gruppen.get(keyGroupId)), userBelegungMap.get(userId).get(keyGroupId));
+            } else {
+                UserDTO user = repository.findUserByKeycloakname(userId);
+                HashMap<GruppeDTO, Boolean> inDatabase = user.getBelegungUndRechte();
+                GruppeDTO dto = user.getGruppeById(keyGroupId);
+                belegung.put(dto, inDatabase.get(dto));
+            }
         }
         return belegung;
     }

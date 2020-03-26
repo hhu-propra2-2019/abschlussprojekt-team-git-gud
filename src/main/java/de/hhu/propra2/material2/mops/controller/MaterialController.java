@@ -124,9 +124,8 @@ public class MaterialController {
         model.addAttribute("isSortedByKategorie", modelService.isSortedByKategorie());
         model.addAttribute("dateien", suchErgebnisse);
         model.addAttribute("kategorien", modelService.getKategorienFromSuche(suchErgebnisse));
-        if (suchen.getTags() != null) {
-            model.addAttribute("selectedTags", Set.of(suchen.getTags()));
-        }
+        if (suchen.getTags() != null) model.addAttribute("selectedTags", Set.of(suchen.getTags()));
+        if (suchen.getUploader() != null) model.addAttribute("selectedUploader", Set.of(suchen.getUploader()));
         return "suche";
     }
 

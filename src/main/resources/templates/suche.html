@@ -24,7 +24,7 @@
                     <label class="form-row" for="SelectGroup">Gruppenauswahl</label>
                     <select class="form-control"
                             id="SelectGroup" name="gruppenId">
-                        <option value="0">Alle</option>
+                        <option value="-1">Alle</option>
                         <option th:each="gruppe : ${gruppen}"
                                 th:value="${gruppe.getId()}"
                                 th:text="${gruppe.getName()}"
@@ -93,12 +93,49 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="Uploader">Uploader</label>
-                    <div class="form-check" th:each="uploading : ${uploader}">
-                        <input class="form-check-input" type="checkbox" value="" id="Uploader" th:value="${uploading}" name="uploader">
-                        <label class="form-check-label" for="Dateityp" th:text="${uploading}"></label>
-                    </div>
+                    <label class="form-row" for="Uploader" >Uploader</label>
+                    <input type="text" class="form-control" id="Uploader" name="uploader">
                 </div>
+                <script src="../static/dist/tokenfield.min.js" th:src="@{dist/tokenfield.min.js}"></script>
+                <script th:inline="javascript">
+                    var suggestions = [];
+                    var uploaderTexts = /*[[${uploader}]]*/ [];
+
+                    for (count = 0; count < uploaderTexts.length; count++)
+                    {
+                        var obj = {
+                            id: count,
+                            name: uploaderTexts[count]
+                        };
+                        suggestions.push(obj);
+                    }
+
+                    var jp = new Tokenfield({
+                        el: document.querySelector('#Uploader'),
+                        items: suggestions,
+                        newItems: true,
+                        addItemOnBlur: true,
+                        filterSetItems: false,
+                        addItemsOnPaste: true,
+                        delimiters: [',', ' '],
+                        minChars: 0,
+                        maxSuggestWindow: 5,
+                        singleInput: true,
+                        singleInputValue: 'name'
+                    });
+                    var uploader = [];
+                    var selectedUploader = /*[[${selectedUploader}]]*/ [];
+
+                    for (count = 0; count < selectedUploader.length; count++)
+                    {
+                        var obj = {
+                            id: count,
+                            name: selectedUploader[count]
+                        };
+                        uploader.push(obj);
+                    }
+                    jp.setItems(tags);
+                </script>
 
                 <div class="form-group">
                     <label>Datum </label>

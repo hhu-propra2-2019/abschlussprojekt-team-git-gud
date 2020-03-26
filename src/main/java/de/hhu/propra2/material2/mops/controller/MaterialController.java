@@ -108,6 +108,7 @@ public class MaterialController {
     public String suchen(
             final KeycloakAuthenticationToken token, final Model model, final @ModelAttribute Suche suchen,
             final String search) {
+        //User Info from all his Gruppen
         model.addAttribute("suche", suchen);
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
@@ -119,10 +120,13 @@ public class MaterialController {
         }
         modelService.suchen(suchen);
         List<Datei> suchErgebnisse = modelService.getSuchergebnisse(token);
+        //Info from the Search
         model.addAttribute("isSortedByKategorie", modelService.isSortedByKategorie());
         model.addAttribute("dateien", suchErgebnisse);
         model.addAttribute("kategorien", modelService.getKategorienFromSuche(suchErgebnisse));
-        model.addAttribute("selectedTags", Set.of(suchen.getTags()));
+        if (suchen.getTags() != null) {
+            model.addAttribute("selectedTags", Set.of(suchen.getTags()));
+        }
         return "suche";
     }
 

@@ -7,7 +7,7 @@ public class Suche {
     private final String vonDatum;
     private final String bisDatum;
     private final String tags;
-    private final String[] dateiTyp;
+    private final String dateiTyp;
     private final String uploader;
     private final String sortierKriterium;
     private final Long gruppenId;
@@ -16,7 +16,10 @@ public class Suche {
 
 
     public final String[] getDateiTyp() {
-        return dateiTyp == null ? null : dateiTyp.clone();
+        if (dateiTyp.equals("")) {
+            return null;
+        }
+        return toArray(dateiTyp);
     }
 
     public final String[] getTags() {
@@ -41,13 +44,13 @@ public class Suche {
     public Suche(final String vonDatum,
                  final String bisDatum,
                  final String tags,
-                 final String[] dateiTyp,
+                 final String dateiTyp,
                  final String uploader,
                  final String sortierKriterium,
                  final Long gruppenId,
                  final String dateiName,
                  final String reihenfolge) {
-        this.dateiTyp = dateiTyp == null ? null : dateiTyp.clone();
+        this.dateiTyp = dateiTyp;
         this.vonDatum = vonDatum;
         this.bisDatum = bisDatum;
         this.tags = tags;

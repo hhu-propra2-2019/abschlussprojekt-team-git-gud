@@ -85,12 +85,49 @@
                 </script>
 
                 <div class="form-group">
-                    <label for="Dateityp">Dateityp</label>
-                    <div class="form-check" th:each="dateiTyp : ${dateiTypen}">
-                        <input class="form-check-input" type="checkbox" value="" id="Dateityp" th:value="${dateiTyp}" name="dateiTyp">
-                        <label class="form-check-label" for="Dateityp" th:text="${dateiTyp}"></label>
-                    </div>
+                    <label class="form-row" for="Dateityp">Dateityp</label>
+                    <input type="text" class="form-control" id="Dateityp" name="dateiTyp">
                 </div>
+                <script src="../static/dist/tokenfield.min.js" th:src="@{dist/tokenfield.min.js}"></script>
+                <script th:inline="javascript">
+                    var DateiTypenSuggestions = [];
+                    var DateiTypenTexts = /*[[${dateiTypen}]]*/ [];
+
+                    for (count = 0; count < DateiTypenTexts.length; count++)
+                    {
+                        var obj = {
+                            id: count,
+                            name: DateiTypenTexts[count]
+                        };
+                        DateiTypenSuggestions.push(obj);
+                    }
+
+                    var dateiTypenField = new Tokenfield({
+                        el: document.querySelector('#Dateityp'),
+                        items: DateiTypenSuggestions,
+                        newItems: true,
+                        addItemOnBlur: true,
+                        filterSetItems: false,
+                        addItemsOnPaste: true,
+                        delimiters: [',', ' '],
+                        minChars: 0,
+                        maxSuggestWindow: 5,
+                        singleInput: true,
+                        singleInputValue: 'name'
+                    });
+                    var dateiTypen = [];
+                    var selectedDateiTypen = /*[[${suche?.getDateiTyp()}]]*/ [];
+
+                    for (count = 0; count < selectedDateiTypen.length; count++)
+                    {
+                        var obj = {
+                            id: count,
+                            name: selectedDateiTypen[count]
+                        };
+                        dateiTypen.push(obj);
+                    }
+                    dateiTypenField.setItems(dateiTypen);
+                </script>
 
                 <div class="form-group">
                     <label class="form-row" for="Uploader" >Uploader</label>

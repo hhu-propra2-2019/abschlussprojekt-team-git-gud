@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{base :: html(content=~{:: mycontent})}">
+      th:replace="~{base :: html(content=~{:: mycontent})}"
+      xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
     <title>Orga</title>
 </head>
 
@@ -22,8 +22,9 @@
 
         <br>
 
-        <img style="float: left; margin-right: 30px" alt="Elvis, der Anführer" class="img-fluid" src="../static/img/mampfi.jpg"
-             th:src="@{img/mampfi.jpg}">
+        <img alt="Elvis, der Anführer" class="img-fluid" src="../static/img/mampfi.jpg"
+             style="float: left; margin-right: 30px"
+             th:src="@{../img/mampfi.jpg}">
 
     </div>
 
@@ -32,7 +33,7 @@
     <ul>
         <li>
             <h3>
-                Wie <a th:href="@{/suche}">suche</a> ich Dateien
+                Wie <a th:href="@{/material2/suche}">suche</a> ich Dateien
             </h3>
 
             <p>
@@ -48,7 +49,7 @@
         </li>
         <li>
             <h3>
-                Wie funktioniert das <a th:href="@{/}">Uploaden</a>.
+                Wie funktioniert das <a th:href="@{/material2/upload}">Uploaden</a>.
             </h3>
 
             <p>
@@ -72,7 +73,7 @@
                 Um eine Gruppe zu erstellen muss man in das Gruppenbildungs Modul und dort eine neue Gruppe anlegen.
             </p>
             <p>
-                <a th:href="@{/}">Hier</a> kommt ihr dahin.
+                <a th:href="@{/material2/}">Hier</a> kommt ihr dahin.
             </p>
         </li>
     </ul>

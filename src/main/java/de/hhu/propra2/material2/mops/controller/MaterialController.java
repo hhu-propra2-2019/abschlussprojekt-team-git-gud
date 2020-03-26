@@ -113,9 +113,9 @@ public class MaterialController {
         model.addAttribute("uploader", modelService.getAlleUploaderByUser(token));
         if (search == null) {
             model.addAttribute("suche", suchen);
-            return "redirect:/suche";
+            return "redirect:suche";
         }
-        return "redirect:/suche";
+        return "redirect:suche";
     }
 
     /**
@@ -174,7 +174,7 @@ public class MaterialController {
     @GetMapping("/logout")
     public String logout(final HttpServletRequest request) throws Exception {
         request.logout();
-        return "redirect:/";
+        return "redirect:";
     }
 
     /**

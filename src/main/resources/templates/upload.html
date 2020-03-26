@@ -6,8 +6,8 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <link href="../static/dist/tokenfield.css" th:href="dist/tokenfield.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/dist/tokenfield.css" rel="stylesheet" th:href="/dist/tokenfield.css">
     <title>Index</title>
 </head>
 
@@ -19,7 +19,7 @@
 
     <div class="container">
 
-        <form method="post" enctype="multipart/form-data">
+        <form enctype="multipart/form-data" method="post">
             <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
 
             <div id="error-message" th:classappend="${error != null} ? 'alert alert-warning'" th:text="${error}">
@@ -35,28 +35,27 @@
                 <label for="SelectGroup">Gruppenauswahl </label>
                 <select class="form-control" id="SelectGroup" name="gruppenId">
                     <option th:each="gruppe : ${gruppen}"
-                            th:value="${gruppe.getId()}"
-                            th:text="${gruppe.getName()}" >
+                            th:text="${gruppe.getName()}"
+                            th:value="${gruppe.getId()}">
                     </option>
                 </select>
             </div>
 
             <div>
                 <label for="dataname">Dateiname </label>
-                <input type="text" class="form-control" id="dataname" name="dateiname" placeholder="Eingabe">
+                <input class="form-control" id="dataname" name="dateiname" placeholder="Eingabe" type="text">
             </div>
 
             <div>
                 <label for="input-tags">Tags </label>
-                <input type="text" name="selectedTags"  id="input-tags">
+                <input id="input-tags" name="selectedTags" type="text">
             </div>
-            <script src="../static/dist/tokenfield.min.js" th:src="@{dist/tokenfield.min.js}"></script>
+            <script src="/dist/tokenfield.min.js" th:src="@{/dist/tokenfield.min.js}"></script>
             <script th:inline="javascript">
                 var student = [];
                 var tagTexts = /*[[${tagText}]]*/ [];
 
-                for (count = 0; count < tagTexts.length; count++)
-                {
+                for (count = 0; count < tagTexts.length; count++) {
                     var obj = {
                         id: count,
                         name: tagTexts[count]
@@ -87,23 +86,23 @@
                 </select>
             </div>
 
-              <div class="form-group">
-                  <label for="timedDate">Getimete Veröffentlichung (optional)</label>
-                  <div>
-                      <input type="date" value="" name="timedUpload"  id="timedDate">
-                  </div>
-              </div>
+            <div class="form-group">
+                <label for="timedDate">Getimete Veröffentlichung (optional)</label>
+                <div>
+                    <input id="timedDate" name="timedUpload" type="date" value="">
+                </div>
+            </div>
 
-              <div>
-                  <input type="file" name="datei" required >
-              </div>
+            <div>
+                <input name="datei" required type="file">
+            </div>
 
-              <div>
-                  <input class="btn btn-primary" type="submit" name="hochladen" value="Hochladen">
-              </div>
-          </form>
-      </div>
-  </div>
+            <div>
+                <input class="btn btn-primary" name="hochladen" type="submit" value="Hochladen">
+            </div>
+        </form>
+    </div>
+</div>
 
-  </body>
-  </html>
+</body>
+</html>

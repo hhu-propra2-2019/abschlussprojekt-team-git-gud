@@ -6,7 +6,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
     <title>Index</title>
 </head>
 
@@ -22,14 +22,14 @@
         <div class="card" th:each="kategorie, iter : ${kategorien}">
             <div class="card-header" id="${kategorie}">
                 <h2 class="mb-0">
-                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
-                            th:data-target="'#collapseOne' + ${iter.index}"
-                            aria-expanded="false" aria-controls="collapseOne" th:text="${kategorie}">
+                    <button aria-controls="collapseOne" aria-expanded="false" class="btn btn-link collapsed"
+                            data-toggle="collapse"
+                            th:data-target="'#collapseOne' + ${iter.index}" th:text="${kategorie}" type="button">
                     </button>
                 </h2>
             </div>
-            <div th:id="'collapseOne' + ${iter.index}" class="collapse" aria-labelledby="${kategorie}"
-                 data-parent="#dataCategorys">
+            <div aria-labelledby="${kategorie}" class="collapse" data-parent="#dataCategorys"
+                 th:id="'collapseOne' + ${iter.index}">
                 <div class="card-body p-0 pb-2 m-0" th:each="datei : ${dateien}"
                      th:if="${datei.getKategorie().equals(kategorie)}">
                     <div class="card">
@@ -47,11 +47,12 @@
                         </h6>
                         <div class="list-inline">
                             <span class="card-text h2 pb-3" th:text="${datei.getName()}"></span>
-                            <a class="btn btn-primary" role="button"
-                               th:href="@{/update(fileId=${datei.getId()}, gruppenID=${gruppenAuswahl})}"
-                               href="#">EDIT</a>
-                            <a class="btn btn-primary" role="button" th:href="@{/files(fileId=${datei.getId()})}"
-                               href="#">DOWNLOAD</a>
+                            <a class="btn btn-primary" href="#"
+                               role="button"
+                               th:href="@{/material2/update(fileId=${datei.getId()}, gruppenID=${gruppenAuswahl})}">EDIT</a>
+                            <a class="btn btn-primary" href="#"
+                               role="button"
+                               th:href="@{/material2/files(fileId=${datei.getId()})}">DOWNLOAD</a>
                         </div>
 
                     </div>

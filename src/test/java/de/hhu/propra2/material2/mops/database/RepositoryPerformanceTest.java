@@ -5,10 +5,11 @@ import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.TagDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.UserDTO;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.sql.SQLException;
 import java.time.Duration;
@@ -19,18 +20,18 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Sql("/data.sql")
 @SpringBootTest(classes = Material2Application.class)
-public final class RepositoryPerformanceTest {
+final class RepositoryPerformanceTest {
 
     private final Repository repository;
 
     @Autowired
-    public RepositoryPerformanceTest(final Repository repositoryArg) {
+    RepositoryPerformanceTest(final Repository repositoryArg) {
         repository = repositoryArg;
     }
-
 
 
     private LinkedList<UserDTO> generateXUsersWithYGroupsWithZFilesWithATags(final int userCount,
@@ -48,11 +49,11 @@ public final class RepositoryPerformanceTest {
                 users[i].getBelegungUndRechte().put(gruppeDTO, true);
             }
         }
-        return new LinkedList<UserDTO>(Arrays.asList(users));
+        return new LinkedList<>(Arrays.asList(users));
     }
 
     private LinkedList<TagDTO> generateRandomTags(final int tagCount) {
-        LinkedList<TagDTO> tagDTOs = new LinkedList<TagDTO>();
+        LinkedList<TagDTO> tagDTOs = new LinkedList<>();
         for (int i = 0; i < tagCount; i++) {
             tagDTOs.add(new TagDTO(UUID.randomUUID().toString()));
         }
@@ -70,18 +71,18 @@ public final class RepositoryPerformanceTest {
 
     private GruppeDTO generateRandomGruppe() {
         return new GruppeDTO(UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE,
-                " ", " ", new LinkedList<DateiDTO>());
+                " ", " ", new LinkedList<>());
     }
 
     private UserDTO generateRandomUser() {
         return new UserDTO(UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE,
-                " ", " ", UUID.randomUUID().toString(), new HashMap<GruppeDTO, Boolean>());
+                " ", " ", UUID.randomUUID().toString(), new HashMap<>());
     }
 
     @SuppressWarnings("checkstyle:MagicNumber")
-    @Ignore
+    @Disabled
     @Test
-    public void add1UsersWith20GroupsWith100FilesWith10TagsEachAndLoad() throws SQLException {
+    void add1UsersWith20GroupsWith100FilesWith10TagsEachAndLoad() throws SQLException {
         LinkedList<UserDTO> userDTOs =
                 generateXUsersWithYGroupsWithZFilesWithATags(1, 20, 100, 10);
 
@@ -91,7 +92,7 @@ public final class RepositoryPerformanceTest {
         for (int userNumber = 0; userNumber < 1; userNumber++) {
             repository.saveUser(userDTOs.get(userNumber));
             for (GruppeDTO gruppeDTO : userDTOs.get(userNumber).getBelegungUndRechte().keySet()) {
-                for (DateiDTO dateiDTO: gruppeDTO.getDateien()) {
+                for (DateiDTO dateiDTO : gruppeDTO.getDateien()) {
                     repository.saveDatei(dateiDTO);
                 }
             }
@@ -117,9 +118,9 @@ public final class RepositoryPerformanceTest {
     }
 
     @SuppressWarnings("checkstyle:MagicNumber")
-    @Ignore
+    @Disabled
     @Test
-    public void add10UsersWith10GroupsWith50FilesWith20TagsEachAndLoad() throws SQLException {
+    void add10UsersWith10GroupsWith50FilesWith20TagsEachAndLoad() throws SQLException {
         LinkedList<UserDTO> userDTOs =
                 generateXUsersWithYGroupsWithZFilesWithATags(10, 10, 50, 20);
 
@@ -129,7 +130,7 @@ public final class RepositoryPerformanceTest {
         for (int userNumber = 0; userNumber < 10; userNumber++) {
             repository.saveUser(userDTOs.get(userNumber));
             for (GruppeDTO gruppeDTO : userDTOs.get(userNumber).getBelegungUndRechte().keySet()) {
-                for (DateiDTO dateiDTO: gruppeDTO.getDateien()) {
+                for (DateiDTO dateiDTO : gruppeDTO.getDateien()) {
                     repository.saveDatei(dateiDTO);
                 }
             }
@@ -157,9 +158,9 @@ public final class RepositoryPerformanceTest {
     }
 
     @SuppressWarnings("checkstyle:MagicNumber")
-    @Ignore
+    @Disabled
     @Test
-    public void add1UsersWith20GroupsWith100FilesWith1TagsEachAndLoad() throws SQLException {
+    void add1UsersWith20GroupsWith100FilesWith1TagsEachAndLoad() throws SQLException {
         LinkedList<UserDTO> userDTOs =
                 generateXUsersWithYGroupsWithZFilesWithATags(1, 20, 100, 1);
 
@@ -195,9 +196,9 @@ public final class RepositoryPerformanceTest {
     }
 
     @SuppressWarnings("checkstyle:MagicNumber")
-    @Ignore
+    @Disabled
     @Test
-    public void load100FilesWith3TagsEach() throws SQLException {
+    void load100FilesWith3TagsEach() throws SQLException {
         LinkedList<UserDTO> userDTOs =
                 generateXUsersWithYGroupsWithZFilesWithATags(1, 1, 500, 1);
 
@@ -223,8 +224,8 @@ public final class RepositoryPerformanceTest {
 
         timeBeforeSave = LocalTime.now();
         System.out.println(timeBeforeSave + " Loading Started!");
-        repository.findAllDateiByGruppeId(
-                ((GruppeDTO) userDTOs.get(0).getBelegungUndRechte().keySet().toArray()[0]).getId());
+        repository.findAllDateiByGruppeDTO(
+                ((GruppeDTO) userDTOs.get(0).getBelegungUndRechte().keySet().toArray()[0]));
 
         timeAfterEverything = LocalTime.now();
         duration = Duration.between(timeBeforeSave, timeAfterEverything);
@@ -234,13 +235,13 @@ public final class RepositoryPerformanceTest {
     }
 
     @SuppressWarnings("checkstyle:magicnumber")
-    @Ignore
     @Test
-    public void load1UserWith1GroupWith1100FilesWith3Tags() throws SQLException {
+    void load1UserWith1GroupWith1100FilesWith3Tags() throws SQLException {
         LocalTime before = LocalTime.now();
         System.out.println(before + " Time test for 1 User 1 Group 1100 Files 3 Tags... Start!");
         UserDTO userDTO = repository.findUserByKeycloakname("_test_");
         LocalTime after = LocalTime.now();
+        UserDTO userDTO2 = repository.findUserByKeycloakname("_test_");
 
         Duration timePassed = Duration.between(before, after);
         System.out.println(after + "Time passed to load the user without files: "
@@ -249,21 +250,33 @@ public final class RepositoryPerformanceTest {
         before = LocalTime.now();
         System.out.println(before + " Loading (not cached) Files now...");
         GruppeDTO gruppeDTO = ((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0]);
-        gruppeDTO.getDateien();
+
+        LinkedList<DateiDTO> dateiDTOs = (LinkedList<DateiDTO>) gruppeDTO.getDateien();
         after = LocalTime.now();
         timePassed = Duration.between(before, after);
         System.out.println(after + " Time passed to load the users files (not cached): "
                 + timePassed.getSeconds() + " seconds.");
 
         before = LocalTime.now();
-        System.out.println(before + " Loading cached Files now...");
-        LinkedList<DateiDTO> dateiDTOs = (LinkedList<DateiDTO>) gruppeDTO.getDateien();
+        System.out.println(before + " Loading cached (in Repository) Files now...");
+        GruppeDTO gruppeDTO2 = ((GruppeDTO) userDTO2.getBelegungUndRechte().keySet().toArray()[0]);
+        LinkedList<DateiDTO> dateiDTOs2 = (LinkedList<DateiDTO>) gruppeDTO2.getDateien();
         after = LocalTime.now();
         timePassed = Duration.between(before, after);
-        System.out.println(after + " Time passed to load the users cached files: "
+        System.out.println(after + " Time passed to load the users cached (in Repository) files: "
                 + timePassed.getSeconds() + " seconds.");
 
-        assertTrue(dateiDTOs.size() == 1100);
+        before = LocalTime.now();
+        System.out.println(before + " Loading saved (in GroupDTO) Files now...");
+        LinkedList<DateiDTO> dateiDTOs3 = (LinkedList<DateiDTO>) gruppeDTO.getDateien();
+        after = LocalTime.now();
+        timePassed = Duration.between(before, after);
+        System.out.println(after + " Time passed to load the users saved (in GroupDTO) files: "
+                + timePassed.getSeconds() + " seconds.");
+
+        assertEquals(1100, dateiDTOs.size());
+        assertEquals(1100, dateiDTOs2.size());
+        assertEquals(1100, dateiDTOs3.size());
         System.out.println("Test complete!");
     }
 }

@@ -31,8 +31,8 @@ import static org.mockito.Mockito.when;
 
 @SuppressWarnings("checkstyle:magicnumber")
 @ExtendWith(MockitoExtension.class)
-public class UpdateServiceTest {
-    private static LocalDate date1303 = LocalDate.of(2020, Calendar.MARCH, 13);
+class UpdateServiceTest {
+    private static final LocalDate DATE_1303 = LocalDate.of(2020, Calendar.MARCH, 13);
 
     private Tag tag1 = new Tag(1, "tag1");
     private Tag tag2 = new Tag(2, "tag2");
@@ -49,11 +49,11 @@ public class UpdateServiceTest {
      * setUP: SetUp needed for each test.
      */
     @BeforeEach
-    public void setUp() throws SQLException {
+    void setUp() throws SQLException {
         updateService = new UpdateService(modelServiceMock);
 
         Datei datei = new Datei(1L, "test.txt", userMock, tags,
-                date1303, date1303, 2L, "txt", "kategorie");
+                DATE_1303, DATE_1303, 2L, "txt", "kategorie");
         when(modelServiceMock.findDateiById(1L)).thenReturn(datei);
 
         tag1 = new Tag(1, "tag1");
@@ -63,7 +63,7 @@ public class UpdateServiceTest {
     }
 
     @Test
-    public void updateFileBySettingVeroeffentlichungsdatumAndTagsNull() throws Exception {
+    void updateFileBySettingVeroeffentlichungsdatumAndTagsNull() throws Exception {
         updateService.dateiUpdate(1L, 1L, null, null);
 
         ArgumentCaptor<Datei> dateiCaptor = ArgumentCaptor.forClass(Datei.class);
@@ -79,7 +79,7 @@ public class UpdateServiceTest {
     }
 
     @Test
-    public void updateFileBySettingVeroeffentlichungsdatumAndTagsNotNull() throws Exception {
+    void updateFileBySettingVeroeffentlichungsdatumAndTagsNotNull() throws Exception {
         tags.add(tag1);
         tags.add(tag2);
         tags.add(tag3);

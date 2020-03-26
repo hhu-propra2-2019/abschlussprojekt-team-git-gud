@@ -10,20 +10,20 @@ import java.util.List;
 
 
 public final class GruppeDTO {
-    @Getter
     /**
      * Unique ID from database.
      */
-    private final long id;
     @Getter
+    private final long id;
     /**
      * Groups name from database.
      */
-    private final String name;
     @Getter
+    private final String name;
     /**
      * Groups description from database.
      */
+    @Getter
     private final String description;
     /**
      * LinkedList of related files from database.
@@ -79,6 +79,10 @@ public final class GruppeDTO {
      * Getter of a LinkedList of Datei for loading from repository.
      * Repository caches Files as needed.
      *
+     * Returns dateien if dateien is not empty, repository is empty or
+     * the database throws an error. Saves a LinkedList from
+     * the database if dateien is empty and saves it locally.
+     *
      * @return
      */
     public List<DateiDTO> getDateien() {
@@ -87,19 +91,22 @@ public final class GruppeDTO {
         }
 
         if (repository == null) {
-            return new LinkedList<DateiDTO>();
+            return dateien;
         }
 
         try {
-            dateien = repository.findAllDateiByGruppeId(id);
+            dateien = repository.findAllDateiByGruppeDTO(this);
             return dateien;
         } catch (SQLException e) {
             return dateien;
         }
     }
 
-
-
+    /**
+     * Custom equals function for HashMaps etc.
+     * @param o
+     * @return
+     */
     @Override
     public boolean equals(final Object o) {
         if (o == null) {
@@ -113,8 +120,20 @@ public final class GruppeDTO {
         return false;
     }
 
+    /**
+     * Function that only exists to make checkstyle happy.
+     * @return
+     */
     @Override
     public int hashCode() {
         return 0;
+    }
+
+    /**
+     * Function checks if dateien is empty.
+     * @return
+     */
+    public boolean hasNoFiles() {
+        return dateien.isEmpty();
     }
 }

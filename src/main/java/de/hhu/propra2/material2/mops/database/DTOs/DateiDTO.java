@@ -67,7 +67,7 @@ public final class DateiDTO {
     /**
      * Standard Constructor for import from database
      * and for saving changes to existing Datei.
-     *  @param idArg
+     * @param idArg
      * @param nameArg
      * @param uploaderArg
      * @param tagDTOsArg
@@ -131,5 +131,23 @@ public final class DateiDTO {
         this.dateigroesse = dateigroesseArg;
         this.dateityp = dateitypArg;
         this.kategorie = kategorieArg;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == null) {
+            return false;
+        }
+
+        if (o.getClass() == this.getClass()) {
+            DateiDTO date = (DateiDTO) o;
+            return date.getId() == this.getId();
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return 0;
     }
 }

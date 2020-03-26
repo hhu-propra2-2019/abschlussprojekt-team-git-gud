@@ -17,9 +17,8 @@
         Upload
     </h1>
 
-    <div class="container">
-
-        <form enctype="multipart/form-data" method="post">
+    <div>
+        <form method="post" enctype="multipart/form-data">
             <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
 
             <div id="error-message" th:classappend="${error != null} ? 'alert alert-warning'" th:text="${error}">
@@ -34,9 +33,9 @@
             <div>
                 <label for="SelectGroup">Gruppenauswahl </label>
                 <select class="form-control" id="SelectGroup" name="gruppenId">
-                    <option th:each="gruppe : ${gruppen}"
-                            th:text="${gruppe.getName()}"
-                            th:value="${gruppe.getId()}">
+                    <option th:each="gruppe : ${gruppenUpload}"
+                            th:value="${gruppe.getId()}"
+                            th:text="${gruppe.getName()}">
                     </option>
                 </select>
             </div>
@@ -48,7 +47,7 @@
 
             <div>
                 <label for="input-tags">Tags </label>
-                <input id="input-tags" name="selectedTags" type="text">
+                <input type="text" name="selectedTags" id="input-tags">
             </div>
             <script src="/dist/tokenfield.min.js" th:src="@{/dist/tokenfield.min.js}"></script>
             <script th:inline="javascript">
@@ -89,16 +88,16 @@
             <div class="form-group">
                 <label for="timedDate">Getimete Veröffentlichung (optional)</label>
                 <div>
-                    <input id="timedDate" name="timedUpload" type="date" value="">
+                    <input type="date" value="" name="timedUpload" id="timedDate">
                 </div>
             </div>
 
             <div>
-                <input name="datei" required type="file">
+                <input type="file" name="datei" required>
             </div>
 
             <div>
-                <input class="btn btn-primary" name="hochladen" type="submit" value="Hochladen">
+                <input class="btn btn-primary" type="submit" name="hochladen" value="Hochladen">
             </div>
         </form>
     </div>

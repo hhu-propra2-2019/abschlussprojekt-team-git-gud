@@ -20,10 +20,18 @@
             Hier könnt ihr alle Dateien eurer Vorlesungen oder eurer Gruppen finden und herunterladen.
         </p>
 
+        <div id="error-message" th:classappend="${error != null} ? 'alert alert-warning'" th:text="${error}">
+            Some error message
+        </div>
+
+        <div id="success-message" th:classappend="${success != null} ? 'alert alert-success'" th:text="${success}">
+            Jeah, it works!
+        </div>
+
         <br>
 
-        <img alt="Elvis, der Anführer" class="img-fluid" src="../static/img/mampfi.jpg"
-             style="float: left; margin-right: 30px"
+        <img style="float: left; margin-right: 30px" alt="Elvis, der Anführer" class="img-fluid"
+             src="../static/img/mampfi.jpg"
              th:src="@{../img/mampfi.jpg}">
 
     </div>

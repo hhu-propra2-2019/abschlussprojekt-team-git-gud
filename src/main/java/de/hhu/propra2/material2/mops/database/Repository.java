@@ -92,7 +92,7 @@ public final class Repository {
      * Saves a User with all his groups
      * and rights.
      * Resets and reassigns all User - Group Relations.
-     *
+     * <p>
      * To be used for syncronization
      * with gruppenbildung.
      *
@@ -176,7 +176,7 @@ public final class Repository {
         deleteUserGroupRelationByGroupId(gruppeDTO.getId());
 
         for (DateiDTO dateiDTO : gruppeDTO.getDateien()) {
-            deleteDateiByDateiDTO(dateiDTO);
+            deleteDateiByDateiDTO(dateiDTO, gruppeDTO);
         }
 
         PreparedStatement preparedStatement =
@@ -191,13 +191,13 @@ public final class Repository {
      * Saves or updates a file with all its tags
      * by dateiDTO and
      * returns its generated ID.
-     *
+     * <p>
      * First it checks if the file already exists in
      * the database. If so it calls the update function which only
      * updates the existing files meta data.
      * If it does not exist it saves the File with its
      * tags, which also updates tag - datei relations.
-     *
+     * <p>
      * Removes its group from the cache either way.
      *
      * @param dateiDTO
@@ -295,7 +295,7 @@ public final class Repository {
      * Checks the cache first for the GruppeDTO and
      * proceeds with looking for the DateiDTOs if
      * no valid entry can be found in the cache.
-     *
+     * <p>
      * Returns empty LinkedList if no files found.
      *
      * @param gruppeDTO
@@ -339,10 +339,10 @@ public final class Repository {
      * @param dateiDTO
      * @throws SQLException
      */
-    public void deleteDateiByDateiDTO(final DateiDTO dateiDTO) throws SQLException {
+    public void deleteDateiByDateiDTO(final DateiDTO dateiDTO, final GruppeDTO gruppeDTO) throws SQLException {
         deleteTagRelationsByDateiId(dateiDTO.getId());
 
-        long gruppeId = dateiDTO.getGruppe().getId();
+        long gruppeId = gruppeDTO.getId();
 
         LinkedList<DateiDTO> dateien = (LinkedList<DateiDTO>) dateiDTO.getGruppe().getDateien();
         dateien.remove(dateiDTO);
@@ -770,7 +770,8 @@ public final class Repository {
         return user;
     }
 
-    @Scheduled(cron = " 0 0 0 * * *") //Clears Cache at midnight on everyday of the year
+    @Scheduled(cron = " 0 0 0 * * *")
+        //Clears Cache at midnight on everyday of the year
     void clearCache() {
         gruppeCache.clear();
     }

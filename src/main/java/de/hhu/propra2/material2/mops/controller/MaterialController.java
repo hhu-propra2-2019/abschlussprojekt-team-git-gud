@@ -1,11 +1,13 @@
 package de.hhu.propra2.material2.mops.controller;
 
 import de.hhu.propra2.material2.mops.Exceptions.DownloadException;
+import de.hhu.propra2.material2.mops.Exceptions.NoDeletePermissionException;
 import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
 import de.hhu.propra2.material2.mops.domain.models.UploadForm;
+import de.hhu.propra2.material2.mops.domain.services.DeleteService;
 import de.hhu.propra2.material2.mops.domain.services.MinIOService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
 import de.hhu.propra2.material2.mops.domain.services.UploadService;
@@ -48,6 +50,8 @@ public class MaterialController {
     private UploadService uploadService;
     @Autowired
     private MinIOService minIOService;
+    @Autowired
+    private DeleteService deleteService;
 
     private String errorMessage;
     private String successMessage;
@@ -172,6 +176,24 @@ public class MaterialController {
         model.addAttribute("success", successMessage);
         resetMessages();
         return "upload";
+    }
+
+    @GetMapping("/doAway")
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
+    public String upload(final KeycloakAuthenticationToken token, final Model model,
+                         final Long dateiId, final Long gruppenId) throws SQLException, NoDeletePermissionException {
+        model.addAttribute("account", modelService.getAccountFromKeycloak(token));
+        model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
+
+        model.addAttribute("kategorien", modelService.getKategorienByGruppe(gruppenId, token));
+        model.addAttribute("dateien", modelService.getAlleDateienByGruppe(gruppenId, token));
+        Gruppe gruppenAuswahl = modelService.getGruppeByUserAndGroupID(gruppenId, token);
+        model.addAttribute("gruppenAuswahl", gruppenAuswahl);
+        resetMessages();
+
+        deleteService.dateiLoeschenStarten(dateiId, token, gruppenId);
+
+        return "dateiSicht";
     }
 
     /**

@@ -99,7 +99,7 @@ class UpdateServiceTest {
         String stringTags = tag1.getText() + ", " + tag2.getText() + ", " + tag3.getText();
         UpdateForm updateForm = new UpdateForm(stringTags, null);
 
-        updateService.startUpdate(updateForm, null, 1L, 1L);
+        updateService.startUpdate(updateForm, "", 1L, 1L);
 
         ArgumentCaptor<Datei> dateiCaptor = ArgumentCaptor.forClass(Datei.class);
         verify(modelServiceMock, times(1)).saveDatei(dateiCaptor.capture(), anyLong());

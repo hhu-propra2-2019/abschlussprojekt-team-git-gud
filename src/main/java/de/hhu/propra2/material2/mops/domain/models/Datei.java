@@ -63,6 +63,17 @@ public class Datei {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * text of the tags of the file as an array.
+     *
+     * @return text of the tags of the file as an array
+     */
+    public String[] getTagNamesAsArray() {
+        List<String> tagNames = getTagNames();
+        String[] abs = new String[tagNames.size()];
+        return tagNames.toArray(abs);
+    }
+
     private boolean hatTag(final String tag) {
         for (String tempTag : this.getTagNames()) {
             if (tempTag.equalsIgnoreCase(tag)) {
@@ -109,6 +120,7 @@ public class Datei {
     /**
      * gives out the FileSize formet as a String with MB/GB etc.
      * Quelle: https://www.javaguides.net/2018/07/how-to-get-file-size-in-bytes-kb-mb-gb.html
+     *
      * @return String of filesize
      */
     @SuppressWarnings("checkstyle:MagicNumber")

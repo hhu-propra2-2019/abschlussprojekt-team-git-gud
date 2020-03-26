@@ -2,6 +2,7 @@ package de.hhu.propra2.material2.mops.controller;
 
 import com.c4_soft.springaddons.test.security.context.support.WithMockKeycloackAuth;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
+import de.hhu.propra2.material2.mops.domain.services.DeleteService;
 import de.hhu.propra2.material2.mops.domain.services.MinIOService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
 import de.hhu.propra2.material2.mops.domain.services.UploadService;
@@ -43,6 +44,9 @@ class MaterialControllerAccessTest {
 
     @MockBean
     private UploadService uploadService;
+
+    @MockBean
+    private DeleteService deleteService;
 
     /**
      * init for the tests.

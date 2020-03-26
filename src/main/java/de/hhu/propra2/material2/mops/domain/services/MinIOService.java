@@ -151,6 +151,7 @@ public class MinIOService implements IMinIOService {
             minioClient.removeObject(minIOProperties.getBucketname(), dateiID);
             return true;
         } catch (Exception e) {
+            log.info("Exception: " + e);
             return false;
         }
     }

@@ -6,6 +6,7 @@ import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Tag;
 import de.hhu.propra2.material2.mops.domain.models.User;
+import de.hhu.propra2.material2.mops.domain.services.DeleteService;
 import de.hhu.propra2.material2.mops.domain.services.MinIOService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
 import de.hhu.propra2.material2.mops.domain.services.UploadService;
@@ -56,6 +57,9 @@ class MaterialControllerModelTest {
 
     @MockBean
     private UploadService uploadService;
+
+    @MockBean
+    private DeleteService deleteService;
 
     /**
      * init for the tests.

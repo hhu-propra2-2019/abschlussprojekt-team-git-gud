@@ -179,6 +179,16 @@ public class MaterialController {
         return "upload";
     }
 
+    /**
+     * route for deleting files.
+     *
+     * @param token     keycloak token
+     * @param model     thymelef model
+     * @param dateiId   that should be deleted
+     * @param gruppenId the group in which the file lays
+     * @return dateisicht html
+     * @throws NoDeletePermissionException delete fails if no permission
+     */
     @GetMapping("/delete")
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public String upload(final KeycloakAuthenticationToken token, final Model model,

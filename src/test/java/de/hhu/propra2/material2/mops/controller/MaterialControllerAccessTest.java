@@ -4,6 +4,7 @@ import com.c4_soft.springaddons.test.security.context.support.WithMockKeycloackA
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.services.MinIOService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
+import de.hhu.propra2.material2.mops.domain.services.UpdateService;
 import de.hhu.propra2.material2.mops.domain.services.UploadService;
 import de.hhu.propra2.material2.mops.security.Account;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,6 +45,9 @@ class MaterialControllerAccessTest {
     @MockBean
     private UploadService uploadService;
 
+    @MockBean
+    private UpdateService updateService;
+
     /**
      * init for the tests.
      */
@@ -71,6 +75,7 @@ class MaterialControllerAccessTest {
         when(modelService.getAccountFromKeycloak(any())).thenReturn(new Account("BennyGoodman", "nice.de",
                 "image", dateiTypen));
     }
+
 
     //Unknown User Access tests
 

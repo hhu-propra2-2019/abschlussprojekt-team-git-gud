@@ -6,9 +6,11 @@ import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
+import de.hhu.propra2.material2.mops.domain.models.UpdateForm;
 import de.hhu.propra2.material2.mops.domain.models.UploadForm;
 import de.hhu.propra2.material2.mops.domain.services.MinIOService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
+import de.hhu.propra2.material2.mops.domain.services.UpdateService;
 import de.hhu.propra2.material2.mops.domain.services.UploadService;
 import de.hhu.propra2.material2.mops.security.Account;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -48,6 +50,8 @@ public class MaterialController {
     @Autowired
     private UploadService uploadService;
     @Autowired
+    private UpdateService updateService;
+    @Autowired
     private MinIOService minIOService;
 
     private String errorMessage;
@@ -84,6 +88,9 @@ public class MaterialController {
         model.addAttribute("dateien", modelService.getAlleDateienByGruppe(gruppenId, token));
         Gruppe gruppenAuswahl = modelService.getGruppeByUserAndGroupID(gruppenId, token);
         model.addAttribute("gruppenAuswahl", gruppenAuswahl);
+        model.addAttribute("error", errorMessage);
+        model.addAttribute("success", successMessage);
+        resetMessages();
         return "dateiSicht";
     }
 
@@ -166,7 +173,7 @@ public class MaterialController {
         } catch (SQLException e) {
             setMessages("Beim speichern in der Datenbank gab es einen Fehler.", null);
         } catch (NoUploadPermissionException e) {
-            setMessages("Sie sind nicht berechtig in dieser Gruppe hochzuladen!", null);
+            setMessages("Sie sind nicht berechtigt in dieser Gruppe hochzuladen!", null);
         } catch (HasNoGroupToUploadException e) {
             setMessages("Sie haben keine Gruppe, auf die sie hochladen können!", null);
         }
@@ -175,6 +182,69 @@ public class MaterialController {
         model.addAttribute("success", successMessage);
         resetMessages();
         return "upload";
+    }
+
+    /**
+     * update page.
+     *
+     * @param token     injected keycloak token
+     * @param model     injected thymeleaf model
+     * @param gruppenId id of the group where the file is saved
+     * @param dateiId   id of the file
+     * @return update page
+     */
+    @GetMapping("/update")
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
+    public String update(final KeycloakAuthenticationToken token,
+                         final Model model,
+                         final Long gruppenId,
+                         final Long dateiId) {
+        model.addAttribute("account", modelService.getAccountFromKeycloak(token));
+        model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
+        Datei datei = modelService.getDateiById(dateiId, token);
+        if (datei == null) {
+            setMessages("Sie haben keine Zugriffsberechtigung.", null);
+            model.addAttribute("error", errorMessage);
+            model.addAttribute("success", successMessage);
+            String url = "redirect:/dateiSicht?gruppenId=%d";
+            return String.format(url, gruppenId);
+        }
+        model.addAttribute("datei", datei);
+        return "update";
+    }
+
+    /**
+     * update routing.
+     *
+     * @param token      injected keycloak token
+     * @param model      injected thymeleaf model
+     * @param updateForm form for update
+     * @param gruppenId  id of the group where the file is saved
+     * @param dateiId    id of the file
+     * @return update page
+     */
+    @PostMapping("/update")
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
+    public String update(final KeycloakAuthenticationToken token,
+                         final Model model,
+                         final UpdateForm updateForm,
+                         final Long gruppenId,
+                         final Long dateiId) {
+        Account userAccount = modelService.getAccountFromKeycloak(token);
+        model.addAttribute("account", userAccount);
+        model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
+        try {
+            updateService.startUpdate(updateForm, userAccount.getName(), gruppenId, dateiId);
+            setMessages(null, "Edit erfolgreich.");
+        } catch (SQLException e) {
+            setMessages("Es gab ein Problem beim Update.", null);
+        } catch (NoUploadPermissionException e) {
+            setMessages("Sie sind nicht berechtigt diese Datei zu verändern.", null);
+        }
+        model.addAttribute("error", errorMessage);
+        model.addAttribute("success", successMessage);
+        String url = "redirect:/dateiSicht?gruppenId=%d";
+        return String.format(url, gruppenId);
     }
 
     /**
@@ -199,7 +269,7 @@ public class MaterialController {
                                                        final KeycloakAuthenticationToken token)
             throws DownloadException, SQLException {
         InputStream input = new BufferedInputStream(minIOService.getObject(fileId));
-        Datei file = modelService.findDateiById(fileId);
+        Datei file = modelService.getDateiById(fileId, token);
         return ResponseEntity.ok()
                 .header("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""))
                 .contentLength(file.getDateigroesse())

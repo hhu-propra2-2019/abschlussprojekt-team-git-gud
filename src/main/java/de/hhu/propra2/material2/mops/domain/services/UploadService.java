@@ -46,7 +46,7 @@ public class UploadService implements IUploadService {
             fileExtension = FilenameUtils.getExtension(file.getOriginalFilename());
             fileName += "." + fileExtension;
         }
-        Datei datei = new Datei(1, fileName, user, tags,
+        Datei datei = new Datei(-1, fileName, user, tags,
                 LocalDate.now(), veroeffentlichungsdatum, file.getSize(), fileExtension, kategorie);
         long dateiId = modelService.saveDatei(datei, gruppe);
 

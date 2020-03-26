@@ -85,6 +85,7 @@ public class User {
 
     /**
      * returns the full name with name and surname
+     *
      * @return String
      */
     public String getName() {

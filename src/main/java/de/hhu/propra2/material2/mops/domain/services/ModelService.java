@@ -245,6 +245,27 @@ public final class ModelService implements IModelService {
         }
     }
 
+    /**
+     * get datei by gruppenId, dateiId and UserToken
+     * @param dateiId Id of the file
+     * @param token KeycloakAuthenticationToken of the user
+     * @return Datei if file is found in the given group of the given user, null if not
+     */
+    public Datei getDateiById(final long dateiId,
+                              final KeycloakAuthenticationToken token) {
+        User user = createUserByToken(token);
+        List<Gruppe> gruppen = user.getAllGruppen();
+        for (Gruppe gruppe : gruppen) {
+            for (Datei datei: gruppe.getDateien()) {
+                if (datei.getId() == dateiId) {
+                    return datei;
+                }
+            }
+        }
+
+        return null;
+    }
+
     private List<Datei> getAlleDateienByUser(final User user) {
         List<Datei> alleDateien = new ArrayList<>();
         user.getAllGruppen().forEach(gruppe -> alleDateien.addAll(gruppe.getDateien()));
@@ -277,7 +298,7 @@ public final class ModelService implements IModelService {
         UserDTO userDTO = new UserDTO(datei.getUploader().getId(), null, null,
                 null, null);
 
-        DateiDTO dateiDTO = new DateiDTO(datei.getName(), userDTO, tagsToTagDTOs(datei.getTags()),
+        DateiDTO dateiDTO = new DateiDTO(datei.getId(), datei.getName(), userDTO, tagsToTagDTOs(datei.getTags()),
                 datei.getUploaddatum(), datei.getVeroeffentlichungsdatum(), datei.getDateigroesse(),
                 datei.getDateityp(), gruppeDTO, datei.getKategorie());
         return repository.saveDatei(dateiDTO);
@@ -292,10 +313,6 @@ public final class ModelService implements IModelService {
             tagDTOs.add(new TagDTO(tag.getText()));
         }
         return tagDTOs;
-    }
-
-    public Datei findDateiById(final long dateiId) throws SQLException {
-        return loadDatei(repository.findDateiById(dateiId));
     }
 
     public User findUserByKeycloakname(final String keycloakname) throws SQLException {

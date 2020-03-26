@@ -18,6 +18,15 @@
     <p class="text-lg-left">
         Hier könnte ihre Gruppenbeschreibung stehen.
     </p>
+
+    <div id="error-message" th:classappend="${error != null} ? 'alert alert-warning'" th:text="${error}">
+        Some error message
+    </div>
+
+    <div id="success-message" th:classappend="${success != null} ? 'alert alert-success'" th:text="${success}">
+        Jeah, it works!
+    </div>
+
     <div class="accordion" id="dataCategorys">
         <div class="card" th:each="kategorie, iter : ${kategorien}">
             <div class="card-header" id="${kategorie}">
@@ -53,7 +62,7 @@
                                    href="#">EDIT</a>
                                 <a class="btn btn-primary" role="button" th:href="@{/files(fileId=${datei.getId()})}"
                                    href="#">DOWNLOAD</a>
-                                <a class="btn btn-danger" role="button" th:href="@{/doAway(dateiId=${datei.getId()},
+                                <a class="btn btn-danger" role="button" th:href="@{/delete(dateiId=${datei.getId()},
                                  gruppenId=${gruppenAuswahl.getId()})}"
                                    href="#">X</a>
                             </div>

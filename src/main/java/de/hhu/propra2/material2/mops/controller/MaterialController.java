@@ -2,6 +2,8 @@ package de.hhu.propra2.material2.mops.controller;
 
 import de.hhu.propra2.material2.mops.Exceptions.DownloadException;
 import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
+import de.hhu.propra2.material2.mops.domain.models.Datei;
+import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
 import de.hhu.propra2.material2.mops.domain.models.UploadForm;
 import de.hhu.propra2.material2.mops.domain.services.MinIOService;
@@ -11,17 +13,20 @@ import de.hhu.propra2.material2.mops.domain.services.UploadService;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.client.RestTemplate;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.sql.SQLException;
 
@@ -58,6 +63,9 @@ public class MaterialController {
             model.addAttribute("account", modelService.getAccountFromKeycloak(token));
             model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
         }
+        model.addAttribute("error", errorMessage);
+        model.addAttribute("success", successMessage);
+        resetMessages();
         return "start";
     }
 
@@ -73,7 +81,8 @@ public class MaterialController {
         model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
         model.addAttribute("kategorien", modelService.getKategorienByGruppe(gruppenId, token));
         model.addAttribute("dateien", modelService.getAlleDateienByGruppe(gruppenId, token));
-        model.addAttribute("gruppenAuswahl", gruppenId);
+        Gruppe gruppenAuswahl = modelService.getGruppeByUserAndGroupID(gruppenId, token);
+        model.addAttribute("gruppenAuswahl", gruppenAuswahl);
         return "dateiSicht";
     }
 
@@ -124,10 +133,12 @@ public class MaterialController {
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public String upload(final KeycloakAuthenticationToken token, final Model model) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
-        model.addAttribute("gruppen", modelService.getAlleUploadGruppenByUser(token));
+        model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
+        model.addAttribute("gruppenUpload", modelService.getAlleUploadGruppenByUser(token));
         model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
         model.addAttribute("error", errorMessage);
         model.addAttribute("success", successMessage);
+        resetMessages();
         return "upload";
     }
 
@@ -143,7 +154,8 @@ public class MaterialController {
     public String upload(final KeycloakAuthenticationToken token, final Model model, final UploadForm upForm) {
         Account uploader = modelService.getAccountFromKeycloak(token);
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
-        model.addAttribute("gruppen", modelService.getAlleUploadGruppenByUser(token));
+        model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
+        model.addAttribute("gruppenUpload", modelService.getAlleUploadGruppenByUser(token));
         model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
         try {
             uploadService.startUpload(upForm, uploader.getName());
@@ -155,6 +167,7 @@ public class MaterialController {
         } catch (NoUploadPermissionException e) {
             setMessages("Sie sind nicht berechtig in dieser Gruppe hochzuladen!", null);
         }
+
         model.addAttribute("error", errorMessage);
         model.addAttribute("success", successMessage);
         resetMessages();
@@ -177,20 +190,18 @@ public class MaterialController {
     /**
      *
      */
-    @GetMapping("/files")
+    @GetMapping(value = "/files")
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
-    public void getFile(
-            final Long fileId,
-            final HttpServletResponse response, final KeycloakAuthenticationToken token) {
-        try {
-            // get your file as InputStream
-            InputStream input = minIOService.getObject(fileId);
-            // copy it to response's OutputStream
-            FileCopyUtils.copy(input, response.getOutputStream());
-            response.flushBuffer();
-        } catch (IOException | DownloadException ex) {
-            throw new RuntimeException("IOError writing file to output stream");
-        }
+    public ResponseEntity<InputStreamResource> getFile(final Long fileId,
+                                                       final KeycloakAuthenticationToken token)
+            throws DownloadException, SQLException {
+        InputStream input = new BufferedInputStream(minIOService.getObject(fileId));
+        Datei file = modelService.findDateiById(fileId);
+        return ResponseEntity.ok()
+                .header("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""))
+                .contentLength(file.getDateigroesse())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(new InputStreamResource(input));
     }
 
     private void setMessages(final String pErrorMessage, final String pSuccessMessage) {
@@ -201,5 +212,29 @@ public class MaterialController {
     private void resetMessages() {
         this.errorMessage = null;
         this.successMessage = null;
+    }
+
+    /**
+     * exception handler for a download error.
+     *
+     * @param e exception
+     * @return redirect to home page with a error message
+     */
+    @ExceptionHandler(DownloadException.class)
+    String handleDonwloadException(final DownloadException e) {
+        setMessages("Beim Download gab es ein Problem.", null);
+        return "redirect:/";
+    }
+
+    /**
+     * exception handler for a sql error.
+     *
+     * @param e exception
+     * @return redirect to home page with a error message
+     */
+    @ExceptionHandler(SQLException.class)
+    String handleSQLException(final SQLException e) {
+        setMessages("Beim zugriff auf die Datenbank gab es ein Problem.", null);
+        return "redirect:/";
     }
 }

@@ -24,10 +24,9 @@ public class UpdateService {
      * @param veroeffentlichungsdatum The new date which controls the availability of the file.
      *                                If null the file is direct available after upload.
      * @param tags                    The new tags for the file
-     * @return A Datei object which represents the saved File
      */
     @Transactional
-    public Datei dateiUpdate(final Long dateiId, final String gruppenId, final LocalDate veroeffentlichungsdatum,
+    public void dateiUpdate(final Long dateiId, final String gruppenId, final LocalDate veroeffentlichungsdatum,
                              final List<Tag> tags) throws SQLException {
         Datei datei = modelService.findDateiById(dateiId);
         Datei changedDatei = new Datei(dateiId, datei.getName(), datei.getUploader(),
@@ -36,7 +35,5 @@ public class UpdateService {
                 datei.getDateityp(), datei.getKategorie());
 
         modelService.saveDatei(changedDatei, gruppenId);
-
-        return changedDatei;
     }
 }

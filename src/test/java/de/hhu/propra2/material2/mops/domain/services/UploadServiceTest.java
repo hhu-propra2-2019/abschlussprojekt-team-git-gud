@@ -38,7 +38,7 @@ import static org.mockito.Mockito.when;
 
 @SuppressWarnings("checkstyle:magicnumber")
 @ExtendWith(MockitoExtension.class)
-public class UploadServiceTest {
+class UploadServiceTest {
     private static final String TEST_USER_NAME = "testuser";
     @Mock
     private MinIOService minIOServiceMock;
@@ -56,7 +56,7 @@ public class UploadServiceTest {
      * setUP: SetUp needed for each test.
      */
     @BeforeEach
-    public void setUp() throws SQLException {
+    void setUp() throws SQLException {
         uploadService = new UploadService(modelServiceMock, minIOServiceMock);
 
         file = new MockMultipartFile("test.txt",
@@ -75,7 +75,7 @@ public class UploadServiceTest {
     }
 
     @Test
-    public void startUploadWithNoUploadPermission() {
+    void startUploadWithNoUploadPermission() {
         when(userMock.hasUploadPermission(any())).thenReturn(false);
 
         Exception exception = assertThrows(NoUploadPermissionException.class, ()
@@ -85,7 +85,7 @@ public class UploadServiceTest {
     }
 
     @Test
-    public void minioUploadFails() {
+    void minioUploadFails() {
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(false);
 
         Exception exception = assertThrows(FileUploadException.class, () ->
@@ -95,7 +95,7 @@ public class UploadServiceTest {
     }
 
     @Test
-    public void uploadFileSaveDateiIsCalled() throws FileUploadException, SQLException, NoUploadPermissionException {
+    void uploadFileSaveDateiIsCalled() throws FileUploadException, SQLException, NoUploadPermissionException {
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
 
         uploadService.startUpload(uploadForm, TEST_USER_NAME);
@@ -104,7 +104,7 @@ public class UploadServiceTest {
     }
 
     @Test
-    public void uploadFileWithoutNewFileName() throws FileUploadException, SQLException, NoUploadPermissionException {
+    void uploadFileWithoutNewFileName() throws FileUploadException, SQLException, NoUploadPermissionException {
         uploadForm.setDateiname(null);
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
 
@@ -125,7 +125,7 @@ public class UploadServiceTest {
     }
 
     @Test
-    public void uploadFileWithNewFileNameWithoutExtension() throws FileUploadException,
+    void uploadFileWithNewFileNameWithoutExtension() throws FileUploadException,
             SQLException, NoUploadPermissionException {
         uploadForm.setDateiname("newName");
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
@@ -139,7 +139,7 @@ public class UploadServiceTest {
     }
 
     @Test
-    public void uploadFileWithNewFileNameWithExtension() throws FileUploadException,
+    void uploadFileWithNewFileNameWithExtension() throws FileUploadException,
             SQLException, NoUploadPermissionException {
         uploadForm.setDateiname("anotherNewName.txt");
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
@@ -153,7 +153,7 @@ public class UploadServiceTest {
     }
 
     @Test
-    public void uploadFileWithoutTags() throws FileUploadException, SQLException, NoUploadPermissionException {
+    void uploadFileWithoutTags() throws FileUploadException, SQLException, NoUploadPermissionException {
         uploadForm.setSelectedTags(null);
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
 
@@ -166,7 +166,7 @@ public class UploadServiceTest {
     }
 
     @Test
-    public void uploadFileWithEmptyTagString() throws FileUploadException, SQLException, NoUploadPermissionException {
+    void uploadFileWithEmptyTagString() throws FileUploadException, SQLException, NoUploadPermissionException {
         uploadForm.setSelectedTags("");
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
 
@@ -179,7 +179,7 @@ public class UploadServiceTest {
     }
 
     @Test
-    public void uploadFileWithSpaceTagString() throws FileUploadException, SQLException, NoUploadPermissionException {
+    void uploadFileWithSpaceTagString() throws FileUploadException, SQLException, NoUploadPermissionException {
         uploadForm.setSelectedTags(" ");
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
 
@@ -192,7 +192,7 @@ public class UploadServiceTest {
     }
 
     @Test
-    public void uploadFileWithTagStringWithCommaAtTheEnd() throws FileUploadException,
+    void uploadFileWithTagStringWithCommaAtTheEnd() throws FileUploadException,
             SQLException, NoUploadPermissionException {
         uploadForm.setSelectedTags("tag1  , tag2,");
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
@@ -209,7 +209,7 @@ public class UploadServiceTest {
     }
 
     @Test
-    public void uploadFileAndCheckUploader() throws FileUploadException, SQLException, NoUploadPermissionException {
+    void uploadFileAndCheckUploader() throws FileUploadException, SQLException, NoUploadPermissionException {
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
 
         uploadService.startUpload(uploadForm, TEST_USER_NAME);
@@ -221,7 +221,7 @@ public class UploadServiceTest {
     }
 
     @Test
-    public void uploadFileAndCheckDateigroesse() throws FileUploadException, SQLException, NoUploadPermissionException {
+    void uploadFileAndCheckDateigroesse() throws FileUploadException, SQLException, NoUploadPermissionException {
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
 
         uploadService.startUpload(uploadForm, TEST_USER_NAME);
@@ -233,7 +233,7 @@ public class UploadServiceTest {
     }
 
     @Test
-    public void uploadFileAndCheckDateityp() throws FileUploadException, SQLException, NoUploadPermissionException {
+    void uploadFileAndCheckDateityp() throws FileUploadException, SQLException, NoUploadPermissionException {
         uploadForm.setSelectedTags("tag1  , ");
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
 
@@ -246,7 +246,7 @@ public class UploadServiceTest {
     }
 
     @Test
-    public void uploadFileWithKategorie() throws FileUploadException, SQLException, NoUploadPermissionException {
+    void uploadFileWithKategorie() throws FileUploadException, SQLException, NoUploadPermissionException {
         uploadForm.setKategorie("Vorlesung");
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
 
@@ -259,7 +259,7 @@ public class UploadServiceTest {
     }
 
     @Test
-    public void uploadFileWithTimedUpload() throws FileUploadException, SQLException, NoUploadPermissionException {
+    void uploadFileWithTimedUpload() throws FileUploadException, SQLException, NoUploadPermissionException {
         uploadForm.setTimedUpload("2020-03-13");
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
 

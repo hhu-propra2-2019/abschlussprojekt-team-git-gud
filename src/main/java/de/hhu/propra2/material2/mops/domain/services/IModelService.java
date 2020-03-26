@@ -6,6 +6,7 @@ import de.hhu.propra2.material2.mops.domain.models.Suche;
 import de.hhu.propra2.material2.mops.security.Account;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 
@@ -16,6 +17,8 @@ public interface IModelService {
     List<Gruppe> getAlleUploadGruppenByUser(KeycloakAuthenticationToken token);
 
     List<Datei> getAlleDateienByGruppe(String gruppeId, KeycloakAuthenticationToken token);
+
+    Gruppe getGruppeByUserAndGroupID(String gruppeId, KeycloakAuthenticationToken token);
 
     Set<String> getAlleTagsByUser(KeycloakAuthenticationToken token);
 
@@ -40,4 +43,6 @@ public interface IModelService {
     Boolean isSortedByKategorie();
 
     Account getAccountFromKeycloak(KeycloakAuthenticationToken token);
+
+    Datei findDateiById(long dateiId) throws SQLException;
 }

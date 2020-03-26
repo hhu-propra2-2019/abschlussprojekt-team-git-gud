@@ -84,7 +84,6 @@ public class WebDTOServiceTest {
         UpdatedGroupRequestMapper update = new UpdatedGroupRequestMapper();
         update.setGroupList(new ArrayList<>());
 
-        service.startUpdate(update);
     }
 
 }

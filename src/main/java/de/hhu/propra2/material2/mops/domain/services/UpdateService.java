@@ -1,8 +1,6 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
 import com.google.common.base.Strings;
-import de.hhu.propra2.material2.mops.database.DTOs.UserDTO;
-import de.hhu.propra2.material2.mops.database.Repository;
 import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
@@ -22,12 +20,9 @@ import java.util.stream.Collectors;
 @Service
 public class UpdateService implements IUpdateService {
 
-    private final Repository repository;
     private final ModelService modelService;
 
-    public UpdateService(final Repository repositoryArg,
-                         final ModelService modelServiceArg) {
-        this.repository = repositoryArg;
+    public UpdateService(final ModelService modelServiceArg) {
         this.modelService = modelServiceArg;
     }
 
@@ -70,8 +65,7 @@ public class UpdateService implements IUpdateService {
                             final Long dateiId)
             throws SQLException, NoUploadPermissionException {
 
-        UserDTO userDTO = repository.findUserByKeycloakname(keycloakUserName);
-        User user = modelService.loadUser(userDTO);
+        User user = modelService.findUserByKeycloakname(keycloakUserName);
         Gruppe gruppe = user.getGruppeById(gruppenId);
         Datei datei = gruppe.getDateiById(dateiId);
 

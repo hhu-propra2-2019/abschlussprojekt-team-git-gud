@@ -1,6 +1,5 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
-import de.hhu.propra2.material2.mops.database.Repository;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Tag;
@@ -45,8 +44,6 @@ class UpdateServiceTest {
     private Tag tag3 = new Tag(3, "tag3");
     private List<Tag> tags = new ArrayList<>();
     @Mock
-    private Repository repositoryMock;
-    @Mock
     private ModelService modelServiceMock;
     @Mock
     private User userMock;
@@ -63,15 +60,12 @@ class UpdateServiceTest {
      */
     @BeforeEach
     void setUp() throws SQLException {
-        updateService = new UpdateService(repositoryMock, modelServiceMock);
+        updateService = new UpdateService(modelServiceMock);
 
         Datei datei = new Datei(1L, "test.txt", userMock, tags,
                 DATE_1303, DATE_1303, 2L, "txt", "kategorie");
-        when(modelServiceMock.findDateiById(1L)).thenReturn(datei);
-                DATE_1303, DATE_1303, 2L, "txt", "kategorie");
-        Mockito.lenient().when(modelServiceMock.getDateiById(1L, 1L, tokenMock)).thenReturn(datei);
-        Mockito.lenient().when(repositoryMock.findUserByKeycloakname(anyString())).thenReturn(null);
-        when(modelServiceMock.loadUser(null)).thenReturn(userMock);
+        Mockito.lenient().when(modelServiceMock.getDateiById(1L, tokenMock)).thenReturn(datei);
+        when(modelServiceMock.findUserByKeycloakname(anyString())).thenReturn(userMock);
         when(userMock.getGruppeById(1L)).thenReturn(gruppenMock);
         when(gruppenMock.getDateiById(1L)).thenReturn(datei);
 

@@ -247,22 +247,23 @@ public final class ModelService implements IModelService {
 
     /**
      * get datei by gruppenId, dateiId and UserToken
-     * @param gruppenId Id of the group
      * @param dateiId Id of the file
      * @param token KeycloakAuthenticationToken of the user
      * @return Datei if file is found in the given group of the given user, null if not
      */
-    public Datei getDateiById(final long gruppenId,
-                              final long dateiId,
+    public Datei getDateiById(final long dateiId,
                               final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);
-        Gruppe gruppe = user.getGruppeById(gruppenId);
-
-        if (gruppe.getId() == -1) {
-            return null;
+        List<Gruppe> gruppen = user.getAllGruppen();
+        for (Gruppe gruppe : gruppen) {
+            for (Datei datei: gruppe.getDateien()) {
+                if (datei.getId() == dateiId) {
+                    return datei;
+                }
+            }
         }
 
-        return gruppe.getDateiById(dateiId);
+        return null;
     }
 
     private List<Datei> getAlleDateienByUser(final User user) {

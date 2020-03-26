@@ -198,7 +198,7 @@ public class MaterialController {
                          final Long dateiId) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
-        Datei datei = modelService.getDateiById(gruppenId, dateiId, token);
+        Datei datei = modelService.getDateiById(dateiId, token);
         if (datei == null) {
             setMessages("Sie haben keine Zugriffsberechtigung.", null);
             model.addAttribute("error", errorMessage);
@@ -266,7 +266,7 @@ public class MaterialController {
                                                        final KeycloakAuthenticationToken token)
             throws DownloadException, SQLException {
         InputStream input = new BufferedInputStream(minIOService.getObject(fileId));
-        Datei file = modelService.findDateiById(fileId);
+        Datei file = modelService.getDateiById(fileId, token);
         return ResponseEntity.ok()
                 .header("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""))
                 .contentLength(file.getDateigroesse())

@@ -6,6 +6,7 @@ import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Tag;
 import de.hhu.propra2.material2.mops.domain.models.User;
+import de.hhu.propra2.material2.mops.domain.services.DeleteService;
 import de.hhu.propra2.material2.mops.domain.services.MinIOService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
 import de.hhu.propra2.material2.mops.domain.services.UpdateService;
@@ -61,6 +62,9 @@ class MaterialControllerModelTest {
     @MockBean
     private UpdateService updateService;
 
+    @MockBean
+    private DeleteService deleteService;
+
     /**
      * init for the tests.
      */
@@ -108,7 +112,7 @@ class MaterialControllerModelTest {
 
     @Test
     void startEmptyGroupTabsIfUnknownUser() throws Exception {
-        mvc.perform(get("/"));
+        mvc.perform(get("/material2/"));
         verify(modelService, never()).getAlleGruppenByUser(any());
 
     }
@@ -116,7 +120,7 @@ class MaterialControllerModelTest {
     @Test
     @WithMockKeycloackAuth(name = "BennyGoodman", roles = "TESTER")
     void startTestGruppenTabsGetCreated() throws Exception {
-        mvc.perform(get("/"))
+        mvc.perform(get("/material2/"))
                 .andExpect(content().string(containsString("ProPra")))
                 .andExpect(content().string(containsString("RDB")));
         verify(modelService, times(1)).getAlleGruppenByUser(any());
@@ -124,14 +128,14 @@ class MaterialControllerModelTest {
 
     @Test
     void testReturnStartUnknownUser() throws Exception {
-        mvc.perform(get("/"))
+        mvc.perform(get("/material2/"))
                 .andExpect(content().string(containsString("Wilkommen bei der Materialsammlung")));
     }
 
     @Test
     @WithMockKeycloackAuth(name = "BennyGoodman", roles = "TESTER")
     void testReturnStartLogedInUser() throws Exception {
-        mvc.perform(get("/"))
+        mvc.perform(get("/material2/"))
                 .andExpect(content().string(containsString("Wilkommen bei der Materialsammlung")));
     }
 
@@ -140,7 +144,7 @@ class MaterialControllerModelTest {
     @Test
     @WithMockKeycloackAuth(name = "BennyGoodman", roles = "studentin")
     void uploadTestTabsGetCreated() throws Exception {
-        mvc.perform(get("/upload"))
+        mvc.perform(get("/material2/upload"))
                 .andExpect(content().string(containsString("ProPra")))
                 .andExpect(content().string(containsString("RDB")));
         verify(modelService, times(1)).getAlleUploadGruppenByUser(any());
@@ -149,21 +153,21 @@ class MaterialControllerModelTest {
     @Test
     @WithMockKeycloackAuth(name = "BennyGoodman", roles = "studentin")
     void uploadTestTagsGetLoaded() throws Exception {
-        mvc.perform(get("/upload"));
+        mvc.perform(get("/material2/upload"));
         verify(modelService, times(1)).getAlleTagsByUser(any());
     }
 
     @Test
     @WithMockKeycloackAuth(name = "BennyGoodman", roles = "studentin")
     void testReturnUploadTemplate() throws Exception {
-        mvc.perform(get("/upload"))
+        mvc.perform(get("/material2/upload"))
                 .andExpect(content().string(containsString("Upload")));
     }
 
     @Test
     @WithMockKeycloackAuth(name = "BennyGoodman", roles = "studentin")
     void testUploadPostSuccessful() throws Exception {
-        mvc.perform(post("/upload")
+        mvc.perform(post("/material2/upload")
                 .with(csrf()))
                 .andExpect(content()
                         .string(containsString("Upload war erfolgreich!")));
@@ -176,7 +180,7 @@ class MaterialControllerModelTest {
     void testUploadPostFileUploadException() throws Exception {
         doThrow(new FileUploadException()).when(uploadService).startUpload(any(), any());
 
-        mvc.perform(post("/upload")
+        mvc.perform(post("/material2/upload")
                 .with(csrf()))
                 .andExpect(content()
                         .string(containsString("Beim Upload gab es ein Problem.")));
@@ -189,7 +193,7 @@ class MaterialControllerModelTest {
     void testUploadPostSQLException() throws Exception {
         doThrow(new SQLException()).when(uploadService).startUpload(any(), any());
 
-        mvc.perform(post("/upload")
+        mvc.perform(post("/material2/upload")
                 .with(csrf()))
                 .andExpect(content()
                         .string(containsString("Beim speichern in der Datenbank gab es einen Fehler.")));
@@ -202,7 +206,7 @@ class MaterialControllerModelTest {
     void testUploadPostNoUploadPermissionException() throws Exception {
         doThrow(new NoUploadPermissionException()).when(uploadService).startUpload(any(), any());
 
-        mvc.perform(post("/upload")
+        mvc.perform(post("/material2/upload")
                 .with(csrf()))
                 .andExpect(content()
                         .string(containsString("Sie sind nicht berechtigt in dieser Gruppe hochzuladen!")));
@@ -215,7 +219,7 @@ class MaterialControllerModelTest {
     @Test
     @WithMockKeycloackAuth(name = "studentin1", roles = "studentin")
     void sucheTestGruppenTabsGetCreated() throws Exception {
-        mvc.perform(get("/suche"))
+        mvc.perform(get("/material2/suche"))
                 .andExpect(content().string(containsString("ProPra")))
                 .andExpect(content().string(containsString("RDB")));
         verify(modelService, times(1)).getAlleGruppenByUser(any());
@@ -224,7 +228,7 @@ class MaterialControllerModelTest {
     @Test
     @WithMockKeycloackAuth(name = "studentin3", roles = "studentin")
     void sucheTestTagsGetLoaded() throws Exception {
-        mvc.perform(get("/suche"))
+        mvc.perform(get("/material2/suche"))
                 .andExpect(content().string(containsString("Vorlesung")))
                 .andExpect(content().string(containsString("Übung")));
         verify(modelService, times(1)).getAlleTagsByUser(any());
@@ -233,7 +237,7 @@ class MaterialControllerModelTest {
     @Test
     @WithMockKeycloackAuth(name = "studentin2", roles = "studentin")
     void sucheTestDateiTypenGetLoaded() throws Exception {
-        mvc.perform(get("/suche"))
+        mvc.perform(get("/material2/suche"))
                 .andExpect(content().string(containsString("JSON")))
                 .andExpect(content().string(containsString("XML")));
         verify(modelService, times(1)).getAlleUploaderByUser(any());
@@ -242,7 +246,7 @@ class MaterialControllerModelTest {
     @Test
     @WithMockKeycloackAuth(name = "studentin1", roles = "studentin")
     void sucheTestUploaderGetLoaded() throws Exception {
-        mvc.perform(get("/suche"))
+        mvc.perform(get("/material2/suche"))
                 .andExpect(content().string(containsString("Chris")))
                 .andExpect(content().string(containsString("Christian")))
                 .andExpect(content().string(containsString("Christiano Ronaldo")));
@@ -252,7 +256,7 @@ class MaterialControllerModelTest {
     @Test
     @WithMockKeycloackAuth(name = "Max Mustermann", roles = "studentin")
     void testReturnSucheTemplate() throws Exception {
-        mvc.perform(get("/suche"))
+        mvc.perform(get("/material2/suche"))
                 .andExpect(content().string(containsString("Suche")));
     }
 
@@ -261,7 +265,7 @@ class MaterialControllerModelTest {
     @Test
     @WithMockKeycloackAuth(name = "studentin1", roles = "studentin")
     void dateiSichtGruppenTabsGetCreated() throws Exception {
-        mvc.perform(get("/dateiSicht?gruppenId=1"))
+        mvc.perform(get("/material2/dateiSicht?gruppenId=1"))
                 .andExpect(content().string(containsString("ProPra")))
                 .andExpect(content().string(containsString("RDB")));
         verify(modelService, times(1)).getAlleGruppenByUser(any());
@@ -270,7 +274,7 @@ class MaterialControllerModelTest {
     @Test
     @WithMockKeycloackAuth(name = "studentin3", roles = "studentin")
     void dateiSichtKategorienGetLoaded() throws Exception {
-        mvc.perform(get("/dateiSicht?gruppenId=1"))
+        mvc.perform(get("/material2/dateiSicht?gruppenId=1"))
                 .andExpect(content().string(containsString("Übung")))
                 .andExpect(content().string(containsString("Vorlesung")));
         verify(modelService, times(1)).getKategorienByGruppe(any(), any());
@@ -279,7 +283,7 @@ class MaterialControllerModelTest {
     @Test
     @WithMockKeycloackAuth(name = "studentin3", roles = "studentin")
     void dateiSichtTagsGetLoaded() throws Exception {
-        mvc.perform(get("/dateiSicht?gruppenId=1"))
+        mvc.perform(get("/material2/dateiSicht?gruppenId=1"))
                 .andExpect(content().string(containsString("Vorlesung")));
         verify(modelService, times(1)).getAlleDateienByGruppe(any(), any());
     }
@@ -287,7 +291,7 @@ class MaterialControllerModelTest {
     @Test
     @WithMockKeycloackAuth(name = "studentin3", roles = "studentin")
     void dateiSichtUploaderGetsLoaded() throws Exception {
-        mvc.perform(get("/dateiSicht?gruppenId=1"))
+        mvc.perform(get("/material2/dateiSicht?gruppenId=1"))
                 .andExpect(content().string(containsString("Jens Bälchenbude")));
         verify(modelService, times(1)).getAlleDateienByGruppe(any(), any());
     }
@@ -295,7 +299,7 @@ class MaterialControllerModelTest {
     @Test
     @WithMockKeycloackAuth(name = "studentin3", roles = "studentin")
     void dateiSichtDateiTypGetsLoaded() throws Exception {
-        mvc.perform(get("/dateiSicht?gruppenId=1"))
+        mvc.perform(get("/material2/dateiSicht?gruppenId=1"))
                 .andExpect(content().string(containsString("PDF")));
         verify(modelService, times(1)).getAlleDateienByGruppe(any(), any());
     }
@@ -303,7 +307,7 @@ class MaterialControllerModelTest {
     @Test
     @WithMockKeycloackAuth(name = "studentin3", roles = "studentin")
     void dateiSichtUploadDatumTypGetsLoaded() throws Exception {
-        mvc.perform(get("/dateiSicht?gruppenId=1"))
+        mvc.perform(get("/material2/dateiSicht?gruppenId=1"))
                 .andExpect(content().string(containsString("2020-03-01")));
         verify(modelService, times(1)).getAlleDateienByGruppe(any(), any());
     }
@@ -311,7 +315,7 @@ class MaterialControllerModelTest {
     @Test
     @WithMockKeycloackAuth(name = "studentin3", roles = "studentin")
     void dateiSichtDateiGroesseTypGetsLoaded() throws Exception {
-        mvc.perform(get("/dateiSicht?gruppenId=1"))
+        mvc.perform(get("/material2/dateiSicht?gruppenId=1"))
                 .andExpect(content().string(containsString("875 KB")));
         verify(modelService, times(1)).getAlleDateienByGruppe(any(), any());
     }

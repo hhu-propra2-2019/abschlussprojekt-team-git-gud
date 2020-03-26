@@ -1,5 +1,6 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
+import de.hhu.propra2.material2.mops.Exceptions.HasNoGroupToUploadException;
 import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
@@ -95,7 +96,8 @@ class UploadServiceTest {
     }
 
     @Test
-    void uploadFileSaveDateiIsCalled() throws FileUploadException, SQLException, NoUploadPermissionException {
+    void uploadFileSaveDateiIsCalled() throws FileUploadException, SQLException,
+            NoUploadPermissionException, HasNoGroupToUploadException {
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
 
         uploadService.startUpload(uploadForm, TEST_USER_NAME);
@@ -104,7 +106,8 @@ class UploadServiceTest {
     }
 
     @Test
-    void uploadFileWithoutNewFileName() throws FileUploadException, SQLException, NoUploadPermissionException {
+    void uploadFileWithoutNewFileName() throws FileUploadException, SQLException,
+            NoUploadPermissionException, HasNoGroupToUploadException {
         uploadForm.setDateiname(null);
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
 
@@ -126,7 +129,7 @@ class UploadServiceTest {
 
     @Test
     void uploadFileWithNewFileNameWithoutExtension() throws FileUploadException,
-            SQLException, NoUploadPermissionException {
+            SQLException, NoUploadPermissionException, HasNoGroupToUploadException {
         uploadForm.setDateiname("newName");
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
 
@@ -140,7 +143,7 @@ class UploadServiceTest {
 
     @Test
     void uploadFileWithNewFileNameWithExtension() throws FileUploadException,
-            SQLException, NoUploadPermissionException {
+            SQLException, NoUploadPermissionException, HasNoGroupToUploadException {
         uploadForm.setDateiname("anotherNewName.txt");
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
 
@@ -153,7 +156,8 @@ class UploadServiceTest {
     }
 
     @Test
-    void uploadFileWithoutTags() throws FileUploadException, SQLException, NoUploadPermissionException {
+    void uploadFileWithoutTags() throws FileUploadException, SQLException,
+            NoUploadPermissionException, HasNoGroupToUploadException {
         uploadForm.setSelectedTags(null);
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
 
@@ -166,7 +170,8 @@ class UploadServiceTest {
     }
 
     @Test
-    void uploadFileWithEmptyTagString() throws FileUploadException, SQLException, NoUploadPermissionException {
+    void uploadFileWithEmptyTagString() throws FileUploadException, SQLException,
+            NoUploadPermissionException, HasNoGroupToUploadException {
         uploadForm.setSelectedTags("");
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
 
@@ -179,7 +184,8 @@ class UploadServiceTest {
     }
 
     @Test
-    void uploadFileWithSpaceTagString() throws FileUploadException, SQLException, NoUploadPermissionException {
+    void uploadFileWithSpaceTagString() throws FileUploadException, SQLException,
+            NoUploadPermissionException, HasNoGroupToUploadException {
         uploadForm.setSelectedTags(" ");
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
 
@@ -193,7 +199,7 @@ class UploadServiceTest {
 
     @Test
     void uploadFileWithTagStringWithCommaAtTheEnd() throws FileUploadException,
-            SQLException, NoUploadPermissionException {
+            SQLException, NoUploadPermissionException, HasNoGroupToUploadException {
         uploadForm.setSelectedTags("tag1  , tag2,");
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
 
@@ -209,7 +215,8 @@ class UploadServiceTest {
     }
 
     @Test
-    void uploadFileAndCheckUploader() throws FileUploadException, SQLException, NoUploadPermissionException {
+    void uploadFileAndCheckUploader() throws FileUploadException, SQLException,
+            NoUploadPermissionException, HasNoGroupToUploadException {
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
 
         uploadService.startUpload(uploadForm, TEST_USER_NAME);
@@ -221,7 +228,8 @@ class UploadServiceTest {
     }
 
     @Test
-    void uploadFileAndCheckDateigroesse() throws FileUploadException, SQLException, NoUploadPermissionException {
+    void uploadFileAndCheckDateigroesse() throws FileUploadException, SQLException,
+            NoUploadPermissionException, HasNoGroupToUploadException {
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
 
         uploadService.startUpload(uploadForm, TEST_USER_NAME);
@@ -233,7 +241,8 @@ class UploadServiceTest {
     }
 
     @Test
-    void uploadFileAndCheckDateityp() throws FileUploadException, SQLException, NoUploadPermissionException {
+    void uploadFileAndCheckDateityp() throws FileUploadException, SQLException,
+            NoUploadPermissionException, HasNoGroupToUploadException {
         uploadForm.setSelectedTags("tag1  , ");
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
 
@@ -246,7 +255,8 @@ class UploadServiceTest {
     }
 
     @Test
-    void uploadFileWithKategorie() throws FileUploadException, SQLException, NoUploadPermissionException {
+    void uploadFileWithKategorie() throws FileUploadException, SQLException,
+            NoUploadPermissionException, HasNoGroupToUploadException {
         uploadForm.setKategorie("Vorlesung");
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
 
@@ -259,7 +269,8 @@ class UploadServiceTest {
     }
 
     @Test
-    void uploadFileWithTimedUpload() throws FileUploadException, SQLException, NoUploadPermissionException {
+    void uploadFileWithTimedUpload() throws FileUploadException, SQLException,
+            NoUploadPermissionException, HasNoGroupToUploadException {
         uploadForm.setTimedUpload("2020-03-13");
         when(minIOServiceMock.upload(any(), anyString())).thenReturn(true);
 

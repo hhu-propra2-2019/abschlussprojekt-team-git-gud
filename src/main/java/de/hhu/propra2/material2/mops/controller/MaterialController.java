@@ -234,7 +234,7 @@ public class MaterialController {
     public String update(final KeycloakAuthenticationToken token,
                          final Model model,
                          final UpdateForm updateForm,
-                         final Long gruppenId,
+                         final String gruppenId,
                          final Long dateiId) {
         Account userAccount = modelService.getAccountFromKeycloak(token);
         model.addAttribute("account", userAccount);

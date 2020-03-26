@@ -79,7 +79,7 @@ class UpdateServiceTest {
     void updateFileBySettingVeroeffentlichungsdatumAndTagsNull() throws Exception {
         when(userMock.hasUploadPermission(gruppenMock)).thenReturn(true);
         UpdateForm updateForm = new UpdateForm(null, null);
-        updateService.startUpdate(updateForm, "", 1L, 1L);
+        updateService.startUpdate(updateForm, "", "1", 1L);
 
 
         ArgumentCaptor<Datei> dateiCaptor = ArgumentCaptor.forClass(Datei.class);
@@ -100,7 +100,7 @@ class UpdateServiceTest {
         String stringTags = tag1.getText() + ", " + tag2.getText() + ", " + tag3.getText();
         UpdateForm updateForm = new UpdateForm(stringTags, null);
 
-        updateService.startUpdate(updateForm, "", 1L, 1L);
+        updateService.startUpdate(updateForm, "", "1", 1L);
 
         ArgumentCaptor<Datei> dateiCaptor = ArgumentCaptor.forClass(Datei.class);
         verify(modelServiceMock, times(1)).saveDatei(dateiCaptor.capture(), anyString());

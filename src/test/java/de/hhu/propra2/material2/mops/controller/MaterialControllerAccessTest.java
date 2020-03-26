@@ -5,6 +5,7 @@ import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.services.DeleteService;
 import de.hhu.propra2.material2.mops.domain.services.MinIOService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
+import de.hhu.propra2.material2.mops.domain.services.UpdateService;
 import de.hhu.propra2.material2.mops.domain.services.UploadService;
 import de.hhu.propra2.material2.mops.security.Account;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,6 +45,9 @@ class MaterialControllerAccessTest {
 
     @MockBean
     private UploadService uploadService;
+
+    @MockBean
+    private UpdateService updateService;
 
     @MockBean
     private DeleteService deleteService;

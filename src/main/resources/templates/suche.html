@@ -200,8 +200,8 @@
                         </select>
                         <label for="SelectOrder"></label>
                         <select class="form-control" id="SelectOrder" name="reihenfolge">
-                            <option> aufsteigend </option>
-                            <option> absteigend </option>
+                            <option>aufsteigend</option>
+                            <option>absteigend</option>
                         </select>
                     </div>
                 </div>
@@ -212,7 +212,7 @@
             </form>
         </div>
 
-        <div th:unless="${dateien.isEmpty()}" th:align="left">
+        <div th:unless="${dateien?.isEmpty()}" th:align="left">
             <h1 class="text-left mt-4 mb-4">
                 Ergebnisse
             </h1>

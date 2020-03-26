@@ -16,14 +16,14 @@ public class Suche {
 
 
     public final String[] getDateiTyp() {
-        if (dateiTyp.equals("")) {
+        if (dateiTyp.isEmpty()) {
             return null;
         }
         return toArray(dateiTyp);
     }
 
     public final String[] getTags() {
-        if (tags.equals("")) {
+        if (tags.isEmpty()) {
             return null;
         }
         return toArray(tags);
@@ -35,7 +35,7 @@ public class Suche {
     }
 
     public final String[] getUploader() {
-        if (uploader.equals("")) {
+        if (uploader.isEmpty()) {
             return null;
         }
         return toArray(uploader);

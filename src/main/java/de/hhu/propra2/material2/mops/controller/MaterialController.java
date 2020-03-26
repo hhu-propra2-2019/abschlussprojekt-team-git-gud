@@ -108,19 +108,16 @@ public class MaterialController {
     public String suchen(
             final KeycloakAuthenticationToken token, final Model model, final @ModelAttribute Suche suchen,
             final String search) {
-        //User Info from all his Gruppen
+        //Info from all the Gruppen of a User
         model.addAttribute("suche", suchen);
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
         model.addAttribute("tags", modelService.getAlleTagsByUser(token));
         model.addAttribute("dateiTypen", modelService.getAlleDateiTypenByUser(token));
         model.addAttribute("uploader", modelService.getAlleUploaderByUser(token));
-        if (search == null) {
-            return "redirect:/suche";
-        }
+        //Info from the Search
         modelService.suchen(suchen);
         List<Datei> suchErgebnisse = modelService.getSuchergebnisse(token);
-        //Info from the Search
         model.addAttribute("isSortedByKategorie", modelService.isSortedByKategorie());
         model.addAttribute("dateien", suchErgebnisse);
         model.addAttribute("kategorien", modelService.getKategorienFromSuche(suchErgebnisse));

@@ -2,6 +2,7 @@ package de.hhu.propra2.material2.mops.controller;
 
 import com.c4_soft.springaddons.test.security.context.support.WithMockKeycloackAuth;
 import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
+import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.services.MinioDownloadService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
@@ -70,12 +71,14 @@ public class MaterialControllerModelTest {
         Set<String> dateiTypen = new HashSet<>();
         dateiTypen.add("XML");
         dateiTypen.add("JSON");
+        List<Datei> dateien = new ArrayList<>();
         when(modelService.getAlleGruppenByUser(any())).thenReturn(gruppen);
         when(modelService.getAlleTagsByUser(any())).thenReturn(tags);
         when(modelService.getAlleUploaderByUser(any())).thenReturn(uploader);
         when(modelService.getAlleDateiTypenByUser(any())).thenReturn(dateiTypen);
         when(modelService.getAccountFromKeycloak(any())).thenReturn(new Account("BennyGoodman", ".de",
                 "aaa", dateiTypen));
+        when(modelService.getSuchergebnisse(any())).thenReturn(dateien);
     }
 
     // Startseite Test
@@ -193,15 +196,6 @@ public class MaterialControllerModelTest {
                 .andExpect(content().string(containsString("ProPra")))
                 .andExpect(content().string(containsString("RDB")));
         verify(modelService, times(1)).getAlleGruppenByUser(any());
-    }
-
-    @Test
-    @WithMockKeycloackAuth(name = "studentin3", roles = "studentin")
-    void sucheTestTagsGetLoaded() throws Exception {
-        mvc.perform(get("/suche"))
-                .andExpect(content().string(containsString("Vorlesung")))
-                .andExpect(content().string(containsString("Übung")));
-        verify(modelService, times(1)).getAlleTagsByUser(any());
     }
 
     @Test

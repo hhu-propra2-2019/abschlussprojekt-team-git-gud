@@ -8,7 +8,7 @@ public class Suche {
     private final String bisDatum;
     private final String tags;
     private final String[] dateiTyp;
-    private final String[] uploader;
+    private final String uploader;
     private final String sortierKriterium;
     private final Long gruppenId;
     private final String dateiName;
@@ -32,14 +32,17 @@ public class Suche {
     }
 
     public final String[] getUploader() {
-        return uploader == null ? null : uploader.clone();
+        if (uploader.equals("")) {
+            return null;
+        }
+        return toArray(uploader);
     }
     @SuppressWarnings("checkstyle:HiddenField")
     public Suche(final String vonDatum,
                  final String bisDatum,
                  final String tags,
                  final String[] dateiTyp,
-                 final String[] uploader,
+                 final String uploader,
                  final String sortierKriterium,
                  final Long gruppenId,
                  final String dateiName,
@@ -48,7 +51,7 @@ public class Suche {
         this.vonDatum = vonDatum;
         this.bisDatum = bisDatum;
         this.tags = tags;
-        this.uploader = uploader == null ? null : uploader.clone();
+        this.uploader = uploader;
         this.sortierKriterium = sortierKriterium;
         this.gruppenId = gruppenId;
         this.dateiName = dateiName;

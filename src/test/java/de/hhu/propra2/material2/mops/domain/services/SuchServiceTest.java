@@ -337,7 +337,7 @@ public class SuchServiceTest {
 
     @Test
     public void nichtVorhandenerUploaderFilter() {
-        String[] uploader = {"See"};
+        String uploader = "See";
         Suche suche = new Suche(
                 "",
                 "",
@@ -357,7 +357,7 @@ public class SuchServiceTest {
 
     @Test
     public void einVorhandenerUploaderFilter() {
-        String[] uploader = {"Baum"};
+        String uploader = "Baum";
         Suche suche = new Suche(
                 "",
                 "",
@@ -379,7 +379,7 @@ public class SuchServiceTest {
 
     @Test
     public void mehrereUploaderFilter() {
-        String[] uploader = {"Baum", "Stein"};
+        String uploader = "Baum Stein";
         Suche suche = new Suche(
                 "",
                 "",

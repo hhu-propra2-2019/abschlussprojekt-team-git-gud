@@ -232,8 +232,6 @@ class MaterialControllerAccessTest {
     @Test
     @WithMockKeycloackAuth(name = "Bruce W.", roles = "studentin")
     void testUpdateStudentUser() throws Exception {
-
-
         mvc.perform(get("/material2/update")
                 .param("gruppenId", "1")
                 .param("dateiId", "1"))

@@ -1,6 +1,7 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
 import de.hhu.propra2.material2.mops.Exceptions.FileNotPublishedYetException;
+import de.hhu.propra2.material2.mops.Exceptions.NoAccessPermissionException;
 import de.hhu.propra2.material2.mops.Exceptions.NoDownloadPermissionException;
 import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
@@ -119,13 +120,13 @@ public final class ModelService implements IModelService {
         return user.getAllGruppenWithUploadrechten();
     }
 
-    public Gruppe getGruppeByUserAndGroupID(final Long gruppeId,
+    public Gruppe getGruppeByUserAndGroupID(final String gruppeId,
                                             final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);
         return user.getGruppeById(gruppeId);
     }
 
-    public List<Datei> getAlleDateienByGruppe(final Long gruppeId,
+    public List<Datei> getAlleDateienByGruppe(final String gruppeId,
                                               final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);
         Gruppe gruppe = user.getGruppeById(gruppeId);
@@ -146,7 +147,7 @@ public final class ModelService implements IModelService {
         return tags;
     }
 
-    public Set<String> getAlleTagsByGruppe(final Long gruppeId,
+    public Set<String> getAlleTagsByGruppe(final String gruppeId,
                                            final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);
         List<Datei> dateienListe = user.getGruppeById(gruppeId).getDateien();
@@ -169,7 +170,7 @@ public final class ModelService implements IModelService {
         return uploader;
     }
 
-    public Set<String> getAlleUploaderByGruppe(final Long gruppeId,
+    public Set<String> getAlleUploaderByGruppe(final String gruppeId,
                                                final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);
         return user.getGruppeById(gruppeId).getDateien()
@@ -202,7 +203,7 @@ public final class ModelService implements IModelService {
         return kategorien;
     }
 
-    public Set<String> getKategorienByGruppe(final Long gruppeId, final KeycloakAuthenticationToken token) {
+    public Set<String> getKategorienByGruppe(final String gruppeId, final KeycloakAuthenticationToken token) {
         List<Datei> dateien = getAlleDateienByGruppe(gruppeId, token);
         Set<String> kategorien = new HashSet<>();
         dateien.forEach(datei -> kategorien.add(datei.getKategorie()));
@@ -226,7 +227,7 @@ public final class ModelService implements IModelService {
         return dateiTypen;
     }
 
-    public Set<String> getAlleDateiTypenByGruppe(final Long gruppeId,
+    public Set<String> getAlleDateiTypenByGruppe(final String gruppeId,
                                                  final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);
         return user.getGruppeById(gruppeId).getDateien()
@@ -256,14 +257,14 @@ public final class ModelService implements IModelService {
     }
 
     /**
-     * get datei by gruppenId, dateiId and UserToken
+     * get datei by dateiId and UserToken.
      *
      * @param dateiId Id of the file
      * @param token   KeycloakAuthenticationToken of the user
      * @return Datei if file is found in the given group of the given user, null if not
      */
     public Datei getDateiById(final long dateiId,
-                              final KeycloakAuthenticationToken token) {
+                              final KeycloakAuthenticationToken token) throws NoAccessPermissionException {
         User user = createUserByToken(token);
         List<Gruppe> gruppen = user.getAllGruppen();
         for (Gruppe gruppe : gruppen) {
@@ -274,7 +275,7 @@ public final class ModelService implements IModelService {
             }
         }
 
-        return null;
+        throw new NoAccessPermissionException();
     }
 
     private List<Datei> getAlleDateienByUser(final User user) {
@@ -302,7 +303,7 @@ public final class ModelService implements IModelService {
         return saveDatei(datei, groupDTO);
     }
 
-    public void saveDatei(final Datei datei, final long gruppenId) throws SQLException {
+    public void saveDatei(final Datei datei, final String gruppenId) throws SQLException {
         if (datei == null) {
             throw new IllegalArgumentException();
         }
@@ -357,7 +358,7 @@ public final class ModelService implements IModelService {
         Account account = getAccountFromKeycloak(token);
         DateiDTO dateiDTO = repository.findDateiById(dateiId);
         User user = findUserByKeycloakname(account.getName());
-        Long gruppenId = dateiDTO.getGruppe().getId();
+        String gruppenId = dateiDTO.getGruppe().getId();
         Gruppe gruppe = user.getGruppeById(gruppenId);
 
         if (!user.hasUploadPermission(gruppe)) {

@@ -62,14 +62,14 @@ public class User {
      * @param gruppenId
      * @return Gruppe
      */
-    public Gruppe getGruppeById(final long gruppenId) {
+    public Gruppe getGruppeById(final String gruppenId) {
         List<Gruppe> gruppen = this.getAllGruppen();
         for (Gruppe gruppe : gruppen) {
-            if (gruppe.getId() == gruppenId) {
+            if (gruppe.getId().equals(gruppenId)) {
                 return gruppe;
             }
         }
-        return new Gruppe(-1, "", new ArrayList<>());
+        return new Gruppe("-1", "", new ArrayList<>());
     }
 
     /**
@@ -77,7 +77,7 @@ public class User {
      * @return returns true only if the user has upload permission in the given group
      */
     public boolean hasUploadPermission(final Gruppe gruppe) {
-        if (belegungUndRechte == null || belegungUndRechte.isEmpty()) {
+        if (gruppe.getId().equals("-1") || belegungUndRechte == null || belegungUndRechte.isEmpty()) {
             return false;
         }
         return belegungUndRechte.get(gruppe);

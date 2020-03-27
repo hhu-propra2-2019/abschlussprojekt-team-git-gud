@@ -10,7 +10,7 @@ public class Suche {
     private final String dateiTyp;
     private final String uploader;
     private final String sortierKriterium;
-    private final Long gruppenId;
+    private final String gruppenId;
     private final String dateiName;
     private final String reihenfolge;
 
@@ -47,7 +47,7 @@ public class Suche {
                  final String dateiTyp,
                  final String uploader,
                  final String sortierKriterium,
-                 final Long gruppenId,
+                 final String gruppenId,
                  final String dateiName,
                  final String reihenfolge) {
         this.dateiTyp = dateiTyp;

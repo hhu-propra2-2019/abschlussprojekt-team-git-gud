@@ -304,7 +304,7 @@ public final class ModelService implements IModelService {
         return repository.saveDatei(dateiDTO);
     }
 
-    private ArrayList<TagDTO> tagsToTagDTOs(final List<Tag> tags) {
+    ArrayList<TagDTO> tagsToTagDTOs(final List<Tag> tags) {
         ArrayList<TagDTO> tagDTOs = new ArrayList<>();
         if (tags == null || tags.isEmpty()) {
             return tagDTOs;

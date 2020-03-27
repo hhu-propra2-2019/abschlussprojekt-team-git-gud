@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.annotation.SessionScope;
 
 import javax.annotation.security.RolesAllowed;
@@ -44,9 +43,6 @@ import java.util.List;
 @SessionScope
 @SuppressWarnings("checkstyle:ParenPad")
 public class MaterialController {
-
-    @Autowired
-    private RestTemplate serviceAccountRestTemplate;
 
     @Autowired
     private ModelService modelService;
@@ -120,9 +116,8 @@ public class MaterialController {
      */
     @PostMapping("/suche")
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
-    public String suchen(
-            final KeycloakAuthenticationToken token, final Model model, final @ModelAttribute Suche suchen,
-            final String search) {
+    public String suchen(final KeycloakAuthenticationToken token, final Model model,
+                         final @ModelAttribute Suche suchen, final String search) {
         //Info from all the Gruppen of a User
         model.addAttribute("suche", suchen);
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
@@ -130,13 +125,22 @@ public class MaterialController {
         model.addAttribute("tags", modelService.getAlleTagsByUser(token));
         model.addAttribute("dateiTypen", modelService.getAlleDateiTypenByUser(token));
         model.addAttribute("uploader", modelService.getAlleUploaderByUser(token));
-        //Info from the Search
-        modelService.suchen(suchen);
-        List<Datei> suchErgebnisse = modelService.getSuchergebnisse(token);
-        model.addAttribute("isSortedByKategorie", modelService.isSortedByKategorie());
-        model.addAttribute("dateien", suchErgebnisse);
-        model.addAttribute("kategorien", modelService.getKategorienFromSuche(suchErgebnisse));
         model.addAttribute("selectedTags", modelService.getTagsAsSet(suchen.getTags()));
+        //Info from the Search
+        if (suchen != null && suchen.getGruppenId() != -1) {
+            model.addAttribute("tags", modelService.getAlleTagsByGruppe(suchen.getGruppenId(), token));
+            model.addAttribute("dateiTypen", modelService.getAlleDateiTypenByGruppe(suchen.getGruppenId(), token));
+            model.addAttribute("uploader", modelService.getAlleUploaderByGruppe(suchen.getGruppenId(), token));
+        }
+        //When search is started
+        if (("Suchen").equals(search)) {
+            modelService.suchen(suchen);
+            List<Datei> suchErgebnisse = modelService.getSuchergebnisse(token);
+            model.addAttribute("isSortedByKategorie", modelService.isSortedByKategorie());
+            model.addAttribute("dateien", suchErgebnisse);
+            model.addAttribute("kategorien", modelService.getKategorienFromSuche(suchErgebnisse));
+            model.addAttribute("search", search);
+        }
         return "suche";
     }
 

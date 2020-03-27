@@ -16,14 +16,18 @@
         <h1 class="text-center">
             Suche
         </h1>
-        <div class="container">
+        
+        <div>
             <form action="" method="post" id="abschicken" name="auswahl" >
                 <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
 
+                <div class="alert alert-danger" role="alert" th:if="${search?.equals('Suchen')} and ${dateien == null}">
+                    Es konnten keine Dateien entsprechend der Suche gefunden werden
+                </div>
+
                 <div class="form-group">
                     <label class="form-row" for="SelectGroup">Gruppenauswahl</label>
-                    <select class="form-control"
-                            id="SelectGroup" name="gruppenId">
+                    <select class="form-control" onchange="this.form.submit()" id="SelectGroup" name="gruppenId">
                         <option value="-1">Alle</option>
                         <option th:each="gruppe : ${gruppen}"
                                 th:value="${gruppe.getId()}"
@@ -40,7 +44,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-row" for="Tag">Tags </label>
+                    <label for="Tag">Tags </label>
                     <input type="text" class="form-control" id="Tag" name="tags">
                 </div>
                 <script src="../static/dist/tokenfield.min.js" th:src="@{dist/tokenfield.min.js}"></script>
@@ -85,7 +89,7 @@
                 </script>
 
                 <div class="form-group">
-                    <label class="form-row" for="Dateityp">Dateityp</label>
+                    <label for="Dateityp">Dateityp</label>
                     <input type="text" class="form-control" id="Dateityp" name="dateiTyp">
                 </div>
                 <script src="../static/dist/tokenfield.min.js" th:src="@{dist/tokenfield.min.js}"></script>
@@ -130,7 +134,7 @@
                 </script>
 
                 <div class="form-group">
-                    <label class="form-row" for="Uploader" >Uploader</label>
+                    <label for="Uploader" >Uploader</label>
                     <input type="text" class="form-control" id="Uploader" name="uploader">
                 </div>
                 <script src="../static/dist/tokenfield.min.js" th:src="@{dist/tokenfield.min.js}"></script>
@@ -193,15 +197,15 @@
                     <div class="form-inline">
                         <select class="form-control" id="SelectSearchBy" name="sortierKriterium">
                             <option> Kategorie </option>
-                            <option> Name </option>
-                            <option> Datum </option>
-                            <option> Dateityp </option>
-                            <option> Uploader </option>
+                            <option th:selected="${suche?.getSortierKriterium()?.equals('Name')}"> Name </option>
+                            <option th:selected="${suche?.getSortierKriterium()?.equals('Datum')}"> Datum </option>
+                            <option th:selected="${suche?.getSortierKriterium()?.equals('Dateityp')}"> Dateityp </option>
+                            <option th:selected="${suche?.getSortierKriterium()?.equals('Uploader')}"> Uploader </option>
                         </select>
                         <label for="SelectOrder"></label>
                         <select class="form-control" id="SelectOrder" name="reihenfolge">
                             <option>aufsteigend</option>
-                            <option>absteigend</option>
+                            <option th:selected="${suche?.getReihenfolge()?.equals('absteigend')}">absteigend</option>
                         </select>
                     </div>
                 </div>
@@ -213,7 +217,8 @@
         </div>
 
         <div th:unless="${dateien == null}" th:align="left">
-            <h1 class="text-left mt-4 mb-4">
+
+            <h1 class="text mt-4 mb-2">
                 Ergebnisse
             </h1>
             <div th:if="${isSortedByKategorie}">
@@ -221,14 +226,16 @@
                     <div class="card" th:each="kategorie, iter : ${kategorien}">
                         <div class="card-header" id="${kategorie}">
                             <h2 class="mb-0">
-                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                                <button class="btn btn-link " type="button" data-toggle="collapse"
                                         th:data-target="'#collapseOne' + ${iter.index}"
-                                        aria-expanded="false" aria-controls="collapseOne" th:text="${kategorie}">
+                                        aria-expanded="true" aria-controls="collapseOne" th:text="${kategorie}">
                                 </button>
                             </h2>
                         </div>
-                        <div th:id="'collapseOne' + ${iter.index}" class="collapse" aria-labelledby="${kategorie}" data-parent="#dataCategorys">
-                            <div class="card-body p-0 pb-2 m-0" th:each="datei : ${dateien}" th:if="${datei.getKategorie().equals(kategorie)}">
+                        <div th:id="'collapseOne' + ${iter.index}" class="collapse" aria-labelledby="${kategorie}"
+                             data-parent="#dataCategorys">
+                            <div class="card-body p-0 pb-2 m-0" th:each="datei : ${dateien}"
+                                 th:if="${datei.getKategorie().equals(kategorie)}">
                                 <div class="card">
                                     <h6 class="card-title h5">
                                         <div class="d-inline" th:each="tag : ${datei.getTags()}">
@@ -237,16 +244,25 @@
                                         <div class="list-inline text-muted">
                                             <span class="card d-inline" th:text="${datei.getDateityp()}"></span>
                                             <span class="card d-inline" th:text="${datei.getDateigroesseFormated()}"></span>
-                                            <span class="card d-inline" th:text="${datei.getUploaddatum()}"></span>
+                                            <span class="card d-inline" th:text="${datei.getVeroeffentlichungsdatum()}"></span>
                                             <span class="card d-inline" th:text="${datei.getUploader().getName()}">
-                                        </span>
+                                    </span>
                                         </div>
                                     </h6>
-                                    <p class="card-text h2 pb-3" th:text="${datei.getName()}"></p>
+                                    <div class="list-inline" id="dateimain">
+                                        <span class="card-text h2 pb-3" th:text="${datei.getName()}"></span>
+                                        <div class="btn-group" role="group" aria-label="Basic example">
+                                            <a class="btn btn-info" role="button"
+                                               th:href="@{/update(dateiId=${datei.getId()})}"
+                                               href="#">EDIT</a>
+                                            <a class="btn btn-primary" role="button" th:href="@{/files(fileId=${datei.getId()})}"
+                                               href="#">DOWNLOAD</a>
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -261,12 +277,22 @@
                             <div class="list-inline text-muted">
                                 <span class="card d-inline" th:text="${datei.getDateityp()}"></span>
                                 <span class="card d-inline" th:text="${datei.getDateigroesseFormated()}"></span>
-                                <span class="card d-inline" th:text="${datei.getUploaddatum()}"></span>
+                                <span class="card d-inline" th:text="${datei.getVeroeffentlichungsdatum()}"></span>
                                 <span class="card d-inline" th:text="${datei.getUploader().getName()}">
-                                        </span>
+                                    </span>
                             </div>
                         </h6>
-                        <p class="card-text h2 pb-3" th:text="${datei.getName()}"></p>
+                        <div class="list-inline" id="dateisecound">
+                            <span class="card-text h2 pb-3" th:text="${datei.getName()}"></span>
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                <a class="btn btn-info" role="button"
+                                   th:href="@{/update(dateiId=${datei.getId()})}"
+                                   href="#">EDIT</a>
+                                <a class="btn btn-primary" role="button" th:href="@{/files(fileId=${datei.getId()})}"
+                                   href="#">DOWNLOAD</a>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
             </div>

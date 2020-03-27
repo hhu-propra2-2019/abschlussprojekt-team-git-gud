@@ -38,9 +38,13 @@ public class UpdateService implements IUpdateService {
      */
     private void dateiUpdate(final Datei datei, final String gruppenId, final LocalDate veroeffentlichungsdatum,
                              final List<Tag> tags) throws SQLException {
-        Datei changedDatei = new Datei(datei.getId(), datei.getName(), datei.getUploader(),
+        Datei changedDatei = new Datei(datei.getId(),
+                datei.getName(),
+                datei.getUploader(),
                 tags == null ? new ArrayList<>() : tags,
-                datei.getUploaddatum(), veroeffentlichungsdatum, datei.getDateigroesse(),
+                datei.getUploaddatum(),
+                veroeffentlichungsdatum == null ? datei.getVeroeffentlichungsdatum() : veroeffentlichungsdatum,
+                datei.getDateigroesse(),
                 datei.getDateityp(), datei.getKategorie());
 
         modelService.saveDatei(changedDatei, gruppenId);

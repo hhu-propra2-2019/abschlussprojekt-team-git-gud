@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -82,6 +83,7 @@ class MaterialControllerAccessTest {
         when(modelService.getAlleDateiTypenByUser(any())).thenReturn(dateiTypen);
         when(modelService.getAccountFromKeycloak(any())).thenReturn(new Account("BennyGoodman", "nice.de",
                 "image", dateiTypen));
+        when(modelService.getDateiById(anyLong(), any())).thenReturn(null);
     }
 
     //Unknown User Access tests
@@ -114,6 +116,16 @@ class MaterialControllerAccessTest {
     @Test
     void testDateisichtUnknownUser() throws Exception {
         mvc.perform(get("/material2/dateiSicht"))
+                .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    void testUpdateUnknownUser() throws Exception {
+        mvc.perform(get("/material2/update"))
+                .andExpect(status().is3xxRedirection());
+
+        mvc.perform(post("/material2/update")
+                .with(csrf()))
                 .andExpect(status().is3xxRedirection());
     }
 
@@ -151,6 +163,17 @@ class MaterialControllerAccessTest {
     @WithMockKeycloackAuth(name = "Benny Goodman", roles = "TESTER")
     void testDateisichtPublicUser() throws Exception {
         mvc.perform(get("/material2/dateiSicht"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "Benny Goodman", roles = "TESTER")
+    void testUpdatePublicUser() throws Exception {
+        mvc.perform(get("/material2/update"))
+                .andExpect(status().isForbidden());
+
+        mvc.perform(post("/material2/update")
+                .with(csrf()))
                 .andExpect(status().isForbidden());
     }
 
@@ -193,6 +216,21 @@ class MaterialControllerAccessTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    @WithMockKeycloackAuth(name = "Bruce W.", roles = "studentin")
+    void testUpdateStudentUser() throws Exception {
+
+
+        mvc.perform(get("/material2/update")
+                .param("gruppenId", "1")
+                .param("dateiId", "1"))
+                .andExpect(status().is3xxRedirection());
+
+        mvc.perform(post("/material2/update")
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection());
+    }
+
     //Orga User Access tests
 
     @Test
@@ -231,6 +269,19 @@ class MaterialControllerAccessTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    @WithMockKeycloackAuth(name = "Donald T.", roles = "orga")
+    void testUpdateOrgaUser() throws Exception {
+        mvc.perform(get("/material2/update")
+                .param("gruppenId", "1")
+                .param("dateiId", "1"))
+                .andExpect(status().is3xxRedirection());
+
+        mvc.perform(post("/material2/update")
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection());
+    }
+
     //Actuator User Access tests
 
     @Test
@@ -267,6 +318,19 @@ class MaterialControllerAccessTest {
     void testDateisichtActuatorUser() throws Exception {
         mvc.perform(get("/material2/dateiSicht"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "James B.", roles = "actuator")
+    void testUpdateActuatorUser() throws Exception {
+        mvc.perform(get("/material2/update")
+                .param("gruppenId", "1")
+                .param("dateiId", "1"))
+                .andExpect(status().is3xxRedirection());
+
+        mvc.perform(post("/material2/update")
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection());
     }
 
 }

@@ -20,16 +20,19 @@
     <div class="container">
 
         <form method="post" enctype="multipart/form-data">
-
             <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
 
             <div>
-                <p>Dateiname: <span th:text="${datei.getName()}">Dateiname</span></p>
+                <label for="dataname">Dateiname </label>
+                <input type="text" class="form-control" id="dataname" name="dateiname" th:value="${datei.getName()}"
+                       readonly>
             </div>
 
             <div>
-                <p>Uploader: <span th:text="${datei.getUploader().getNachname()}">Uploader</span></p>
-            </div>
+                <label for="uploader">Uploader </label>
+                <input type="text" class="form-control" id="uploader" name="uploader"
+                       th:value="${datei.getUploader().getName()}" readonly>
+                </div>
 
             <div>
                 <label for="input-tags">Tags </label>
@@ -48,7 +51,7 @@
                     student.push(obj);
                 }
 
-                var jp = new Tokenfield({
+                var tagField = new Tokenfield({
                     el: document.querySelector('#input-tags'),
                     items: student,
                     newItems: true,
@@ -62,7 +65,20 @@
                     singleInputValue: 'name'
                 });
 
+                var tags = [];
+                var selectedTags = /*[[${datei.getTagNamesAsArray()}]]*/ [];
+
+                for (count = 0; count < selectedTags.length; count++) {
+                    var obj = {
+                        id: count,
+                        name: selectedTags[count]
+                    };
+                    tags.push(obj);
+                }
+                tagField.setItems(tags);
+
             </script>
+
             <div class="form-group">
                 <label for="timedDate">Getimete Veröffentlichung (optional)</label>
                 <div>

@@ -1,11 +1,11 @@
 package de.hhu.propra2.material2.mops.Exceptions;
 
-public class HasNoGroupToUploadException extends Exception {
+public class FileNotPublishedYetException extends Exception {
 
     /**
      * Constructor
      */
-    public HasNoGroupToUploadException() {
+    public FileNotPublishedYetException() {
         super("Something went wrong with the Download.");
     }
 
@@ -14,7 +14,7 @@ public class HasNoGroupToUploadException extends Exception {
      *
      * @param message e.g. message from another error
      */
-    public HasNoGroupToUploadException(final String message) {
+    public FileNotPublishedYetException(final String message) {
         super(message);
     }
 }

@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
+
 import javax.annotation.security.RolesAllowed;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
@@ -317,7 +318,6 @@ public class MaterialController {
     }
 
     /**
-     *
      * @param
      * @throws SQLException
      */
@@ -332,7 +332,7 @@ public class MaterialController {
 
             statusService.updateToNewStatus(update.getStatus());
             webDTOService.updateDatabase(update);
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Gruppenbelegung konte nicht erreicht werden!");
         }
     }

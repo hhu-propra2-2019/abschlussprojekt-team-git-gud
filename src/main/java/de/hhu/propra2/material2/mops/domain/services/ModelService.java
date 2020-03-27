@@ -349,7 +349,7 @@ public final class ModelService implements IModelService {
         Account account = getAccountFromKeycloak(token);
         DateiDTO dateiDTO = repository.findDateiById(dateiId);
         User user = findUserByKeycloakname(account.getName());
-        Long gruppenId = dateiDTO.getGruppe().getId();
+        String gruppenId = dateiDTO.getGruppe().getId();
         Gruppe gruppe = user.getGruppeById(gruppenId);
 
         if (!user.hasUploadPermission(gruppe)) {

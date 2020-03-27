@@ -1,5 +1,7 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
+import de.hhu.propra2.material2.mops.Exceptions.FileNotPublishedYetException;
+import de.hhu.propra2.material2.mops.Exceptions.NoDownloadPermissionException;
 import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.TagDTO;
@@ -17,6 +19,7 @@ import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -247,8 +250,9 @@ public final class ModelService implements IModelService {
 
     /**
      * get datei by gruppenId, dateiId and UserToken
+     *
      * @param dateiId Id of the file
-     * @param token KeycloakAuthenticationToken of the user
+     * @param token   KeycloakAuthenticationToken of the user
      * @return Datei if file is found in the given group of the given user, null if not
      */
     public Datei getDateiById(final long dateiId,
@@ -256,7 +260,7 @@ public final class ModelService implements IModelService {
         User user = createUserByToken(token);
         List<Gruppe> gruppen = user.getAllGruppen();
         for (Gruppe gruppe : gruppen) {
-            for (Datei datei: gruppe.getDateien()) {
+            for (Datei datei : gruppe.getDateien()) {
                 if (datei.getId() == dateiId) {
                     return datei;
                 }
@@ -317,5 +321,31 @@ public final class ModelService implements IModelService {
 
     public User findUserByKeycloakname(final String keycloakname) throws SQLException {
         return loadUser(repository.findUserByKeycloakname(keycloakname));
+    }
+
+    @Override
+    public Boolean userHasEditPermissionForFile(final Long dateiId, final KeycloakAuthenticationToken token)
+            throws NoDownloadPermissionException, SQLException {
+        Account account = getAccountFromKeycloak(token);
+        DateiDTO dateiDTO = repository.findDateiById(dateiId);
+        User user = findUserByKeycloakname(account.getName());
+        Long gruppenId = dateiDTO.getGruppe().getId();
+        Gruppe gruppe = user.getGruppeById(gruppenId);
+
+        if (!user.hasUploadPermission(gruppe)) {
+            throw new NoDownloadPermissionException("User has no download permission");
+        }
+        return true;
+    }
+
+    @Override
+    public Boolean filesIsPublished(final Long fileId) throws SQLException, FileNotPublishedYetException {
+        DateiDTO dateiDTO = repository.findDateiById(fileId);
+        LocalDate veroeffentlichung = dateiDTO.getVeroeffentlichungsdatum();
+        LocalDate now = LocalDate.now();
+        if (veroeffentlichung.isAfter(now)) {
+            throw new FileNotPublishedYetException("Die Datei ist noch nicht veröffentlicht.");
+        }
+        return true;
     }
 }

@@ -3,6 +3,7 @@ package de.hhu.propra2.material2.mops.controller;
 import de.hhu.propra2.material2.mops.Exceptions.DownloadException;
 import de.hhu.propra2.material2.mops.Exceptions.FileNotPublishedYetException;
 import de.hhu.propra2.material2.mops.Exceptions.HasNoGroupToUploadException;
+import de.hhu.propra2.material2.mops.Exceptions.NoAccessPermissionException;
 import de.hhu.propra2.material2.mops.Exceptions.NoDeletePermissionException;
 import de.hhu.propra2.material2.mops.Exceptions.NoDownloadPermissionException;
 import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
@@ -219,16 +220,30 @@ public class MaterialController {
                          final Long dateiId) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
-        Datei datei = modelService.getDateiById(dateiId, token);
-        if (datei == null) {
+        try {
+            modelService.userHasEditPermissionForFile(dateiId, token);
+            Datei datei = modelService.getDateiById(dateiId, token);
+            model.addAttribute("datei", datei);
+            return "update";
+        } catch (NoAccessPermissionException e) {
             setMessages("Sie haben keine Zugriffsberechtigung.", null);
             model.addAttribute("error", errorMessage);
             model.addAttribute("success", successMessage);
             String url = "redirect:/material2/dateiSicht?gruppenId=%d";
             return String.format(url, gruppenId);
+        } catch (NoDownloadPermissionException e) {
+            setMessages("Sie haben keine Berechtigung die Datei zu ändern.", null);
+            model.addAttribute("error", errorMessage);
+            model.addAttribute("success", successMessage);
+            String url = "redirect:/material2/dateiSicht?gruppenId=%d";
+            return String.format(url, gruppenId);
+        } catch (SQLException e) {
+            setMessages("Die Datei konnte nicht geladen werden.", null);
+            model.addAttribute("error", errorMessage);
+            model.addAttribute("success", successMessage);
+            String url = "redirect:/material2/dateiSicht?gruppenId=%d";
+            return String.format(url, gruppenId);
         }
-        model.addAttribute("datei", datei);
-        return "update";
     }
 
     /**
@@ -258,6 +273,8 @@ public class MaterialController {
             setMessages("Es gab ein Problem beim Update.", null);
         } catch (NoUploadPermissionException e) {
             setMessages("Sie sind nicht berechtigt diese Datei zu verändern.", null);
+        } catch (NoAccessPermissionException e) {
+            setMessages("Sie haben keine Zugriffberechtigung.", null);
         }
         model.addAttribute("error", errorMessage);
         model.addAttribute("success", successMessage);
@@ -309,7 +326,11 @@ public class MaterialController {
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public ResponseEntity<InputStreamResource> getFile(final Long fileId,
                                                        final KeycloakAuthenticationToken token)
-            throws DownloadException, NoDownloadPermissionException, SQLException, FileNotPublishedYetException {
+            throws DownloadException,
+            NoDownloadPermissionException,
+            SQLException,
+            FileNotPublishedYetException,
+            NoAccessPermissionException {
         if (modelService.userHasEditPermissionForFile(fileId, token) && modelService.filesIsPublished(fileId)) {
             InputStream input = new BufferedInputStream(minIOService.getObject(fileId));
             Datei file = modelService.getDateiById(fileId, token);
@@ -413,6 +434,19 @@ public class MaterialController {
     @ExceptionHandler(FileNotPublishedYetException.class)
     String handleFileNotPublishedYetException(final FileNotPublishedYetException e) {
         setMessages("Der Download wurde verboten, da die Datei noch nicht veröffentlicht ist.",
+                null);
+        return "redirect:/material2/";
+    }
+
+    /**
+     * exception handler for no access permission exception.
+     *
+     * @param e exception
+     * @return redirect to home page with a error message
+     */
+    @ExceptionHandler(NoAccessPermissionException.class)
+    String handleNoAccessPermissionException(final NoAccessPermissionException e) {
+        setMessages("Sie haben keine Zugriffsberechtigung auf diese Datei.",
                 null);
         return "redirect:/material2/";
     }

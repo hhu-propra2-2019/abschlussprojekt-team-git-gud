@@ -77,7 +77,7 @@ public class User {
      * @return returns true only if the user has upload permission in the given group
      */
     public boolean hasUploadPermission(final Gruppe gruppe) {
-        if (belegungUndRechte == null || belegungUndRechte.isEmpty()) {
+        if (gruppe.getId() == -1 || belegungUndRechte == null || belegungUndRechte.isEmpty()) {
             return false;
         }
         return belegungUndRechte.get(gruppe);

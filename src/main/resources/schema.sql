@@ -2,7 +2,7 @@ Set foreign_key_checks=0;
 DROP TABLE IF EXISTS User;
 CREATE TABLE User
 (
-    userID BIGINT PRIMARY KEY NOT NULL,
+    userID BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
     vorname     text NOT NULL,
     nachname    text NOT NULL,
     key_cloak_name VARCHAR(255) UNIQUE NOT NULL

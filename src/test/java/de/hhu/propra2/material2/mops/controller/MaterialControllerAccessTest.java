@@ -92,18 +92,15 @@ class MaterialControllerAccessTest {
         when(modelService.getAlleDateiTypenByUser(any())).thenReturn(dateiTypen);
         when(modelService.getAccountFromKeycloak(any())).thenReturn(new Account("BennyGoodman", "nice.de",
                 "image", dateiTypen));
-<<<<<<<<< Temporary merge branch 1
         Datei datei = new Datei(1L, "", new User(1, "A", "B", "", null),
                 new ArrayList<>(), null, null, 1, null, null);
         when(modelService.getDateiById(anyLong(), any())).thenReturn(datei);
         when(modelService.userHasEditPermissionForFile(anyLong(), any())).thenReturn(true);
-=========
         when(modelService.getSuchergebnisse(any())).thenReturn(dateien);
         when(modelService.isSortedByKategorie()).thenReturn(true);
         when(modelService.getKategorienFromSuche(any())).thenReturn(kategorien);
         when(modelService.getTagsAsSet(any())).thenReturn(selectedTags);
         when(modelService.getDateiById(anyLong(), any())).thenReturn(null);
->>>>>>>>> Temporary merge branch 2
     }
 
     //Unknown User Access tests

@@ -1,13 +1,18 @@
 package de.hhu.propra2.material2.mops.controller;
 
 import de.hhu.propra2.material2.mops.Exceptions.DownloadException;
+import de.hhu.propra2.material2.mops.Exceptions.FileNotPublishedYetException;
 import de.hhu.propra2.material2.mops.Exceptions.HasNoGroupToUploadException;
+import de.hhu.propra2.material2.mops.Exceptions.NoDeletePermissionException;
+import de.hhu.propra2.material2.mops.Exceptions.NoDownloadPermissionException;
 import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
+import de.hhu.propra2.material2.mops.Exceptions.ObjectNotInMinioException;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
 import de.hhu.propra2.material2.mops.domain.models.UpdateForm;
 import de.hhu.propra2.material2.mops.domain.models.UploadForm;
+import de.hhu.propra2.material2.mops.domain.services.DeleteService;
 import de.hhu.propra2.material2.mops.domain.services.MinIOService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
 import de.hhu.propra2.material2.mops.domain.services.UpdateService;
@@ -25,10 +30,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.annotation.SessionScope;
 
 import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.sql.SQLException;
@@ -41,6 +46,7 @@ import java.util.List;
  */
 @Controller
 @SessionScope
+@RequestMapping("/material2")
 @SuppressWarnings("checkstyle:ParenPad")
 public class MaterialController {
 
@@ -52,6 +58,8 @@ public class MaterialController {
     private UpdateService updateService;
     @Autowired
     private MinIOService minIOService;
+    @Autowired
+    private DeleteService deleteService;
 
     private String errorMessage;
     private String successMessage;
@@ -206,7 +214,7 @@ public class MaterialController {
      * @return update page
      */
     @GetMapping("/update")
-    @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public String update(final KeycloakAuthenticationToken token,
                          final Model model,
                          final Long gruppenId,
@@ -218,7 +226,7 @@ public class MaterialController {
             setMessages("Sie haben keine Zugriffsberechtigung.", null);
             model.addAttribute("error", errorMessage);
             model.addAttribute("success", successMessage);
-            String url = "redirect:/dateiSicht?gruppenId=%d";
+            String url = "redirect:/material2/dateiSicht?gruppenId=%d";
             return String.format(url, gruppenId);
         }
         model.addAttribute("datei", datei);
@@ -236,7 +244,7 @@ public class MaterialController {
      * @return update page
      */
     @PostMapping("/update")
-    @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public String update(final KeycloakAuthenticationToken token,
                          final Model model,
                          final UpdateForm updateForm,
@@ -255,21 +263,45 @@ public class MaterialController {
         }
         model.addAttribute("error", errorMessage);
         model.addAttribute("success", successMessage);
-        String url = "redirect:/dateiSicht?gruppenId=%d";
+        String url = "redirect:/material2/dateiSicht?gruppenId=%d";
         return String.format(url, gruppenId);
     }
 
     /**
-     * route to logout.
+     * route for deleting files.
      *
-     * @param request logout request
-     * @return homepage routing
-     * @throws Exception no handling
+     * @param token     keycloak token
+     * @param model     thymelef model
+     * @param dateiId   that should be deleted
+     * @param gruppenId the group in which the file lays
+     * @return dateisicht html
+     * @throws NoDeletePermissionException delete fails if no permission
      */
-    @GetMapping("/logout")
-    public String logout(final HttpServletRequest request) throws Exception {
-        request.logout();
-        return "redirect:/";
+    @GetMapping("/delete")
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
+    public String upload(final KeycloakAuthenticationToken token, final Model model,
+                         final Long dateiId, final Long gruppenId) throws NoDeletePermissionException {
+        model.addAttribute("account", modelService.getAccountFromKeycloak(token));
+        model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
+
+        try {
+            deleteService.dateiLoeschenStarten(dateiId, token);
+            setMessages(null, "Das Löschen war erfolgreich!");
+        } catch (SQLException e) {
+            setMessages("Es gab einen SQL Fehler.", null);
+        } catch (ObjectNotInMinioException e) {
+            setMessages("Das zu löschende Object liegt nicht in MinIO.", null);
+        }
+
+        model.addAttribute("kategorien", modelService.getKategorienByGruppe(gruppenId, token));
+        model.addAttribute("dateien", modelService.getAlleDateienByGruppe(gruppenId, token));
+        Gruppe gruppenAuswahl = modelService.getGruppeByUserAndGroupID(gruppenId, token);
+        model.addAttribute("gruppenAuswahl", gruppenAuswahl);
+        model.addAttribute("error", errorMessage);
+        model.addAttribute("success", successMessage);
+        resetMessages();
+
+        return "dateiSicht";
     }
 
     /**
@@ -279,14 +311,18 @@ public class MaterialController {
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public ResponseEntity<InputStreamResource> getFile(final Long fileId,
                                                        final KeycloakAuthenticationToken token)
-            throws DownloadException, SQLException {
-        InputStream input = new BufferedInputStream(minIOService.getObject(fileId));
-        Datei file = modelService.getDateiById(fileId, token);
-        return ResponseEntity.ok()
-                .header("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""))
-                .contentLength(file.getDateigroesse())
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(new InputStreamResource(input));
+            throws DownloadException, NoDownloadPermissionException, SQLException, FileNotPublishedYetException {
+        if (modelService.userHasEditPermissionForFile(fileId, token) && modelService.filesIsPublished(fileId)) {
+            InputStream input = new BufferedInputStream(minIOService.getObject(fileId));
+            Datei file = modelService.getDateiById(fileId, token);
+            return ResponseEntity.ok()
+                    .header("Content-Disposition",
+                            String.format("inline; filename=\"" + file.getName() + "\""))
+                    .contentLength(file.getDateigroesse())
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(new InputStreamResource(input));
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     private void setMessages(final String pErrorMessage, final String pSuccessMessage) {
@@ -308,7 +344,7 @@ public class MaterialController {
     @ExceptionHandler(DownloadException.class)
     String handleDonwloadException(final DownloadException e) {
         setMessages("Beim Download gab es ein Problem.", null);
-        return "redirect:/";
+        return "redirect:/material2/";
     }
 
     /**
@@ -320,6 +356,45 @@ public class MaterialController {
     @ExceptionHandler(SQLException.class)
     String handleSQLException(final SQLException e) {
         setMessages("Beim zugriff auf die Datenbank gab es ein Problem.", null);
-        return "redirect:/";
+        return "redirect:/material2/";
+    }
+
+    /**
+     * exception handler for a sql error.
+     *
+     * @param e exception
+     * @return redirect to home page with a error message
+     */
+    @ExceptionHandler(NoDeletePermissionException.class)
+    String handleNoDeletePermissionException(final NoDeletePermissionException e) {
+        setMessages("Der Löschaufruf wurde verboten, da sie keine Erlaubnis für diese Datei besitzen.",
+                null);
+        return "redirect:/material2/";
+    }
+
+    /**
+     * exception handler for a sql error.
+     *
+     * @param e exception
+     * @return redirect to home page with a error message
+     */
+    @ExceptionHandler(NoDownloadPermissionException.class)
+    String handleNoDownloadPermissionException(final NoDownloadPermissionException e) {
+        setMessages("Der Download wurde verboten, da sie keine Erlaubnis für diese Datei besitzen.",
+                null);
+        return "redirect:/material2/";
+    }
+
+    /**
+     * exception handler for a sql error.
+     *
+     * @param e exception
+     * @return redirect to home page with a error message
+     */
+    @ExceptionHandler(FileNotPublishedYetException.class)
+    String handleFileNotPublishedYetException(final FileNotPublishedYetException e) {
+        setMessages("Der Download wurde verboten, da die Datei noch nicht veröffentlicht ist.",
+                null);
+        return "redirect:/material2/";
     }
 }

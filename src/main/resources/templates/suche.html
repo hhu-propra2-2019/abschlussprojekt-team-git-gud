@@ -47,7 +47,7 @@
                     <label for="Tag">Tags </label>
                     <input type="text" class="form-control" id="Tag" name="tags">
                 </div>
-                <script src="../static/dist/tokenfield.min.js" th:src="@{dist/tokenfield.min.js}"></script>
+                <script src="../static/dist/tokenfield.min.js" th:src="@{../dist/tokenfield.min.js}"></script>
                 <script th:inline="javascript">
                     var suggestions = [];
                     var tagTexts = /*[[${tags}]]*/ [];
@@ -92,7 +92,7 @@
                     <label for="Dateityp">Dateityp</label>
                     <input type="text" class="form-control" id="Dateityp" name="dateiTyp">
                 </div>
-                <script src="../static/dist/tokenfield.min.js" th:src="@{dist/tokenfield.min.js}"></script>
+                <script src="../static/dist/tokenfield.min.js" th:src="@{../dist/tokenfield.min.js}"></script>
                 <script th:inline="javascript">
                     var DateiTypenSuggestions = [];
                     var DateiTypenTexts = /*[[${dateiTypen}]]*/ [];
@@ -137,7 +137,7 @@
                     <label for="Uploader" >Uploader</label>
                     <input type="text" class="form-control" id="Uploader" name="uploader">
                 </div>
-                <script src="../static/dist/tokenfield.min.js" th:src="@{dist/tokenfield.min.js}"></script>
+                <script src="../static/dist/tokenfield.min.js" th:src="@{../dist/tokenfield.min.js}"></script>
                 <script th:inline="javascript">
                     var suggestions = [];
                     var uploaderTexts = /*[[${uploader}]]*/ [];

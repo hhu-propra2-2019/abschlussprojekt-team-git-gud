@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <link href="../static/dist/tokenfield.css" th:href="dist/tokenfield.css" rel="stylesheet">
+    <link href="../static/dist/tokenfield.css" th:href="../dist/tokenfield.css" rel="stylesheet">
     <title>Index</title>
 </head>
 
@@ -20,28 +20,30 @@
     <div class="container">
 
         <form method="post" enctype="multipart/form-data">
-
             <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
 
             <div>
-                <p>Dateiname: <span th:text="${datei.getName()}">Dateiname</span></p>
+                <label for="dataname">Dateiname </label>
+                <input type="text" class="form-control" id="dataname" name="dateiname" th:value="${datei.getName()}"
+                       readonly>
             </div>
 
             <div>
-                <p>Uploader: <span th:text="${datei.getUploader().getNachname()}">Uploader</span></p>
-            </div>
+                <label for="uploader">Uploader </label>
+                <input type="text" class="form-control" id="uploader" name="uploader"
+                       th:value="${datei.getUploader().getName()}" readonly>
+                </div>
 
             <div>
                 <label for="input-tags">Tags </label>
                 <input type="text" name="selectedTags" id="input-tags">
             </div>
-            <script src="../static/dist/tokenfield.min.js" th:src="@{dist/tokenfield.min.js}"></script>
+            <script src="../static/dist/tokenfield.min.js" th:src="@{../dist/tokenfield.min.js}"></script>
             <script th:inline="javascript">
                 var student = [];
                 var tagTexts = /*[[${tagText}]]*/ [];
 
-                for (count = 0; count < tagTexts.length; count++)
-                {
+                for (count = 0; count < tagTexts.length; count++) {
                     var obj = {
                         id: count,
                         name: tagTexts[count]
@@ -49,7 +51,7 @@
                     student.push(obj);
                 }
 
-                var jp = new Tokenfield({
+                var tagField = new Tokenfield({
                     el: document.querySelector('#input-tags'),
                     items: student,
                     newItems: true,
@@ -63,24 +65,25 @@
                     singleInputValue: 'name'
                 });
 
-            </script>
-            <!--  <div>
-                  <label for="tagsIn">Tags </label>
-                  <input type="text" class="form-control" id="tagsIn" name="selectedTags"  placeholder="Vorlesung, ">
-              </div>
+                var tags = [];
+                var selectedTags = /*[[${datei.getTagNamesAsArray()}]]*/ [];
 
-              <div class="form-group">
-                  <ul>
-                      <li th:each="tag : ${tags}">
-                          <span  th:text="${tag.text}">Vorlesung</span>
-                      </li>
-                  </ul>
-              </div> -->
+                for (count = 0; count < selectedTags.length; count++) {
+                    var obj = {
+                        id: count,
+                        name: selectedTags[count]
+                    };
+                    tags.push(obj);
+                }
+                tagField.setItems(tags);
+
+            </script>
 
             <div class="form-group">
                 <label for="timedDate">Getimete Veröffentlichung (optional)</label>
                 <div>
-                    <input type="date" th:value="${datei.getVeroeffentlichungsdatum()}" name="timedUpload" id="timedDate">
+                    <input type="date" th:value="${datei.getVeroeffentlichungsdatum()}" name="timedUpload"
+                           id="timedDate">
                 </div>
             </div>
 

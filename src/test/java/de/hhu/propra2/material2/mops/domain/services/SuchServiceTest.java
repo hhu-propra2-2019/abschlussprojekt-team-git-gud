@@ -608,4 +608,40 @@ class SuchServiceTest {
         assertThat(result.get(2), anyOf(equalTo(datei1), equalTo(datei3)));
         assertThat(result.get(3), anyOf(equalTo(datei1), equalTo(datei3)));
     }
+
+    @Test
+    public void onlyFilesWithCorrectVeroeffentlichungsDatumAreShown() {
+        Suche suche = new Suche(
+                "",
+                "",
+                "",
+                "",
+                "",
+                null,
+                null,
+                "",
+                null);
+
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        LocalDate tomorow = LocalDate.now().plusDays(1);
+        LocalDate today = LocalDate.now();
+
+        Datei dateiYesterday = new Datei(1, "My stuff", uploaderMock1, null,
+                null, yesterday, 1, "pdf", "Uebung");
+        Datei dateiTomorrow = new Datei(1, "My stuff", uploaderMock1, null,
+                null, tomorow, 1, "pdf", "Uebung");
+        Datei dateiToday = new Datei(1, "My stuff", uploaderMock1, null,
+                null, today, 1, "pdf", "Uebung");
+
+        List<Datei> dateienMitVeroeffentlichungsdatum = new ArrayList<>();
+        dateienMitVeroeffentlichungsdatum.add(dateiYesterday);
+        dateienMitVeroeffentlichungsdatum.add(dateiToday);
+        dateienMitVeroeffentlichungsdatum.add(dateiTomorrow);
+
+        List<Datei> result = suchService.starteSuche(suche, dateienMitVeroeffentlichungsdatum);
+
+        assertThat(result.contains(dateiToday), is(true));
+        assertThat(result.contains(dateiTomorrow), is(false));
+        assertThat(result.contains(dateiYesterday), is(true));
+    }
 }

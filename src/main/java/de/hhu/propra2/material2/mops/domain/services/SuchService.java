@@ -46,15 +46,23 @@ public class SuchService {
         if (!suche.getDateiName().trim().isEmpty()) {
             result = dateiNamenSuche(suche.getDateiName(), result);
         }
+        result = filterVeroeffentlichung(result);
         if (suche.getSortierKriterium() != null) {
             result = sortieren(suche.getSortierKriterium(),
                     suche.getReihenfolge(),
                     result);
         }
-
         if (result.isEmpty()) {
             return null;
         }
+        return result;
+    }
+
+    private List<Datei> filterVeroeffentlichung(final List<Datei> resultArg) {
+        LocalDate today = LocalDate.now();
+        List<Datei> result = resultArg.stream()
+                .filter(datei -> datei.getVeroeffentlichungsdatum().compareTo(today) <= 0)
+                .collect(Collectors.toList());
         return result;
     }
 

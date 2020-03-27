@@ -18,6 +18,15 @@
     <p class="text-lg-left">
         Hier könnte ihre Gruppenbeschreibung stehen.
     </p>
+
+    <div id="error-message" th:classappend="${error != null} ? 'alert alert-warning'" th:text="${error}">
+        Some error message
+    </div>
+
+    <div id="success-message" th:classappend="${success != null} ? 'alert alert-success'" th:text="${success}">
+        Jeah, it works!
+    </div>
+
     <div class="accordion" id="dataCategorys">
         <div class="card" th:each="kategorie, iter : ${kategorien}">
             <div class="card-header" id="${kategorie}">
@@ -40,7 +49,7 @@
                             <div class="list-inline text-muted">
                                 <span class="card d-inline" th:text="${datei.getDateityp()}"></span>
                                 <span class="card d-inline" th:text="${datei.getDateigroesseFormated()}"></span>
-                                <span class="card d-inline" th:text="${datei.getUploaddatum()}"></span>
+                                <span class="card d-inline" th:text="${datei.getVeroeffentlichungsdatum()}"></span>
                                 <span class="card d-inline" th:text="${datei.getUploader().getName()}">
                                     </span>
                             </div>
@@ -49,10 +58,16 @@
                             <span class="card-text h2 pb-3" th:text="${datei.getName()}"></span>
                             <div class="btn-group" role="group" aria-label="Basic example">
                                 <a class="btn btn-info" role="button"
-                                   th:href="@{/update(fileId=${datei.getId()}, gruppenID=${gruppenAuswahl.getId()})}"
+                                   th:href="@{/material2/update(dateiId=${datei.getId()},
+                                    gruppenId=${gruppenAuswahl.getId()})}"
                                    href="#">EDIT</a>
-                                <a class="btn btn-primary" role="button" th:href="@{/files(fileId=${datei.getId()})}"
+                                <a class="btn btn-primary" role="button"
+                                   th:href="@{/material2/files(fileId=${datei.getId()})}"
                                    href="#">DOWNLOAD</a>
+                                <a class="btn btn-danger" role="button"
+                                   th:href="@{/material2/delete(dateiId=${datei.getId()},
+                                   gruppenId=${gruppenAuswahl.getId()})}"
+                                   href="#">X</a>
                             </div>
 
                         </div>

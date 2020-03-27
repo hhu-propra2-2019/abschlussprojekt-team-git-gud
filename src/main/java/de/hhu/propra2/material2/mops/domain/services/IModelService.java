@@ -44,5 +44,5 @@ public interface IModelService {
 
     Account getAccountFromKeycloak(KeycloakAuthenticationToken token);
 
-    Datei findDateiById(long dateiId) throws SQLException;
+    Datei getDateiById(long dateiId, KeycloakAuthenticationToken token) throws SQLException;
 }

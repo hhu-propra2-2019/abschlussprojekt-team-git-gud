@@ -1,17 +1,23 @@
 package de.hhu.propra2.material2.mops.controller;
 
 import de.hhu.propra2.material2.mops.Exceptions.DownloadException;
+import de.hhu.propra2.material2.mops.Exceptions.HasNoGroupToUploadException;
+import de.hhu.propra2.material2.mops.Exceptions.NoDeletePermissionException;
 import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
+import de.hhu.propra2.material2.mops.Exceptions.ObjectNotInMinioException;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
+import de.hhu.propra2.material2.mops.domain.models.UpdateForm;
 import de.hhu.propra2.material2.mops.domain.models.UploadForm;
+import de.hhu.propra2.material2.mops.domain.services.DeleteService;
 import de.hhu.propra2.material2.mops.domain.services.MinIOService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
-import de.hhu.propra2.material2.mops.security.Account;
+import de.hhu.propra2.material2.mops.domain.services.UpdateService;
 import de.hhu.propra2.material2.mops.domain.services.UploadService;
-import de.hhu.propra2.material2.mops.web.dto.UpdatedGroupRequestMapper;
-import de.hhu.propra2.material2.mops.web.dto.WebDTOService;
+import de.hhu.propra2.material2.mops.domain.services.webdto.UpdatedGroupRequestMapper;
+import de.hhu.propra2.material2.mops.security.Account;
+import de.hhu.propra2.material2.mops.domain.services.WebDTOService;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +31,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +46,7 @@ import java.sql.SQLException;
  * satisfy both conditions and have to disable one
  */
 @Controller
+@RequestMapping("/material2")
 @SuppressWarnings("checkstyle:ParenPad")
 public class MaterialController {
 
@@ -49,10 +57,16 @@ public class MaterialController {
     @Autowired
     private UploadService uploadService;
     @Autowired
+    private UpdateService updateService;
+    @Autowired
     private MinIOService minIOService;
     @Autowired
     private WebDTOService webDTOService;
+    @Autowired
+    private DeleteService deleteService;
 
+
+    private final long updateRate = 5000;
     private String errorMessage;
     private String successMessage;
 
@@ -87,6 +101,9 @@ public class MaterialController {
         model.addAttribute("dateien", modelService.getAlleDateienByGruppe(gruppenId, token));
         Gruppe gruppenAuswahl = modelService.getGruppeByUserAndGroupID(gruppenId, token);
         model.addAttribute("gruppenAuswahl", gruppenAuswahl);
+        model.addAttribute("error", errorMessage);
+        model.addAttribute("success", successMessage);
+        resetMessages();
         return "dateiSicht";
     }
 
@@ -125,7 +142,7 @@ public class MaterialController {
             model.addAttribute("suche", suchen);
             return "redirect:/suche";
         }
-        return "redirect:/suche";
+        return "redirect:/material2/suche";
     }
 
     /**
@@ -169,13 +186,115 @@ public class MaterialController {
         } catch (SQLException e) {
             setMessages("Beim speichern in der Datenbank gab es einen Fehler.", null);
         } catch (NoUploadPermissionException e) {
-            setMessages("Sie sind nicht berechtig in dieser Gruppe hochzuladen!", null);
+            setMessages("Sie sind nicht berechtigt in dieser Gruppe hochzuladen!", null);
+        } catch (HasNoGroupToUploadException e) {
+            setMessages("Sie haben keine Gruppe, auf die sie hochladen können!", null);
         }
 
         model.addAttribute("error", errorMessage);
         model.addAttribute("success", successMessage);
         resetMessages();
         return "upload";
+    }
+
+    /**
+     * update page.
+     *
+     * @param token     injected keycloak token
+     * @param model     injected thymeleaf model
+     * @param gruppenId id of the group where the file is saved
+     * @param dateiId   id of the file
+     * @return update page
+     */
+    @GetMapping("/update")
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
+    public String update(final KeycloakAuthenticationToken token,
+                         final Model model,
+                         final Long gruppenId,
+                         final Long dateiId) {
+        model.addAttribute("account", modelService.getAccountFromKeycloak(token));
+        model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
+        Datei datei = modelService.getDateiById(dateiId, token);
+        if (datei == null) {
+            setMessages("Sie haben keine Zugriffsberechtigung.", null);
+            model.addAttribute("error", errorMessage);
+            model.addAttribute("success", successMessage);
+            String url = "redirect:/material2/dateiSicht?gruppenId=%d";
+            return String.format(url, gruppenId);
+        }
+        model.addAttribute("datei", datei);
+        return "update";
+    }
+
+    /**
+     * update routing.
+     *
+     * @param token      injected keycloak token
+     * @param model      injected thymeleaf model
+     * @param updateForm form for update
+     * @param gruppenId  id of the group where the file is saved
+     * @param dateiId    id of the file
+     * @return update page
+     */
+    @PostMapping("/update")
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
+    public String update(final KeycloakAuthenticationToken token,
+                         final Model model,
+                         final UpdateForm updateForm,
+                         final String gruppenId,
+                         final Long dateiId) {
+        Account userAccount = modelService.getAccountFromKeycloak(token);
+        model.addAttribute("account", userAccount);
+        model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
+        try {
+            updateService.startUpdate(updateForm, userAccount.getName(), gruppenId, dateiId);
+            setMessages(null, "Edit erfolgreich.");
+        } catch (SQLException e) {
+            setMessages("Es gab ein Problem beim Update.", null);
+        } catch (NoUploadPermissionException e) {
+            setMessages("Sie sind nicht berechtigt diese Datei zu verändern.", null);
+        }
+        model.addAttribute("error", errorMessage);
+        model.addAttribute("success", successMessage);
+        String url = "redirect:/dateiSicht?gruppenId=%d";
+        return String.format(url, gruppenId);
+    }
+
+    /**
+     * route for deleting files.
+     *
+     * @param token     keycloak token
+     * @param model     thymelef model
+     * @param dateiId   that should be deleted
+     * @param gruppenId the group in which the file lays
+     * @return dateisicht html
+     * @throws NoDeletePermissionException delete fails if no permission
+     */
+    @GetMapping("/delete")
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
+    public String upload(final KeycloakAuthenticationToken token, final Model model,
+                         final Long dateiId, final String gruppenId) throws NoDeletePermissionException {
+        model.addAttribute("account", modelService.getAccountFromKeycloak(token));
+        model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
+
+        try {
+            deleteService.dateiLoeschenStarten(dateiId, token);
+            setMessages(null, "Upload war erfolgreich!");
+        } catch (SQLException e) {
+            setMessages("Es gab einen SQL Fehler.", null);
+        } catch (ObjectNotInMinioException e) {
+            setMessages("Das zu löschende Object liegt nicht in MinIO.", null);
+        }
+
+        model.addAttribute("kategorien", modelService.getKategorienByGruppe(gruppenId, token));
+        model.addAttribute("dateien", modelService.getAlleDateienByGruppe(gruppenId, token));
+        Gruppe gruppenAuswahl = modelService.getGruppeByUserAndGroupID(gruppenId, token);
+        model.addAttribute("gruppenAuswahl", gruppenAuswahl);
+        model.addAttribute("error", errorMessage);
+        model.addAttribute("success", successMessage);
+        resetMessages();
+
+        return "dateiSicht";
     }
 
     /**
@@ -188,7 +307,7 @@ public class MaterialController {
     @GetMapping("/logout")
     public String logout(final HttpServletRequest request) throws Exception {
         request.logout();
-        return "redirect:/";
+        return "redirect:/material2/";
     }
 
     /**
@@ -200,7 +319,7 @@ public class MaterialController {
                                                        final KeycloakAuthenticationToken token)
             throws DownloadException, SQLException {
         InputStream input = new BufferedInputStream(minIOService.getObject(fileId));
-        Datei file = modelService.findDateiById(fileId);
+        Datei file = modelService.getDateiById(fileId, token);
         return ResponseEntity.ok()
                 .header("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""))
                 .contentLength(file.getDateigroesse())
@@ -208,9 +327,15 @@ public class MaterialController {
                 .body(new InputStreamResource(input));
     }
 
-    @Scheduled(fixedRate = 5000)
-    public void updateGroups(int status) throws SQLException {
-        UpdatedGroupRequestMapper update = serviceAccountRestTemplate.getForEntity("http://localhost:8080/gruppe2//api/updateGroups/{status}",
+    /**
+     *
+     * @param status
+     * @throws SQLException
+     */
+    @Scheduled(fixedRate = updateRate)
+    public void updateGroups(final int status) throws SQLException {
+        UpdatedGroupRequestMapper update = serviceAccountRestTemplate.getForEntity(
+                "http://localhost:8080/gruppe2//api/updateGroups/{status}",
                 UpdatedGroupRequestMapper.class, status).getBody();
         webDTOService.updateDatabase(update);
     }
@@ -234,7 +359,7 @@ public class MaterialController {
     @ExceptionHandler(DownloadException.class)
     String handleDonwloadException(final DownloadException e) {
         setMessages("Beim Download gab es ein Problem.", null);
-        return "redirect:/";
+        return "redirect:/material2/";
     }
 
     /**
@@ -246,6 +371,19 @@ public class MaterialController {
     @ExceptionHandler(SQLException.class)
     String handleSQLException(final SQLException e) {
         setMessages("Beim zugriff auf die Datenbank gab es ein Problem.", null);
-        return "redirect:/";
+        return "redirect:/material2/";
+    }
+
+    /**
+     * exception handler for a sql error.
+     *
+     * @param e exception
+     * @return redirect to home page with a error message
+     */
+    @ExceptionHandler(NoDeletePermissionException.class)
+    String handleNoDeletePermissionException(final NoDeletePermissionException e) {
+        setMessages("Der Löschaufruf wurde verboten da sie keine Erlaubnis für diese Datei besitzen.",
+                null);
+        return "redirect:/material2/";
     }
 }

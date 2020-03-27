@@ -163,13 +163,13 @@ DROP TABLE IF EXISTS `User`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `User` (
-  `userID` bigint(20) NOT NULL,
+  `userID` bigint(20) NOT NULL AUTO_INCREMENT,
   `vorname` text NOT NULL,
   `nachname` text NOT NULL,
   `key_cloak_name` varchar(255) NOT NULL,
   PRIMARY KEY (`userID`),
   UNIQUE KEY `key_cloak_name` (`key_cloak_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=103 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

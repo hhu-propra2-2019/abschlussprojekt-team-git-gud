@@ -261,6 +261,9 @@ public class MaterialController {
         } catch (NoUploadPermissionException e) {
             setMessages("Sie sind nicht berechtigt diese Datei zu verändern.", null);
         }
+        if (gruppenId == null) {
+            return "redirectt:/suche";
+        }
         model.addAttribute("error", errorMessage);
         model.addAttribute("success", successMessage);
         String url = "redirect:/material2/dateiSicht?gruppenId=%d";
@@ -292,6 +295,9 @@ public class MaterialController {
         } catch (ObjectNotInMinioException e) {
             setMessages("Das zu löschende Object liegt nicht in MinIO.", null);
         }
+        if (gruppenId == null) {
+            return "suche";
+        }
 
         model.addAttribute("kategorien", modelService.getKategorienByGruppe(gruppenId, token));
         model.addAttribute("dateien", modelService.getAlleDateienByGruppe(gruppenId, token));
@@ -300,7 +306,6 @@ public class MaterialController {
         model.addAttribute("error", errorMessage);
         model.addAttribute("success", successMessage);
         resetMessages();
-
         return "dateiSicht";
     }
 

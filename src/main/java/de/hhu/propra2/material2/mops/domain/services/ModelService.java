@@ -17,6 +17,7 @@ import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -125,7 +126,11 @@ public final class ModelService implements IModelService {
     public List<Datei> getAlleDateienByGruppe(final Long gruppeId,
                                               final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);
-        return user.getGruppeById(gruppeId).getDateien();
+        Gruppe gruppe = user.getGruppeById(gruppeId);
+        if (user.getBelegungUndRechte().get(gruppe)) {
+            return gruppe.getDateien();
+        }
+        return filterVeroeffentlichung(gruppe.getDateien());
     }
 
     public Set<String> getAlleTagsByUser(final KeycloakAuthenticationToken token) {
@@ -247,8 +252,9 @@ public final class ModelService implements IModelService {
 
     /**
      * get datei by gruppenId, dateiId and UserToken
+     *
      * @param dateiId Id of the file
-     * @param token KeycloakAuthenticationToken of the user
+     * @param token   KeycloakAuthenticationToken of the user
      * @return Datei if file is found in the given group of the given user, null if not
      */
     public Datei getDateiById(final long dateiId,
@@ -256,7 +262,7 @@ public final class ModelService implements IModelService {
         User user = createUserByToken(token);
         List<Gruppe> gruppen = user.getAllGruppen();
         for (Gruppe gruppe : gruppen) {
-            for (Datei datei: gruppe.getDateien()) {
+            for (Datei datei : gruppe.getDateien()) {
                 if (datei.getId() == dateiId) {
                     return datei;
                 }
@@ -269,6 +275,14 @@ public final class ModelService implements IModelService {
     private List<Datei> getAlleDateienByUser(final User user) {
         List<Datei> alleDateien = new ArrayList<>();
         user.getAllGruppen().forEach(gruppe -> alleDateien.addAll(gruppe.getDateien()));
+        for (Gruppe gruppe : user.getAllGruppen()) {
+            List<Datei> dateienGruppe = gruppe.getDateien();
+            if (user.getBelegungUndRechte().get(gruppe)) {
+                alleDateien.addAll(dateienGruppe);
+            } else {
+                alleDateien.addAll(filterVeroeffentlichung(dateienGruppe));
+            }
+        }
         return alleDateien;
     }
 
@@ -317,5 +331,13 @@ public final class ModelService implements IModelService {
 
     public User findUserByKeycloakname(final String keycloakname) throws SQLException {
         return loadUser(repository.findUserByKeycloakname(keycloakname));
+    }
+
+    private List<Datei> filterVeroeffentlichung(final List<Datei> resultArg) {
+        LocalDate today = LocalDate.now();
+        List<Datei> result = resultArg.stream()
+                .filter(datei -> datei.getVeroeffentlichungsdatum().compareTo(today) <= 0)
+                .collect(Collectors.toList());
+        return result;
     }
 }

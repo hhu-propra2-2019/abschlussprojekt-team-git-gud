@@ -46,12 +46,12 @@ public class SuchService {
         if (!suche.getDateiName().trim().isEmpty()) {
             result = dateiNamenSuche(suche.getDateiName(), result);
         }
+        result = filterVeroeffentlichung(result);
         if (suche.getSortierKriterium() != null) {
             result = sortieren(suche.getSortierKriterium(),
                     suche.getReihenfolge(),
                     result);
         }
-        result = filterVeroeffentlichung(result);
         return result;
     }
 

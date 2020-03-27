@@ -1,5 +1,7 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
+import de.hhu.propra2.material2.mops.Exceptions.FileNotPublishedYetException;
+import de.hhu.propra2.material2.mops.Exceptions.NoDownloadPermissionException;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
@@ -45,4 +47,9 @@ public interface IModelService {
     Account getAccountFromKeycloak(KeycloakAuthenticationToken token);
 
     Datei getDateiById(long dateiId, KeycloakAuthenticationToken token) throws SQLException;
+
+    Boolean userHasEditPermissionForFile(Long dateiId, KeycloakAuthenticationToken token)
+            throws NoDownloadPermissionException, SQLException, NoDownloadPermissionException;
+
+    Boolean filesIsPublished(Long fileId) throws SQLException, FileNotPublishedYetException;
 }

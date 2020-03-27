@@ -3,15 +3,22 @@ services:
   mysql:
     image: mysql:5.7
     ports:
-      - "23306:3306"
+      - "3306:3306"
     environment:
       - "MYSQL_ROOT_PASSWORD=secret"
       - "MYSQL_DATABASE=materialsammlung"
   minio:
     image: minio/minio
     ports:
-      - "23307:9000"
+      - "9000:9000"
     environment:
       - "MINIO_ACCESS_KEY=minio"
       - "MINIO_SECRET_KEY=minio123"
     command: "server /data/"
+  material2:
+    depends_on:
+      - mysql
+      - minio
+    build: .
+    ports:
+      - '8080:8080'

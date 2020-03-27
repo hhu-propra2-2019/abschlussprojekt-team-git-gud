@@ -45,7 +45,7 @@ public final class Repository {
     public Repository(final Environment envArg) {
         gruppeCache = new HashMap<>();
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/materialsammlung",
+            connection = DriverManager.getConnection("jdbc:mysql://mysql:3306/materialsammlung",
                     envArg.getProperty("spring.datasource.username"), envArg.getProperty("spring.datasource.password"));
         } catch (SQLException e) {
             e.printStackTrace();

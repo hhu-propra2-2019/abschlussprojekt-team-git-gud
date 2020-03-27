@@ -14,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +57,7 @@ class UpdateServiceTest {
      * setUP: SetUp needed for each test.
      */
     @BeforeEach
-    void setUp() throws SQLException {
+    void setUp() throws Exception {
         updateService = new UpdateService(modelServiceMock);
 
         Datei datei = new Datei(1L, "test.txt", userMock, tags,

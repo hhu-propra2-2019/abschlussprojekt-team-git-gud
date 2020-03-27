@@ -201,7 +201,7 @@ public class MaterialController {
      * @return update page
      */
     @GetMapping("/update")
-    @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public String update(final KeycloakAuthenticationToken token,
                          final Model model,
                          final Long gruppenId,
@@ -231,7 +231,7 @@ public class MaterialController {
      * @return update page
      */
     @PostMapping("/update")
-    @RolesAllowed( {"ROLE_orga", "ROLE_studentin"})
+    @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public String update(final KeycloakAuthenticationToken token,
                          final Model model,
                          final UpdateForm updateForm,

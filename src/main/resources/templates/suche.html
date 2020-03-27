@@ -32,7 +32,7 @@
                         <option th:each="gruppe : ${gruppen}"
                                 th:value="${gruppe.getId()}"
                                 th:text="${gruppe.getName()}"
-                                th:selected="${gruppe.getId() == suche?.getGruppenId()}">
+                                th:selected="${gruppe.getId().equals(suche?.getGruppenId())}">
                         </option>
                     </select>
                 </div>
@@ -245,22 +245,15 @@
                                             <span class="card d-inline" th:text="${datei.getDateityp()}"></span>
                                             <span class="card d-inline" th:text="${datei.getDateigroesseFormated()}"></span>
                                             <span class="card d-inline" th:text="${datei.getVeroeffentlichungsdatum()}"></span>
-                                            <span class="card d-inline" th:text="${datei.getUploader().getName()}">
-                                    </span>
+                                            <span class="card d-inline" th:text="${datei.getUploader().getName()}"></span>
                                         </div>
                                     </h6>
                                     <div class="list-inline" id="dateimain">
                                         <span class="card-text h2 pb-3" th:text="${datei.getName()}"></span>
                                         <div class="btn-group" role="group" aria-label="Basic example">
-                                            <a class="btn btn-info" role="button"
-                                               th:href="@{/material2/update(dateiId=${datei.getId()})}"
-                                               href="#">EDIT</a>
                                             <a class="btn btn-primary" role="button"
                                                th:href="@{/material2/files(fileId=${datei.getId()})}"
                                                href="#">DOWNLOAD</a>
-                                            <a class="btn btn-danger" role="button"
-                                               th:href="@{/material2/delete(dateiId=${datei.getId()})}"
-                                               href="#">X</a>
                                         </div>
 
                                     </div>
@@ -289,16 +282,8 @@
                         <div class="list-inline" id="dateisecound">
                             <span class="card-text h2 pb-3" th:text="${datei.getName()}"></span>
                             <div class="btn-group" role="group" aria-label="Basic example">
-                                <a class="btn btn-info" role="button"
-                                   th:href="@{/material2/update(dateiId=${datei.getId()},
-                                   gruppenId=${suche?.getGruppenId()})}"
-                                   href="#">EDIT</a>
                                 <a class="btn btn-primary" role="button" th:href="@{/material2/files(fileId=${datei.getId()})}"
                                    href="#">DOWNLOAD</a>
-                                <a class="btn btn-danger" role="button"
-                                   th:href="@{/material2/delete(dateiId=${datei.getId()},
-                                   gruppenId=${suche?.getGruppenId()})}"
-                                   href="#">X</a>
                             </div>
 
                         </div>

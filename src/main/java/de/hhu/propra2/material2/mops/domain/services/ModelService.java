@@ -1,5 +1,7 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
+import de.hhu.propra2.material2.mops.Exceptions.FileNotPublishedYetException;
+import de.hhu.propra2.material2.mops.Exceptions.NoDownloadPermissionException;
 import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.TagDTO;
@@ -339,5 +341,32 @@ public final class ModelService implements IModelService {
                 .filter(datei -> datei.getVeroeffentlichungsdatum().compareTo(today) <= 0)
                 .collect(Collectors.toList());
         return result;
+    }
+
+    @Override
+    public Boolean userHasEditPermissionForFile(final Long dateiId, final KeycloakAuthenticationToken token)
+            throws NoDownloadPermissionException, SQLException {
+        Account account = getAccountFromKeycloak(token);
+        DateiDTO dateiDTO = repository.findDateiById(dateiId);
+        User user = findUserByKeycloakname(account.getName());
+        Long gruppenId = dateiDTO.getGruppe().getId();
+        Gruppe gruppe = user.getGruppeById(gruppenId);
+
+        if (!user.hasUploadPermission(gruppe)) {
+            throw new NoDownloadPermissionException("User has no download permission");
+        }
+        return true;
+    }
+
+    @Override
+    public Boolean filesIsPublished(final Long fileId) throws SQLException, FileNotPublishedYetException {
+        DateiDTO dateiDTO = repository.findDateiById(fileId);
+        LocalDate veroeffentlichung = dateiDTO.getVeroeffentlichungsdatum();
+        LocalDate now = LocalDate.now();
+        if (veroeffentlichung.isAfter(now)) {
+            throw new FileNotPublishedYetException("Die Datei ist noch nicht veröffentlicht.");
+        }
+        return true;
+
     }
 }

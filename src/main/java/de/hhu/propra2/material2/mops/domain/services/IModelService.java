@@ -48,7 +48,8 @@ public interface IModelService {
 
     Datei getDateiById(long dateiId, KeycloakAuthenticationToken token) throws SQLException;
 
-    Boolean userHasEditPermissionForFile(Long dateiId, KeycloakAuthenticationToken token) throws NoDownloadPermissionException, SQLException, NoDownloadPermissionException;
+    Boolean userHasEditPermissionForFile(Long dateiId, KeycloakAuthenticationToken token)
+            throws NoDownloadPermissionException, SQLException, NoDownloadPermissionException;
 
     Boolean filesIsPublished(Long fileId) throws SQLException, FileNotPublishedYetException;
 }

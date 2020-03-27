@@ -30,6 +30,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -337,7 +338,7 @@ class MaterialControllerModelTest {
         when(modelService.userHasEditPermissionForFile(any(), any())).thenReturn(true);
         when(modelService.filesIsPublished(any())).thenReturn(true);
         String test = "test";
-        InputStream inputStream = new ByteArrayInputStream(test.getBytes());
+        InputStream inputStream = new ByteArrayInputStream(StandardCharsets.UTF_16.encode(test).array());
         when(minIOService.getObject(any())).thenReturn(inputStream);
         Datei testDatei = new Datei(0, "test.html",
                 null, null, null, null,

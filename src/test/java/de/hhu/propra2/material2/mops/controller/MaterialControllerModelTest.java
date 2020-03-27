@@ -1,7 +1,12 @@
 package de.hhu.propra2.material2.mops.controller;
 
 import com.c4_soft.springaddons.test.security.context.support.WithMockKeycloackAuth;
+import de.hhu.propra2.material2.mops.Exceptions.DownloadException;
+import de.hhu.propra2.material2.mops.Exceptions.FileNotPublishedYetException;
+import de.hhu.propra2.material2.mops.Exceptions.NoDeletePermissionException;
+import de.hhu.propra2.material2.mops.Exceptions.NoDownloadPermissionException;
 import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
+import de.hhu.propra2.material2.mops.Exceptions.ObjectNotInMinioException;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Tag;
@@ -23,6 +28,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -33,6 +40,7 @@ import java.util.Set;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -42,6 +50,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
 @ComponentScan(basePackageClasses = {KeycloakSecurityComponents.class, KeycloakSpringBootConfigResolver.class})
@@ -318,5 +327,149 @@ class MaterialControllerModelTest {
         mvc.perform(get("/material2/dateiSicht?gruppenId=1"))
                 .andExpect(content().string(containsString("875 KB")));
         verify(modelService, times(1)).getAlleDateienByGruppe(any(), any());
+    }
+
+    // download Tests
+
+    @Test
+    @WithMockKeycloackAuth(name = "BennyGoodman", roles = "studentin")
+    void testDownloadReturnsFileOk() throws Exception {
+        when(modelService.userHasEditPermissionForFile(any(), any())).thenReturn(true);
+        when(modelService.filesIsPublished(any())).thenReturn(true);
+        String test = "test";
+        InputStream inputStream = new ByteArrayInputStream(test.getBytes());
+        when(minIOService.getObject(any())).thenReturn(inputStream);
+        Datei testDatei = new Datei(0, "test.html",
+                null, null, null, null,
+                0, "null", "null");
+        when(modelService.getDateiById(anyLong(), any())).thenReturn(testDatei);
+
+        mvc.perform(get("/material2/files")
+                .with(csrf())
+                .param("fileId", "1"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "BennyGoodman", roles = "studentin")
+    void testDownloadDownloadException() throws Exception {
+        when(modelService.userHasEditPermissionForFile(any(), any())).thenReturn(true);
+        when(modelService.filesIsPublished(any())).thenReturn(true);
+        doThrow(new DownloadException()).when(minIOService).getObject(any());
+
+        mvc.perform(get("/material2/files")
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection());
+
+        verify(modelService, times(1)).userHasEditPermissionForFile(any(), any());
+        verify(modelService, times(1)).filesIsPublished(any());
+        verify(minIOService, times(1)).getObject(any());
+        verify(modelService, times(0)).getDateiById(anyLong(), any());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "BennyGoodman", roles = "studentin")
+    void testDownloadSQLException() throws Exception {
+        doThrow(new SQLException()).when(modelService).userHasEditPermissionForFile(any(), any());
+
+        mvc.perform(get("/material2/files")
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection());
+
+        verify(modelService, times(1)).userHasEditPermissionForFile(any(), any());
+        verify(modelService, times(0)).filesIsPublished(any());
+        verify(minIOService, times(0)).getObject(any());
+        verify(modelService, times(0)).getDateiById(anyLong(), any());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "BennyGoodman", roles = "studentin")
+    void testDownloadNoDownloadPermissionException() throws Exception {
+        doThrow(new NoDownloadPermissionException()).when(modelService).userHasEditPermissionForFile(any(), any());
+
+        mvc.perform(get("/material2/files")
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection());
+
+        verify(modelService, times(1)).userHasEditPermissionForFile(any(), any());
+        verify(modelService, times(0)).filesIsPublished(any());
+        verify(minIOService, times(0)).getObject(any());
+        verify(modelService, times(0)).getDateiById(anyLong(), any());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "BennyGoodman", roles = "studentin")
+    void testDownloadFileNotPublishedYetException() throws Exception {
+        when(modelService.userHasEditPermissionForFile(any(), any())).thenReturn(true);
+        doThrow(new FileNotPublishedYetException()).when(modelService).filesIsPublished(any());
+
+        mvc.perform(get("/material2/files")
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection());
+
+        verify(modelService, times(1)).userHasEditPermissionForFile(any(), any());
+        verify(modelService, times(1)).filesIsPublished(any());
+        verify(minIOService, times(0)).getObject(any());
+        verify(modelService, times(0)).getDateiById(anyLong(), any());
+    }
+
+    // delete Tests
+
+    @Test
+    @WithMockKeycloackAuth(name = "BennyGoodman", roles = "studentin")
+    void testDeleteReturnsDateisicht() throws Exception {
+        mvc.perform(get("/material2/delete")
+                .with(csrf()))
+                .andExpect(content()
+                        .string(containsString("Hier könnte ihre Gruppenbeschreibung stehen.")));
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "BennyGoodman", roles = "studentin")
+    void testDeleteSuccessful() throws Exception {
+        mvc.perform(get("/material2/delete")
+                .with(csrf()))
+                .andExpect(content()
+                        .string(containsString("Das Löschen war erfolgreich!")));
+
+        verify(deleteService, times(1)).dateiLoeschenStarten(any(), any());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "BennyGoodman", roles = "studentin")
+    void testDeleteSQLException() throws Exception {
+        doThrow(new SQLException()).when(deleteService).dateiLoeschenStarten(any(), any());
+
+        mvc.perform(get("/material2/delete")
+                .with(csrf()))
+                .andExpect(content()
+                        .string(containsString("Es gab einen SQL Fehler.")));
+
+        verify(deleteService, times(1)).dateiLoeschenStarten(any(), any());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "BennyGoodman", roles = "studentin")
+    void testDeleteObjectNotInMinioException() throws Exception {
+        doThrow(new ObjectNotInMinioException()).when(deleteService).dateiLoeschenStarten(any(), any());
+
+        mvc.perform(get("/material2/delete")
+                .with(csrf()))
+                .andExpect(content()
+                        .string(containsString("Das zu löschende Object liegt nicht in MinIO.")));
+
+        verify(deleteService, times(1)).dateiLoeschenStarten(any(), any());
+    }
+
+    @Test
+    @WithMockKeycloackAuth(name = "BennyGoodman", roles = "studentin")
+    void testDeleteNoDeletePermissionException() throws Exception {
+        doThrow(new NoDeletePermissionException()).when(deleteService).dateiLoeschenStarten(any(), any());
+
+        mvc.perform(get("/material2/delete")
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection());
+
+        verify(deleteService, times(1)).dateiLoeschenStarten(any(), any());
     }
 }

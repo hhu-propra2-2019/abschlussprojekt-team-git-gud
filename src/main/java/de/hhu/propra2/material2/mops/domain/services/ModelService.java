@@ -1,6 +1,7 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
 import de.hhu.propra2.material2.mops.Exceptions.FileNotPublishedYetException;
+import de.hhu.propra2.material2.mops.Exceptions.NoAccessPermissionException;
 import de.hhu.propra2.material2.mops.Exceptions.NoDownloadPermissionException;
 import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
@@ -249,14 +250,14 @@ public final class ModelService implements IModelService {
     }
 
     /**
-     * get datei by gruppenId, dateiId and UserToken
+     * get datei by dateiId and UserToken.
      *
      * @param dateiId Id of the file
      * @param token   KeycloakAuthenticationToken of the user
      * @return Datei if file is found in the given group of the given user, null if not
      */
     public Datei getDateiById(final long dateiId,
-                              final KeycloakAuthenticationToken token) {
+                              final KeycloakAuthenticationToken token) throws NoAccessPermissionException {
         User user = createUserByToken(token);
         List<Gruppe> gruppen = user.getAllGruppen();
         for (Gruppe gruppe : gruppen) {
@@ -267,7 +268,7 @@ public final class ModelService implements IModelService {
             }
         }
 
-        return null;
+        throw new NoAccessPermissionException();
     }
 
     private List<Datei> getAlleDateienByUser(final User user) {

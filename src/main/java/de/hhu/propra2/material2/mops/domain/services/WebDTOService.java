@@ -88,7 +88,7 @@ public class WebDTOService {
      * @param updatedAndSynchronizedUserGroupRelation
      * @throws SQLException
      */
-    @SuppressFBWarnings("spotbugs:WMI_WRONG_MAP_ITERATOR")
+    @SuppressFBWarnings("WMI_WRONG_MAP_ITERATOR")
     private void saveUserInDatabase(final Map<String, GroupWebDTO> gruppen,
                                     final Map<String, UserWebDTO> usersWeb,
                                     final Map<String, HashMap<String, Boolean>> updatedAndSynchronizedUserGroupRelation)
@@ -143,7 +143,7 @@ public class WebDTOService {
      * Spotbugs error is supressed because the key over which is iterated, is used for another
      * purpose than just iterating over the map
      */
-    @SuppressFBWarnings("spotbugs:WMI_WRONG_MAP_ITERATOR")
+    @SuppressFBWarnings("WMI_WRONG_MAP_ITERATOR")
     private Map<String, HashMap<String, Boolean>> getUnionOfOldAndNewGroupsWithRights(
             final Map<String, HashMap<String, Boolean>> updatedBelegungen,
             final Map<String, HashMap<String, Boolean>> oldAndNewGroups) {

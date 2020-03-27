@@ -361,7 +361,7 @@ public class MaterialController {
             statusService.updateToNewStatus(update.getStatus());
             webDTOService.updateDatabase(update);
         } catch (Exception e) {
-            System.out.println("Gruppenbelegung konte nicht erreicht werden!");
+            e.printStackTrace();
         }
     }
 

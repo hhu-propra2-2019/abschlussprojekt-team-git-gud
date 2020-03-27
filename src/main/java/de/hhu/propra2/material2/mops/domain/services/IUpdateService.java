@@ -8,5 +8,5 @@ import java.sql.SQLException;
 
 public interface IUpdateService {
     void startUpdate(UpdateForm upForm, String user, String gruppenId, Long dateiId)
-            throws SQLException, NoUploadPermissionException;
+            throws SQLException, NoUploadPermissionException, NoAccessPermissionException;
 }

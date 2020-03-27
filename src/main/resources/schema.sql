@@ -57,3 +57,9 @@ CREATE TABLE Tagnutzung
     foreign key (dateiID)  REFERENCES Datei (dateiID),
     foreign key (tagID)  REFERENCES Tags (tagID)
 );
+
+DROP TABLE IF EXISTS Status;
+CREATE TABLE Status
+(
+    status BIGINT NOT NULL
+);

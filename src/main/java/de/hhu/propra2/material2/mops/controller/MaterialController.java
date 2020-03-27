@@ -361,7 +361,7 @@ public class MaterialController {
             statusService.updateToNewStatus(update.getStatus());
             webDTOService.updateDatabase(update);
         } catch (Exception e) {
-            System.out.println("Keine Verbindung zur Gruppen2 gefunden");
+            System.out.println("Keine Verbindung zur Gruppen2 gefunden: " + e.getMessage());
         }
     }
 

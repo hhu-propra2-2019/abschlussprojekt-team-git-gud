@@ -100,7 +100,6 @@ class MaterialControllerAccessTest {
         when(modelService.isSortedByKategorie()).thenReturn(true);
         when(modelService.getKategorienFromSuche(any())).thenReturn(kategorien);
         when(modelService.getTagsAsSet(any())).thenReturn(selectedTags);
-        when(modelService.getDateiById(anyLong(), any())).thenReturn(null);
     }
 
     //Unknown User Access tests

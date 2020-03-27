@@ -10,14 +10,9 @@ import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
 import de.hhu.propra2.material2.mops.domain.models.UpdateForm;
 import de.hhu.propra2.material2.mops.domain.models.UploadForm;
-import de.hhu.propra2.material2.mops.domain.services.DeleteService;
-import de.hhu.propra2.material2.mops.domain.services.MinIOService;
-import de.hhu.propra2.material2.mops.domain.services.ModelService;
-import de.hhu.propra2.material2.mops.domain.services.UpdateService;
-import de.hhu.propra2.material2.mops.domain.services.UploadService;
+import de.hhu.propra2.material2.mops.domain.services.*;
 import de.hhu.propra2.material2.mops.domain.services.webdto.UpdatedGroupRequestMapper;
 import de.hhu.propra2.material2.mops.security.Account;
-import de.hhu.propra2.material2.mops.domain.services.WebDTOService;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +59,8 @@ public class MaterialController {
     private WebDTOService webDTOService;
     @Autowired
     private DeleteService deleteService;
+    @Autowired
+    private StatusService statusService;
 
 
     private final long updateRate = 5000;
@@ -329,15 +326,23 @@ public class MaterialController {
 
     /**
      *
-     * @param status
+     * @param
      * @throws SQLException
      */
     @Scheduled(fixedRate = updateRate)
-    public void updateGroups(final int status) throws SQLException {
-        UpdatedGroupRequestMapper update = serviceAccountRestTemplate.getForEntity(
-                "http://localhost:8080/gruppe2//api/updateGroups/{status}",
-                UpdatedGroupRequestMapper.class, status).getBody();
-        webDTOService.updateDatabase(update);
+    public void updateGroups() throws SQLException {
+        long status = statusService.getCurrentStatus();
+
+        try {
+            UpdatedGroupRequestMapper update = serviceAccountRestTemplate.getForEntity(
+                    "http://localhost:8080/gruppe2//api/updateGroups/{status}",
+                    UpdatedGroupRequestMapper.class, status).getBody();
+
+            statusService.updateToNewStatus(update.getStatus());
+            webDTOService.updateDatabase(update);
+        }catch (Exception e){
+            System.out.println("Gruppenbelegung konte nicht erreicht werden!");
+        }
     }
 
     private void setMessages(final String pErrorMessage, final String pSuccessMessage) {

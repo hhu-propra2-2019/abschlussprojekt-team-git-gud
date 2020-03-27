@@ -56,6 +56,9 @@ class MaterialControllerAccessTest {
     @MockBean
     private DeleteService deleteService;
 
+    @MockBean
+    private StatusService statusService;
+
     /**
      * init for the tests.
      */

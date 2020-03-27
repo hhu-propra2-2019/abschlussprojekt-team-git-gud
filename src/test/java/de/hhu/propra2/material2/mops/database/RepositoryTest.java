@@ -1,10 +1,7 @@
 package de.hhu.propra2.material2.mops.database;
 
 import de.hhu.propra2.material2.mops.Material2Application;
-import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
-import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
-import de.hhu.propra2.material2.mops.database.DTOs.TagDTO;
-import de.hhu.propra2.material2.mops.database.DTOs.UserDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +27,7 @@ final class RepositoryTest {
     private final GruppeDTO gruppe;
     private final UserDTO user;
     private final DateiDTO datei;
+    private final StatusDTO defaultStatus;
 
     @SuppressWarnings("checkstyle:magicnumber")
     @Autowired
@@ -51,6 +49,8 @@ final class RepositoryTest {
         datei = new DateiDTO("gaedata", user, tags, LocalDate.of(2020, 3, 1),
                 LocalDate.now(), 200, "gae", gruppe, "gae");
         dateien.add(datei);
+
+        defaultStatus = new StatusDTO(0);
     }
 
     @BeforeEach
@@ -62,6 +62,7 @@ final class RepositoryTest {
     @AfterEach
     void deleteAll() throws SQLException {
         repository.deleteAll();
+        repository.updateStatus(defaultStatus);
     }
 
     @Test
@@ -273,5 +274,16 @@ final class RepositoryTest {
             assertFalse(isG1InCacheAfterDeletion);
             user.getBelegungUndRechte().remove(gruppeDTO);
         }
+
+    @Test
+    public void updateAndgetStatusTest() throws SQLException {
+        StatusDTO status = new StatusDTO(1);
+        long actualStatus;
+
+        repository. updateStatus(status);
+        actualStatus = repository.getStatus();
+
+        assertTrue(actualStatus == 1);
+    }
 }
 

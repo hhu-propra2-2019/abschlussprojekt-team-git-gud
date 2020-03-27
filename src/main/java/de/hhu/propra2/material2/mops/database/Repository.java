@@ -1,9 +1,6 @@
 package de.hhu.propra2.material2.mops.database;
 
-import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
-import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
-import de.hhu.propra2.material2.mops.database.DTOs.TagDTO;
-import de.hhu.propra2.material2.mops.database.DTOs.UserDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.*;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -844,6 +841,27 @@ public final class Repository {
         name = resultSet.getString("key_cloak_name");
         preparedStatement.close();
         return name;
+    }
+
+    public long getStatus() throws SQLException {
+        long status;
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("SELECT  status FROM Status");
+        ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+        status = resultSet.getInt("status");
+        preparedStatement.close();
+        return status;
+    }
+
+    public void updateStatus(StatusDTO statusDTO) throws SQLException {
+        PreparedStatement preparedStatement =
+                connection.prepareStatement(
+                        "update Status set status=?");
+
+        preparedStatement.setLong(1, statusDTO.getStatus());
+        preparedStatement.execute();
+        preparedStatement.close();
     }
 
 }

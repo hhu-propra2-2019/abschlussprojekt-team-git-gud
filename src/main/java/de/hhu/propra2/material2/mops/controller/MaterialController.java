@@ -263,6 +263,8 @@ public class MaterialController {
             setMessages("Es gab ein Problem beim Update.", null);
         } catch (NoUploadPermissionException e) {
             setMessages("Sie sind nicht berechtigt diese Datei zu verändern.", null);
+        } catch (NoAccessPermissionException e) {
+            setMessages("Sie haben keine Zugriffberechtigung.", null);
         }
         model.addAttribute("error", errorMessage);
         model.addAttribute("success", successMessage);

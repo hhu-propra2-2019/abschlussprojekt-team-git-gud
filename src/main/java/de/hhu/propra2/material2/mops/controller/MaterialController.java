@@ -3,6 +3,7 @@ package de.hhu.propra2.material2.mops.controller;
 import de.hhu.propra2.material2.mops.Exceptions.DownloadException;
 import de.hhu.propra2.material2.mops.Exceptions.FileNotPublishedYetException;
 import de.hhu.propra2.material2.mops.Exceptions.HasNoGroupToUploadException;
+import de.hhu.propra2.material2.mops.Exceptions.NoAccessPermissionException;
 import de.hhu.propra2.material2.mops.Exceptions.NoDeletePermissionException;
 import de.hhu.propra2.material2.mops.Exceptions.NoDownloadPermissionException;
 import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
@@ -15,12 +16,16 @@ import de.hhu.propra2.material2.mops.domain.models.UploadForm;
 import de.hhu.propra2.material2.mops.domain.services.DeleteService;
 import de.hhu.propra2.material2.mops.domain.services.MinIOService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
+import de.hhu.propra2.material2.mops.domain.services.StatusService;
 import de.hhu.propra2.material2.mops.domain.services.UpdateService;
 import de.hhu.propra2.material2.mops.domain.services.UploadService;
+import de.hhu.propra2.material2.mops.domain.services.WebDTOService;
+import de.hhu.propra2.material2.mops.domain.services.webdto.UpdatedGroupRequestMapper;
 import de.hhu.propra2.material2.mops.security.Account;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +43,7 @@ import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.sql.SQLException;
 
+
 /**
  * After the @RolesAllowed Annotation the Syle Code wants a space after
  * the opening bracket, but that throwas the ParenPad Warning, so we cannot
@@ -50,7 +56,6 @@ public class MaterialController {
 
     @Autowired
     private RestTemplate serviceAccountRestTemplate;
-
     @Autowired
     private ModelService modelService;
     @Autowired
@@ -60,8 +65,14 @@ public class MaterialController {
     @Autowired
     private MinIOService minIOService;
     @Autowired
+    private WebDTOService webDTOService;
+    @Autowired
     private DeleteService deleteService;
+    @Autowired
+    private StatusService statusService;
 
+
+    private static final long UPDATERATE = 5000;
     private String errorMessage;
     private String successMessage;
 
@@ -89,7 +100,7 @@ public class MaterialController {
      */
     @GetMapping("/dateiSicht")
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
-    public String sicht(final KeycloakAuthenticationToken token, final Model model, final Long gruppenId) {
+    public String sicht(final KeycloakAuthenticationToken token, final Model model, final String gruppenId) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
         model.addAttribute("kategorien", modelService.getKategorienByGruppe(gruppenId, token));
@@ -209,16 +220,30 @@ public class MaterialController {
                          final Long dateiId) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         model.addAttribute("tagText", modelService.getAlleTagsByUser(token));
-        Datei datei = modelService.getDateiById(dateiId, token);
-        if (datei == null) {
+        try {
+            modelService.userHasEditPermissionForFile(dateiId, token);
+            Datei datei = modelService.getDateiById(dateiId, token);
+            model.addAttribute("datei", datei);
+            return "update";
+        } catch (NoAccessPermissionException e) {
             setMessages("Sie haben keine Zugriffsberechtigung.", null);
             model.addAttribute("error", errorMessage);
             model.addAttribute("success", successMessage);
             String url = "redirect:/material2/dateiSicht?gruppenId=%d";
             return String.format(url, gruppenId);
+        } catch (NoDownloadPermissionException e) {
+            setMessages("Sie haben keine Berechtigung die Datei zu ändern.", null);
+            model.addAttribute("error", errorMessage);
+            model.addAttribute("success", successMessage);
+            String url = "redirect:/material2/dateiSicht?gruppenId=%d";
+            return String.format(url, gruppenId);
+        } catch (SQLException e) {
+            setMessages("Die Datei konnte nicht geladen werden.", null);
+            model.addAttribute("error", errorMessage);
+            model.addAttribute("success", successMessage);
+            String url = "redirect:/material2/dateiSicht?gruppenId=%d";
+            return String.format(url, gruppenId);
         }
-        model.addAttribute("datei", datei);
-        return "update";
     }
 
     /**
@@ -236,7 +261,7 @@ public class MaterialController {
     public String update(final KeycloakAuthenticationToken token,
                          final Model model,
                          final UpdateForm updateForm,
-                         final Long gruppenId,
+                         final String gruppenId,
                          final Long dateiId) {
         Account userAccount = modelService.getAccountFromKeycloak(token);
         model.addAttribute("account", userAccount);
@@ -248,6 +273,8 @@ public class MaterialController {
             setMessages("Es gab ein Problem beim Update.", null);
         } catch (NoUploadPermissionException e) {
             setMessages("Sie sind nicht berechtigt diese Datei zu verändern.", null);
+        } catch (NoAccessPermissionException e) {
+            setMessages("Sie haben keine Zugriffberechtigung.", null);
         }
         model.addAttribute("error", errorMessage);
         model.addAttribute("success", successMessage);
@@ -268,7 +295,7 @@ public class MaterialController {
     @GetMapping("/delete")
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public String upload(final KeycloakAuthenticationToken token, final Model model,
-                         final Long dateiId, final Long gruppenId) throws NoDeletePermissionException {
+                         final Long dateiId, final String gruppenId) throws NoDeletePermissionException {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
 
@@ -299,7 +326,11 @@ public class MaterialController {
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public ResponseEntity<InputStreamResource> getFile(final Long fileId,
                                                        final KeycloakAuthenticationToken token)
-            throws DownloadException, NoDownloadPermissionException, SQLException, FileNotPublishedYetException {
+            throws DownloadException,
+            NoDownloadPermissionException,
+            SQLException,
+            FileNotPublishedYetException,
+            NoAccessPermissionException {
         if (modelService.userHasEditPermissionForFile(fileId, token) && modelService.filesIsPublished(fileId)) {
             InputStream input = new BufferedInputStream(minIOService.getObject(fileId));
             Datei file = modelService.getDateiById(fileId, token);
@@ -311,6 +342,27 @@ public class MaterialController {
                     .body(new InputStreamResource(input));
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    /**
+     * @param
+     * @throws SQLException
+     */
+    @Scheduled(fixedRate = UPDATERATE)
+    public void updateGroups() throws SQLException {
+        long status = statusService.getCurrentStatus();
+
+        try {
+            UpdatedGroupRequestMapper update = serviceAccountRestTemplate.getForEntity(
+                    "http://localhost:8080/gruppe2//api/updateGroups/{status}",
+                    UpdatedGroupRequestMapper.class, status).getBody();
+
+            assert update != null;
+            statusService.updateToNewStatus(update.getStatus());
+            webDTOService.updateDatabase(update);
+        } catch (Exception e) {
+            System.out.println("Keine Verbindung zur Gruppen2 gefunden: " + e.getMessage());
+        }
     }
 
     private void setMessages(final String pErrorMessage, final String pSuccessMessage) {
@@ -382,6 +434,19 @@ public class MaterialController {
     @ExceptionHandler(FileNotPublishedYetException.class)
     String handleFileNotPublishedYetException(final FileNotPublishedYetException e) {
         setMessages("Der Download wurde verboten, da die Datei noch nicht veröffentlicht ist.",
+                null);
+        return "redirect:/material2/";
+    }
+
+    /**
+     * exception handler for no access permission exception.
+     *
+     * @param e exception
+     * @return redirect to home page with a error message
+     */
+    @ExceptionHandler(NoAccessPermissionException.class)
+    String handleNoAccessPermissionException(final NoAccessPermissionException e) {
+        setMessages("Sie haben keine Zugriffsberechtigung auf diese Datei.",
                 null);
         return "redirect:/material2/";
     }

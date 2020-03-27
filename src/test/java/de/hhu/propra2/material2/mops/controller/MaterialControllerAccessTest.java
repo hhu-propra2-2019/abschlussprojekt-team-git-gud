@@ -1,12 +1,16 @@
 package de.hhu.propra2.material2.mops.controller;
 
 import com.c4_soft.springaddons.test.security.context.support.WithMockKeycloackAuth;
+import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
+import de.hhu.propra2.material2.mops.domain.models.User;
 import de.hhu.propra2.material2.mops.domain.services.DeleteService;
 import de.hhu.propra2.material2.mops.domain.services.MinIOService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
+import de.hhu.propra2.material2.mops.domain.services.StatusService;
 import de.hhu.propra2.material2.mops.domain.services.UpdateService;
 import de.hhu.propra2.material2.mops.domain.services.UploadService;
+import de.hhu.propra2.material2.mops.domain.services.WebDTOService;
 import de.hhu.propra2.material2.mops.security.Account;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,16 +55,22 @@ class MaterialControllerAccessTest {
     private UpdateService updateService;
 
     @MockBean
+    private WebDTOService webDTOService;
+
+    @MockBean
     private DeleteService deleteService;
+
+    @MockBean
+    private StatusService statusService;
 
     /**
      * init for the tests.
      */
     @BeforeEach
-    void init() {
+    void init() throws Exception {
         List<Gruppe> gruppen = new ArrayList<>();
-        gruppen.add(new Gruppe(1, "ProPra", null));
-        gruppen.add(new Gruppe(2, "RDB", null));
+        gruppen.add(new Gruppe("1", "ProPra", null));
+        gruppen.add(new Gruppe("2", "RDB", null));
         Set<String> tags = new HashSet<>();
         tags.add("Vorlesung");
         tags.add("Übung");
@@ -72,14 +82,17 @@ class MaterialControllerAccessTest {
         dateiTypen.add("XML");
         dateiTypen.add("JSON");
         when(modelService.getAlleGruppenByUser(any())).thenReturn(gruppen);
-        when(modelService.getGruppeByUserAndGroupID(any(), any())).thenReturn(new Gruppe(2,
+        when(modelService.getGruppeByUserAndGroupID(any(), any())).thenReturn(new Gruppe("2",
                 "RDB", null));
         when(modelService.getAlleTagsByUser(any())).thenReturn(tags);
         when(modelService.getAlleUploaderByUser(any())).thenReturn(uploader);
         when(modelService.getAlleDateiTypenByUser(any())).thenReturn(dateiTypen);
         when(modelService.getAccountFromKeycloak(any())).thenReturn(new Account("BennyGoodman", "nice.de",
                 "image", dateiTypen));
-        when(modelService.getDateiById(anyLong(), any())).thenReturn(null);
+        Datei datei = new Datei(1L, "", new User(1, "A", "B", "", null),
+                new ArrayList<>(), null, null, 1, null, null);
+        when(modelService.getDateiById(anyLong(), any())).thenReturn(datei);
+        when(modelService.userHasEditPermissionForFile(anyLong(), any())).thenReturn(true);
     }
 
     //Unknown User Access tests
@@ -220,7 +233,7 @@ class MaterialControllerAccessTest {
         mvc.perform(get("/material2/update")
                 .param("gruppenId", "1")
                 .param("dateiId", "1"))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().isOk());
 
         mvc.perform(post("/material2/update")
                 .with(csrf()))
@@ -271,7 +284,7 @@ class MaterialControllerAccessTest {
         mvc.perform(get("/material2/update")
                 .param("gruppenId", "1")
                 .param("dateiId", "1"))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().isOk());
 
         mvc.perform(post("/material2/update")
                 .with(csrf()))
@@ -322,7 +335,7 @@ class MaterialControllerAccessTest {
         mvc.perform(get("/material2/update")
                 .param("gruppenId", "1")
                 .param("dateiId", "1"))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().isOk());
 
         mvc.perform(post("/material2/update")
                 .with(csrf()))

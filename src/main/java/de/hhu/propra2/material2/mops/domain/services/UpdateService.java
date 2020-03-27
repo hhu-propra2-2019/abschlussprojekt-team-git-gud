@@ -1,6 +1,7 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
 import com.google.common.base.Strings;
+import de.hhu.propra2.material2.mops.Exceptions.NoAccessPermissionException;
 import de.hhu.propra2.material2.mops.Exceptions.NoUploadPermissionException;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
@@ -36,7 +37,7 @@ public class UpdateService implements IUpdateService {
      * @param tags                    The new tags for the file
      * @throws SQLException           If file cannot be saved
      */
-    private void dateiUpdate(final Datei datei, final Long gruppenId, final LocalDate veroeffentlichungsdatum,
+    private void dateiUpdate(final Datei datei, final String gruppenId, final LocalDate veroeffentlichungsdatum,
                              final List<Tag> tags) throws SQLException {
         Datei changedDatei = new Datei(datei.getId(),
                 datei.getName(),
@@ -60,13 +61,12 @@ public class UpdateService implements IUpdateService {
      * @throws SQLException                if user cannot be found
      * @throws NoUploadPermissionException if user has no update/access permission
      */
-    @Override
     @Transactional
     public void startUpdate(final UpdateForm upForm,
                             final String keycloakUserName,
-                            final Long gruppenId,
+                            final String gruppenId,
                             final Long dateiId)
-            throws SQLException, NoUploadPermissionException {
+            throws SQLException, NoUploadPermissionException, NoAccessPermissionException {
 
         User user = modelService.findUserByKeycloakname(keycloakUserName);
         Gruppe gruppe = user.getGruppeById(gruppenId);
@@ -77,7 +77,7 @@ public class UpdateService implements IUpdateService {
         }
 
         if (datei == null) {
-            throw new NoUploadPermissionException("User has no access permission.");
+            throw new NoAccessPermissionException("User has no access permission.");
         }
 
         dateiUpdate(datei,

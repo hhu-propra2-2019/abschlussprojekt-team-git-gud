@@ -3,6 +3,7 @@ package de.hhu.propra2.material2.mops.database;
 import de.hhu.propra2.material2.mops.Material2Application;
 import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.StatusDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.TagDTO;
 import de.hhu.propra2.material2.mops.database.DTOs.UserDTO;
 import org.junit.jupiter.api.AfterEach;
@@ -30,6 +31,7 @@ final class RepositoryTest {
     private final GruppeDTO gruppe;
     private final UserDTO user;
     private final DateiDTO datei;
+    private final StatusDTO defaultStatus;
 
     @SuppressWarnings("checkstyle:magicnumber")
     @Autowired
@@ -41,7 +43,7 @@ final class RepositoryTest {
         tags.add(tag);
 
         LinkedList<DateiDTO> dateien = new LinkedList<>();
-        gruppe = new GruppeDTO(99999999, "gruppe", "this is a description", dateien, repositoryArg);
+        gruppe = new GruppeDTO("99999999", "gruppe", "this is a description", dateien, repositoryArg);
         HashMap<GruppeDTO, Boolean> berechtigung = new HashMap<>();
         berechtigung.put(gruppe, true);
 
@@ -51,6 +53,8 @@ final class RepositoryTest {
         datei = new DateiDTO("gaedata", user, tags, LocalDate.of(2020, 3, 1),
                 LocalDate.now(), 200, "gae", gruppe, "gae");
         dateien.add(datei);
+
+        defaultStatus = new StatusDTO(0);
     }
 
     @BeforeEach
@@ -62,6 +66,7 @@ final class RepositoryTest {
     @AfterEach
     void deleteAll() throws SQLException {
         repository.deleteAll();
+        repository.updateStatus(defaultStatus);
     }
 
     @Test
@@ -205,7 +210,7 @@ final class RepositoryTest {
 
     @Test
     void deleteGruppenbelegungByGruppeTest() throws SQLException {
-        long gruppeId = gruppe.getId();
+        String gruppeId = gruppe.getId();
 
         repository.deleteUserGroupRelationByGroupId(gruppeId);
 
@@ -221,12 +226,18 @@ final class RepositoryTest {
         assertTrue(loadedUser.getBelegungUndRechte().keySet().isEmpty());
     }
 
+    @Test
+    public void retrieveKeyAllKeyCloakNamesOfMembersOfAGroup() throws SQLException {
+        List<String> result = repository.getUsersByGruppenId("99999999");
+        assertTrue(result.contains("gae"));
+    }
+
     @SuppressWarnings("checkstyle:magicnumber")
     @Test
     void loadUserWith2GroupsAndCheckCaching() throws SQLException {
         repository.clearCache();
         HashMap cache = repository.getGruppeCache();
-        GruppeDTO gruppeDTO = new GruppeDTO(-100, "gruppee", "gruppeeee", new LinkedList<>());
+        GruppeDTO gruppeDTO = new GruppeDTO("-100", "gruppee", "gruppeeee", new LinkedList<>());
         DateiDTO dateiDTO = new DateiDTO("apple", user, datei.getTagDTOs(), LocalDate.now(),
                 LocalDate.now(), 200, "pdf", gruppeDTO, "vl");
         gruppeDTO.getDateien().add(dateiDTO);
@@ -268,4 +279,16 @@ final class RepositoryTest {
         assertFalse(isG1InCacheAfterDeletion);
         user.getBelegungUndRechte().remove(gruppeDTO);
     }
+
+    @Test
+    public void updateAndgetStatusTest() throws SQLException {
+        StatusDTO status = new StatusDTO(1);
+        long actualStatus;
+
+        repository.updateStatus(status);
+        actualStatus = repository.getStatus();
+
+        assertTrue(actualStatus == 1);
+    }
 }
+

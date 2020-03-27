@@ -16,12 +16,16 @@ import de.hhu.propra2.material2.mops.domain.models.UploadForm;
 import de.hhu.propra2.material2.mops.domain.services.DeleteService;
 import de.hhu.propra2.material2.mops.domain.services.MinIOService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
+import de.hhu.propra2.material2.mops.domain.services.StatusService;
 import de.hhu.propra2.material2.mops.domain.services.UpdateService;
 import de.hhu.propra2.material2.mops.domain.services.UploadService;
+import de.hhu.propra2.material2.mops.domain.services.WebDTOService;
+import de.hhu.propra2.material2.mops.domain.services.webdto.UpdatedGroupRequestMapper;
 import de.hhu.propra2.material2.mops.security.Account;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +43,7 @@ import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.sql.SQLException;
 
+
 /**
  * After the @RolesAllowed Annotation the Syle Code wants a space after
  * the opening bracket, but that throwas the ParenPad Warning, so we cannot
@@ -51,7 +56,6 @@ public class MaterialController {
 
     @Autowired
     private RestTemplate serviceAccountRestTemplate;
-
     @Autowired
     private ModelService modelService;
     @Autowired
@@ -61,8 +65,14 @@ public class MaterialController {
     @Autowired
     private MinIOService minIOService;
     @Autowired
+    private WebDTOService webDTOService;
+    @Autowired
     private DeleteService deleteService;
+    @Autowired
+    private StatusService statusService;
 
+
+    private static final long UPDATERATE = 5000;
     private String errorMessage;
     private String successMessage;
 
@@ -90,7 +100,7 @@ public class MaterialController {
      */
     @GetMapping("/dateiSicht")
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
-    public String sicht(final KeycloakAuthenticationToken token, final Model model, final Long gruppenId) {
+    public String sicht(final KeycloakAuthenticationToken token, final Model model, final String gruppenId) {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
         model.addAttribute("kategorien", modelService.getKategorienByGruppe(gruppenId, token));
@@ -251,7 +261,7 @@ public class MaterialController {
     public String update(final KeycloakAuthenticationToken token,
                          final Model model,
                          final UpdateForm updateForm,
-                         final Long gruppenId,
+                         final String gruppenId,
                          final Long dateiId) {
         Account userAccount = modelService.getAccountFromKeycloak(token);
         model.addAttribute("account", userAccount);
@@ -285,7 +295,7 @@ public class MaterialController {
     @GetMapping("/delete")
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
     public String upload(final KeycloakAuthenticationToken token, final Model model,
-                         final Long dateiId, final Long gruppenId) throws NoDeletePermissionException {
+                         final Long dateiId, final String gruppenId) throws NoDeletePermissionException {
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
 
@@ -332,6 +342,27 @@ public class MaterialController {
                     .body(new InputStreamResource(input));
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    /**
+     * @param
+     * @throws SQLException
+     */
+    @Scheduled(fixedRate = UPDATERATE)
+    public void updateGroups() throws SQLException {
+        long status = statusService.getCurrentStatus();
+
+        try {
+            UpdatedGroupRequestMapper update = serviceAccountRestTemplate.getForEntity(
+                    "http://localhost:8080/gruppe2//api/updateGroups/{status}",
+                    UpdatedGroupRequestMapper.class, status).getBody();
+
+            assert update != null;
+            statusService.updateToNewStatus(update.getStatus());
+            webDTOService.updateDatabase(update);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void setMessages(final String pErrorMessage, final String pSuccessMessage) {

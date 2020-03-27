@@ -25,7 +25,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -64,7 +63,7 @@ class UpdateServiceTest {
                 DATE_1303, DATE_1303, 2L, "txt", "kategorie");
         Mockito.lenient().when(modelServiceMock.getDateiById(1L, tokenMock)).thenReturn(datei);
         when(modelServiceMock.findUserByKeycloakname(anyString())).thenReturn(userMock);
-        when(userMock.getGruppeById(1L)).thenReturn(gruppenMock);
+        when(userMock.getGruppeById("1")).thenReturn(gruppenMock);
         when(gruppenMock.getDateiById(1L)).thenReturn(datei);
 
         tag1 = new Tag(1, "tag1");
@@ -77,10 +76,11 @@ class UpdateServiceTest {
     void updateFileBySettingVeroeffentlichungsdatumAndTagsNull() throws Exception {
         when(userMock.hasUploadPermission(gruppenMock)).thenReturn(true);
         UpdateForm updateForm = new UpdateForm(null, null);
-        updateService.startUpdate(updateForm, "", 1L, 1L);
+        updateService.startUpdate(updateForm, "", "1", 1L);
+
 
         ArgumentCaptor<Datei> dateiCaptor = ArgumentCaptor.forClass(Datei.class);
-        verify(modelServiceMock, times(1)).saveDatei(dateiCaptor.capture(), anyLong());
+        verify(modelServiceMock, times(1)).saveDatei(dateiCaptor.capture(), anyString());
 
         Datei capturedDatei = dateiCaptor.getValue();
         LocalDate abc = capturedDatei.getVeroeffentlichungsdatum();
@@ -98,10 +98,10 @@ class UpdateServiceTest {
         String stringTags = tag1.getText() + ", " + tag2.getText() + ", " + tag3.getText();
         UpdateForm updateForm = new UpdateForm(stringTags, DATE_1504.toString());
 
-        updateService.startUpdate(updateForm, "", 1L, 1L);
+        updateService.startUpdate(updateForm, "", "1", 1L);
 
         ArgumentCaptor<Datei> dateiCaptor = ArgumentCaptor.forClass(Datei.class);
-        verify(modelServiceMock, times(1)).saveDatei(dateiCaptor.capture(), anyLong());
+        verify(modelServiceMock, times(1)).saveDatei(dateiCaptor.capture(), anyString());
 
         Datei capturedDatei = dateiCaptor.getValue();
         assertThat(capturedDatei.getName(), comparesEqualTo("test.txt"));

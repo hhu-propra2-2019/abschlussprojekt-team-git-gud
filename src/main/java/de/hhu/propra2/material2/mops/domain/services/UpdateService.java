@@ -37,7 +37,7 @@ public class UpdateService implements IUpdateService {
      * @param tags                    The new tags for the file
      * @throws SQLException           If file cannot be saved
      */
-    private void dateiUpdate(final Datei datei, final Long gruppenId, final LocalDate veroeffentlichungsdatum,
+    private void dateiUpdate(final Datei datei, final String gruppenId, final LocalDate veroeffentlichungsdatum,
                              final List<Tag> tags) throws SQLException {
         Datei changedDatei = new Datei(datei.getId(),
                 datei.getName(),
@@ -61,11 +61,10 @@ public class UpdateService implements IUpdateService {
      * @throws SQLException                if user cannot be found
      * @throws NoUploadPermissionException if user has no update/access permission
      */
-    @Override
     @Transactional
     public void startUpdate(final UpdateForm upForm,
                             final String keycloakUserName,
-                            final Long gruppenId,
+                            final String gruppenId,
                             final Long dateiId)
             throws SQLException, NoUploadPermissionException, NoAccessPermissionException {
 

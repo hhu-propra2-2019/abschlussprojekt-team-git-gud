@@ -2,7 +2,7 @@ Set foreign_key_checks=0;
 DROP TABLE IF EXISTS User;
 CREATE TABLE User
 (
-    userID BIGINT PRIMARY KEY NOT NULL,
+    userID BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
     vorname     text NOT NULL,
     nachname    text NOT NULL,
     key_cloak_name VARCHAR(255) UNIQUE NOT NULL
@@ -11,7 +11,7 @@ CREATE TABLE User
 DROP TABLE IF EXISTS Gruppe;
 CREATE TABLE Gruppe
 (
-    gruppeID BIGINT PRIMARY KEY NOT NULL,
+    gruppeID varchar(36) PRIMARY KEY NOT NULL,
     titel text NOT NULL,
     beschreibung text NOT NULL
 );
@@ -27,7 +27,7 @@ DROP TABLE IF EXISTS Gruppenbelegung;
 CREATE TABLE Gruppenbelegung
 (
     upload_berechtigung boolean NOT NULL,
-    gruppeID BIGINT NOT NULL,
+    gruppeID varchar(36) NOT NULL,
     userID BIGINT NOT NULL,
     foreign key (gruppeID) REFERENCES Gruppe (gruppeID),
     foreign key (userID)  REFERENCES User (userID)
@@ -43,7 +43,7 @@ CREATE TABLE Datei
     veroeffentlichungs_datum DATE NOT NULL,
     datei_groesse      BIGINT NOT NULL,
     datei_typ      text NOT NULL,
-    gruppeID      BIGINT NOT NULL,
+    gruppeID      varchar(36) NOT NULL,
     kategorie   text NOT NULL,
     foreign key (uploaderID) REFERENCES User (userID),
     foreign key (gruppeID) REFERENCES Gruppe (gruppeID)
@@ -56,4 +56,10 @@ CREATE TABLE Tagnutzung
     tagID BIGINT NOT NULL,
     foreign key (dateiID)  REFERENCES Datei (dateiID),
     foreign key (tagID)  REFERENCES Tags (tagID)
+);
+
+DROP TABLE IF EXISTS Status;
+CREATE TABLE Status
+(
+    status BIGINT NOT NULL
 );

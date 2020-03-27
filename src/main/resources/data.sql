@@ -30,7 +30,7 @@ CREATE TABLE `Datei` (
   `veroeffentlichungs_datum` date NOT NULL,
   `datei_groesse` bigint(20) NOT NULL,
   `datei_typ` text NOT NULL,
-  `gruppeID` bigint(20) NOT NULL,
+  `gruppeID` varchar(36) NOT NULL,
   `kategorie` varchar(100) NOT NULL,
   PRIMARY KEY (`dateiID`),
   KEY `uploaderID` (`uploaderID`),
@@ -58,7 +58,7 @@ DROP TABLE IF EXISTS `Gruppe`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Gruppe` (
-  `gruppeID` bigint(20) NOT NULL,
+  `gruppeID` varchar(36) NOT NULL,
   `titel` text NOT NULL,
   `beschreibung` text,
   PRIMARY KEY (`gruppeID`)
@@ -84,7 +84,7 @@ DROP TABLE IF EXISTS `Gruppenbelegung`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Gruppenbelegung` (
   `upload_berechtigung` tinyint(1) NOT NULL,
-  `gruppeID` bigint(20) NOT NULL,
+  `gruppeID` varchar(36) NOT NULL,
   `userID` bigint(20) NOT NULL,
   KEY `gruppeID` (`gruppeID`),
   KEY `userID` (`userID`),
@@ -163,13 +163,13 @@ DROP TABLE IF EXISTS `User`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `User` (
-  `userID` bigint(20) NOT NULL,
+  `userID` bigint(20) NOT NULL AUTO_INCREMENT,
   `vorname` text NOT NULL,
   `nachname` text NOT NULL,
   `key_cloak_name` varchar(255) NOT NULL,
   PRIMARY KEY (`userID`),
   UNIQUE KEY `key_cloak_name` (`key_cloak_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=103 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -183,6 +183,29 @@ INSERT INTO `User` VALUES (-1,'User','deleted','-'),(916883599,'Ali','Hughes','s
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
+--
+-- Table structure for table `Status`
+--
+
+DROP TABLE IF EXISTS `Status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Status` (
+    `status` bigint(20) NOT NULL
+
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Status`
+--
+
+LOCK TABLES `Status` WRITE;
+/*!40000 ALTER TABLE `Status` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Status` ENABLE KEYS */;
+INSERT INTO `Status` VALUES (0);
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 -- TEST DATA START
 

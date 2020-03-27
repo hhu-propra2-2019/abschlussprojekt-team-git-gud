@@ -7,6 +7,6 @@ import de.hhu.propra2.material2.mops.domain.models.UpdateForm;
 import java.sql.SQLException;
 
 public interface IUpdateService {
-    void startUpdate(UpdateForm upForm, String user, Long gruppenId, Long dateiId)
+    void startUpdate(UpdateForm upForm, String user, String gruppenId, Long dateiId)
             throws SQLException, NoUploadPermissionException, NoAccessPermissionException;
 }

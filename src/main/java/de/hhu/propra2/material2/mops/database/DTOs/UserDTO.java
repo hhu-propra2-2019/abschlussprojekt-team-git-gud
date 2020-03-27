@@ -3,6 +3,8 @@ package de.hhu.propra2.material2.mops.database.DTOs;
 import lombok.Data;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Data
@@ -67,10 +69,25 @@ public class UserDTO {
                    final String nachnameArg,
                    final String keycloaknameArg,
                    final HashMap<GruppeDTO, Boolean> belegungUndRechteArg) {
+
         this.id = -1;
         this.vorname = vornameArg;
         this.nachname = nachnameArg;
         this.keycloakname = keycloaknameArg;
         this.belegungUndRechte = belegungUndRechteArg;
     }
+
+    /**
+     * @param idArg
+     * @return
+     */
+    public GruppeDTO getGruppeById(final String idArg) {
+        List<GruppeDTO> gruppe = this.getBelegungUndRechte()
+                .keySet()
+                .stream()
+                .filter(gruppeDTO -> gruppeDTO.getId().equals(idArg))
+                .collect(Collectors.toList());
+        return gruppe.get(0);
+    }
+
 }

@@ -129,7 +129,11 @@ public final class ModelService implements IModelService {
     public List<Datei> getAlleDateienByGruppe(final Long gruppeId,
                                               final KeycloakAuthenticationToken token) {
         User user = createUserByToken(token);
-        return user.getGruppeById(gruppeId).getDateien();
+        Gruppe gruppe = user.getGruppeById(gruppeId);
+        if (user.getBelegungUndRechte().get(gruppe)) {
+            return gruppe.getDateien();
+        }
+        return filterVeroeffentlichung(gruppe.getDateien());
     }
 
     public Set<String> getAlleTagsByUser(final KeycloakAuthenticationToken token) {
@@ -274,6 +278,14 @@ public final class ModelService implements IModelService {
     private List<Datei> getAlleDateienByUser(final User user) {
         List<Datei> alleDateien = new ArrayList<>();
         user.getAllGruppen().forEach(gruppe -> alleDateien.addAll(gruppe.getDateien()));
+        for (Gruppe gruppe : user.getAllGruppen()) {
+            List<Datei> dateienGruppe = gruppe.getDateien();
+            if (user.getBelegungUndRechte().get(gruppe)) {
+                alleDateien.addAll(dateienGruppe);
+            } else {
+                alleDateien.addAll(filterVeroeffentlichung(dateienGruppe));
+            }
+        }
         return alleDateien;
     }
 
@@ -324,6 +336,14 @@ public final class ModelService implements IModelService {
         return loadUser(repository.findUserByKeycloakname(keycloakname));
     }
 
+    private List<Datei> filterVeroeffentlichung(final List<Datei> resultArg) {
+        LocalDate today = LocalDate.now();
+        List<Datei> result = resultArg.stream()
+                .filter(datei -> datei.getVeroeffentlichungsdatum().compareTo(today) <= 0)
+                .collect(Collectors.toList());
+        return result;
+    }
+
     @Override
     public Boolean userHasEditPermissionForFile(final Long dateiId, final KeycloakAuthenticationToken token)
             throws NoDownloadPermissionException, SQLException {
@@ -348,5 +368,6 @@ public final class ModelService implements IModelService {
             throw new FileNotPublishedYetException("Die Datei ist noch nicht veröffentlicht.");
         }
         return true;
+
     }
 }

@@ -33,8 +33,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.hamcrest.Matchers.is;
 
 @ExtendWith(MockitoExtension.class)

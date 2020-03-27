@@ -12,7 +12,13 @@ import de.hhu.propra2.material2.mops.domain.models.Gruppe;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
 import de.hhu.propra2.material2.mops.domain.models.UpdateForm;
 import de.hhu.propra2.material2.mops.domain.models.UploadForm;
-import de.hhu.propra2.material2.mops.domain.services.*;
+import de.hhu.propra2.material2.mops.domain.services.DeleteService;
+import de.hhu.propra2.material2.mops.domain.services.MinIOService;
+import de.hhu.propra2.material2.mops.domain.services.ModelService;
+import de.hhu.propra2.material2.mops.domain.services.StatusService;
+import de.hhu.propra2.material2.mops.domain.services.UpdateService;
+import de.hhu.propra2.material2.mops.domain.services.UploadService;
+import de.hhu.propra2.material2.mops.domain.services.WebDTOService;
 import de.hhu.propra2.material2.mops.domain.services.webdto.UpdatedGroupRequestMapper;
 import de.hhu.propra2.material2.mops.security.Account;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -65,7 +71,7 @@ public class MaterialController {
     private StatusService statusService;
 
 
-    private final long updateRate = 5000;
+    private static final long UPDATERATE = 5000;
     private String errorMessage;
     private String successMessage;
 
@@ -321,7 +327,7 @@ public class MaterialController {
      * @param
      * @throws SQLException
      */
-    @Scheduled(fixedRate = updateRate)
+    @Scheduled(fixedRate = UPDATERATE)
     public void updateGroups() throws SQLException {
         long status = statusService.getCurrentStatus();
 
@@ -330,6 +336,7 @@ public class MaterialController {
                     "http://localhost:8080/gruppe2//api/updateGroups/{status}",
                     UpdatedGroupRequestMapper.class, status).getBody();
 
+            assert update != null;
             statusService.updateToNewStatus(update.getStatus());
             webDTOService.updateDatabase(update);
         } catch (Exception e) {

@@ -1,7 +1,11 @@
 package de.hhu.propra2.material2.mops.database;
 
 import de.hhu.propra2.material2.mops.Material2Application;
-import de.hhu.propra2.material2.mops.database.DTOs.*;
+import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.StatusDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.TagDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.UserDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -227,60 +231,61 @@ final class RepositoryTest {
         List<String> result = repository.getUsersByGruppenId("99999999");
         assertTrue(result.contains("gae"));
     }
-        @SuppressWarnings("checkstyle:magicnumber")
-        @Test
-        void loadUserWith2GroupsAndCheckCaching () throws SQLException {
-            repository.clearCache();
-            HashMap cache = repository.getGruppeCache();
-            GruppeDTO gruppeDTO = new GruppeDTO("-100", "gruppee", "gruppeeee", new LinkedList<>());
-            DateiDTO dateiDTO = new DateiDTO("apple", user, datei.getTagDTOs(), LocalDate.now(),
-                    LocalDate.now(), 200, "pdf", gruppeDTO, "vl");
-            gruppeDTO.getDateien().add(dateiDTO);
-            user.getBelegungUndRechte().put(gruppeDTO, true);
-            repository.saveUser(user);
 
-            UserDTO userDTO = repository.findUserByKeycloakname(user.getKeycloakname());
+    @SuppressWarnings("checkstyle:magicnumber")
+    @Test
+    void loadUserWith2GroupsAndCheckCaching() throws SQLException {
+        repository.clearCache();
+        HashMap cache = repository.getGruppeCache();
+        GruppeDTO gruppeDTO = new GruppeDTO("-100", "gruppee", "gruppeeee", new LinkedList<>());
+        DateiDTO dateiDTO = new DateiDTO("apple", user, datei.getTagDTOs(), LocalDate.now(),
+                LocalDate.now(), 200, "pdf", gruppeDTO, "vl");
+        gruppeDTO.getDateien().add(dateiDTO);
+        user.getBelegungUndRechte().put(gruppeDTO, true);
+        repository.saveUser(user);
 
-            GruppeDTO gruppeDTOForAddingDatei = ((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0]);
-            gruppeDTOForAddingDatei.getDateien();
-            boolean cachedBeforeAddingNewDatei = cache.get(gruppeDTOForAddingDatei.getId()) != null;
+        UserDTO userDTO = repository.findUserByKeycloakname(user.getKeycloakname());
 
-            repository.saveDatei(dateiDTO);
-            boolean cachedAfterAddingDatei = cache.get(gruppeDTOForAddingDatei.getId()) != null;
+        GruppeDTO gruppeDTOForAddingDatei = ((GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0]);
+        gruppeDTOForAddingDatei.getDateien();
+        boolean cachedBeforeAddingNewDatei = cache.get(gruppeDTOForAddingDatei.getId()) != null;
+
+        repository.saveDatei(dateiDTO);
+        boolean cachedAfterAddingDatei = cache.get(gruppeDTOForAddingDatei.getId()) != null;
 
 
-            GruppeDTO[] gruppeDTOs = new GruppeDTO[2];
-            gruppeDTOs[0] = (GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0];
-            gruppeDTOs[1] = (GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[1];
-            boolean gruppe2HasNoFilesYet = gruppeDTOs[1].hasNoFiles();
+        GruppeDTO[] gruppeDTOs = new GruppeDTO[2];
+        gruppeDTOs[0] = (GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[0];
+        gruppeDTOs[1] = (GruppeDTO) userDTO.getBelegungUndRechte().keySet().toArray()[1];
+        boolean gruppe2HasNoFilesYet = gruppeDTOs[1].hasNoFiles();
 
-            gruppeDTOs[0].getDateien();
-            boolean isGruppe1InCacheNow = cache.get(gruppeDTOs[0].getId()) != null;
-            LinkedList g2Dateien = (LinkedList) gruppeDTOs[1].getDateien();
-            boolean isGruppe2InCacheNow = cache.get(gruppeDTOs[1].getId()) != null;
+        gruppeDTOs[0].getDateien();
+        boolean isGruppe1InCacheNow = cache.get(gruppeDTOs[0].getId()) != null;
+        LinkedList g2Dateien = (LinkedList) gruppeDTOs[1].getDateien();
+        boolean isGruppe2InCacheNow = cache.get(gruppeDTOs[1].getId()) != null;
 
-            repository.deleteDateiByDateiDTO((DateiDTO) g2Dateien.get(0));
-            boolean isG2InCacheAfterFileDeletion = cache.get(gruppeDTOs[1].getId()) != null;
+        repository.deleteDateiByDateiDTO((DateiDTO) g2Dateien.get(0));
+        boolean isG2InCacheAfterFileDeletion = cache.get(gruppeDTOs[1].getId()) != null;
 
-            repository.deleteGroupByGroupDTO(gruppeDTOs[0]);
-            boolean isG1InCacheAfterDeletion = cache.get(gruppeDTOs[0].getId()) != null;
+        repository.deleteGroupByGroupDTO(gruppeDTOs[0]);
+        boolean isG1InCacheAfterDeletion = cache.get(gruppeDTOs[0].getId()) != null;
 
-            assertTrue(cachedBeforeAddingNewDatei);
-            assertTrue(cachedAfterAddingDatei);
-            assertTrue(gruppe2HasNoFilesYet);
-            assertTrue(isGruppe1InCacheNow);
-            assertTrue(isGruppe2InCacheNow);
-            assertFalse(isG2InCacheAfterFileDeletion);
-            assertFalse(isG1InCacheAfterDeletion);
-            user.getBelegungUndRechte().remove(gruppeDTO);
-        }
+        assertTrue(cachedBeforeAddingNewDatei);
+        assertTrue(cachedAfterAddingDatei);
+        assertTrue(gruppe2HasNoFilesYet);
+        assertTrue(isGruppe1InCacheNow);
+        assertTrue(isGruppe2InCacheNow);
+        assertFalse(isG2InCacheAfterFileDeletion);
+        assertFalse(isG1InCacheAfterDeletion);
+        user.getBelegungUndRechte().remove(gruppeDTO);
+    }
 
     @Test
     public void updateAndgetStatusTest() throws SQLException {
         StatusDTO status = new StatusDTO(1);
         long actualStatus;
 
-        repository. updateStatus(status);
+        repository.updateStatus(status);
         actualStatus = repository.getStatus();
 
         assertTrue(actualStatus == 1);

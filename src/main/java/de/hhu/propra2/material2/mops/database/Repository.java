@@ -1,6 +1,10 @@
 package de.hhu.propra2.material2.mops.database;
 
-import de.hhu.propra2.material2.mops.database.DTOs.*;
+import de.hhu.propra2.material2.mops.database.DTOs.DateiDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.GruppeDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.StatusDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.TagDTO;
+import de.hhu.propra2.material2.mops.database.DTOs.UserDTO;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -854,7 +858,7 @@ public final class Repository {
         return status;
     }
 
-    public void updateStatus(StatusDTO statusDTO) throws SQLException {
+    public void updateStatus(final StatusDTO statusDTO) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(
                         "update Status set status=?");

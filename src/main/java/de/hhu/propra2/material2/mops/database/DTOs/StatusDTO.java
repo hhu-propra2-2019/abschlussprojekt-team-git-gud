@@ -9,7 +9,7 @@ public class StatusDTO {
     @Getter
     private final long status;
 
-    public StatusDTO(final long state){
+    public StatusDTO(final long state) {
         this.status = state;
     }
 }

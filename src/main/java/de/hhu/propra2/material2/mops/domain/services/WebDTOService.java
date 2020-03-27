@@ -8,6 +8,7 @@ import de.hhu.propra2.material2.mops.database.Repository;
 import de.hhu.propra2.material2.mops.domain.services.webdto.GroupWebDTO;
 import de.hhu.propra2.material2.mops.domain.services.webdto.UpdatedGroupRequestMapper;
 import de.hhu.propra2.material2.mops.domain.services.webdto.UserWebDTO;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -59,8 +60,8 @@ public class WebDTOService {
          */
         Map<String, HashMap<String, Boolean>> belegungWeb = new HashMap<>();
 
-        for (String key : gruppen.keySet()) {
-            GroupWebDTO groupWeb = gruppen.get(key);
+        for (Map.Entry<String, GroupWebDTO> entry : gruppen.entrySet()) {
+            GroupWebDTO groupWeb = entry.getValue();
             for (UserWebDTO userWeb : groupWeb.getMembers()) {
                 if (!usersWeb.containsKey(userWeb.getId())) {
                     usersWeb.put(userWeb.getId(), userWeb);
@@ -80,6 +81,14 @@ public class WebDTOService {
         return updatedAndSynchronizedUserGroupRelation;
     }
 
+    /**
+     * supressing is Necessary because we dont just use the key to iterate over the map
+     * @param gruppen
+     * @param usersWeb
+     * @param updatedAndSynchronizedUserGroupRelation
+     * @throws SQLException
+     */
+    @SuppressFBWarnings("spotbugs:WMI_WRONG_MAP_ITERATOR")
     private void saveUserInDatabase(final Map<String, GroupWebDTO> gruppen,
                                     final Map<String, UserWebDTO> usersWeb,
                                     final Map<String, HashMap<String, Boolean>> updatedAndSynchronizedUserGroupRelation)
@@ -122,22 +131,26 @@ public class WebDTOService {
         List<String> groupsWithUpdates = getIdFromGroupsWithUpdates(update);
         List<GroupWebDTO> gruppenWeb = update.getGroupList();
         HashMap<String, List<String>> usersInAGroup = getUsersInAGroupDatabase(groupsWithUpdates);
-        HashMap<String, String> test = new HashMap<>();
         for (GroupWebDTO gruppeWeb : gruppenWeb) {
             List<String> updatedUsersInAGroup = getIdsFromUpdatedUsers(gruppeWeb);
+            deleteUserGroupRelationshipOfLeavingUser(usersInAGroup, gruppeWeb, updatedUsersInAGroup);
         }
     }
 
     /**
      * Check if in updatedBelegungen a user is in a group, which is not in oldAndNewGroups,
      * if so, add it
+     * Spotbugs error is supressed because the key over which is iterated, is used for another
+     * purpose than just iterating over the map
      */
+    @SuppressFBWarnings("spotbugs:WMI_WRONG_MAP_ITERATOR")
     private Map<String, HashMap<String, Boolean>> getUnionOfOldAndNewGroupsWithRights(
             final Map<String, HashMap<String, Boolean>> updatedBelegungen,
             final Map<String, HashMap<String, Boolean>> oldAndNewGroups) {
         Set<String> userIdsForBelegungen = updatedBelegungen.keySet();
 
         for (String keyUserId : userIdsForBelegungen) {
+
             HashMap<String, Boolean> groupsAndRights = updatedBelegungen.get(keyUserId);
             Set<String> groupIdsForRights = groupsAndRights.keySet();
             for (String keyGroupId : groupIdsForRights) {
@@ -235,8 +248,8 @@ public class WebDTOService {
     }
 
     private void deleteUserGroupRelationshipOfLeavingUser(final HashMap<String, List<String>> usersInAGroup,
-                                                                             final GroupWebDTO gruppeWeb,
-                                                                             final List<String> updatedUsersInAGroup)
+                                                          final GroupWebDTO gruppeWeb,
+                                                          final List<String> updatedUsersInAGroup)
             throws SQLException {
         List<String> usersOfGroupDatabase = usersInAGroup.get(gruppeWeb.getId());
         for (String userId : usersOfGroupDatabase) {

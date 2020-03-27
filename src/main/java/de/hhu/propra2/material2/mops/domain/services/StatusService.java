@@ -11,15 +11,23 @@ public class StatusService {
 
     private Repository repository;
 
-    public StatusService(final Repository repo){
+    public StatusService(final Repository repo) {
         repository = repo;
     }
 
+    /**
+     * @return
+     * @throws SQLException
+     */
     public long getCurrentStatus() throws SQLException {
         return repository.getStatus();
     }
 
-    public void updateToNewStatus(long status) throws SQLException {
+    /**
+     * @param status
+     * @throws SQLException
+     */
+    public void updateToNewStatus(final long status) throws SQLException {
         StatusDTO newStatus = new StatusDTO(status);
         repository.updateStatus(newStatus);
     }

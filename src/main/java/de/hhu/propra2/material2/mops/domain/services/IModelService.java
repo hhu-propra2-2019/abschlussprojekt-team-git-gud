@@ -1,6 +1,7 @@
 package de.hhu.propra2.material2.mops.domain.services;
 
 import de.hhu.propra2.material2.mops.Exceptions.FileNotPublishedYetException;
+import de.hhu.propra2.material2.mops.Exceptions.NoAccessPermissionException;
 import de.hhu.propra2.material2.mops.Exceptions.NoDownloadPermissionException;
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Gruppe;
@@ -18,21 +19,21 @@ public interface IModelService {
 
     List<Gruppe> getAlleUploadGruppenByUser(KeycloakAuthenticationToken token);
 
-    Gruppe getGruppeByUserAndGroupID(Long gruppeId, KeycloakAuthenticationToken token);
+    List<Datei> getAlleDateienByGruppe(String gruppeId, KeycloakAuthenticationToken token);
 
-    List<Datei> getAlleDateienByGruppe(Long gruppeId, KeycloakAuthenticationToken token);
+    Gruppe getGruppeByUserAndGroupID(String gruppeId, KeycloakAuthenticationToken token);
 
     Set<String> getAlleTagsByUser(KeycloakAuthenticationToken token);
 
-    Set<String> getAlleTagsByGruppe(Long gruppeId, KeycloakAuthenticationToken token);
+    Set<String> getAlleTagsByGruppe(String gruppeId, KeycloakAuthenticationToken token);
 
     Set<String> getAlleDateiTypenByUser(KeycloakAuthenticationToken token);
 
-    Set<String> getAlleDateiTypenByGruppe(Long gruppeId, KeycloakAuthenticationToken token);
+    Set<String> getAlleDateiTypenByGruppe(String gruppeId, KeycloakAuthenticationToken token);
 
     Set<String> getAlleUploaderByUser(KeycloakAuthenticationToken token);
 
-    Set<String> getAlleUploaderByGruppe(Long gruppeId, KeycloakAuthenticationToken token);
+    Set<String> getAlleUploaderByGruppe(String gruppeId, KeycloakAuthenticationToken token);
 
     void suchen(Suche suche);
 
@@ -40,13 +41,14 @@ public interface IModelService {
 
     Set<String> getKategorienFromSuche(List<Datei> dateien);
 
-    Set<String> getKategorienByGruppe(Long gruppeId, KeycloakAuthenticationToken token);
+    Set<String> getKategorienByGruppe(String gruppeId, KeycloakAuthenticationToken token);
 
     Boolean isSortedByKategorie();
 
     Account getAccountFromKeycloak(KeycloakAuthenticationToken token);
 
-    Datei getDateiById(long dateiId, KeycloakAuthenticationToken token) throws SQLException;
+    Datei getDateiById(long dateiId, KeycloakAuthenticationToken token)
+            throws SQLException, NoAccessPermissionException;
 
     Boolean userHasEditPermissionForFile(Long dateiId, KeycloakAuthenticationToken token)
             throws NoDownloadPermissionException, SQLException, NoDownloadPermissionException;

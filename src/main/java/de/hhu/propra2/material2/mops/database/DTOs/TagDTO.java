@@ -34,7 +34,7 @@ public class TagDTO {
      * @param textArg
      */
     public TagDTO(final String textArg) {
-        this.id = 0;
+            this.id = 0;
         this.text = textArg;
     }
 

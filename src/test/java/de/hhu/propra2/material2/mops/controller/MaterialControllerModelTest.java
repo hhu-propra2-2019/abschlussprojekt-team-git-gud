@@ -14,8 +14,10 @@ import de.hhu.propra2.material2.mops.domain.models.User;
 import de.hhu.propra2.material2.mops.domain.services.DeleteService;
 import de.hhu.propra2.material2.mops.domain.services.MinIOService;
 import de.hhu.propra2.material2.mops.domain.services.ModelService;
+import de.hhu.propra2.material2.mops.domain.services.StatusService;
 import de.hhu.propra2.material2.mops.domain.services.UpdateService;
 import de.hhu.propra2.material2.mops.domain.services.UploadService;
+import de.hhu.propra2.material2.mops.domain.services.WebDTOService;
 import de.hhu.propra2.material2.mops.security.Account;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.junit.jupiter.api.BeforeEach;
@@ -73,7 +75,13 @@ class MaterialControllerModelTest {
     private UpdateService updateService;
 
     @MockBean
+    private WebDTOService webDTOService;
+
+    @MockBean
     private DeleteService deleteService;
+
+    @MockBean
+    private StatusService statusService;
 
     /**
      * init for the tests.
@@ -82,8 +90,8 @@ class MaterialControllerModelTest {
     @BeforeEach
     void init() {
         List<Gruppe> gruppen = new ArrayList<>();
-        gruppen.add(new Gruppe(1, "ProPra", null));
-        gruppen.add(new Gruppe(2, "RDB", null));
+        gruppen.add(new Gruppe("1", "ProPra", null));
+        gruppen.add(new Gruppe("2", "RDB", null));
         Set<String> tags = new HashSet<>();
         tags.add("Vorlesung");
         tags.add("Übung");
@@ -106,7 +114,7 @@ class MaterialControllerModelTest {
                 realTags, LocalDate.now(), LocalDate.of(2020, 3, 1), 895973L,
                 "PDF", "Vorlesung"));
         when(modelService.getAlleGruppenByUser(any())).thenReturn(gruppen);
-        when(modelService.getGruppeByUserAndGroupID(any(), any())).thenReturn(new Gruppe(2,
+        when(modelService.getGruppeByUserAndGroupID(any(), any())).thenReturn(new Gruppe("2",
                 "RDB", null));
         when(modelService.getAlleUploadGruppenByUser(any())).thenReturn(gruppen);
         when(modelService.getAlleTagsByUser(any())).thenReturn(tags);

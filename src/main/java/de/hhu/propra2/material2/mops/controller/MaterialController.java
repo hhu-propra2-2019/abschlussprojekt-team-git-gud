@@ -135,7 +135,7 @@ public class MaterialController {
         model.addAttribute("uploader", modelService.getAlleUploaderByUser(token));
         model.addAttribute("selectedTags", modelService.getTagsAsSet(suchen.getTags()));
         //Info from the Search
-        if (suchen != null && suchen.getGruppenId() != -1) {
+        if (suchen.getGruppenId() != -1) {
             model.addAttribute("tags", modelService.getAlleTagsByGruppe(suchen.getGruppenId(), token));
             model.addAttribute("dateiTypen", modelService.getAlleDateiTypenByGruppe(suchen.getGruppenId(), token));
             model.addAttribute("uploader", modelService.getAlleUploaderByGruppe(suchen.getGruppenId(), token));

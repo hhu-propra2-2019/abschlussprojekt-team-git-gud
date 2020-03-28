@@ -321,16 +321,23 @@ Geschäftslogik. Die Geschäftslogik hat Äbhänigkeiten in die Datebank bzw. da
 Die drei Domänen sind der User, die Gruppe und eine Datei. Ein User kann mehrere Gruppen haben. Der User speichert
 ebenfalls in welchen Gruppen er Upload Rechte hat. Eine Gruppe besitzt Dateien, welche in verschiedenen Kategorien
 eingeteilt werden.
-Somit entsteht eine Hiraschiche strucktur, bei welcher ein User in mehreren Gruppen ist und diese Gruppen jeweilts mehrere
+Somit entsteht eine hierarchische Struktur, bei welcher ein User in mehreren Gruppen ist und diese Gruppen jeweils mehrere
 Datein haben können. Somit hängt alles vom User ab und dieser hat viel Informationen welche an ihm dran hängen. Um im Betrieb
 die Menge an geladen Daten zu verringern werden beim Laden eines User erst nur seine Gruppen geladen. Die Daten der Gruppe
 jedoch erst, wenn auf eine Gruppe zugegriffen wird.
 
-...
+=== Fehlerbehandlung
 
-=== _<Konzept n>_
+In der Benutzeroberfläche werden verschiedenste Fehler abgefangen. Im Uploadformular wird geprüft ob auch eine Datei auch
+zum Upload ausgewählt wurde. Beim Abschicken des Formular wird überprüft ob die Datei als Eintrag in die Datenbank
+geschrieben werden konnte und bei einem Fehler wird die entsprechende Fehlermeldung ausgegeben.
+Es werden nur Gruppen zum Upload angezeigt in welchen der User die Uploadberechtigungen hat. Trotzdem wird
+im UploadService vor dem hinzufügen der Datei nochmals geprüft ob der User auch tatsächlich die Berechtigung dazu hat.
 
-_<Erklärung>_
+Bei der Suche wird der Fall, dass keine Suchergebnisse entsprechend der Suche gefunden wurden abgefangen. Man erhält
+auf der Seite eine error massage, welche dem User zeigt, dass seine Anfrage auch angekommen ist.
+Somit halten wir uns als eins unserer Ziele, welches ausgesagt hat, dass unsere GUI dem User immer ein entsprechendes
+Feedback gibt.
 
 <<<<
 // 9. Entscheidungen

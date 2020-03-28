@@ -1,0 +1,38 @@
+= Dokumentation zu Implementierungsentscheidungen
+
+== Architektur
+
+Wir haben uns entschieden eine Schochtarchitektur zu verwenden(vgl. Architekturtests der Anwendung), weil
+wir relativ wenig komplizierte Logik gebrauchen hat sich diese Architektur besonders angeboten.
+
+=== Graphische Benutzerschnittstelle
+
+- Das Hauptnavigationswerkzeug ist, um dem Styleguide gerecht zu bleiben, an dem linken Rand der Seite platziert.
+
+- Die zu erreichenden Seiten sind: Startseite, Suche, Upload und die jeweiligen Gruppen des Benutzers.
+
+- Wir haben uns entschieden Tokenfelder zu benutzen, um die Eingaben besser zu gestalten.
+
+- Die Dateiansicht und die Suche wurden der Übersicht halber getrennt.
+
+- Es wurde entschieden keine extra Seite zum Editieren der Dateiuploads zu gestalten, da es intuitiver ist
+  dies über die Dateisicht zu erreichen.
+
+=== Geschäftslogik
+
+- Um die Entwicklung zu vereinfachen, haben wir Interfaces definiert um alle benötigten Funktionalitäten
+  der jeweiligen Klassen zu gewährleisten.
+
+- Zur einfacheren Sortierung wurden eigene kompertoren geschrieben.
+
+- Zur leichteren Anpassung wurden alle MinIO-Einstellungen in der Klasse MinIOProperties gebündelt.
+
+- Um Code-Duplikation auszuschließen haben wir alle MinIO-Fiunktionalitäten in der Klasse MinIOService
+  gesammelt.
+
+- Für den besseren Umgang mit Fehlern wurden eigene Exceptions definiert, die der graphischen Benutzerschnittstelle
+  bzw. dem Controller zur Verfügung gestellt werden.
+
+- Aufgrund verschiedener Datenschemata musste die Logik der WebDTOServics überkompliziert implementiert werden.
+
+=== Persistenz

@@ -347,3 +347,10 @@ Die Entwurfsentscheidungen sind in der Datei "Entscheidungsdokumentation" dokume
 // 11. Risiken
 [[section-technical-risks]]
 == Risiken und technische Schulden
+
+Risiken:
+
+- Spring Data JDBC könnte nicht einfach kompatibel mit unserem Datenbankschema sein.
+
+- Die benötigten Information von anderen Gruppen sind schwer mit unserer Implementierung zu vereinbaren.
+

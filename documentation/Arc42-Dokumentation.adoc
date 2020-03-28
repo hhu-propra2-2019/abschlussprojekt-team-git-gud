@@ -224,10 +224,10 @@ image::https://github.com/hhu-propra2/abschlussprojekt-team-git-gud/blob/documen
 
 === Lösungstrategien zu den aufgestellten Qualitätszielen
 
-- *Effizienz*: Schreiben effizienter Queries für Datenbankanfragen sowie Caching von häufig auftrettenden
+- *Effizienz*: Schreiben effizienter Queries für Datenbankanfragen sowie teilweises Caching von häufig auftrettenden
                 Anfragen.
 
-- *Modifizierbarkeit*:
+- *Modifizierbarkeit*: Die einzelnen Schochten der Schichtarchitektur sind durchaus modifizierbar.
 
 - *Analysierbarkeit*: Dokumentation der implementationsentscheidungen in einer Entscheidungsdokumentaiton und
                       Architekturdokumentation. Außerdem eingehaltende Schichtarchitektur der Anwendung und spezialisierte
@@ -311,12 +311,12 @@ _<Whitebox-Template>_
 [[section-concepts]]
 == Querschnittliche Konzepte
 
-=== _Abhängigkeiten zwischen Modulen_
+=== Abhängigkeiten zwischen Modulen
 
 Generell gehen Abhänigkeiten immer in die nächst tiefere Schicht. Die GUI bzw. der Controller ist Äbhänig von der
 Geschäftslogik. Die Geschäftslogik hat Äbhänigkeiten in die Datebank bzw. das Repository.
 
-=== _Domänenmodell_
+=== Domänenmodell
 
 Die drei Domänen sind der User, die Gruppe und eine Datei. Ein User kann mehrere Gruppen haben. Der User speichert
 ebenfalls in welchen Gruppen er Upload Rechte hat. Eine Gruppe besitzt Dateien, welche in verschiedenen Kategorien
@@ -338,6 +338,16 @@ Bei der Suche wird der Fall, dass keine Suchergebnisse entsprechend der Suche ge
 auf der Seite eine error massage, welche dem User zeigt, dass seine Anfrage auch angekommen ist.
 Somit halten wir uns als eins unserer Ziele, welches ausgesagt hat, dass unsere GUI dem User immer ein entsprechendes
 Feedback gibt.
+
+image::https://github.com/hhu-propra2/abschlussprojekt-team-git-gud/blob/documentation_change/documentation/pictures/Dom%C3%A4nenabh%C3%A4ngigkeiten.png[optional alt text]
+
+=== Testbarkeit
+
+Alle Services und Klassen, die Logik beinhalten, sind testbar und werden getestet. Als Tetsing framworks werden JUnit, Hemcrest und
+Mockito verwendet. Die Testklassen sind nach der zu testenden Klasse mit dem Suffix "Test" benannt.
+Jede Schicht des Schichtenmodells weist dabei Tests auf. Die Graphichebenutzerschnittstelle testet den Controller, die Geschäftslogik testet ihre Services
+und die Persistenz testet, falls Vorhanden, von Hand geschriebene Queries. Getestet wird dabei wie üblich im AAA-Format mit den
+oben genannten Frameworks.
 
 <<<<
 // 9. Entscheidungen

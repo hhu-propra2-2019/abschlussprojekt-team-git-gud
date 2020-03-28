@@ -28,7 +28,7 @@
     </div>
 
     <div class="accordion" id="dataCategorys">
-        <div class="card" th:each="kategorie, iter : ${kategorien}">
+        <div class="card" id="dateisicht-accordion-main-card" th:each="kategorie, iter : ${kategorien}">
             <div class="card-header" id="${kategorie}">
                 <h2 class="mb-0">
                     <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
@@ -41,22 +41,27 @@
                  data-parent="#dataCategorys">
                 <div class="card-body p-0 pb-2 m-0" th:each="datei : ${dateien}"
                      th:if="${datei.getKategorie().equals(kategorie)}">
-                    <div class="card">
+                    <div class="card" id="dateisicht-accordion-card">
                         <h6 class="card-title h5">
-                            <div class="d-inline" th:each="tag : ${datei.getTags()}">
+                            <div id="dateisicht-tags-anzeige" class="d-inline" th:each="tag : ${datei.getTags()}">
                                 <span class="badge badge-primary" th:text="${tag.getText()}"></span>
                             </div>
-                            <div class="list-inline text-muted">
-                                <span class="card d-inline" th:text="${datei.getDateityp()}"></span>
-                                <span class="card d-inline" th:text="${datei.getDateigroesseFormated()}"></span>
-                                <span class="card d-inline" th:text="${datei.getVeroeffentlichungsdatum()}"></span>
-                                <span class="card d-inline" th:text="${datei.getUploader().getName()}">
-                                    </span>
-                            </div>
+
                         </h6>
+                        <div id="dateisicht-datei-secondary-info" class="list-inline ">
+                                <span id="dateisicht-datei-typ" class="card d-inline"
+                                      th:inline="text">Dateityp: [[${datei.getDateityp()}]]</span>
+                            <span id="dateisicht-datei-format" class="card d-inline"
+                                  th:inline="text">Größe: [[${datei.getDateigroesseFormated()}]]</span>
+                            <span id="dateisicht-datei-date" class="card d-inline"
+                                  th:inline="text">Veröffentlichung: [[${datei.getVeroeffentlichungsdatum()}]]</span>
+                            <span id="dateisicht-datei-uploader" class="card d-inline"
+                                  th:inline="text">Uploader: [[${datei.getUploader().getName()}]]</span>
+                        </div>
                         <div class="list-inline" id="dateimain">
-                            <span class="card-text h2 pb-3" th:text="${datei.getName()}"></span>
-                            <div class="btn-group" role="group" aria-label="Basic example">
+                            <span id="dateisicht-datei-name" class="card-text h1"
+                                  th:text="${datei.getName()}"></span>
+                            <div id="dateisicht-btn-group" class="btn-group" role="group" aria-label="Basic example">
                                 <a class="btn btn-info" role="button"
                                    th:href="@{/material2/update(dateiId=${datei.getId()},
                                     gruppenId=${gruppenAuswahl.getId()})}"
@@ -69,9 +74,7 @@
                                    gruppenId=${gruppenAuswahl.getId()})}"
                                    href="#">X</a>
                             </div>
-
                         </div>
-
                     </div>
                 </div>
             </div>

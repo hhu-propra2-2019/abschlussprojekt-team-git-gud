@@ -81,6 +81,9 @@ class MaterialControllerAccessTest {
         Set<String> dateiTypen = new HashSet<>();
         dateiTypen.add("XML");
         dateiTypen.add("JSON");
+        List<Datei> dateien = new ArrayList<>();
+        Set<String> kategorien = new HashSet<>();
+        Set<String> selectedTags = new HashSet<>();
         when(modelService.getAlleGruppenByUser(any())).thenReturn(gruppen);
         when(modelService.getGruppeByUserAndGroupID(any(), any())).thenReturn(new Gruppe("2",
                 "RDB", null));
@@ -93,6 +96,10 @@ class MaterialControllerAccessTest {
                 new ArrayList<>(), null, null, 1, null, null);
         when(modelService.getDateiById(anyLong(), any())).thenReturn(datei);
         when(modelService.userHasEditPermissionForFile(anyLong(), any())).thenReturn(true);
+        when(modelService.getSuchergebnisse(any())).thenReturn(dateien);
+        when(modelService.isSortedByKategorie()).thenReturn(true);
+        when(modelService.getKategorienFromSuche(any())).thenReturn(kategorien);
+        when(modelService.getTagsAsSet(any())).thenReturn(selectedTags);
     }
 
     //Unknown User Access tests
@@ -200,10 +207,6 @@ class MaterialControllerAccessTest {
     void testSucheStudentUser() throws Exception {
         mvc.perform(get("/material2/suche"))
                 .andExpect(status().isOk());
-
-        mvc.perform(post("/material2/suche")
-                .with(csrf()))
-                .andExpect(status().is3xxRedirection());
     }
 
     @Test
@@ -228,8 +231,6 @@ class MaterialControllerAccessTest {
     @Test
     @WithMockKeycloackAuth(name = "Bruce W.", roles = "studentin")
     void testUpdateStudentUser() throws Exception {
-
-
         mvc.perform(get("/material2/update")
                 .param("gruppenId", "1")
                 .param("dateiId", "1"))
@@ -254,10 +255,6 @@ class MaterialControllerAccessTest {
     void testSucheOrgaUser() throws Exception {
         mvc.perform(get("/material2/suche"))
                 .andExpect(status().isOk());
-
-        mvc.perform(post("/material2/suche")
-                .with(csrf()))
-                .andExpect(status().is3xxRedirection());
     }
 
     @Test
@@ -305,10 +302,6 @@ class MaterialControllerAccessTest {
     void testSucheActuatorUserUser() throws Exception {
         mvc.perform(get("/material2/suche"))
                 .andExpect(status().isOk());
-
-        mvc.perform(post("/material2/suche")
-                .with(csrf()))
-                .andExpect(status().is3xxRedirection());
     }
 
     @Test

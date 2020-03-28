@@ -15,3 +15,10 @@ services:
       - "MINIO_ACCESS_KEY=minio"
       - "MINIO_SECRET_KEY=minio123"
     command: "server /data/"
+  material2:
+    depends_on:
+      - mysql
+      - minio
+    build: .
+    ports:
+      - '8080:8080'

@@ -49,4 +49,8 @@ wir relativ wenig komplizierte Logik gebrauchen hat sich diese Architektur beson
 
 - Es wurde es sich gegen ein Cachen der kompletten Datenbank entschieden.
 
+- Folgendes Datenbankschema wurde zur passenden Kontextmodellierung gewählt:
+
+image::https://github.com/hhu-propra2/abschlussprojekt-team-git-gud/blob/documentation_change/documentation/pictures/datenbankschema.png[optional alt text]
+
 

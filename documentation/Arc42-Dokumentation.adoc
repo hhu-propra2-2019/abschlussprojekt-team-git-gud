@@ -191,7 +191,7 @@ wie z.B get, set, is usw. und technische Begriffe bleiben Englisch.
 
 === Fachlicher Kontext
 
-image::/Kontextausschnitt.png[optional alt text]
+image::https://github.com/hhu-propra2/abschlussprojekt-team-git-gud/blob/documentation_change/documentation/pictures/Kontextausschnitt.png[optional alt text]
 
 - *Nutzer*: Die Materialsammlung bietet dem Nutzer eine Möglichkeit, je nach Befugniss,
             Daten hochzuladen, runterzuladen, anderen Nutzern zu Verfügung zu stellen und diese
@@ -207,7 +207,7 @@ image::/Kontextausschnitt.png[optional alt text]
 
 === Technischer Kontext
 
-image::https://github.com/hhu-propra2/abschlussprojekt-team-git-gud/blob/documentation_change/documentation/tech_kontext_ausschnitt.png[optional alt text]
+image::https://github.com/hhu-propra2/abschlussprojekt-team-git-gud/blob/documentation_change/documentation/pictures/tech_kontext_ausschnitt.png[optional alt text]
 
 - *MinIO (Fremdsystem)*: Die Speicherung von Dateien erfolgt in einem Dockercontainer laufenden MinIO-Clludspeicher.
                          In diesem MinIO-Cloudspeicher befindet sich ein Bucket mit Namen Materialsammlung der die in der

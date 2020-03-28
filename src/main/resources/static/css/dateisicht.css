@@ -63,3 +63,64 @@
     background-color: #5066ce29;
     padding: 2px;
 }
+
+#suche-accordion-card {
+    background-color: #cfdff1;
+    border: 3px solid #83888e;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#suche-tags-anzeige {
+    margin-left: 2px;
+}
+
+#sucheback {
+    max-width: fit-content;
+    margin-left: 30px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+#suche-btn-group {
+    position: absolute;
+    margin-left: 30px;
+}
+
+#suche-datei-name {
+    FONT-WEIGHT: bold;
+}
+
+#suche-datei-secondary-info {
+    margin-top: 20px;
+    margin-left: 60px;
+    max-width: fit-content;
+}
+
+#suche-datei-typ {
+    border: 3px dashed #83888e;
+    margin: 5px;
+    background-color: #5066ce29;
+    padding: 2px;
+}
+
+#suche-datei-format {
+    border: 3px dashed #83888e;
+    margin: 5px;
+    background-color: #5066ce29;
+    padding: 2px;
+}
+
+#suche-datei-date {
+    border: 3px dashed #83888e;
+    margin: 5px;
+    background-color: #5066ce29;
+    padding: 2px;
+}
+
+#suche-datei-uploader {
+    border: 3px dashed #83888e;
+    margin: 5px;
+    background-color: #5066ce29;
+    padding: 2px;
+}

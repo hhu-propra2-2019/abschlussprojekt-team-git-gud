@@ -37,3 +37,17 @@ erreichen können
 * Methodendokumentation: Die Methoden der Anwendung sind im Quellcode mti Javadocs versehen, die ihre Fiunktionalität beschreiben.
 
 * Architekturdokumentation: Architkekturbdokumentation befindet sich im Order "documentations"
+
+== Start der Anwendung
+
+=== Über die IDE
+
+    docker-compose up
+
+* Applikation über die IDE starten.
+
+=== Als vollständiger Dockercontainer (inkl. MySQL und MinIO)
+
+    docker-compose -f docker-compose.demo.yml up
+
+Im Webbrowser ist die Anwendung dann unter http://localhost:8080/material2/ zu erreichen.

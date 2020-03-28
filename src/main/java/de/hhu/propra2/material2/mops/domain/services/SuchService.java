@@ -2,11 +2,11 @@ package de.hhu.propra2.material2.mops.domain.services;
 
 import de.hhu.propra2.material2.mops.domain.models.Datei;
 import de.hhu.propra2.material2.mops.domain.models.Suche;
-import lombok.extern.slf4j.Slf4j;
 import de.hhu.propra2.material2.mops.domain.services.suchComparators.DateiDateiTypComparator;
 import de.hhu.propra2.material2.mops.domain.services.suchComparators.DateiDatumComparator;
 import de.hhu.propra2.material2.mops.domain.services.suchComparators.DateiNamenComparator;
 import de.hhu.propra2.material2.mops.domain.services.suchComparators.DateiUploaderComparator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -51,6 +51,9 @@ public class SuchService {
             result = sortieren(suche.getSortierKriterium(),
                     suche.getReihenfolge(),
                     result);
+        }
+        if (result.isEmpty()) {
+            return null;
         }
         return result;
     }
@@ -139,8 +142,9 @@ public class SuchService {
           Kategorie
           aufsteigend / absteigend
          */
-        if ("name".equals(sortierStyle)) {
-            zuSortieren.sort(new DateiNamenComparator());
+        List<Datei> sort = zuSortieren;
+        if ("Name".equals(sortierStyle)) {
+            sort.sort(new DateiNamenComparator());
         } else if ("Dateityp".equals(sortierStyle)) {
             zuSortieren.sort(new DateiDateiTypComparator());
         } else if ("Uploader".equals(sortierStyle)) {

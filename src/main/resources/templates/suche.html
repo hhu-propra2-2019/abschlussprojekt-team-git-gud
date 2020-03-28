@@ -7,92 +7,290 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link href="../static/dist/tokenfield.css" th:href="dist/tokenfield.css" rel="stylesheet">
     <title>Index</title>
 </head>
 
 <body>
-<div id="content" th:fragment="mycontent">
-    <h1 class="text-center">
-        Suche
-    </h1>
-    <div class="container">
-        <form action="" method="post" id="abschicken" name="auswahl" >
-            <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
-            <div class="form-group">
-                <label for="SelectGroup">Gruppenauswahl</label>
-                <select class="form-control" onchange="auswahl.submit()" id="SelectGroup" name="gruppenId">
-                    <option value="0">Alle</option>
-                    <option th:each="gruppe : ${gruppen}"
-                            th:value="${gruppe.getId()}"
-                            th:text="${gruppe.getName()}" >
-                    </option>
-                </select>
-            </div>
+    <div id="content" th:fragment="mycontent">
+        <h1 class="text-center">
+            Suche
+        </h1>
+        
+        <div>
+            <form action="" method="post" id="abschicken" name="auswahl" >
+                <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
 
-            <div class="form-group">
-                <label for="dataname">Dateiname</label>
-                <input type="text" class="form-control" id="dataname" placeholder="Eingabe" name="dateiName">
-            </div>
-
-            <div class="form-group list-inline">
-                <label for="Tag">Tag </label>
-                <div class="form-check" th:each="tag : ${tags}">
-                    <input class="form-check-input" type="checkbox" value="" id="Tag"
-                           th:value="${tag}" name="tags">
-                    <label class="form-check-label" for="Tag" th:text="${tag}"></label>
+                <div class="alert alert-danger" role="alert" th:if="${search?.equals('Suchen')} and ${dateien == null}">
+                    Es konnten keine Dateien entsprechend der Suche gefunden werden
                 </div>
-            </div>
 
-            <div class="form-group list-inline">
-                <label for="Dateityp">Dateityp</label>
-                <div class="form-check" th:each="dateiTyp : ${dateiTypen}">
-                    <input class="form-check-input" type="checkbox" value="" id="Dateityp" th:value="${dateiTyp}" name="dateiTyp">
-                    <label class="form-check-label" for="Dateityp" th:text="${dateiTyp}"></label>
+                <div class="form-group">
+                    <label class="form-row" for="SelectGroup">Gruppenauswahl</label>
+                    <select class="form-control" onchange="this.form.submit()" id="SelectGroup" name="gruppenId">
+                        <option value="-1">Alle</option>
+                        <option th:each="gruppe : ${gruppen}"
+                                th:value="${gruppe.getId()}"
+                                th:text="${gruppe.getName()}"
+                                th:selected="${gruppe.getId().equals(suche?.getGruppenId())}">
+                        </option>
+                    </select>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label for="Uploader">Uploader</label>
-                <div class="form-check" th:each="uploading : ${uploader}">
-                    <input class="form-check-input" type="checkbox" value="" id="Uploader" th:value="${uploading}" name="uploader">
-                    <label class="form-check-label" for="Dateityp" th:text="${uploading}"></label>
+                <div class="form-group">
+                    <label for="dataname">Dateiname</label>
+                    <input type="text" class="form-control" pattern="[A-Za-z0-9]+"
+                           id="dataname" placeholder="Eingabe" th:value="${suche?.getDateiName()}" name="dateiName">
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label>Datum </label>
-                    <div class="form-inline">
-                        <label for="FromDate"> Von</label>
-                        <div class="form-check">
-                            <input type="date" value="" id="FromDate" name="vonDatum">
+                <div class="form-group">
+                    <label for="Tag">Tags </label>
+                    <input type="text" class="form-control" id="Tag" name="tags">
+                </div>
+                <script src="../static/dist/tokenfield.min.js" th:src="@{../dist/tokenfield.min.js}"></script>
+                <script th:inline="javascript">
+                    var suggestions = [];
+                    var tagTexts = /*[[${tags}]]*/ [];
+
+                    for (count = 0; count < tagTexts.length; count++)
+                    {
+                        var obj = {
+                            id: count,
+                            name: tagTexts[count]
+                        };
+                        suggestions.push(obj);
+                    }
+
+                    var jp = new Tokenfield({
+                        el: document.querySelector('#Tag'),
+                        items: suggestions,
+                        newItems: true,
+                        addItemOnBlur: true,
+                        filterSetItems: false,
+                        addItemsOnPaste: true,
+                        delimiters: [',', ' '],
+                        minChars: 0,
+                        maxSuggestWindow: 5,
+                        singleInput: true,
+                        singleInputValue: 'name'
+                    });
+                    var tags = [];
+                    var selectedTags = /*[[${selectedTags}]]*/ [];
+
+                    for (count = 0; count < selectedTags.length; count++)
+                    {
+                        var obj = {
+                            id: count,
+                            name: selectedTags[count]
+                        };
+                        tags.push(obj);
+                    }
+                    jp.setItems(tags);
+                </script>
+
+                <div class="form-group">
+                    <label for="Dateityp">Dateityp</label>
+                    <input type="text" class="form-control" id="Dateityp" name="dateiTyp">
+                </div>
+                <script src="../static/dist/tokenfield.min.js" th:src="@{../dist/tokenfield.min.js}"></script>
+                <script th:inline="javascript">
+                    var DateiTypenSuggestions = [];
+                    var DateiTypenTexts = /*[[${dateiTypen}]]*/ [];
+
+                    for (count = 0; count < DateiTypenTexts.length; count++)
+                    {
+                        var obj = {
+                            id: count,
+                            name: DateiTypenTexts[count]
+                        };
+                        DateiTypenSuggestions.push(obj);
+                    }
+
+                    var dateiTypenField = new Tokenfield({
+                        el: document.querySelector('#Dateityp'),
+                        items: DateiTypenSuggestions,
+                        newItems: true,
+                        addItemOnBlur: true,
+                        filterSetItems: false,
+                        addItemsOnPaste: true,
+                        delimiters: [',', ' '],
+                        minChars: 0,
+                        maxSuggestWindow: 5,
+                        singleInput: true,
+                        singleInputValue: 'name'
+                    });
+                    var dateiTypen = [];
+                    var selectedDateiTypen = /*[[${suche?.getDateiTyp()}]]*/ [];
+
+                    for (count = 0; count < selectedDateiTypen.length; count++)
+                    {
+                        var obj = {
+                            id: count,
+                            name: selectedDateiTypen[count]
+                        };
+                        dateiTypen.push(obj);
+                    }
+                    dateiTypenField.setItems(dateiTypen);
+                </script>
+
+                <div class="form-group">
+                    <label for="Uploader" >Uploader</label>
+                    <input type="text" class="form-control" id="Uploader" name="uploader">
+                </div>
+                <script src="../static/dist/tokenfield.min.js" th:src="@{../dist/tokenfield.min.js}"></script>
+                <script th:inline="javascript">
+                    var suggestions = [];
+                    var uploaderTexts = /*[[${uploader}]]*/ [];
+
+                    for (count = 0; count < uploaderTexts.length; count++)
+                    {
+                        var obj = {
+                            id: count,
+                            name: uploaderTexts[count]
+                        };
+                        suggestions.push(obj);
+                    }
+
+                    var uploaderField = new Tokenfield({
+                        el: document.querySelector('#Uploader'),
+                        items: suggestions,
+                        newItems: true,
+                        addItemOnBlur: true,
+                        filterSetItems: false,
+                        addItemsOnPaste: true,
+                        delimiters: [',', ' '],
+                        minChars: 0,
+                        maxSuggestWindow: 5,
+                        singleInput: true,
+                        singleInputValue: 'name'
+                    });
+                    var uploader = [];
+                    var selectedUploader = /*[[${suche?.getUploader()}]]*/ [];
+
+                    for (count = 0; count < selectedUploader.length; count++)
+                    {
+                        var obj = {
+                            id: count,
+                            name: selectedUploader[count]
+                        };
+                        uploader.push(obj);
+                    }
+                    uploaderField.setItems(uploader);
+                </script>
+
+                <div class="form-group">
+                    <label>Datum </label>
+                        <div class="form-inline">
+                            <label for="FromDate"> Von</label>
+                            <div class="form-check">
+                                <input type="date" value="" id="FromDate" th:value="${suche?.getVonDatum()}" name="vonDatum">
+                            </div>
+                            <label for="UntilDate"> Bis</label>
+                            <div class="form-check">
+                                <input type="date" value="" id="UntilDate" th:value="${suche?.getBisDatum()}" name ="bisDatum">
+                            </div>
                         </div>
-                        <label for="UntilDate"> Bis</label>
-                        <div class="form-check">
-                            <input type="date" value="" id="UntilDate" name ="bisDatum">
+                </div>
+
+                <div class="form-group">
+                    <label for="SelectSearchBy">Sortierung </label>
+                    <div class="form-inline">
+                        <select class="form-control" id="SelectSearchBy" name="sortierKriterium">
+                            <option> Kategorie </option>
+                            <option th:selected="${suche?.getSortierKriterium()?.equals('Name')}"> Name </option>
+                            <option th:selected="${suche?.getSortierKriterium()?.equals('Datum')}"> Datum </option>
+                            <option th:selected="${suche?.getSortierKriterium()?.equals('Dateityp')}"> Dateityp </option>
+                            <option th:selected="${suche?.getSortierKriterium()?.equals('Uploader')}"> Uploader </option>
+                        </select>
+                        <label for="SelectOrder"></label>
+                        <select class="form-control" id="SelectOrder" name="reihenfolge">
+                            <option>aufsteigend</option>
+                            <option th:selected="${suche?.getReihenfolge()?.equals('absteigend')}">absteigend</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <input class="btn btn-primary" type="submit" onclick="abschicken.submit()" name="search" value="Suchen">
+                </div>
+            </form>
+        </div>
+
+        <div th:unless="${dateien == null}" th:align="left">
+
+            <h1 class="text mt-4 mb-2">
+                Ergebnisse
+            </h1>
+            <div th:if="${isSortedByKategorie}">
+                <div class="accordion" id="dataCategorys">
+                    <div class="card" th:each="kategorie, iter : ${kategorien}">
+                        <div class="card-header" id="${kategorie}">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link " type="button" data-toggle="collapse"
+                                        th:data-target="'#collapseOne' + ${iter.index}"
+                                        aria-expanded="true" aria-controls="collapseOne" th:text="${kategorie}">
+                                </button>
+                            </h2>
+                        </div>
+                        <div th:id="'collapseOne' + ${iter.index}" class="collapse" aria-labelledby="${kategorie}"
+                             data-parent="#dataCategorys">
+                            <div class="card-body p-0 pb-2 m-0" th:each="datei : ${dateien}"
+                                 th:if="${datei.getKategorie().equals(kategorie)}">
+                                <div class="card">
+                                    <h6 class="card-title h5">
+                                        <div class="d-inline" th:each="tag : ${datei.getTags()}">
+                                            <span class="badge badge-primary" th:text="${tag.getText()}"></span>
+                                        </div>
+                                        <div class="list-inline text-muted">
+                                            <span class="card d-inline" th:text="${datei.getDateityp()}"></span>
+                                            <span class="card d-inline" th:text="${datei.getDateigroesseFormated()}"></span>
+                                            <span class="card d-inline" th:text="${datei.getVeroeffentlichungsdatum()}"></span>
+                                            <span class="card d-inline" th:text="${datei.getUploader().getName()}"></span>
+                                        </div>
+                                    </h6>
+                                    <div class="list-inline" id="dateimain">
+                                        <span class="card-text h2 pb-3" th:text="${datei.getName()}"></span>
+                                        <div class="btn-group" role="group" aria-label="Basic example">
+                                            <a class="btn btn-primary" role="button"
+                                               th:href="@{/material2/files(fileId=${datei.getId()})}"
+                                               href="#">DOWNLOAD</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-            </div>
-
-            <div class="form-group">
-                <label for="SelectSearchBy">Sortierung </label>
-                <div class="form-inline">
-                    <select class="form-control" id="SelectSearchBy" name="sortierung">
-                        <option> Name </option>
-                        <option> Datum </option>
-                    </select>
-                    <label for="SelectOrder"></label>
-                    <select class="form-control" id="SelectOrder" name="reihenfolge">
-                        <option> aufsteigend </option>
-                        <option> absteigend </option>
-                    </select>
                 </div>
             </div>
 
-            <div>
-                <input class="btn btn-primary" type="submit" onclick="abschicken.submit()" name="search" value="Suchen">
+            <div th:if="${isSortedByKategorie == false}">
+                <div class="card-body p-0 pb-2 m-0" th:each="datei : ${dateien}">
+                    <div class="card">
+                        <h6 class="card-title h5">
+                            <div class="d-inline" th:each="tag : ${datei.getTags()}">
+                                <span class="badge badge-primary" th:text="${tag.getText()}"></span>
+                            </div>
+                            <div class="list-inline text-muted">
+                                <span class="card d-inline" th:text="${datei.getDateityp()}"></span>
+                                <span class="card d-inline" th:text="${datei.getDateigroesseFormated()}"></span>
+                                <span class="card d-inline" th:text="${datei.getVeroeffentlichungsdatum()}"></span>
+                                <span class="card d-inline" th:text="${datei.getUploader().getName()}">
+                                    </span>
+                            </div>
+                        </h6>
+                        <div class="list-inline" id="dateisecound">
+                            <span class="card-text h2 pb-3" th:text="${datei.getName()}"></span>
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                <a class="btn btn-primary" role="button" th:href="@{/material2/files(fileId=${datei.getId()})}"
+                                   href="#">DOWNLOAD</a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
             </div>
-        </form>
+        </div>
     </div>
-</div>
 </body>
 </html>

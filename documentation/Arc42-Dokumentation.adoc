@@ -224,10 +224,10 @@ image::https://github.com/hhu-propra2/abschlussprojekt-team-git-gud/blob/documen
 
 === Lösungstrategien zu den aufgestellten Qualitätszielen
 
-- *Effizienz*: Schreiben effizienter Queries für Datenbankanfragen sowie Caching von häufig auftrettenden
+- *Effizienz*: Schreiben effizienter Queries für Datenbankanfragen sowie teilweises Caching von häufig auftrettenden
                 Anfragen.
 
-- *Modifizierbarkeit*:
+- *Modifizierbarkeit*: Die einzelnen Schochten der Schichtarchitektur sind durchaus modifizierbar.
 
 - *Analysierbarkeit*: Dokumentation der implementationsentscheidungen in einer Entscheidungsdokumentaiton und
                       Architekturdokumentation. Außerdem eingehaltende Schichtarchitektur der Anwendung und spezialisierte

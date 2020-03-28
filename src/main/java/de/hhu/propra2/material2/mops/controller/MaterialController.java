@@ -25,10 +25,10 @@ import de.hhu.propra2.material2.mops.security.Account;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -37,11 +37,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.annotation.SessionScope;
 
 import javax.annotation.security.RolesAllowed;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.List;
 
 
 /**
@@ -50,6 +52,7 @@ import java.sql.SQLException;
  * satisfy both conditions and have to disable one
  */
 @Controller
+@SessionScope
 @RequestMapping("/material2")
 @SuppressWarnings("checkstyle:ParenPad")
 public class MaterialController {
@@ -136,19 +139,32 @@ public class MaterialController {
      */
     @PostMapping("/suche")
     @RolesAllowed( {"ROLE_orga", "ROLE_studentin", "ROLE_actuator"})
-    public String suchen(
-            final KeycloakAuthenticationToken token, final Model model, final @ModelAttribute Suche suchen,
-            final String search) {
+    public String suchen(final KeycloakAuthenticationToken token, final Model model,
+                         final @ModelAttribute Suche suchen, final String search) {
+        //Info from all the Gruppen of a User
+        model.addAttribute("suche", suchen);
         model.addAttribute("account", modelService.getAccountFromKeycloak(token));
         model.addAttribute("gruppen", modelService.getAlleGruppenByUser(token));
         model.addAttribute("tags", modelService.getAlleTagsByUser(token));
         model.addAttribute("dateiTypen", modelService.getAlleDateiTypenByUser(token));
         model.addAttribute("uploader", modelService.getAlleUploaderByUser(token));
-        if (search == null) {
-            model.addAttribute("suche", suchen);
-            return "redirect:/suche";
+        model.addAttribute("selectedTags", modelService.getTagsAsSet(suchen.getTags()));
+        //Info from the Search
+        if (!suchen.getGruppenId().equals("-1")) {
+            model.addAttribute("tags", modelService.getAlleTagsByGruppe(suchen.getGruppenId(), token));
+            model.addAttribute("dateiTypen", modelService.getAlleDateiTypenByGruppe(suchen.getGruppenId(), token));
+            model.addAttribute("uploader", modelService.getAlleUploaderByGruppe(suchen.getGruppenId(), token));
         }
-        return "redirect:/material2/suche";
+        //When search is started
+        if (("Suchen").equals(search)) {
+            modelService.suchen(suchen);
+            List<Datei> suchErgebnisse = modelService.getSuchergebnisse(token);
+            model.addAttribute("isSortedByKategorie", modelService.isSortedByKategorie());
+            model.addAttribute("dateien", suchErgebnisse);
+            model.addAttribute("kategorien", modelService.getKategorienFromSuche(suchErgebnisse));
+            model.addAttribute("search", search);
+        }
+        return "suche";
     }
 
     /**
@@ -307,7 +323,6 @@ public class MaterialController {
         } catch (ObjectNotInMinioException e) {
             setMessages("Das zu löschende Object liegt nicht in MinIO.", null);
         }
-
         model.addAttribute("kategorien", modelService.getKategorienByGruppe(gruppenId, token));
         model.addAttribute("dateien", modelService.getAlleDateienByGruppe(gruppenId, token));
         Gruppe gruppenAuswahl = modelService.getGruppeByUserAndGroupID(gruppenId, token);
@@ -315,7 +330,6 @@ public class MaterialController {
         model.addAttribute("error", errorMessage);
         model.addAttribute("success", successMessage);
         resetMessages();
-
         return "dateiSicht";
     }
 

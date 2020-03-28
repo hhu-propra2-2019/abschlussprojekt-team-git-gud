@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
@@ -85,18 +86,16 @@ class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "",
-                null,
-                null,
-                null,
+                "",
+                "",
+                "",
                 null,
                 null,
                 "",
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, new ArrayList<>());
-
-        final int expectedSizeOfList = 0;
-        assertThat(result.size(), is(expectedSizeOfList));
+        assertNull(result);
     }
 
     @Test
@@ -104,9 +103,9 @@ class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "",
-                null,
-                null,
-                null,
+                "",
+                "",
+                "",
                 null,
                 null,
                 "",
@@ -127,9 +126,9 @@ class SuchServiceTest {
         Suche suche = new Suche(
                 "2020-02-20",
                 "",
-                null,
-                null,
-                null,
+                "",
+                "",
+                "",
                 null,
                 null,
                 "",
@@ -148,9 +147,9 @@ class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "2020-02-20",
-                null,
-                null,
-                null,
+                "",
+                "",
+                "",
                 null,
                 null,
                 "",
@@ -165,34 +164,32 @@ class SuchServiceTest {
     }
 
     @Test
-    void einNichtVergebenerTagFilter() {
-        String[] tags = {"NichtVergebenerTag"};
+    public void einNichtVergebenerTagFilter() {
+        String tags = "NichtVergebenerTag";
         Suche suche = new Suche(
                 "",
                 "",
                 tags,
-                null,
-                null,
+                "",
+                "",
                 null,
                 null,
                 "",
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, dateien);
-
-        final int expectedSizeOfList = 0;
-        assertThat(result.size(), is(expectedSizeOfList));
+        assertNull(result);
     }
 
     @Test
-    void einVergebenerTagFilter() {
-        String[] tags = {"Vorlesung"};
+    public void einVergebenerTagFilter() {
+        String tags = "Vorlesung";
         Suche suche = new Suche(
                 "",
                 "",
                 tags,
-                null,
-                null,
+                "",
+                "",
                 null,
                 null,
                 "",
@@ -207,14 +204,14 @@ class SuchServiceTest {
     }
 
     @Test
-    void mehrereVergebeneTagsFilter() {
-        String[] tags = {"Relevant", "Irgendwas"};
+    public void mehrereVergebeneTagsFilter() {
+        String tags = "Relevant, Irgendwas";
         Suche suche = new Suche(
                 "",
                 "",
                 tags,
-                null,
-                null,
+                "",
+                "",
                 null,
                 null,
                 "",
@@ -230,14 +227,14 @@ class SuchServiceTest {
     }
 
     @Test
-    void mehrereVergebeneTagsVerschiedeneDateienFilter() {
-        String[] tags = {"Relevant", "Irgendwas", "Vorlesung"};
+    public void mehrereVergebeneTagsVerschiedeneDateienFilter() {
+        String tags = "Relevant, Irgendwas, Vorlesung";
         Suche suche = new Suche(
                 "",
                 "",
                 tags,
-                null,
-                null,
+                "",
+                "",
                 null,
                 null,
                 "",
@@ -251,55 +248,51 @@ class SuchServiceTest {
     }
 
     @Test
-    void vergebeneUndNichtVergebeneTagsFilter() {
-        String[] tags = {"Relevant", "Haus"};
+    public void vergebeneUndNichtVergebeneTagsFilter() {
+        String tags = "Relevant, Haus";
         Suche suche = new Suche(
                 "",
                 "",
                 tags,
-                null,
-                null,
+                "",
+                "",
                 null,
                 null,
                 "",
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, dateien);
-
-        final int expectedSizeOfList = 0;
-        assertThat(result.size(), is(expectedSizeOfList));
+        assertNull(result);
     }
 
     @Test
-    void nichtVergebenerDateiTypFilter() {
-        String[] dateiTypen = {"docx"};
+    public void nichtVergebenerDateiTypFilter() {
+        String dateiTypen = "docx";
         Suche suche = new Suche(
                 "",
                 "",
-                null,
+                "",
                 dateiTypen,
-                null,
-                null,
+                "",
+                "",
                 null,
                 "",
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, dateien);
-
-        final int expectedSizeOfList = 0;
-        assertThat(result.size(), is(expectedSizeOfList));
+        assertNull(result);
     }
 
     @Test
-    void einDateiTypFilter() {
-        String[] dateiTypen = {"pdf"};
+    public void einDateiTypFilter() {
+        String dateiTypen = "pdf";
         Suche suche = new Suche(
                 "",
                 "",
-                null,
+                "",
                 dateiTypen,
-                null,
-                null,
+                "",
+                "",
                 null,
                 "",
                 null);
@@ -313,15 +306,15 @@ class SuchServiceTest {
     }
 
     @Test
-    void mehrereDateiTypenFilter() {
-        String[] dateiTypen = {"pdf", "jpg"};
+    public void mehrereDateiTypenFilter() {
+        String dateiTypen = "pdf, jpg";
         Suche suche = new Suche(
                 "",
                 "",
-                null,
+                "",
                 dateiTypen,
-                null,
-                null,
+                "",
+                "",
                 null,
                 "",
                 null);
@@ -337,35 +330,33 @@ class SuchServiceTest {
     }
 
     @Test
-    void nichtVorhandenerUploaderFilter() {
-        String[] uploader = {"See"};
+    public void nichtVorhandenerUploaderFilter() {
+        String uploader = "See";
         Suche suche = new Suche(
                 "",
                 "",
-                null,
-                null,
+                "",
+                "",
                 uploader,
-                null,
+                "",
                 null,
                 "",
                 null);
 
         List<Datei> result = suchService.starteSuche(suche, dateien);
-
-        final int expectedSizeOfList = 0;
-        assertThat(result.size(), is(expectedSizeOfList));
+        assertNull(result);
     }
 
     @Test
-    void einVorhandenerUploaderFilter() {
-        String[] uploader = {"Baum"};
+    public void einVorhandenerUploaderFilter() {
+        String uploader = "Baum";
         Suche suche = new Suche(
                 "",
                 "",
-                null,
-                null,
+                "",
+                "",
                 uploader,
-                null,
+                "",
                 null,
                 "",
                 null);
@@ -379,15 +370,15 @@ class SuchServiceTest {
     }
 
     @Test
-    void mehrereUploaderFilter() {
-        String[] uploader = {"Baum", "Stein"};
+    public void mehrereUploaderFilter() {
+        String uploader = "Baum, Stein";
         Suche suche = new Suche(
                 "",
                 "",
-                null,
-                null,
+                "",
+                "",
                 uploader,
-                null,
+                "",
                 null,
                 "",
                 null);
@@ -408,10 +399,10 @@ class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "",
-                null,
-                null,
-                null,
-                "name",
+                "",
+                "",
+                "",
+                "Name",
                 null,
                 "",
                 null);
@@ -432,10 +423,10 @@ class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "",
-                null,
-                null,
-                null,
-                "name",
+                "",
+                "",
+                "",
+                "Name",
                 null,
                 "",
                 "absteigend");
@@ -456,9 +447,9 @@ class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "",
-                null,
-                null,
-                null,
+                "",
+                "",
+                "",
                 "Dateityp",
                 null,
                 "",
@@ -484,9 +475,9 @@ class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "",
-                null,
-                null,
-                null,
+                "",
+                "",
+                "",
                 "Dateityp",
                 null,
                 "",
@@ -512,9 +503,9 @@ class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "",
-                null,
-                null,
-                null,
+                "",
+                "",
+                "",
                 "Uploader",
                 null,
                 "",
@@ -540,9 +531,9 @@ class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "",
-                null,
-                null,
-                null,
+                "",
+                "",
+                "",
                 "Uploader",
                 null,
                 "",
@@ -568,9 +559,9 @@ class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "",
-                null,
-                null,
-                null,
+                "",
+                "",
+                "",
                 "Datum",
                 null,
                 "",
@@ -596,9 +587,9 @@ class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "",
-                null,
-                null,
-                null,
+                "",
+                "",
+                "",
                 "Datum",
                 null,
                 "",
@@ -623,9 +614,9 @@ class SuchServiceTest {
         Suche suche = new Suche(
                 "",
                 "",
-                null,
-                null,
-                null,
+                "",
+                "",
+                "",
                 null,
                 null,
                 "",

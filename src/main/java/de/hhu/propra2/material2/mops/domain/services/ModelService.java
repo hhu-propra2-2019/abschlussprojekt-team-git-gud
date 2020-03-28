@@ -185,17 +185,20 @@ public final class ModelService implements IModelService {
 
     public List<Datei> getSuchergebnisse(final KeycloakAuthenticationToken token) {
         List<Datei> zuFiltern;
-        if (suche.getGruppenId() != null) {
-            zuFiltern = getAlleDateienByGruppe(suche.getGruppenId(), token);
-        } else {
+        if ("-1".equals(suche.getGruppenId())) {
             User user = createUserByToken(token);
             zuFiltern = getAlleDateienByUser(user);
+        } else {
+            zuFiltern = getAlleDateienByGruppe(suche.getGruppenId(), token);
         }
         return suchService.starteSuche(suche, zuFiltern);
     }
 
     public Set<String> getKategorienFromSuche(final List<Datei> dateien) {
         Set<String> kategorien = new HashSet<>();
+        if (dateien == null) {
+            return kategorien;
+        }
         dateien.forEach(datei -> kategorien.add(datei.getKategorie()));
         return kategorien;
     }
@@ -335,7 +338,12 @@ public final class ModelService implements IModelService {
     public User findUserByKeycloakname(final String keycloakname) throws SQLException {
         return loadUser(repository.findUserByKeycloakname(keycloakname));
     }
-
+    public Set<String> getTagsAsSet(final String[] tags) {
+        if (tags == null) {
+            return null;
+        }
+        return Set.of(tags);
+    }
     private List<Datei> filterVeroeffentlichung(final List<Datei> resultArg) {
         LocalDate today = LocalDate.now();
         List<Datei> result = resultArg.stream()
@@ -368,6 +376,5 @@ public final class ModelService implements IModelService {
             throw new FileNotPublishedYetException("Die Datei ist noch nicht veröffentlicht.");
         }
         return true;
-
     }
 }

@@ -122,6 +122,7 @@ class MaterialControllerModelTest {
         when(modelService.getAlleDateiTypenByUser(any())).thenReturn(dateiTypen);
         when(modelService.getAccountFromKeycloak(any())).thenReturn(new Account("BennyGoodman", ".de",
                 "aaa", dateiTypen));
+        when(modelService.getSuchergebnisse(any())).thenReturn(dateien);
         when(modelService.getKategorienByGruppe(any(), any())).thenReturn(kategorien);
         when(modelService.getAlleDateienByGruppe(any(), any())).thenReturn(dateien);
     }
@@ -241,15 +242,6 @@ class MaterialControllerModelTest {
                 .andExpect(content().string(containsString("ProPra")))
                 .andExpect(content().string(containsString("RDB")));
         verify(modelService, times(1)).getAlleGruppenByUser(any());
-    }
-
-    @Test
-    @WithMockKeycloackAuth(name = "studentin3", roles = "studentin")
-    void sucheTestTagsGetLoaded() throws Exception {
-        mvc.perform(get("/material2/suche"))
-                .andExpect(content().string(containsString("Vorlesung")))
-                .andExpect(content().string(containsString("Übung")));
-        verify(modelService, times(1)).getAlleTagsByUser(any());
     }
 
     @Test

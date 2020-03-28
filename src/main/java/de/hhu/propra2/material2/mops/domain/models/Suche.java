@@ -6,9 +6,9 @@ import lombok.Data;
 public class Suche {
     private final String vonDatum;
     private final String bisDatum;
-    private final String[] tags;
-    private final String[] dateiTyp;
-    private final String[] uploader;
+    private final String tags;
+    private final String dateiTyp;
+    private final String uploader;
     private final String sortierKriterium;
     private final String gruppenId;
     private final String dateiName;
@@ -16,31 +16,45 @@ public class Suche {
 
 
     public final String[] getDateiTyp() {
-        return dateiTyp == null ? null : dateiTyp.clone();
+        if (dateiTyp.isEmpty()) {
+            return null;
+        }
+        return toArray(dateiTyp);
     }
 
     public final String[] getTags() {
-        return tags == null ? null : tags.clone();
+        if (tags.isEmpty()) {
+            return null;
+        }
+        return toArray(tags);
+    }
+
+    private String[] toArray(final String input) {
+        String[] result  = input.split("\\s*,\\s*");
+        return result;
     }
 
     public final String[] getUploader() {
-        return uploader == null ? null : uploader.clone();
+        if (uploader.isEmpty()) {
+            return null;
+        }
+        return toArray(uploader);
     }
     @SuppressWarnings("checkstyle:HiddenField")
     public Suche(final String vonDatum,
                  final String bisDatum,
-                 final String[] tags,
-                 final String[] dateiTyp,
-                 final String[] uploader,
+                 final String tags,
+                 final String dateiTyp,
+                 final String uploader,
                  final String sortierKriterium,
                  final String gruppenId,
                  final String dateiName,
                  final String reihenfolge) {
-        this.dateiTyp = dateiTyp == null ? null : dateiTyp.clone();
+        this.dateiTyp = dateiTyp;
         this.vonDatum = vonDatum;
         this.bisDatum = bisDatum;
-        this.tags = tags == null ? null : tags.clone();
-        this.uploader = uploader == null ? null : uploader.clone();
+        this.tags = tags;
+        this.uploader = uploader;
         this.sortierKriterium = sortierKriterium;
         this.gruppenId = gruppenId;
         this.dateiName = dateiName;

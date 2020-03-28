@@ -127,6 +127,8 @@ die Funktion implementiert werden, dass Dateien zeitesteuert zur Verfügung gest
 
 - Modifizierbarkeit
 
+- Analysierbarkeit
+
 === Stakeholder
 
 [cols="1,1" options="header"]
@@ -211,14 +213,25 @@ image::/pictures/tech_kontext_ausschnitt.png[optional alt text]
                          In diesem MinIO-Cloudspeicher befindet sich ein Bucket mit Namen Materialsammlung der die in der
                          Anwendung hochgeladenen Dateien persistiert.
 
-- *Gruppenbelgung*: 
+- *Gruppenbelgung*: Das Gruppenbelegungsmodul stellt eine Schnittstelle bereit, die uns durch einen Get-Request
+                    Die Information über Veränderungen in der Gruppenbelegung zur Verfügung stellt. Die übergebenen
+                    Informationen sind hierbei im JSON-Format bereitgestellt.
 
 <<<<
 // 4. Lösungsstrategie
 [[section-solution-strategy]]
 == Lösungsstrategie
 
+=== Lösungstrategien zu den aufgestellten Qualitätszielen
 
+- *Effizienz*: Schreiben effizienter Queries für Datenbankanfragen sowie Caching von häufig auftrettenden
+                Anfragen.
+
+- *Modifizierbarkeit*:
+
+- *Analysierbarkeit*: Dokumentation der implementationsentscheidungen in einer Entscheidungsdokumentaiton und
+                      Architekturdokumentation. Außerdem eingehaltende Schichtarchitektur der Anwendung und spezialisierte
+                      Services.
 
 <<<<
 // 5. Bausteinsicht

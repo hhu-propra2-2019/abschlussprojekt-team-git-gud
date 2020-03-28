@@ -328,9 +328,13 @@ jedoch erst, wenn auf eine Gruppe zugegriffen wird.
 
 image::https://github.com/hhu-propra2/abschlussprojekt-team-git-gud/blob/documentation_change/documentation/pictures/Dom%C3%A4nenabh%C3%A4ngigkeiten.png[optional alt text]
 
-=== _<Konzept n>_
+=== Testbarkeit
 
-_<Erklärung>_
+Alle Services und Klassen, die Logik beinhalten, sind testbar und werden getestet. Als Tetsing framworks werden JUnit, Hemcrest und
+Mockito verwendet. Die Testklassen sind nach der zu testenden Klasse mit dem Suffix "Test" benannt.
+Jede Schicht des Schichtenmodells weist dabei Tests auf. Die Graphichebenutzerschnittstelle testet den Controller, die Geschäftslogik testet ihre Services
+und die Persistenz testet, falls Vorhanden, von Hand geschriebene Queries. Getestet wird dabei wie üblich im AAA-Format mit den
+oben genannten Frameworks.
 
 <<<<
 // 9. Entscheidungen

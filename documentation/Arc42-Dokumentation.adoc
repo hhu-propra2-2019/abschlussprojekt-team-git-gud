@@ -311,13 +311,20 @@ _<Whitebox-Template>_
 [[section-concepts]]
 == Querschnittliche Konzepte
 
-=== _<Konzept 1>_
+=== _Abhängigkeiten zwischen Modulen_
 
-_<Erklärung>_
+Generell gehen Abhänigkeiten immer in die nächst tiefere Schicht. Die GUI bzw. der Controller ist Äbhänig von der
+Geschäftslogik. Die Geschäftslogik hat Äbhänigkeiten in die Datebank bzw. das Repository.
 
-=== _<Konzept 2>_
+=== _Domänenmodell_
 
-_<Erklärung>_
+Die drei Domänen sind der User, die Gruppe und eine Datei. Ein User kann mehrere Gruppen haben. Der User speichert
+ebenfalls in welchen Gruppen er Upload Rechte hat. Eine Gruppe besitzt Dateien, welche in verschiedenen Kategorien
+eingeteilt werden.
+Somit entsteht eine Hiraschiche strucktur, bei welcher ein User in mehreren Gruppen ist und diese Gruppen jeweilts mehrere
+Datein haben können. Somit hängt alles vom User ab und dieser hat viel Informationen welche an ihm dran hängen. Um im Betrieb
+die Menge an geladen Daten zu verringern werden beim Laden eines User erst nur seine Gruppen geladen. Die Daten der Gruppe
+jedoch erst, wenn auf eine Gruppe zugegriffen wird.
 
 ...
 

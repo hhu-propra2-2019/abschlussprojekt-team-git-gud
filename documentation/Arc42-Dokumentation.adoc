@@ -316,7 +316,7 @@ _<Whitebox-Template>_
 Generell gehen Abhänigkeiten immer in die nächst tiefere Schicht. Die GUI bzw. der Controller ist Äbhänig von der
 Geschäftslogik. Die Geschäftslogik hat Äbhänigkeiten in die Datebank bzw. das Repository.
 
-=== _Domänenmodell_
+=== Domänenmodell
 
 Die drei Domänen sind der User, die Gruppe und eine Datei. Ein User kann mehrere Gruppen haben. Der User speichert
 ebenfalls in welchen Gruppen er Upload Rechte hat. Eine Gruppe besitzt Dateien, welche in verschiedenen Kategorien
@@ -326,7 +326,7 @@ Datein haben können. Somit hängt alles vom User ab und dieser hat viel Informa
 die Menge an geladen Daten zu verringern werden beim Laden eines User erst nur seine Gruppen geladen. Die Daten der Gruppe
 jedoch erst, wenn auf eine Gruppe zugegriffen wird.
 
-...
+image::https://github.com/hhu-propra2/abschlussprojekt-team-git-gud/blob/documentation_change/documentation/pictures/Dom%C3%A4nenabh%C3%A4ngigkeiten.png[optional alt text]
 
 === _<Konzept n>_
 

@@ -311,7 +311,7 @@ _<Whitebox-Template>_
 [[section-concepts]]
 == Querschnittliche Konzepte
 
-=== _Abhängigkeiten zwischen Modulen_
+=== Abhängigkeiten zwischen Modulen
 
 Generell gehen Abhänigkeiten immer in die nächst tiefere Schicht. Die GUI bzw. der Controller ist Äbhänig von der
 Geschäftslogik. Die Geschäftslogik hat Äbhänigkeiten in die Datebank bzw. das Repository.

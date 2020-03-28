@@ -127,6 +127,8 @@ die Funktion implementiert werden, dass Dateien zeitesteuert zur Verfügung gest
 
 - Modifizierbarkeit
 
+- Analysierbarkeit
+
 === Stakeholder
 
 [cols="1,1" options="header"]
@@ -189,7 +191,7 @@ wie z.B get, set, is usw. und technische Begriffe bleiben Englisch.
 
 === Fachlicher Kontext
 
-image::/pictures/Kontextausschnitt.png[optional alt text]
+image::https://github.com/hhu-propra2/abschlussprojekt-team-git-gud/blob/documentation_change/documentation/pictures/Kontextausschnitt.png[optional alt text]
 
 - *Nutzer*: Die Materialsammlung bietet dem Nutzer eine Möglichkeit, je nach Befugniss,
             Daten hochzuladen, runterzuladen, anderen Nutzern zu Verfügung zu stellen und diese
@@ -205,18 +207,31 @@ image::/pictures/Kontextausschnitt.png[optional alt text]
 
 === Technischer Kontext
 
-image::/pictures/tech_kontext_ausschnitt.png[optional alt text]
+image::https://github.com/hhu-propra2/abschlussprojekt-team-git-gud/blob/documentation_change/documentation/pictures/tech_kontext_ausschnitt.png[optional alt text]
 
-**<optional: Erläuterung der externen technischen Schnittstellen>**
+- *MinIO (Fremdsystem)*: Die Speicherung von Dateien erfolgt in einem Dockercontainer laufenden MinIO-Clludspeicher.
+                         In diesem MinIO-Cloudspeicher befindet sich ein Bucket mit Namen Materialsammlung der die in der
+                         Anwendung hochgeladenen Dateien persistiert.
 
-**<Mapping fachliche auf technische Schnittstellen>**
+- *Gruppenbelgung*: Das Gruppenbelegungsmodul stellt eine Schnittstelle bereit, die uns durch einen Get-Request
+                    Die Information über Veränderungen in der Gruppenbelegung zur Verfügung stellt. Die übergebenen
+                    Informationen sind hierbei im JSON-Format bereitgestellt.
 
 <<<<
 // 4. Lösungsstrategie
 [[section-solution-strategy]]
 == Lösungsstrategie
 
+=== Lösungstrategien zu den aufgestellten Qualitätszielen
 
+- *Effizienz*: Schreiben effizienter Queries für Datenbankanfragen sowie teilweises Caching von häufig auftrettenden
+                Anfragen.
+
+- *Modifizierbarkeit*: Die einzelnen Schochten der Schichtarchitektur sind durchaus modifizierbar.
+
+- *Analysierbarkeit*: Dokumentation der implementationsentscheidungen in einer Entscheidungsdokumentaiton und
+                      Architekturdokumentation. Außerdem eingehaltende Schichtarchitektur der Anwendung und spezialisierte
+                      Services.
 
 <<<<
 // 5. Bausteinsicht
@@ -225,128 +240,72 @@ image::/pictures/tech_kontext_ausschnitt.png[optional alt text]
 
 === Whitebox Gesamtsystem
 
-_**<Übersichtsdiagramm>**_
+image::https://github.com/hhu-propra2/abschlussprojekt-team-git-gud/blob/documentation_change/documentation/pictures/ebene1.png[optional alt text]
 
-Begründung:: _<Erläuternder Text>_
-
-Enthaltene Bausteine:: _<Beschreibung der enthaltenen Bausteine (Blackboxen)>_
-
-Wichtige Schnittstellen:: _<Beschreibung wichtiger Schnittstellen>_
-
-==== <Name Blackbox 1>
-
-_<Zweck/Verantwortung>_
-
-_<Schnittstelle(n)>_
-
-_<(Optional) Qualitäts-/Leistungsmerkmale>_
-
-_<(Optional) Ablageort/Datei(en)>_
-
-_<(Optional) Erfüllte Anforderungen>_
-
-_<(optional) Offene Punkte/Probleme/Risiken>_
-
-==== <Name Blackbox 2>
-
-_<Blackbox-Template>_
-
-==== <Name Blackbox n>
-
-_<Blackbox-Template>_
-
-==== <Name Schnittstelle 1>
-
-...
-
-==== <Name Schnittstelle m>
-
-=== Ebene 2
-
-==== Whitebox _<Baustein 1>_
-
-_<Whitebox-Template>_
-
-==== Whitebox _<Baustein 2>_
-
-_<Whitebox-Template>_
-
-...
-
-==== Whitebox _<Baustein m>_
-
-_<Whitebox-Template>_
-
-=== Ebene 3
-
-==== Whitebox <_Baustein x.1_>
-
-_<Whitebox-Template>_
-
-==== Whitebox <_Baustein x.2_>
-
-_<Whitebox-Template>_
-
-==== Whitebox <_Baustein y.1_>
-
-_<Whitebox-Template>_
-
-<<<<
-// 7. Verteilungssicht
-[[section-deployment-view]]
-== Verteilungssicht
-
-=== Infrastruktur Ebene 1
-
-_**<Übersichtsdiagramm>**_
-
-Begründung:: _<Erläuternder Text>_
-
-Qualitäts- und/oder Leistungsmerkmale:: _<Erläuternder Text>_
-
-Zuordnung von Bausteinen zu Infrastruktur:: _<Beschreibung der Zuordnung>_
-
-=== Infrastruktur Ebene 2
-
-==== _<Infrastrukturelement 1>_
-
-_<Diagramm + Erläuterungen>_
-
-==== _<Infrastrukturelement 2>_
-
-_<Diagramm + Erläuterungen>_
-
-...
-
-==== _<Infrastrukturelement n>_
-
-_<Diagramm + Erläuterungen>_
+- *GUI*: GUI liefert die Schnittstelle für den User. Die Controller directen auf die entsprechenden HTML Seiten und die
+Controller beziehen ihre Daten von der Domain Schicht.
+- *Domain*: Stellt Services zur verfügung um Dateien hochzuladen, zu speichern, upzudaten und zu löschen, indem sie mit
+MinIO kommunizieren.
+- *Database*: Die Database Schicht speichert unsere Informationen in der Datenbank und ruft sie wieder ab.
 
 <<<<
 // 8. Querschnittliche Konzepte
 [[section-concepts]]
 == Querschnittliche Konzepte
 
-=== _<Konzept 1>_
+=== Abhängigkeiten zwischen Modulen
 
-_<Erklärung>_
+Generell gehen Abhänigkeiten immer in die nächst tiefere Schicht. Die GUI bzw. der Controller ist Äbhänig von der
+Geschäftslogik. Die Geschäftslogik hat Äbhänigkeiten in die Datebank bzw. das Repository.
 
-=== _<Konzept 2>_
+=== Domänenmodell
 
-_<Erklärung>_
+Die drei Domänen sind der User, die Gruppe und eine Datei. Ein User kann mehrere Gruppen haben. Der User speichert
+ebenfalls in welchen Gruppen er Upload Rechte hat. Eine Gruppe besitzt Dateien, welche in verschiedenen Kategorien
+eingeteilt werden.
+Somit entsteht eine hierarchische Struktur, bei welcher ein User in mehreren Gruppen ist und diese Gruppen jeweils mehrere
+Datein haben können. Somit hängt alles vom User ab und dieser hat viel Informationen welche an ihm dran hängen. Um im Betrieb
+die Menge an geladen Daten zu verringern werden beim Laden eines User erst nur seine Gruppen geladen. Die Daten der Gruppe
+jedoch erst, wenn auf eine Gruppe zugegriffen wird.
 
-...
+=== Fehlerbehandlung
 
-=== _<Konzept n>_
+In der Benutzeroberfläche werden verschiedenste Fehler abgefangen. Im Uploadformular wird geprüft ob auch eine Datei auch
+zum Upload ausgewählt wurde. Beim Abschicken des Formular wird überprüft ob die Datei als Eintrag in die Datenbank
+geschrieben werden konnte und bei einem Fehler wird die entsprechende Fehlermeldung ausgegeben.
+Es werden nur Gruppen zum Upload angezeigt in welchen der User die Uploadberechtigungen hat. Trotzdem wird
+im UploadService vor dem hinzufügen der Datei nochmals geprüft ob der User auch tatsächlich die Berechtigung dazu hat.
 
-_<Erklärung>_
+Bei der Suche wird der Fall, dass keine Suchergebnisse entsprechend der Suche gefunden wurden abgefangen. Man erhält
+auf der Seite eine error massage, welche dem User zeigt, dass seine Anfrage auch angekommen ist.
+Somit halten wir uns als eins unserer Ziele, welches ausgesagt hat, dass unsere GUI dem User immer ein entsprechendes
+Feedback gibt.
+
+image::https://github.com/hhu-propra2/abschlussprojekt-team-git-gud/blob/documentation_change/documentation/pictures/Dom%C3%A4nenabh%C3%A4ngigkeiten.png[optional alt text]
+
+=== Testbarkeit
+
+Alle Services und Klassen, die Logik beinhalten, sind testbar und werden getestet. Als Tetsing framworks werden JUnit, Hemcrest und
+Mockito verwendet. Die Testklassen sind nach der zu testenden Klasse mit dem Suffix "Test" benannt.
+Jede Schicht des Schichtenmodells weist dabei Tests auf. Die Graphichebenutzerschnittstelle testet den Controller, die Geschäftslogik testet ihre Services
+und die Persistenz testet, falls Vorhanden, von Hand geschriebene Queries. Getestet wird dabei wie üblich im AAA-Format mit den
+oben genannten Frameworks.
 
 <<<<
 // 9. Entscheidungen
 [[section-design-decisions]]
 == Entwurfsentscheidungen
 
+Die Entwurfsentscheidungen sind in der Datei "Entscheidungsdokumentation" dokumentiert.
+
 <<<<
 // 11. Risiken
 [[section-technical-risks]]
 == Risiken und technische Schulden
+
+Risiken:
+
+- Spring Data JDBC könnte nicht einfach kompatibel mit unserem Datenbankschema sein.
+
+- Die benötigten Information von anderen Gruppen sind schwer mit unserer Implementierung zu vereinbaren.
+

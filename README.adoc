@@ -6,12 +6,6 @@ Die hier implementierte Materialsammlung ist auf einer Schichtarchitektur
 aufgebaut und soll den Benutzern eine schnelle, effektive und übersichtliche
 Suche und angenehmen Zugriff auf ihre digitalen Lehrmaterialien erlauben.
 
-== Problembeschreibung
-
-=== Momentane Probleme:
-
-* Implementierung von MinIO un dessen Verbindung zur Datenbank.
-
 == Ziele und Features
 
 === Ziele der Anwendung:

@@ -191,7 +191,7 @@ wie z.B get, set, is usw. und technische Begriffe bleiben Englisch.
 
 === Fachlicher Kontext
 
-image::/pictures/Kontextausschnitt.png[optional alt text]
+image::/Kontextausschnitt.png[optional alt text]
 
 - *Nutzer*: Die Materialsammlung bietet dem Nutzer eine Möglichkeit, je nach Befugniss,
             Daten hochzuladen, runterzuladen, anderen Nutzern zu Verfügung zu stellen und diese
@@ -207,7 +207,7 @@ image::/pictures/Kontextausschnitt.png[optional alt text]
 
 === Technischer Kontext
 
-image::/pictures/tech_kontext_ausschnitt.png[optional alt text]
+image::/tech_kontext_ausschnitt.png[optional alt text]
 
 - *MinIO (Fremdsystem)*: Die Speicherung von Dateien erfolgt in einem Dockercontainer laufenden MinIO-Clludspeicher.
                          In diesem MinIO-Cloudspeicher befindet sich ein Bucket mit Namen Materialsammlung der die in der
@@ -307,37 +307,6 @@ _<Whitebox-Template>_
 _<Whitebox-Template>_
 
 <<<<
-// 7. Verteilungssicht
-[[section-deployment-view]]
-== Verteilungssicht
-
-=== Infrastruktur Ebene 1
-
-_**<Übersichtsdiagramm>**_
-
-Begründung:: _<Erläuternder Text>_
-
-Qualitäts- und/oder Leistungsmerkmale:: _<Erläuternder Text>_
-
-Zuordnung von Bausteinen zu Infrastruktur:: _<Beschreibung der Zuordnung>_
-
-=== Infrastruktur Ebene 2
-
-==== _<Infrastrukturelement 1>_
-
-_<Diagramm + Erläuterungen>_
-
-==== _<Infrastrukturelement 2>_
-
-_<Diagramm + Erläuterungen>_
-
-...
-
-==== _<Infrastrukturelement n>_
-
-_<Diagramm + Erläuterungen>_
-
-<<<<
 // 8. Querschnittliche Konzepte
 [[section-concepts]]
 == Querschnittliche Konzepte
@@ -360,6 +329,8 @@ _<Erklärung>_
 // 9. Entscheidungen
 [[section-design-decisions]]
 == Entwurfsentscheidungen
+
+Die Entwurfsentscheidungen sind in der Datei "Entscheidungsdokumentation" dokumentiert.
 
 <<<<
 // 11. Risiken

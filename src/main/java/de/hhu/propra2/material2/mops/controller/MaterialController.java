@@ -294,8 +294,7 @@ public class MaterialController {
         }
         model.addAttribute("error", errorMessage);
         model.addAttribute("success", successMessage);
-        String url = "redirect:/material2/dateiSicht?gruppenId=%d";
-        return String.format(url, gruppenId);
+        return "redirect:/material2/dateiSicht?gruppenId=" + gruppenId;
     }
 
     /**
